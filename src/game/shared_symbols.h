@@ -4,8 +4,8 @@
 #define EGGDEV_importUtil "stdlib,res,graf,font,text"
 
 #define NS_sys_tilesize 16
-#define NS_sys_mapw 20
-#define NS_sys_maph 11
+#define NS_sys_mapw 20 /* Maps must be at least as large as the framebuffer, not a pixel less. */
+#define NS_sys_maph 12 /* Because map renderer will assume a 2x2 set of neighbor maps is all you can ever see. */
 
 #define CMD_map_image      0x20 /* u16:imageid */
 #define CMD_map_song       0x21 /* u16:songid */

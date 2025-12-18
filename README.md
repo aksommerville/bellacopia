@@ -9,4 +9,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Modal stack.
+- [ ] Outer world, first pass.
+- - [ ] Map loader.
+- - [ ] Sprite framework.
+- - [ ] Hero sprite.
+- - [ ] World edges. Loop horizontally, after an unreasonable distance, and extend forever vertically.
 - [ ] Everything.

@@ -9,11 +9,13 @@
 #include "util/text/text.h"
 #include "shared_symbols.h"
 #include "egg_res_toc.h"
+#include "modal/modal.h"
 
 #define FBW 320
 #define FBH 180
 
 #define SOUND_BLACKOUT_LIMIT 16
+#define MODAL_LIMIT 8
 
 extern struct g {
   void *rom;
@@ -26,6 +28,9 @@ extern struct g {
     int rid;
     double time;
   } sound_blackoutv[SOUND_BLACKOUT_LIMIT];
+  struct modal *modalv[MODAL_LIMIT];
+  int modalc;
+  int input[3],pvinput[3]; // We track the aggregate and players 1 and 2, at all times.
 } g;
 
 /* The song mentioned by bm_song() is exclusive, it stops the old one.

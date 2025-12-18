@@ -32,12 +32,18 @@ int egg_client_init() {
  */
  
 void egg_client_update(double elapsed) {
-  //TODO
+  memcpy(g.pvinput,g.input,sizeof(g.input));
+  egg_input_get_all(g.input,3);
+  modal_update_all(elapsed);
+  modal_drop_defunct();
+  if (!g.modalc) {
+    if (!modal_new_hello()) egg_terminate(1);
+  }
 }
 
 void egg_client_render() {
   graf_reset(&g.graf);
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x001040ff);//TODO
+  modal_render_all();
   graf_flush(&g.graf);
 }
 
