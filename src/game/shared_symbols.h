@@ -1,0 +1,37 @@
+#ifndef SHARED_SYMBOLS_H
+#define SHARED_SYMBOLS_H
+
+#define EGGDEV_importUtil "stdlib,res,graf,font,text"
+
+#define NS_sys_tilesize 16
+#define NS_sys_mapw 20
+#define NS_sys_maph 11
+
+#define CMD_map_image      0x20 /* u16:imageid */
+#define CMD_map_song       0x21 /* u16:songid */
+#define CMD_map_position   0x40 /* u8:long u8:lat u8:plane u8:reserved */
+#define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
+#define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
+
+#define CMD_sprite_image   0x20 /* u16:imageid */
+#define CMD_sprite_tile    0x21 /* u8:tileid u8:xform */
+#define CMD_sprite_type    0x23 /* u16:sprtype */
+
+#define NS_tilesheet_physics   1
+#define NS_tilesheet_family    0
+#define NS_tilesheet_neighbors 0
+#define NS_tilesheet_weight    0
+
+#define NS_physics_vacant     0
+#define NS_physics_solid      1
+#define NS_physics_water      2
+#define NS_physics_hole       3 /* Like water, but no fishing etc. */
+#define NS_physics_cliff      4 /* Jump over from the top, no return. */
+#define NS_physics_hookable   5 /* Solid but can hookshot. */
+#define NS_physics_safe       6 /* Vacant but monsters will never tread. */
+
+#define NS_sprtype_dummy          0 /* (u32)0 */
+#define FOR_EACH_SPRTYPE \
+  _(dummy)
+  
+#endif

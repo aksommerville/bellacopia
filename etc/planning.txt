@@ -1,0 +1,244 @@
+Bellacopia Maleficia
+Early notes, planning.
+
+2025-11-29
+
+The idea for Bellacopia has been percolating for over two years, since before I published Full Moon.
+I'm not ready to start yet, but thought to take some notes for when I do.
+This is going to be the biggest game I've ever made, by a wide margin. So do it right.
+
+2025-12-18
+
+I'm too excited for this. Ready or not, I'm starting.
+
+## Technical Decisions
+
+- Use Egg v2.
+- I made two proof of concepts already, `cherteau` and `2023/bcpoc`, though there's quite a lot I want to do differently.
+- Story mode, where you unlock minigames for Arcade mode.
+- Arcade mode. One or two players.
+- Need 100..200 minigames.
+- In general, minigames should be one or two players, with a continuous difficulty scale.
+- Show monsters in the outer world a la Zelda 2, so encounters are never a surprise.
+- (but maybe also have monsters that can sneak up on you, esp in dark caves)
+- Small HP, think Zelda. Buy hearts at blood banks, and find heart containers as treasure.
+- Outer world: Continuous movement, don't quantize to cells.
+- Continuously-scrolling outer world. Maps are a screenful each, but we stitch them together real-time so the user never notices the boundaries. Music, tilesheets, and sprite spawning will be tricky.
+- Minigames should lead with a passive and standard controls description. eg "Hold L/R, Tap A" but graphical.
+- Figure out an efficient way to make stuffed witches, and make a bunch of them to hand out at GDEX.
+- At this writing, there's 8 letters remaining in my quest to fill the alphabet on Itch. Would be cool if Bellacopia finishes the set. (AIJKLXY first)
+- We should do an open beta when it's close to ready. Like, sending me stats from players on Itch. Include a big warning and apology, because this is not something I'd normally do.
+- I want this to be huge. An arbitrary goalpost: I should not be able to finish the main quests in under an hour, even knowing the optimal path.
+
+- How many of my little jam games can I incorporate into this?
+- - See below: apothecary, cherteau, deadweight, iggle, myscrypt, pokorc, spellingbee
+- - ecom could make a good one-off diegetic challenge. A door with a keystroke meter that slams shut if you move too much.
+- - presto too. Rooms with a "transform everything" button.
+- - ivand is basically the Building Contest.
+- - ctm is more or less the Run For Mayor Quest.
+- - zennoniwa is basically the Exterminating Contest.
+
+## Narrative Notes
+
+- Dot's 7 flowers aren't blooming, due to their being strangled by Root Devils.
+- Village where the bridge is out but the mayor won't approve funding to repair it. So you have to run for mayor in order to pass.
+
+## Toys
+
+- Divining Rod, to show buried roots.
+- Arbitrary spell-casting items?
+- Fish Pole.
+- Broom. Maybe you have to steal it from the Broom Race minigame? Should operate like Thirty Seconds Apothecary, not Full Moon or Dead Weight.
+- Matches. Dark rooms, caves etc.
+- Bug Spray. Weak monsters will avoid you.
+- Candy. Draws monsters.
+- Hookshot.
+
+## Zones
+
+Mostly following the Main Quests, some regions where there's a distinct character to each encounter.
+We'll group minigames by Zone.
+
+- Woodland. Home base. MQ 1. Lean toward silly innocent games. Generally animal opponent.
+- Jungle. Exotic animals.
+- Desert. MQ 3. Anything with a bridge theme, or Wild West.
+- City. Will have a few of these. MQ 2. Generally human opponent, driven by professions.
+- Farm. MQ 7. Human or animal (esp livestock). Lean toward practical crafts. Esp farming, obviously.
+- Labyrinth. MQ 4. Mythical creatures for opponent. Extra difficulty is encouraged.
+- Cave. Where the Goblins live. Maybe the same set as Labyrinth? MQ 6. Generally underground animals.
+- Battlefield. MQ 5. Human opponents. Military or nautical theme. Violence encouraged.
+- Taiga. Generally animal opponents. Cold theme. Ice and water.
+- Sea. When you're travelling by boat.
+
+## Side Quests
+
+- [ ] Jigsaw puzzle world map. See `xmark` project.
+- [ ] Find all the useful items.
+- [ ] Some kind of korokky collectible.
+- [ ] Lead livestock back to the farms.
+- [ ] Gyms a la Pokemon with much harder minigames, but entirely optional.
+- [ ] A town where everyone is sick and you need to raise money for medicine. Just money. Incrementally heal them, but the last few will be outrageously expensive.
+- [ ] Get a Broom for flying. Require a few main quests first, not sure how to gate that.
+- [ ] Races across the world, once you have a Broom.
+- [ ] In the goblins' cave, a substitution cipher a la Mysteries of the Crypt, granting a password to... something.
+- [ ] Rescue the princess and escort her home a la Dead Weight.
+- [ ] Various and sundry one-off fetch quests. Find my hat, etc.
+- [ ] After completing a dungeon, a side quest to go back and clean up after yourself, like we did in Spelling Bee, it's hilarious.
+- [ ] Buy and sell hearts at blood banks. Include at least one blood bank with a sell price high enough to encourage coin farming there.
+- [ ] Fishing! You can fish anywhere there's water. And maybe standing on a tree stump, you fish birds out of the sky?
+- - Fish will be currency. You can trade them for coins in the village. Some more valuable than others.
+- - A special minigame to catch each fish, like Secret of Seven Sauces.
+- - Fishing too much in one area, the odds of a catch decrease.
+- - Can we do a complex animation for the water, with subtle hints toward the fish density there? Something hard to explain but easy to detect once you've learned how.
+- [ ] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
+- [ ] Talking trees that are bored and want to you tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
+- [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
+
+## Main Quests
+
+Ought to have seven distinct narrative quests, one guarding each Root Devil.
+
+- [ ] 1. Unguarded. Just some random encounters. So you get your bearings first.
+- [ ] 2. Run for mayor.
+- [ ] 3. Troll at the bridge sends you on a fetch quest. When you get back, his shift is done and the new troll sends you on a different fetch quest.
+- [ ] 4. Hire a guide to lead you through the deadly labyrinth -- Generate a new labyrinth for each campaign.
+- [ ] 5. Two armies at war and you can't get past. Volunteer as messenger, and take the kings' letters to Cyrano first to rewrite, so they make peace.
+- [ ] 6. Get kidnapped by goblins and escape from their cave.
+- [ ] 7. Toad promises to remove a boulder if you transform him into an elephant but once transformed, he renegs and goes on a rampage. Catch the elephant, turn him back into a toad, and hire a contractor instead.
+
+## Minigames
+
+Ideally they all have simple one-word names for our refrain: "RABBIT challenges you to a ROLLERSKATES contest!"
+[*] Implemented in 2023/bcpoc or cherteau.
+
+- [ ]   Arm Wrestling. Tap A, hold your power meter high.
+- [ ] * Balancing. Walk to the goal with a tomato on your head.
+- [ ]   Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
+- [ ]   Bombing. Mini Super Bomberman?
+- [ ]   Boomerang. Jump then duck, or duck then jump as the kangaroo throws a boomerang at you.
+- [ ]   Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
+- [ ]   Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
+- [ ]   Broom Race. See `apothecary`.
+- [ ]   Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
+- [ ]   Burrowing. Right to move, A to dig. Dig thru the dirt.
+- [ ]   Cake Carrying. On a train that stops suddenly. L/R to balance.
+- [ ]   Calligraphy. Paint a reference figure.
+- [ ]   Cartography. Pick a color for all the regions of a map, 4 choices, no going back.
+- [ ]   Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
+- [ ]   Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
+- [ ]   Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)
+- [ ]   Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
+- [ ]   Chopping. Tap A as a vegetable passes on your conveyor belt.
+- [ ]   Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
+- [ ]   Clam Baking. Hold A to engage flamethrower, only when the clam is open.
+- [ ]   Climbing. L/R and A/B, maintaining one "point of contact" at all times.
+- [ ]   Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
+- [ ]   Counting. Lots of moving things and you have to count one class of them.
+- [ ]   Crossing. Frogger.
+- [ ]   Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
+- [ ] * Dance Off. Tiny rhythm game on the dpad.
+- [ ]   Dissection. Dpad to place scalpel, then hold A to select a direction, then tap A to select length. Cut the arteries but don't touch the organs.
+- [ ]   Distancing. Dpad to get as far from everyone as possible.
+- [ ]   Diving. R/L to move, hold A to jump. Easier to move before releasing A.
+- [ ] * Dodging. Bullet hell.
+- [ ]   Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
+- [ ]   Exterminating. 5x5 grid with random bugs. Whack a 3x3 section to XOR it, win when all the bugs are gone. Or fewest bugs when time runs out.
+- [ ]   Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
+- [ ]   Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
+- [ ]   Fencing. Tap A at optimal rhythm to add planks to a fence.
+- [ ]   Fire. L/R fast to fill a bar and start the fire. (rubbing sticks)
+- [ ]   Fishing. Fish fall to your left and right. L/R to change side and catch the bigger ones. Break ties by lowest interaction time.
+- [ ]   Fission. Tap A until the atom splits.
+- [ ]   Flapjack. A to flip your pancake. Aim to cook both sides evenly.
+- [ ] * Flapping. Tap A.
+- [ ]   Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
+- [ ]   Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
+- [ ]   Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
+- [ ]   Frog Eating. A to grab and eat a frog, when it hops near.
+- [ ]   Gobbling. A to grab and eat, L to pull the tablecloth closer.
+- [ ]   Golf. Whack the ball in a closed room, it bounces off all the walls, try to land as far away as possible.
+- [ ]   Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
+- [ ]   Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
+- [ ]   Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
+- [ ]   Hurdles. Track and Field. Tap A to run, and Up to jump.
+- [ ]   Imitation. Simon Says. (like Sumo Horse but no timing, full dpad, and you're both following an NPC Simon).
+- [ ]   Jeter. Rotate automatically, hold A to charge, then release to throw the ballerina. Pillows to the right and briars to the left.
+- [ ]   Jewelry. Rings and necklaces fall from the sky. L/R to walk, then B/A to hold up a hand for rings, or neither to collect a necklace. And dodge the bird with a magnet.
+- [ ]   Joust. Joust, the video game. You on a broom, and he on Pegasus.
+- [ ]   Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
+- [ ] * Jumprope.
+- [ ] * Karate Chop. Tap A until time expires.
+- [ ]   Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
+- [ ]   Lawnmowing. Visit as much of a grid as possible without retracing any steps.
+- [ ] * Levitation. Keep an indicator balanced.
+- [ ]   Licking. Hold A when the giant moving ice cream cone is in range.
+- [ ]   Lighting. Walk and jump to reach the candles, as an acolyte.
+- [ ]   Math. 10-key input, answer simple arithmetic problems.
+- [ ]   Mind Control. Alternate A/B to maintain control, and dpad to move your victim. Have him push the candy to you.
+- [ ]   Mixing. L/R to pour Blue or Red into your blender. Match a reference Purple without spilling.
+- [ ]   Morse Code. Tap out a short message with A. Key visible on screen, but you can only win higher diffs by remembering.
+- [ ]   Newspaper. Throw newspapers across the street into mailboxes.
+- [ ]   Pairing. Pick the matching sock. First to pick it gets a point.
+- [ ] * Parachute. Deploy as late as you dare, last to land alive wins.
+- [ ]   Parkour. Tap A at the right moment to wall-jump.
+- [ ]   Petrifying. Put on a Medusa mask as the knight approaches, to catch him at the right moment for a handsome statue.
+- [ ]   Photography. Tap once, as a bat flies past the moon.
+- [ ]   Piano Throwing. Tap A to charge, then B to release.
+- [ ]   Pilfering. Dig Dug style, dig up to steal carrots, fail if you break the surface.
+- [ ]   Pitching. Circle the dpad then tap A, judged on consistency of timing.
+- [ ]   Plumbing. Rotate columns in a 4x4 Pipe Dream puzzle to complete a path.
+- [ ]   Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
+- [ ]   Pouring. Once chance to hold A and release. Speeds up as it goes. Disqualify if any overflow.
+- [ ]   Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
+- [ ]   Pushing. Push a statue to the target cell. Sokoban-ish.
+- [ ]   Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
+- [ ]   Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
+- [ ]   Rebounding. Pong. First miss loses.
+- [ ]   Remembering. Shown 9 cards, then they flip and you have to pick a given one.
+- [ ]   Robohorse. L/R control the horse's two legs. QWOP-ish.
+- [ ]   Rodeo. L/R to balance on the bull or hold A to brace.
+- [ ] * Rollerskates. Jump and brake. Gets too fast if you don't brake.
+- [ ]   Rowing. Circle the dpad with lopsided speed, slower in the water.
+- [ ]   Sawing. L/R, and there's an ideal rhythm.
+- [ ]   Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
+- [ ]   Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
+- [ ]   Shaking. U/D to shake your bottle, then the cork flies off when time expires. Highest cork wins.
+- [ ]   Sharing. Dpad around the crowd, touch somebody to give them a berry.
+- [ ]   Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
+- [ ]   Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
+- [ ]   Skiing. L/R and brake, get between the flags.
+- [ ]   Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
+- [ ]   Slapping. One chance to press A, to slap a given card when it falls on the pile.
+- [ ]   Slicing. Tap to stop the blade and cut the pie, aiming for half.
+- [ ]   Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
+- [ ]   Smashing. Stand still, A to jump. Squash melons as they roll at you.
+- [ ]   Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
+- [ ]   Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
+- [ ]   Snowball Fight. Once around the dpad, then A to throw it, then repeat.
+- [ ]   Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
+- [ ]   Sorting. Columns-ish, put falling things in like piles.
+- [ ]   Sparing. Bowling, second throw only.
+- [ ]   Stacking. L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
+- [ ]   Staring. Dpad to keep your eyes on the foe's.
+- [ ]   Steering. Drag race with only L/R, dodging critters etc.
+- [ ]   Stenography. Tap all the buttons in order, following a sheet.
+- [ ] * Stirring. Circle the dpad.
+- [ ]   Strangling. Against the Root Devil. Fight to the death.
+- [ ]   Sumo Horse. Metronome. One player dances with only Left and Right, then the other player must repeat it.
+- [ ]   Surrounding. Snake.
+- [ ] * Swearing. Press the button for a word bubble like "$#@!", last word wins.
+- [ ]   Swinging. Hold L/R in phase, riding a swing.
+- [ ]   Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
+- [ ]   Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
+- [ ]   Tic Tac Toe. The whole game.
+- [ ]   Topping. Hold A to pour ketchup on a giant moving hotdog.
+- [ ] * Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
+- [ ] * Umbrella. Hold A while raining, release while not.
+- [ ]   Watching. Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
+- [ ]   Watermelon. Hold A to charge and release to spit a seed, going for distance.
+- [ ]   Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
+- [ ]   Whining. Get mama bear's attention by tapping U when she's looking and A when not.
+- [ ]   Wining. Big pile of grapes that you jump on to squash.
+- [ ]   Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself. Score is how close to center.
+- [ ]   Wrecking. Mini platformer full of fragile things and you have a giant hammer.
+
