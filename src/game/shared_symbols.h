@@ -9,7 +9,8 @@
 
 #define CMD_map_image      0x20 /* u16:imageid */
 #define CMD_map_song       0x21 /* u16:songid */
-#define CMD_map_position   0x40 /* u8:long u8:lat u8:plane u8:reserved */
+#define CMD_map_oob        0x22 /* u8:long u8:lat ; Only one map per plane needs to specify. If more, they must agree. */
+#define CMD_map_position   0x40 /* s8:long s8:lat u8:plane u8:reserved */
 #define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
 
@@ -29,6 +30,12 @@
 #define NS_physics_cliff      4 /* Jump over from the top, no return. */
 #define NS_physics_hookable   5 /* Solid but can hookshot. */
 #define NS_physics_safe       6 /* Vacant but monsters will never tread. */
+
+// mapoob: How to handle requests for maps that don't exist on this plane.
+#define NS_mapoob_null      1 /* (default) Unknown positions in this plane are invalid. */
+#define NS_mapoob_loop      2 /* Loop around this axis. */
+#define NS_mapoob_repeat    3 /* Clamp to the edge. ie repeat the last map forever. */
+#define NS_mapoob_farloop   4 /* Repeat the last map for the size of the plane, then loop. So looping around is never the shortest path. */
 
 #define NS_sprtype_dummy          0 /* (u32)0 */
 #define FOR_EACH_SPRTYPE \

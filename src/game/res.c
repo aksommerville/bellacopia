@@ -1,4 +1,5 @@
 #include "game.h"
+#include "world/map.h"
 
 /* Welcome resource.
  * Return >0 to include in the TOC.
@@ -41,6 +42,7 @@ int res_init() {
     g.resv[g.resc++]=res;
   }
   //TODO postprocess resources
+  if (maps_init()<0) return -1;
   return 0;
 }
 
