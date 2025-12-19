@@ -12,6 +12,21 @@ static struct {
   const struct map *mapv; // WEAK, current plane.
   double fx,fy; // Focus point in plane meters.
   int vx,vy; // Top left of visible area, in plane pixels.
+  
+  /* (poiv) gets wiped out and rebuilt on every map transition.
+   * It contains selected map commands.
+   * Sort by (x,y). Plane meters.
+   * Tracked for the focus map and its neighbors. Roughly the same scope as sprites.
+   */
+  struct poi {
+    int x,y;
+    uint8_t opcode;
+    const uint8_t *arg; // Straight off the map command, usually includes (col,row) again.
+  } *poiv;
+  int poic,poia;
+  
+  int doormapid,doorx,doory; // Deferred door entry.
+  
 } camera={0};
 
 /* Adjust plane coordinates re oob, the same way the map loader does.
@@ -87,7 +102,53 @@ static void camera_defunct_far_sprites() {
   }
 }
 
-/* Spawn sprites for a map. It's either the focus map or a neighbor.
+/* POI list.
+ */
+ 
+// Always >=0, always the first if multiple.
+static int camera_poiv_search(int x,int y) {
+  int lo=0,hi=camera.poic;
+  while (lo<hi) {
+    int ck=(lo+hi)>>1;
+    const struct poi *poi=camera.poiv+ck;
+         if (x<poi->x) hi=ck;
+    else if (x>poi->x) lo=ck+1;
+    else if (y<poi->y) hi=ck;
+    else if (y>poi->y) lo=ck+1;
+    else {
+      while (ck>lo) {
+        poi--;
+        if (poi->x!=x) break;
+        if (poi->y!=y) break;
+        ck--;
+      }
+      return ck;
+    }
+  }
+  return lo;
+}
+ 
+static int camera_add_poi(int x,int y,uint8_t opcode,const uint8_t *arg) {
+  if (camera.poic>=camera.poia) {
+    int na=camera.poia+32;
+    if (na>INT_MAX/sizeof(struct poi)) return -1;
+    void *nv=realloc(camera.poiv,sizeof(struct poi)*na);
+    if (!nv) return -1;
+    camera.poiv=nv;
+    camera.poia=na;
+  }
+  int p=camera_poiv_search(x,y);
+  struct poi *poi=camera.poiv+p;
+  memmove(poi+1,poi,sizeof(struct poi)*(camera.poic-p));
+  camera.poic++;
+  poi->x=x;
+  poi->y=y;
+  poi->opcode=opcode;
+  poi->arg=arg;
+  return 0;
+}
+
+/* Spawn sprites and poi for a map. It's either the focus map or a neighbor.
  */
  
 static void camera_spawn_sprites(const struct map *map,int mx,int my) {
@@ -95,6 +156,7 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
+    
       case CMD_map_sprite: {
           double sx=cmd.arg[0]+0.5+(double)(mx*NS_sys_mapw);
           double sy=cmd.arg[1]+0.5+(double)(my*NS_sys_maph);
@@ -116,6 +178,11 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
               sprite->z=camera.mz;
             }
           }
+        } break;
+      
+      // POI commands with position in first two bytes (should be all of them).
+      case CMD_map_door: {
+          camera_add_poi(mx*NS_sys_mapw+cmd.arg[0],my*NS_sys_maph+cmd.arg[1],cmd.opcode,cmd.arg);
         } break;
     }
   }
@@ -145,7 +212,9 @@ static void camera_new_map(int x,int y) {
   }
   
   /* On the occasion of map changes, we reassess sprites for this map and the eight neighbors.
+   * This same pass will rebuild (poiv).
    */
+  camera.poic=0;
   camera_defunct_far_sprites();
   int rx=-1; for (;rx<=1;rx++) {
     int adjx=camera_adjust_plane_x(camera.mx+rx);
@@ -160,6 +229,20 @@ static void camera_new_map(int x,int y) {
   }
 }
 
+/* After travelling thru a door, move hero to the provided cell.
+ */
+ 
+static void camera_force_hero(int x,int y) {
+  struct sprite *hero=sprites_get_hero();
+  if (hero) {
+    hero->x=x+0.5;
+    hero->y=y+0.5;
+    sprite_hero_ackpos(hero);
+  } else {
+    hero=sprite_spawn(x+0.5,y+0.5,RID_sprite_hero,0,0,0,0);
+  }
+}
+
 /* Reset.
  */
  
@@ -170,6 +253,10 @@ int camera_reset(int mapid) {
     fprintf(stderr,"map:%d not found\n",mapid);
     return -1;
   }
+  int was_door=camera.doormapid;
+  int herox=map->x*NS_sys_mapw+camera.doorx;
+  int heroy=map->y*NS_sys_maph+camera.doory;
+  camera.doormapid=camera.doorx=camera.doory=0;
   camera.mx=map->x;
   camera.my=map->y;
   camera.mz=map->z;
@@ -183,6 +270,7 @@ int camera_reset(int mapid) {
   camera.fy=(double)(map->y*NS_sys_maph)+NS_sys_maph*0.5;
   sprites_clear();
   camera_new_map(camera.mx,camera.my);
+  if (was_door) camera_force_hero(herox,heroy);
   camera_update(0.0);
   return 0;
 }
@@ -191,6 +279,11 @@ int camera_reset(int mapid) {
  */
  
 void camera_update(double elapsed) {
+
+  // Is there a door transition pending?
+  if (camera.doormapid) {
+    camera_reset(camera.doormapid);
+  }
 
   // If we don't have sensible plane bounds, get out.
   if ((camera.pw<1)||(camera.ph<1)) return;
@@ -294,4 +387,24 @@ void camera_render() {
  
 int camera_get_z() {
   return camera.mz;
+}
+
+int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,void *userdata),void *userdata) {
+  int p=camera_poiv_search(x,y);
+  const struct poi *poi=camera.poiv+p;
+  int i=camera.poic-p;
+  for (;i-->0;poi++) {
+    if (poi->x!=x) break;
+    if (poi->y!=y) break;
+    int err=cb(poi->opcode,poi->arg,userdata);
+    if (err) return err;
+  }
+  return 0;
+}
+
+void camera_enter_door(int mapid,int col,int row) {
+//TODO Fade to black?
+  camera.doormapid=mapid;
+  camera.doorx=col;
+  camera.doory=row;
 }

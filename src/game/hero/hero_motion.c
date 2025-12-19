@@ -107,3 +107,52 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
     }
   }
 }
+
+/* Exit quantized cell.
+ */
+ 
+static void hero_exit_cell(struct sprite *sprite,int x,int y) {
+  //TODO treadles?
+}
+
+/* Enter quantized cell.
+ */
+ 
+static int hero_enter_cell_cb(uint8_t opcode,const uint8_t *arg,void *userdata) {
+  struct sprite *sprite=userdata;
+  switch (opcode) {
+    case CMD_map_door: {
+        int mapid=(arg[2]<<8)|arg[3];
+        int dstcol=arg[4];
+        int dstrow=arg[5];
+        camera_enter_door(mapid,dstcol,dstrow);
+      } break;
+  }
+  return 0;
+}
+ 
+static void hero_enter_cell(struct sprite *sprite,int x,int y) {
+  camera_for_each_poi(x,y,hero_enter_cell_cb,sprite);
+}
+
+/* Check quantized position.
+ */
+ 
+void hero_check_qpos(struct sprite *sprite) {
+  int qx=(int)sprite->x; if (sprite->x<0.0) qx--;
+  int qy=(int)sprite->y; if (sprite->y<0.0) qy--;
+  if ((qx==SPRITE->qx)&&(qy==SPRITE->qy)) return;
+  if (SPRITE->qx||SPRITE->qy) hero_exit_cell(sprite,SPRITE->qx,SPRITE->qy);
+  SPRITE->qx=qx;
+  SPRITE->qy=qy;
+  hero_enter_cell(sprite,qx,qy);
+}
+
+/* Forcibly acknowledge quantized position.
+ */
+ 
+void sprite_hero_ackpos(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  SPRITE->qx=(int)sprite->x; if (sprite->x<0.0) SPRITE->qx--;
+  SPRITE->qy=(int)sprite->y; if (sprite->y<0.0) SPRITE->qy--;
+}

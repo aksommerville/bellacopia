@@ -15,4 +15,11 @@ void camera_render();
 
 int camera_get_z();
 
+int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,void *userdata),void *userdata);
+
+/* Schedule travel thru a door.
+ * It doesn't happen immediately, will wait for the end of the update cycle.
+ */
+void camera_enter_door(int mapid,int col,int row);
+
 #endif

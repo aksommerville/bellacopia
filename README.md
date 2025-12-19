@@ -18,8 +18,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Prevent respawn of existing sprites.
 - [x] Nicer graphics, enough to work with.
 - [x] Physics.
-- [ ] Proper hero sprite.
-- [ ] Doors.
+- [x] Proper hero sprite. ...good for now but obviously incomplete
+- [x] Doors.
 - [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.

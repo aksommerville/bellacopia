@@ -83,6 +83,8 @@ FOR_EACH_SPRTYPE
 const struct sprite_type *sprite_type_by_id(int sprtype);
 const struct sprite_type *sprite_type_from_serial(const void *src,int srcc);
 
+void sprite_hero_ackpos(struct sprite *sprite);
+
 /* Physics.
  ***********************************************************************/
  
