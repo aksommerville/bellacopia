@@ -17,6 +17,7 @@
 #define CMD_sprite_image   0x20 /* u16:imageid */
 #define CMD_sprite_tile    0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type    0x23 /* u16:sprtype */
+#define CMD_sprite_layer   0x24 /* s16:layer(0=default) */
 
 #define NS_tilesheet_physics   1
 #define NS_tilesheet_family    0
@@ -38,7 +39,9 @@
 #define NS_mapoob_farloop   4 /* Repeat the last map for the size of the plane, then loop. So looping around is never the shortest path. */
 
 #define NS_sprtype_dummy          0 /* (u32)0 */
+#define NS_sprtype_hero           1 /* (u32)0 */
 #define FOR_EACH_SPRTYPE \
-  _(dummy)
+  _(dummy) \
+  _(hero)
   
 #endif

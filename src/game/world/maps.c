@@ -10,9 +10,16 @@ struct plane {
   struct map *v; // LRTB, size is (w*h) maps.
 };
 
+struct idix {
+  int8_t x,y;
+  uint8_t z;
+};
+
 static struct {
   struct plane planev[256]; // Every addressable plane is pre-allocated.
   int planec; // How many we actually use.
+  struct idix *idixv; // Indexed by rid.
+  int idixc;
 } maps={0};
 
 /* Install one map, during initial scan.
@@ -87,6 +94,12 @@ static int maps_install(int rid,const void *serial,int serialc) {
   map->cmd=rmap.cmd;
   map->cmdc=rmap.cmdc;
   memcpy(map->v,map->ro,sizeof(map->v));
+  if ((rid>=0)&&(rid<maps.idixc)) {
+    struct idix *idix=maps.idixv+rid;
+    idix->x=x;
+    idix->y=y;
+    idix->z=z;
+  }
   
   return 0;
 }
@@ -97,12 +110,14 @@ static int maps_install(int rid,const void *serial,int serialc) {
 int maps_init() {
   
   // One pass over the map resources to only establish plane boundaries.
+  int ridmax=1;
   int resp=res_search(EGG_TID_map,1);
   if (resp<0) resp=-resp-1;
   struct rom_entry *res=g.resv+resp;
   int i=g.resc-resp;
   for (;i-->0;res++) {
     if (res->tid>EGG_TID_map) break;
+    if (res->rid>ridmax) ridmax=res->rid;
     int x,y,z=-1;
     struct map_res rmap;
     if (map_res_decode(&rmap,res->v,res->c)<0) return -1;
@@ -135,6 +150,10 @@ int maps_init() {
       plane->h=1;
     }
   }
+  
+  // Allocate the id index.
+  maps.idixc=ridmax+1;
+  if (!(maps.idixv=calloc(maps.idixc,sizeof(struct idix)))) return -1;
   
   // Iterate the planes and allocate each to its minimum size.
   struct plane *plane=maps.planev;
@@ -215,4 +234,29 @@ struct map *map_by_position(int x,int y,int z) {
   }
   
   return plane->v+y*plane->w+x;
+}
+
+struct map *map_by_id(int rid) {
+  if ((rid<0)||(rid>=maps.idixc)) return 0;
+  const struct idix *idix=maps.idixv+rid;
+  return map_by_position(idix->x,idix->y,idix->z);
+}
+
+/* Get some plane details.
+ */
+ 
+struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z) {
+  if ((z<0)||(z>=maps.planec)) {
+    *x=*y=*w=*h=*oobx=*ooby=0;
+    return 0;
+  } else {
+    const struct plane *plane=maps.planev+z;
+    *x=plane->x;
+    *y=plane->y;
+    *w=plane->w;
+    *h=plane->h;
+    *oobx=plane->oobx;
+    *ooby=plane->ooby;
+    return plane->v;
+  }
 }

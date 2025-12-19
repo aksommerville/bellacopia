@@ -9,7 +9,8 @@
 #define MAP_H
 
 struct map {
-  uint8_t x,y,z; // Absolute position in the world. Unreliable if (z==0), those are fallback maps.
+  int8_t x,y; // Absolute position in plane, in screenfuls.
+  uint8_t z; // Plane ID.
   int rid;
   int imageid;
   int songid; // <0=unspecified; 0=silent.
@@ -30,10 +31,17 @@ void maps_reset();
 
 /* Once initialized, every map in the world is resident with a fixed address.
  * (addresses are volatile *during* initialization, but that's not your problem).
- * Real maps have coords in 0..255, but the coords you ask for may be OOB and we may make something up.
+ * The coords you ask for may be OOB and we may make something up.
  * We don't guarantee a default; null is possible.
  * Also the returned map may have null (ro,cmd) and zero (rid). But if one of those is present they all are.
  */
 struct map *map_by_position(int x,int y,int z);
+
+struct map *map_by_id(int rid);
+
+/* Returns all of our internal bookkeeping re one plane.
+ * Sensible (null and zeroes) for unknown (z).
+ */
+struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z);
 
 #endif

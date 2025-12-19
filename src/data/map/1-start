@@ -13,4 +13,5 @@
 
 image image:meadow
 position 0 0 1 0
-oob (u8:mapoob)farloop (u8:mapoob)repeat 
+oob (u8:mapoob)farloop (u8:mapoob)repeat
+sprite @9,5 sprite:hero (u32)0

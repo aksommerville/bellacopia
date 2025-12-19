@@ -11,8 +11,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [x] Modal stack.
 - [ ] Outer world, first pass.
-- - [ ] Map loader.
-- - [ ] Sprite framework.
-- - [ ] Hero sprite.
-- - [ ] World edges. Loop horizontally, after an unreasonable distance, and extend forever vertically.
-- [ ] Everything.
+- - [x] Map loader.
+- - [x] Sprite framework.
+- - [x] Hero sprite, placeholder.
+- - [x] World edges. Loop horizontally, after an unreasonable distance, and extend forever vertically.
+- - [ ] Prevent respawn of existing sprites.
+- [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
