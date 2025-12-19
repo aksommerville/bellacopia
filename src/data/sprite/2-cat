@@ -1,3 +1,5 @@
 image image:meadow_sprites
 tile 0x00 0
 type (u16:sprtype)dummy
+solid
+hitbox -4 4 -4 4

@@ -100,7 +100,10 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
           double sy=cmd.arg[1]+0.5+(double)(my*NS_sys_maph);
           int rid=(cmd.arg[2]<<8)|cmd.arg[3];
           const uint8_t *arg=cmd.arg+4;
-          struct sprite *existing=sprite_by_arg(arg);
+          // All hero spawn points are equivalent; they're the one hero sprite. Otherwise check by spawn arg.
+          struct sprite *existing=0;
+          if (rid==RID_sprite_hero) existing=sprites_get_hero();
+          else existing=sprite_by_arg(arg);
           if (camera_sprite_near(existing)) {
             // The guy from this spawn point was instantiated previously and remains in view, or close to. Keep it and do nothing.
           } else {
@@ -109,6 +112,9 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
               existing->defunct=1;
             }
             struct sprite *sprite=sprite_spawn(sx,sy,rid,arg,0,0,0);
+            if (sprite) {
+              sprite->z=camera.mz;
+            }
           }
         } break;
     }
@@ -225,8 +231,8 @@ void camera_update(double elapsed) {
   }
   
   // And finally, establish (vx,vy).
-  camera.vx=(int)(camera.fx*NS_sys_tilesize-(FBW>>1));
-  camera.vy=(int)(camera.fy*NS_sys_tilesize-(FBH>>1));
+  camera.vx=lround(camera.fx*NS_sys_tilesize-(FBW>>1));
+  camera.vy=lround(camera.fy*NS_sys_tilesize-(FBH>>1));
 }
 
 /* Render one map. XXX TEMP
@@ -281,4 +287,11 @@ void camera_render() {
   
   // Render sprites.
   sprites_render(camera.vx,camera.vy);
+}
+
+/* Trivial accessors.
+ */
+ 
+int camera_get_z() {
+  return camera.mz;
 }

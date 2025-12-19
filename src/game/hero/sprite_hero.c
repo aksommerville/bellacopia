@@ -10,6 +10,7 @@ static void _hero_del(struct sprite *sprite) {
  */
  
 static int _hero_init(struct sprite *sprite) {
+  SPRITE->facedy=1;
   return 0;
 }
 
@@ -17,15 +18,7 @@ static int _hero_init(struct sprite *sprite) {
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
-  double speed=6.0; // m/s
-  switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
-    case EGG_BTN_LEFT: sprite->x-=elapsed*speed; break;
-    case EGG_BTN_RIGHT: sprite->x+=elapsed*speed; break;
-  }
-  switch (g.input[0]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
-    case EGG_BTN_UP: sprite->y-=elapsed*speed; break;
-    case EGG_BTN_DOWN: sprite->y+=elapsed*speed; break;
-  }
+  hero_update_motion(sprite,elapsed);
 }
 
 /* Render.
@@ -33,7 +26,12 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
  
 static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   graf_set_image(&g.graf,sprite->imageid);
-  graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+  uint8_t tileid=sprite->tileid;
+  uint8_t xform=0;
+  if (SPRITE->facedx<0) tileid+=0x02;
+  else if (SPRITE->facedx>0) { tileid+=0x02; xform=EGG_XFORM_XREV; }
+  else if (SPRITE->facedy<0) tileid+=0x01;
+  graf_tile(&g.graf,dstx,dsty,tileid,xform);
 }
 
 /* Type definition.

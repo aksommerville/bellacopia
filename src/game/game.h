@@ -23,6 +23,8 @@ extern struct g {
   struct rom_entry *resv;
   int resc,resa;
   struct graf graf;
+  int pvtexevictc; // Tracks (graf.texevictc) to detect churn.
+  int texchurnc; // Consecutive frames with a change to (graf.texevictc), for detecting churn.
   int song_playing;
   struct sound_blackout {
     int rid;
@@ -42,5 +44,6 @@ void bm_sound(int rid,float pan);
 int res_init();
 int res_search(int tid,int rid);
 int res_get(void *dstpp,int tid,int rid);
+const uint8_t *res_get_physics_table(int tilesheetid); // => 256 bytes, never null
 
 #endif

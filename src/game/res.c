@@ -1,6 +1,52 @@
 #include "game.h"
 #include "world/map.h"
 
+/* Private globals.
+ */
+ 
+static const uint8_t physics_default[256]={0};
+ 
+static struct {
+
+  // Physics table from each tilesheet, expanded.
+  uint8_t *physicsv;
+  int *physicsidv;
+  int physicsidc,physicsida;
+  
+} res={0};
+
+/* Receive tilesheet.
+ */
+ 
+static int res_welcome_tilesheet(int rid,const void *v,int c) {
+  uint8_t *dst;
+  {
+    void *nv=realloc(res.physicsv,(res.physicsidc+1)*256);
+    if (!nv) return -1;
+    res.physicsv=nv;
+    dst=res.physicsv+res.physicsidc*256;
+    memset(dst,0,256);
+  }
+  if (res.physicsidc>=res.physicsida) {
+    int na=res.physicsidc+8;
+    if (na>INT_MAX/sizeof(int)) return -1;
+    void *nv=realloc(res.physicsidv,sizeof(int)*na);
+    if (!nv) return -1;
+    res.physicsidv=nv;
+    res.physicsida=na;
+  }
+  res.physicsidv[res.physicsidc++]=rid;
+  struct tilesheet_reader reader;
+  if (tilesheet_reader_init(&reader,v,c)<0) return -1;
+  struct tilesheet_entry entry;
+  while (tilesheet_reader_next(&entry,&reader)>0) {
+    if (entry.tableid==NS_tilesheet_physics) {
+      memcpy(dst+entry.tileid,entry.v,entry.c);
+    }
+  }
+  return 0; // >0 to TOC it, but there's no need.
+}
+
 /* Welcome resource.
  * Return >0 to include in the TOC.
  */
@@ -9,9 +55,9 @@ static int res_welcome(int tid,int rid,const void *v,int c) {
   switch (tid) {
     case EGG_TID_map:
     case EGG_TID_sprite:
-    case EGG_TID_tilesheet:
     case EGG_TID_decalsheet:
       return 1;
+    case EGG_TID_tilesheet: return res_welcome_tilesheet(rid,v,c);
   }
   return 0;
 }
@@ -72,4 +118,18 @@ int res_get(void *dstpp,int tid,int rid) {
   const struct rom_entry *res=g.resv+p;
   *(const void**)dstpp=res->v;
   return res->c;
+}
+
+/* Get physics table from a tilesheet.
+ */
+ 
+const uint8_t *res_get_physics_table(int tilesheetid) {
+  uint8_t *table=res.physicsv;
+  const int *id=res.physicsidv;
+  int i=res.physicsidc;
+  for (;i-->0;id++,table+=256) {
+    if (*id==tilesheetid) return table;
+    if (*id>tilesheetid) break;
+  }
+  return physics_default;
 }

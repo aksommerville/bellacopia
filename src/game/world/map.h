@@ -18,6 +18,7 @@ struct map {
   const uint8_t *ro; // Tiles, immutable (points into ROM).
   const void *cmd; // Immutable (points into ROM).
   int cmdc;
+  const uint8_t *physics; // 256 bytes, never null. Per (imageid).
 };
 
 /* res_init() will call this after populating the TOC.

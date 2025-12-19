@@ -45,6 +45,16 @@ void egg_client_render() {
   graf_reset(&g.graf);
   modal_render_all();
   graf_flush(&g.graf);
+  
+  // Maybe remove this in production. Track texture evictions on consecutive frames.
+  // If it happens a lot, we need to increase graf's cache size.
+  if (g.graf.texevictc!=g.pvtexevictc) {
+    g.pvtexevictc=g.graf.texevictc;
+    g.texchurnc++;
+    if ((g.texchurnc==5)||!(g.texchurnc%100)) fprintf(stderr,"WARNING: Texture cache churn detected. %d consecutive frames with eviction.\n",g.texchurnc);
+  } else {
+    g.texchurnc=0;
+  }
 }
 
 /* Audio.

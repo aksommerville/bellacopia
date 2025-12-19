@@ -100,6 +100,7 @@ static int maps_install(int rid,const void *serial,int serialc) {
     idix->y=y;
     idix->z=z;
   }
+  map->physics=res_get_physics_table(map->imageid);
   
   return 0;
 }

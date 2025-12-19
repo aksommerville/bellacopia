@@ -18,10 +18,13 @@ struct sprite {
   int serialc;
   const uint8_t *arg; // 4 bytes, always present (canned zeroes if not available). Can use as identity for map-spawned sprites.
   double x,y; // Position in plane meters.
+  int z; // Plane ID. Camera should populate before the first update. Beware, it will not be valid at init. (camera_get_z() if you need it).
   int imageid;
   uint8_t tileid,xform;
   int layer;
-  //TODO physics, etc
+  int solid; // Participates in physics.
+  uint32_t physics; // Bitfields, (1<<NS_physics_*), for the impassable ones.
+  double hbl,hbr,hbt,hbb; // Hitbox, relative to (x,y). Negative and positive 1/2 by default.
 };
 
 /* If you don't provide (type), you must provide (serial) to read it from, or (rid) to get that from.
@@ -79,5 +82,15 @@ FOR_EACH_SPRTYPE
 
 const struct sprite_type *sprite_type_by_id(int sprtype);
 const struct sprite_type *sprite_type_from_serial(const void *src,int srcc);
+
+/* Physics.
+ ***********************************************************************/
+ 
+struct aabb { double l,r,t,b; };
+
+/* If this sprite participates in physics, first confirm the move is legal.
+ * Returns 1 if moved at all (possibly less than you asked for), or 0 if completely blocked.
+ */
+int sprite_move(struct sprite *sprite,double dx,double dy);
 
 #endif

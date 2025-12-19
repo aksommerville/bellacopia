@@ -14,10 +14,13 @@
 #define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
 
+#define CMD_sprite_solid   0x01 /* --- */
 #define CMD_sprite_image   0x20 /* u16:imageid */
 #define CMD_sprite_tile    0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type    0x23 /* u16:sprtype */
 #define CMD_sprite_layer   0x24 /* s16:layer(0=default) */
+#define CMD_sprite_physics 0x40 /* (b32:physics)impassables */
+#define CMD_sprite_hitbox  0x41 /* s8:left s8:right s8:top s8:bottom ; pixels ie m/16 */
 
 #define NS_tilesheet_physics   1
 #define NS_tilesheet_family    0
@@ -37,6 +40,16 @@
 #define NS_mapoob_loop      2 /* Loop around this axis. */
 #define NS_mapoob_repeat    3 /* Clamp to the edge. ie repeat the last map forever. */
 #define NS_mapoob_farloop   4 /* Repeat the last map for the size of the plane, then loop. So looping around is never the shortest path. */
+
+#define NS_dir_nw   0x80
+#define NS_dir_n    0x40
+#define NS_dir_ne   0x20
+#define NS_dir_w    0x10
+#define NS_dir_mid  0x00
+#define NS_dir_e    0x08
+#define NS_dir_sw   0x04
+#define NS_dir_s    0x02
+#define NS_dir_se   0x01
 
 #define NS_sprtype_dummy          0 /* (u32)0 */
 #define NS_sprtype_hero           1 /* (u32)0 */

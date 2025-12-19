@@ -13,4 +13,6 @@ int camera_reset(int mapid);
 void camera_update(double elapsed);
 void camera_render();
 
+int camera_get_z();
+
 #endif

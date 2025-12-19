@@ -16,8 +16,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Hero sprite, placeholder.
 - - [x] World edges. Loop horizontally, after an unreasonable distance, and extend forever vertically.
 - - [x] Prevent respawn of existing sprites.
-- [ ] Nicer graphics, enough to work with.
-- [ ] Physics.
+- [x] Nicer graphics, enough to work with.
+- [x] Physics.
 - [ ] Proper hero sprite.
 - [ ] Doors.
 - [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.

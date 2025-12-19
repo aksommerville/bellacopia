@@ -93,6 +93,7 @@ We'll group minigames by Zone.
 - [ ] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
 - [ ] Talking trees that are bored and want to you tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
+- [ ] Circumnavigate the globe. Since it's possible, there ought to be some fanfare the first time you do it.
 
 ## Main Quests
 

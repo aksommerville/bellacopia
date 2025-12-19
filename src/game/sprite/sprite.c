@@ -50,6 +50,9 @@ struct sprite *sprite_spawn(
   sprite->serial=serial;
   sprite->serialc=serialc;
   sprite->arg=arg?arg:(const uint8_t*)"\0\0\0\0";
+  sprite->physics=(1<<NS_physics_solid)|(1<<NS_physics_water)|(1<<NS_physics_hole)|(1<<NS_physics_cliff)|(1<<NS_physics_hookable);
+  sprite->hbl=sprite->hbt=-0.5;
+  sprite->hbr=sprite->hbb=0.5;
   
   // If we have serial, apply standard commands.
   struct cmdlist_reader reader;
@@ -57,9 +60,16 @@ struct sprite *sprite_spawn(
     struct cmdlist_entry cmd;
     while (cmdlist_reader_next(&cmd,&reader)>0) {
       switch (cmd.opcode) {
+        case CMD_sprite_solid: sprite->solid=1; break;
         case CMD_sprite_image: sprite->imageid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
         case CMD_sprite_tile: sprite->tileid=cmd.arg[0]; sprite->xform=cmd.arg[1]; break;
         case CMD_sprite_layer: sprite->layer=(int16_t)((cmd.arg[0]<<8)|cmd.arg[1]); break;
+        case CMD_sprite_hitbox: {
+            sprite->hbl=(double)(int8_t)cmd.arg[0]/(double)NS_sys_tilesize;
+            sprite->hbr=(double)(int8_t)cmd.arg[1]/(double)NS_sys_tilesize;
+            sprite->hbt=(double)(int8_t)cmd.arg[2]/(double)NS_sys_tilesize;
+            sprite->hbb=(double)(int8_t)cmd.arg[3]/(double)NS_sys_tilesize;
+          } break;
       }
     }
   }
@@ -181,8 +191,8 @@ void sprites_render(int scrollx,int scrolly) {
   int i=sprites.c;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
-    int dstx=(int)(sprite->x*NS_sys_tilesize)-scrollx;
-    int dsty=(int)(sprite->y*NS_sys_tilesize)-scrolly;
+    int dstx=lround(sprite->x*NS_sys_tilesize)-scrollx;
+    int dsty=lround(sprite->y*NS_sys_tilesize)-scrolly;
     //TODO Cull if far off?
     if (sprite->type->render) {
       sprite->type->render(sprite,dstx,dsty);
