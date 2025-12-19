@@ -16,7 +16,7 @@ struct sprite {
   int rid;
   const void *serial;
   int serialc;
-  uint32_t arg;
+  const uint8_t *arg; // 4 bytes, always present (canned zeroes if not available). Can use as identity for map-spawned sprites.
   double x,y; // Position in plane meters.
   int imageid;
   uint8_t tileid,xform;
@@ -31,7 +31,7 @@ struct sprite {
 struct sprite *sprite_spawn(
   double x,double y,
   int rid,
-  uint32_t arg,
+  const uint8_t *arg, // 4 bytes or null
   const struct sprite_type *type,
   const void *serial,int serialc
 );
@@ -51,6 +51,11 @@ void sprites_clear();
 
 // We track the hero sprite via magic.
 struct sprite *sprites_get_hero();
+
+struct sprite *sprite_by_arg(const void *arg);
+
+// Get the actual list. Please be careful.
+int sprites_get_all(struct sprite ***dstpp);
 
 /* Sprite type.
  ***************************************************************************/

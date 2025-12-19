@@ -26,7 +26,7 @@ static void sprite_del(struct sprite *sprite) {
 struct sprite *sprite_spawn(
   double x,double y,
   int rid,
-  uint32_t arg,
+  const uint8_t *arg,
   const struct sprite_type *type,
   const void *serial,int serialc
 ) {
@@ -49,7 +49,7 @@ struct sprite *sprite_spawn(
   sprite->rid=rid;
   sprite->serial=serial;
   sprite->serialc=serialc;
-  sprite->arg=arg;
+  sprite->arg=arg?arg:(const uint8_t*)"\0\0\0\0";
   
   // If we have serial, apply standard commands.
   struct cmdlist_reader reader;
@@ -86,7 +86,7 @@ struct sprite *sprite_spawn(
   return sprite;
 }
 
-/* Validate residence.
+/* Look up live sprites.
  */
 
 int sprite_is_resident(const struct sprite *sprite) {
@@ -96,12 +96,23 @@ int sprite_is_resident(const struct sprite *sprite) {
   for (;i-->0;p++) if (*p==sprite) return 1;
   return 0;
 }
-
-/* Get hero sprite.
- */
  
 struct sprite *sprites_get_hero() {
   return sprites.hero;
+}
+
+struct sprite *sprite_by_arg(const void *arg) {
+  struct sprite **p=sprites.v;
+  int i=sprites.c;
+  for (;i-->0;p++) {
+    if ((*p)->arg==arg) return *p;
+  }
+  return 0;
+}
+
+int sprites_get_all(struct sprite ***dstpp) {
+  *dstpp=sprites.v;
+  return sprites.c;
 }
 
 /* Update all.

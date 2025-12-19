@@ -10,10 +10,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Modal stack.
-- [ ] Outer world, first pass.
+- [x] Outer world, first pass.
 - - [x] Map loader.
 - - [x] Sprite framework.
 - - [x] Hero sprite, placeholder.
 - - [x] World edges. Loop horizontally, after an unreasonable distance, and extend forever vertically.
-- - [ ] Prevent respawn of existing sprites.
+- - [x] Prevent respawn of existing sprites.
 - [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
+- [ ] Songs per map: Crossfade and retain playhead.
+- [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.

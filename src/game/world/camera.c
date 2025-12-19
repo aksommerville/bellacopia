@@ -56,6 +56,65 @@ static int camera_map_dsty(int my) {
   return my*NS_sys_maph*NS_sys_tilesize-camera.vy;
 }
 
+/* Is this sprite near enough to our focus that we should not respawn it?
+ * May be null or defunct.
+ */
+ 
+static int camera_sprite_near(const struct sprite *sprite) {
+  if (!sprite||sprite->defunct) return 0;
+  // Take the axiswise distance from focus and quantize to meters.
+  int dx=(int)(sprite->x-camera.fx);
+  int dy=(int)(sprite->y-camera.fy);
+  // And let's say a full map length on either axis is too far. (note this means half a screen from the edge, we're comparing to the center).
+  if (dx<-NS_sys_mapw) return 0;
+  if (dx>NS_sys_mapw) return 0;
+  if (dy<-NS_sys_maph) return 0;
+  if (dy>NS_sys_maph) return 0;
+  return 1;
+}
+
+/* Defunct any sprites too far away.
+ */
+ 
+static void camera_defunct_far_sprites() {
+  struct sprite **p=0;
+  int i=sprites_get_all(&p);
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->defunct) continue;
+    if (camera_sprite_near(sprite)) continue;
+    sprite->defunct=1;
+  }
+}
+
+/* Spawn sprites for a map. It's either the focus map or a neighbor.
+ */
+ 
+static void camera_spawn_sprites(const struct map *map,int mx,int my) {
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_sprite: {
+          double sx=cmd.arg[0]+0.5+(double)(mx*NS_sys_mapw);
+          double sy=cmd.arg[1]+0.5+(double)(my*NS_sys_maph);
+          int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+          const uint8_t *arg=cmd.arg+4;
+          struct sprite *existing=sprite_by_arg(arg);
+          if (camera_sprite_near(existing)) {
+            // The guy from this spawn point was instantiated previously and remains in view, or close to. Keep it and do nothing.
+          } else {
+            // Either we don't have this guy yet, or he's far away.
+            if (existing) {
+              existing->defunct=1;
+            }
+            struct sprite *sprite=sprite_spawn(sx,sy,rid,arg,0,0,0);
+          }
+        } break;
+    }
+  }
+}
+
 /* New map enters focus.
  */
  
@@ -66,29 +125,31 @@ static void camera_new_map(int x,int y) {
   if ((nx>=camera.px)&&(ny>=camera.py)&&(nx<camera.px+camera.pw)&&(ny<camera.py+camera.ph)) {
     map=camera.mapv+(ny-camera.py)*camera.pw+(nx-camera.px);
   }
-  fprintf(stderr,"%s %d,%d (map:%d)\n",__func__,x,y,map?map->rid:0);
   camera.mx=x;
   camera.my=y;
   
-  /* Run the map's commands.
+  /* Do things specific to the focus map.
+   * Song. Maybe others.
    */
   if (map) {
-    struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
-    struct cmdlist_entry cmd;
-    while (cmdlist_reader_next(&cmd,&reader)>0) {
-      switch (cmd.opcode) {
-        //TODO CMD_map_door probably wants to be indexed, and there will be others like that.
-        case CMD_map_sprite: {
-            double sx=cmd.arg[0]+0.5+(double)(x*NS_sys_mapw);
-            double sy=cmd.arg[1]+0.5+(double)(y*NS_sys_maph);
-            int rid=(cmd.arg[2]<<8)|cmd.arg[3];
-            uint32_t arg=(cmd.arg[4]<<24)|(cmd.arg[5]<<16)|(cmd.arg[6]<<8)|cmd.arg[7];
-            if (rid==RID_sprite_hero) {
-              if (sprites_get_hero()) continue;
-            } //TODO Similarly, we need a generic check for "does the sprite from this spawn point already exist?"
-            struct sprite *sprite=sprite_spawn(sx,sy,rid,arg,0,0,0);
-          } break;
-      }
+    if (map->songid>=0) {
+      //TODO Instead of jumping right to the new song, can we do a crossfade, and retain the playhead of the outgoing one?
+      bm_song(map->songid,1);
+    }
+  }
+  
+  /* On the occasion of map changes, we reassess sprites for this map and the eight neighbors.
+   */
+  camera_defunct_far_sprites();
+  int rx=-1; for (;rx<=1;rx++) {
+    int adjx=camera_adjust_plane_x(camera.mx+rx);
+    if ((adjx<camera.px)||(adjx>=camera.px+camera.pw)) continue;
+    int ry=-1; for (;ry<=1;ry++) {
+      int adjy=camera_adjust_plane_y(camera.my+ry);
+      if ((adjy<camera.py)||(adjy>=camera.py+camera.ph)) continue;
+      const struct map *smap=camera.mapv+(adjy-camera.py)*camera.pw+(adjx-camera.px);
+      if (!smap->cmdc) continue;
+      camera_spawn_sprites(smap,camera.mx+rx,camera.my+ry);
     }
   }
 }
@@ -97,7 +158,6 @@ static void camera_new_map(int x,int y) {
  */
  
 int camera_reset(int mapid) {
-  fprintf(stderr,"%s map:%d\n",__func__,mapid);
   if (mapid<1) return -1;
   struct map *map=map_by_id(mapid);
   if (!map) {

@@ -168,6 +168,14 @@ int maps_init() {
     if (maps_install(res->rid,res->v,res->c)<0) return -1;
   }
   
+  // Any plane without a declared OOB strategy, force it to "null". Zero is not a legal oob strategy.
+  for (i=maps.planec,plane=maps.planev;i-->0;plane++) {
+    if (!plane->oobx) {
+      plane->oobx=NS_mapoob_null;
+      plane->ooby=NS_mapoob_null;
+    }
+  }
+  
   return 0;
 }
 
