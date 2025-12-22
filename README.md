@@ -24,7 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Walk about randomly.
 - - [x] Trigger battles on contact.
 - - [ ] How to spawn? Static spawn points in a map is not the right way.
-- [ ] Camera: Removed sprites can re-spawn while in view. Check for that, and only spawn offscreen. Ensure the first screen after a cut, they do spawn.
+- [x] Camera: Removed sprites can re-spawn while in view. Check for that, and only spawn offscreen. Ensure the first screen after a cut, they do spawn.
 - [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.

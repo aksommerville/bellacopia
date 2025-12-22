@@ -26,6 +26,7 @@ static struct {
   int poic,poia;
   
   int doormapid,doorx,doory; // Deferred door entry.
+  int cut;
   
 } camera={0};
 
@@ -161,6 +162,13 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
           double sx=cmd.arg[0]+0.5+(double)(mx*NS_sys_mapw);
           double sy=cmd.arg[1]+0.5+(double)(my*NS_sys_maph);
           int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (!camera.cut) { // During scroll-initiated spawns, don't spawn if already visible.
+            int spx=(int)(sx*NS_sys_tilesize);
+            int spy=(int)(sy*NS_sys_tilesize);
+            if ((spx>=camera.vx)&&(spy>=camera.vy)&&(spx<camera.vx+FBW)&&(spy<camera.vy+FBH)) {
+              break;
+            }
+          }
           const uint8_t *arg=cmd.arg+4;
           // All hero spawn points are equivalent; they're the one hero sprite. Otherwise check by spawn arg.
           struct sprite *existing=0;
@@ -269,9 +277,11 @@ int camera_reset(int mapid) {
   camera.fx=(double)(map->x*NS_sys_mapw)+NS_sys_mapw*0.5;
   camera.fy=(double)(map->y*NS_sys_maph)+NS_sys_maph*0.5;
   sprites_clear();
+  camera.cut=1;
   camera_new_map(camera.mx,camera.my);
   if (was_door) camera_force_hero(herox,heroy);
   camera_update(0.0);
+  camera.cut=0;
   return 0;
 }
 
