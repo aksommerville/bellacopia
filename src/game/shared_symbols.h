@@ -53,8 +53,10 @@
 
 #define NS_sprtype_dummy          0 /* (u32)0 */
 #define NS_sprtype_hero           1 /* (u32)0 */
+#define NS_sprtype_monster        2 /* battle:0 (u16)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
-  _(hero)
+  _(hero) \
+  _(monster)
   
 #endif

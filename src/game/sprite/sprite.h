@@ -74,6 +74,11 @@ struct sprite_type {
    * (dstx,dsty) are (sprite->x,y) transformed to framebuffer space.
    */
   void (*render)(struct sprite *sprite,int dstx,int dsty);
+  
+  /* Called when a motion is completely nixed due to collision between two sprites.
+   * Not called for collisions against the map.
+   */
+  void (*collide)(struct sprite *sprite,struct sprite *other);
 };
 
 #define _(tag) extern const struct sprite_type sprite_type_##tag;
@@ -94,5 +99,17 @@ struct aabb { double l,r,t,b; };
  * Returns 1 if moved at all (possibly less than you asked for), or 0 if completely blocked.
  */
 int sprite_move(struct sprite *sprite,double dx,double dy);
+
+/* (d) must be cardinal and (sprite) must be solid.
+ * Returns the distance we can travel in that direction before a collision.
+ * If <0, we're already in a collision state.
+ * Clamps fairly close. Currently 6 meters.
+ * If we return <=0.0 and the collision is due to another sprite, we populate (*cause).
+ */
+double sprite_measure_freedom(const struct sprite *sprite,double dx,double dy,struct sprite **cause);
+
+/* Nonzero if the current position is legal.
+ */
+int sprite_test_position(const struct sprite *sprite);
 
 #endif

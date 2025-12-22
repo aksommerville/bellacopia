@@ -64,6 +64,7 @@ struct sprite *sprite_spawn(
         case CMD_sprite_image: sprite->imageid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
         case CMD_sprite_tile: sprite->tileid=cmd.arg[0]; sprite->xform=cmd.arg[1]; break;
         case CMD_sprite_layer: sprite->layer=(int16_t)((cmd.arg[0]<<8)|cmd.arg[1]); break;
+        case CMD_sprite_physics: sprite->physics=(cmd.arg[0]<<24)|(cmd.arg[1]<<16)|(cmd.arg[2]<<8)|cmd.arg[3]; break;
         case CMD_sprite_hitbox: {
             sprite->hbl=(double)(int8_t)cmd.arg[0]/(double)NS_sys_tilesize;
             sprite->hbr=(double)(int8_t)cmd.arg[1]/(double)NS_sys_tilesize;
@@ -88,7 +89,7 @@ struct sprite *sprite_spawn(
     if (!nv) { sprite_del(sprite); return 0; }
     sprites.v=nv;
     sprites.a=na;
-  }
+  }  
   sprites.v[sprites.c++]=sprite;
   
   if (type==&sprite_type_hero) sprites.hero=sprite;

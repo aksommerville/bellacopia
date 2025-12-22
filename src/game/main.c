@@ -25,6 +25,8 @@ int egg_client_init() {
   
   if (res_init()<0) return -1;
   
+  srand_auto();
+  
   return 0;
 }
 

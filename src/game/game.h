@@ -46,4 +46,6 @@ int res_search(int tid,int rid);
 int res_get(void *dstpp,int tid,int rid);
 const uint8_t *res_get_physics_table(int tilesheetid); // => 256 bytes, never null
 
+void bm_begin_battle(int battleid);
+
 #endif
