@@ -58,7 +58,16 @@ static int res_welcome(int tid,int rid,const void *v,int c) {
     case EGG_TID_decalsheet:
       return 1;
     case EGG_TID_tilesheet: return res_welcome_tilesheet(rid,v,c);
+    // Anything we want to ignore, call it out here. Types not listed will be ignored but trigger a warning.
+    case EGG_TID_metadata:
+    case EGG_TID_code:
+    case EGG_TID_strings:
+    case EGG_TID_image:
+    case EGG_TID_sound:
+    case EGG_TID_song:
+      return 0;
   }
+  fprintf(stderr,"WARNING: Unexpected resource type %d (rid %d, c=%d)\n",tid,rid,c);
   return 0;
 }
 
@@ -69,6 +78,7 @@ int res_init() {
   if ((g.romc=egg_rom_get(0,0))<1) return -1;
   if (!(g.rom=malloc(g.romc))) return -1;
   if (egg_rom_get(g.rom,g.romc)!=g.romc) return -1;
+  text_set_rom(g.rom,g.romc);
   g.resc=0;
   struct rom_reader reader;
   if (rom_reader_init(&reader,g.rom,g.romc)<0) return -1;

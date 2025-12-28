@@ -25,6 +25,9 @@ int egg_client_init() {
   
   if (res_init()<0) return -1;
   
+  if (!(g.font=font_new())) return -1;
+  if (font_add_image(g.font,RID_image_font9_0020,0x0020)<0) return -1;
+  
   srand_auto();
   
   return 0;

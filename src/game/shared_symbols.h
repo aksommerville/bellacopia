@@ -51,12 +51,18 @@
 #define NS_dir_s    0x02
 #define NS_dir_se   0x01
 
+// Sprite controllers.
 #define NS_sprtype_dummy          0 /* (u32)0 */
 #define NS_sprtype_hero           1 /* (u32)0 */
-#define NS_sprtype_monster        2 /* battle:0 (u16)0 */
+#define NS_sprtype_monster        2 /* (u16:battletype)0 (u16)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
   _(monster)
+  
+// Battle controllers.
+#define NS_battletype_fishing                1
+#define FOR_EACH_BATTLETYPE \
+  _(fishing)
   
 #endif

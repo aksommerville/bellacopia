@@ -13,5 +13,5 @@
 
 image image:meadow
 position 1 0 1 *
-sprite @3,9 sprite:cat battle:0 (u16)0
-sprite @7,3 sprite:cat battle:0 (u16)0
+sprite @3,9 sprite:cat (u16:battletype)fishing (u16)0
+sprite @7,3 sprite:cat (u16:battletype)fishing (u16)0

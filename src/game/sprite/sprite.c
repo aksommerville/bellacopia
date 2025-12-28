@@ -192,6 +192,7 @@ void sprites_render(int scrollx,int scrolly) {
   int i=sprites.c;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
+    if (sprite->defunct) continue;
     int dstx=lround(sprite->x*NS_sys_tilesize)-scrollx;
     int dsty=lround(sprite->y*NS_sys_tilesize)-scrolly;
     //TODO Cull if far off?

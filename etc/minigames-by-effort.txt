@@ -1,0 +1,136 @@
+2025-12-28
+Minigames, sorted roughly by estimated effort to implement.
+
+## Easy
+Fishing. Fish fall to your left and right. L/R to change side and catch the bigger ones. Break ties by lowest interaction time.
+Boomerang. Jump then duck, or duck then jump as the kangaroo throws a boomerang at you.
+Chopping. Tap A as a vegetable passes on your conveyor belt.
+Exterminating. 5x5 grid with random bugs. Whack a 3x3 section to XOR it, win when all the bugs are gone. Or fewest bugs when time runs out.
+Fire. L/R fast to fill a bar and start the fire. (rubbing sticks)
+Fission. Tap A until the atom splits.
+Flapjack. A to flip your pancake. Aim to cook both sides evenly.
+Flapping. Tap A.
+Frog Eating. A to grab and eat a frog, when it hops near.
+Gobbling. A to grab and eat, L to pull the tablecloth closer.
+Distancing. Dpad to get as far from everyone as possible.
+Dodging. Bullet hell.
+Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
+Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
+Arm Wrestling. Tap A, hold your power meter high.
+Balancing. Walk to the goal with a tomato on your head.
+Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
+Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
+Burrowing. Right to move, A to dig. Dig thru the dirt.
+Cake Carrying. On a train that stops suddenly. L/R to balance.
+Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
+Clam Baking. Hold A to engage flamethrower, only when the clam is open.
+Climbing. L/R and A/B, maintaining one "point of contact" at all times.
+Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
+Counting. Lots of moving things and you have to count one class of them.
+Crossing. Frogger.
+Diving. R/L to move, hold A to jump. Easier to move before releasing A.
+Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
+Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
+Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
+Fencing. Tap A at optimal rhythm to add planks to a fence.
+Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
+Hurdles. Track and Field. Tap A to run, and Up to jump.
+Imitation. Simon Says. (like Sumo Horse but no timing, full dpad, and you're both following an NPC Simon).
+Jeter. Rotate automatically, hold A to charge, then release to throw the ballerina. Pillows to the right and briars to the left.
+Jewelry. Rings and necklaces fall from the sky. L/R to walk, then B/A to hold up a hand for rings, or neither to collect a necklace. And dodge the bird with a magnet.
+Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
+Jumprope.
+Karate Chop. Tap A until time expires.
+Levitation. Keep an indicator balanced.
+Licking. Hold A when the giant moving ice cream cone is in range.
+Lighting. Walk and jump to reach the candles, as an acolyte.
+Mixing. L/R to pour Blue or Red into your blender. Match a reference Purple without spilling.
+Newspaper. Throw newspapers across the street into mailboxes.
+Pairing. Pick the matching sock. First to pick it gets a point.
+Parachute. Deploy as late as you dare, last to land alive wins.
+Parkour. Tap A at the right moment to wall-jump.
+Petrifying. Put on a Medusa mask as the knight approaches, to catch him at the right moment for a handsome statue.
+Photography. Tap once, as a bat flies past the moon.
+Piano Throwing. Tap A to charge, then B to release.
+Pilfering. Dig Dug style, dig up to steal carrots, fail if you break the surface.
+Pitching. Circle the dpad then tap A, judged on consistency of timing.
+Pouring. Once chance to hold A and release. Speeds up as it goes. Disqualify if any overflow.
+Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
+Pushing. Push a statue to the target cell. Sokoban-ish.
+Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
+Rebounding. Pong. First miss loses.
+Remembering. Shown 9 cards, then they flip and you have to pick a given one.
+Rodeo. L/R to balance on the bull or hold A to brace.
+Rollerskates. Jump and brake. Gets too fast if you don't brake.
+Rowing. Circle the dpad with lopsided speed, slower in the water.
+Sawing. L/R, and there's an ideal rhythm.
+Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
+Shaking. U/D to shake your bottle, then the cork flies off when time expires. Highest cork wins.
+Sharing. Dpad around the crowd, touch somebody to give them a berry.
+Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
+Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
+Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
+Slapping. One chance to press A, to slap a given card when it falls on the pile.
+Slicing. Tap to stop the blade and cut the pie, aiming for half.
+Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
+Smashing. Stand still, A to jump. Squash melons as they roll at you.
+Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
+Snowball Fight. Once around the dpad, then A to throw it, then repeat.
+Stacking. L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
+Staring. Dpad to keep your eyes on the foe's.
+Stirring. Circle the dpad.
+Strangling. Against the Root Devil. Fight to the death.
+Sumo Horse. Metronome. One player dances with only Left and Right, then the other player must repeat it.
+Surrounding. Snake.
+Swearing. Press the button for a word bubble like "$#@!", last word wins.
+Swinging. Hold L/R in phase, riding a swing.
+Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
+Topping. Hold A to pour ketchup on a giant moving hotdog.
+Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
+Umbrella. Hold A while raining, release while not.
+Watching. Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
+Watermelon. Hold A to charge and release to spit a seed, going for distance.
+
+## Hard
+Whining. Get mama bear's attention by tapping U when she's looking and A when not.
+Wining. Big pile of grapes that you jump on to squash.
+Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself. Score is how close to center.
+Bombing. Mini Super Bomberman?
+Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
+Broom Race. See `apothecary`.
+Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
+Cartography. Pick a color for all the regions of a map, 4 choices, no going back.
+Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
+Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
+Dance Off. Tiny rhythm game on the dpad.
+Dissection. Dpad to place scalpel, then hold A to select a direction, then tap A to select length. Cut the arteries but don't touch the organs.
+Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
+Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
+Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
+Golf. Whack the ball in a closed room, it bounces off all the walls, try to land as far away as possible.
+Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
+Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
+Joust. Joust, the video game. You on a broom, and he on Pegasus.
+Lawnmowing. Visit as much of a grid as possible without retracing any steps.
+Math. 10-key input, answer simple arithmetic problems.
+Mind Control. Alternate A/B to maintain control, and dpad to move your victim. Have him push the candy to you.
+Plumbing. Rotate columns in a 4x4 Pipe Dream puzzle to complete a path.
+Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
+Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
+Robohorse. L/R control the horse's two legs. QWOP-ish.
+Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
+Skiing. L/R and brake, get between the flags.
+Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
+Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
+Sorting. Columns-ish, put falling things in like piles.
+Sparing. Bowling, second throw only.
+Steering. Drag race with only L/R, dodging critters etc.
+Stenography. Tap all the buttons in order, following a sheet.
+Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
+Tic Tac Toe. The whole game.
+Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
+Wrecking. Mini platformer full of fragile things and you have a giant hammer.
+Calligraphy. Paint a reference figure.
+Morse Code. Tap out a short message with A. Key visible on screen, but you can only win higher diffs by remembering.
+Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
+Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)

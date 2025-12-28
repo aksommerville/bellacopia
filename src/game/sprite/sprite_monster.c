@@ -212,13 +212,21 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* End of battle.
+ */
+ 
+static void monster_cb_battled(void *userdata,int outcome) {
+  struct sprite *sprite=userdata;
+  sprite->defunct=1;
+}
+
 /* Collide.
  */
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (other->type==&sprite_type_hero) {
-    bm_begin_battle(SPRITE->battleid);
-    sprite->defunct=1;
+    bm_begin_battle_soon(SPRITE->battleid,1,0x80,monster_cb_battled,sprite);//TODO handicap
+    //sprite->defunct=1; // TODO Would be nice to keep the sprite visible while the minigame runs. But must remove it before the very first frame after returning.
   }
 }
 

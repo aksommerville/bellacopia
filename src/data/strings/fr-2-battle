@@ -1,0 +1,14 @@
+# Formulations of the generic message are not one-to-one across translations (English has "a" vs "an", French has gender, etc).
+# These first five strings are reserved for templates that modal_battle.c will use to generate the Hello message.
+# modal_battle.c has some knowledge of the language.
+1 %0 challenge vous a une conteste de %1!
+2 %0 challenge vous a %1!
+3
+4
+5
+
+# Reserve 6..49 for additional generic messages.
+
+# 50 and onward are verbiage specific to each battle.
+50 L'Epparde
+51 Poissonerie

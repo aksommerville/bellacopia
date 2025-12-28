@@ -33,7 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inventory.
 - - [ ] Achievements.
 - - [ ] Map. (jigsaw)
-- [ ] Minigames framework.
+- [x] Minigames framework.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
@@ -44,3 +44,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Candy. Quantity.
 - - [ ] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting?
 - [ ] Dialogue.
+- [x] `sprite_monster.c`: Can we keep the sprite visible during modal_battle's intro?
+- [ ] `modal_battle.c`: Show graphic input description per battle.
