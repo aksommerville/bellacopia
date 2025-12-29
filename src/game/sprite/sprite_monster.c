@@ -226,7 +226,6 @@ static void monster_cb_battled(void *userdata,int outcome) {
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (other->type==&sprite_type_hero) {
     bm_begin_battle_soon(SPRITE->battleid,1,0x80,monster_cb_battled,sprite);//TODO handicap
-    //sprite->defunct=1; // TODO Would be nice to keep the sprite visible while the minigame runs. But must remove it before the very first frame after returning.
   }
 }
 
