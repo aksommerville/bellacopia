@@ -11,6 +11,7 @@
 #include "egg_res_toc.h"
 #include "modal/modal.h"
 #include "battle/battle.h"
+#include "store.h"
 
 #define FBW 320
 #define FBH 180

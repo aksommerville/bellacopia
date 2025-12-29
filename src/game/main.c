@@ -6,6 +6,7 @@
 struct g g={0};
 
 void egg_client_quit(int status) {
+  store_save_if_dirty();
 }
 
 void egg_client_notify(int k,int v) {
@@ -29,6 +30,8 @@ int egg_client_init() {
   if (font_add_image(g.font,RID_image_font9_0020,0x0020)<0) return -1;
   
   srand_auto();
+  
+  store_load();
   
   return 0;
 }

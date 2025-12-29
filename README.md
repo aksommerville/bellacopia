@@ -29,6 +29,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Global state. Flags and small integers. Persist.
+- - [ ] Should jigsaw state persist somewhere else? It's pretty bulky.
 - [x] Pause modal.
 - - [x] Inventory.
 - - [x] Achievements.

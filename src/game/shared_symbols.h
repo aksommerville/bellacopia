@@ -66,4 +66,8 @@
 #define FOR_EACH_BATTLETYPE \
   _(fishing)
   
+// Store fields.
+#define NS_fld_zero                0 /* Read-only, always zero. */
+#define NS_fld_one                 1 /* Read-only, always one. */
+  
 #endif
