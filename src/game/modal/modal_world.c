@@ -32,6 +32,10 @@ static void _world_update(struct modal *modal,double elapsed) {
   sprites_update(elapsed);
   camera_update(elapsed);
   
+  if ((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1)) {
+    modal_new_pause();
+  }
+  
   if (g.deferred_battle.battletype) {
     bm_begin_battle(g.deferred_battle.battletype,g.deferred_battle.playerc,g.deferred_battle.handicap,g.deferred_battle.cb,g.deferred_battle.userdata);
     memset(&g.deferred_battle,0,sizeof(g.deferred_battle));

@@ -33,6 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inventory.
 - - [ ] Achievements.
 - - [ ] Map. (jigsaw)
+- - [ ] Remember last open page.
 - [x] Minigames framework.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.

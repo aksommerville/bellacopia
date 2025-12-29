@@ -69,6 +69,7 @@ extern const struct modal_type modal_type_battle; // A minigame, either story or
 struct modal *modal_new_hello();
 struct modal *modal_new_world();
 struct modal *modal_new_battle(const struct battle_type *type,int playerc,int handicap);
+struct modal *modal_new_pause();
 
 void modal_battle_set_callback(struct modal *modal,void (*cb)(void *userdata,int outcome),void *userdata);
 

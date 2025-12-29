@@ -209,6 +209,7 @@ static void fish_update(void *ctx,struct fish *fish,double elapsed) {
     return;
   }
   if ((yia<BASKET_LEVEL)&&(yiz>=BASKET_LEVEL)) {
+    bm_sound(RID_sound_collect,0.0); // Tempting to pan based on (fish->col), but there will always be two collects at the same moment, it's pointless.
     switch (fish->col) {
       case 0: if (CTX->dot_xform&EGG_XFORM_XREV) {
           CTX->dot_mass+=fish->mass;
