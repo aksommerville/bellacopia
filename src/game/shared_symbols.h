@@ -10,6 +10,7 @@
 #define CMD_map_image      0x20 /* u16:imageid */
 #define CMD_map_song       0x21 /* u16:songid */
 #define CMD_map_oob        0x22 /* u8:long u8:lat ; Only one map per plane needs to specify. If more, they must agree. */
+#define CMD_map_parent     0x23 /* u16:mapid ; For this whole plane, use (mapid) for the world map position, this plane doesn't get a jigsaw puzzle. Caves and such. One level redirect only! */
 #define CMD_map_position   0x40 /* s8:long s8:lat u8:plane u8:reserved */
 #define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */

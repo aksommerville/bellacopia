@@ -1,4 +1,5 @@
 #include "game/game.h"
+#include "game/jigsaw.h"
 
 #define ARRIVE_SPEED  2.000 /* hz */
 #define DISMISS_SPEED 3.000 /* hz */
@@ -42,6 +43,12 @@ struct modal_pause {
     int texid;
     int x,y,w,h; // Position relative to the page.
   } ach;
+  
+  // For the Map page.
+  struct {
+    struct jigsaw jigsaw;
+    int blackout;
+  } map;
 };
 
 #define MODAL ((struct modal_pause*)modal)
@@ -51,6 +58,7 @@ struct modal_pause {
  
 static void _pause_del(struct modal *modal) {
   egg_texture_del(MODAL->ach.texid);
+  jigsaw_cleanup(&MODAL->map.jigsaw);
 }
 
 /* Init.
@@ -61,20 +69,12 @@ static int _pause_init(struct modal *modal) {
   modal->interactive=1;
   MODAL->arrival=1;
   MODAL->arrivitude=1.0;
-  //TODO Remember the last page we had open, make that part of the persistent storage.
+  //TODO Remember the last page we had open, make that part of the persistent storage. Also trigger page-entry hooks, see pause_page(). Current default INVENTORY does not need any action.
   
   MODAL->inv.ctox=MODAL->inv.cfromx=INV_COLC>>1;
   MODAL->inv.ctoy=MODAL->inv.cfromy=INV_ROWC>>1;
   
   return 0;
-}
-
-/* Dismiss.
- */
- 
-static void pause_dismiss(struct modal *modal) {
-  bm_sound(RID_sound_uicancel,0.0);
-  MODAL->arrival=-1;
 }
 
 /* Swap equipped item with inventory.
@@ -100,6 +100,44 @@ static void pause_require_achievements(struct modal *modal) {
   MODAL->ach.y=(PAGE_H>>1)-(MODAL->ach.h>>1);
 }
 
+/* Hooks for the map page.
+ * We defer as much as possible to jigsaw.c.
+ */
+
+static void pause_map_grab(struct modal *modal) {
+  jigsaw_grab(&MODAL->map.jigsaw);
+}
+
+static void pause_map_release(struct modal *modal) {
+  jigsaw_release(&MODAL->map.jigsaw);
+}
+
+static void pause_map_rotate(struct modal *modal) {
+  jigsaw_rotate(&MODAL->map.jigsaw);
+}
+ 
+static void pause_exit_map(struct modal *modal) {
+  pause_map_release(modal);
+  egg_input_set_mode(EGG_INPUT_MODE_GAMEPAD);
+}
+ 
+static void pause_enter_map(struct modal *modal) {
+  egg_input_set_mode(EGG_INPUT_MODE_MOUSE);
+  MODAL->map.blackout=1;
+  jigsaw_require(&MODAL->map.jigsaw);
+}
+
+/* Dismiss.
+ */
+ 
+static void pause_dismiss(struct modal *modal) {
+  bm_sound(RID_sound_uicancel,0.0);
+  MODAL->arrival=-1;
+  switch (MODAL->pagep) {
+    case PAGE_MAP: pause_exit_map(modal); break;
+  }
+}
+
 /* Activate.
  */
  
@@ -107,7 +145,7 @@ static void pause_activate(struct modal *modal) {
   switch (MODAL->pagep) {
     case PAGE_INVENTORY: pause_equip_inventory(modal); break;
     case PAGE_ACHIEVEMENTS: break;
-    case PAGE_MAP: break;//TODO
+    case PAGE_MAP: pause_map_grab(modal); break;
     case PAGE_SYSTEM: break;//TODO
   }
 }
@@ -116,7 +154,9 @@ static void pause_activate(struct modal *modal) {
  */
  
 static void pause_cancel(struct modal *modal) {
-  //TODO
+  switch (MODAL->pagep) {
+    case PAGE_MAP: pause_map_rotate(modal); break;
+  }
 }
 
 /* Page left or right.
@@ -124,10 +164,15 @@ static void pause_cancel(struct modal *modal) {
  
 static void pause_page(struct modal *modal,int d) {
   bm_sound(RID_sound_uipage,(d<0)?-0.5:0.5);
+  int pvpagep=MODAL->pagep;
   MODAL->pagep+=d;
   if (MODAL->pagep<0) MODAL->pagep=PAGE_COUNT-1;
   else if (MODAL->pagep>=PAGE_COUNT) MODAL->pagep=0;
   MODAL->page_transition+=d;
+  
+  switch (pvpagep) {
+    case PAGE_MAP: pause_exit_map(modal); break;
+  }
   
   /* If there's a cursor on the new page, position it at the leading edge.
    * Plus any other stuff we might need to do on entering a page.
@@ -138,6 +183,7 @@ static void pause_page(struct modal *modal,int d) {
         MODAL->inv.cclock=0.0;
       } break;
     case PAGE_ACHIEVEMENTS: pause_require_achievements(modal); break;
+    case PAGE_MAP: pause_enter_map(modal); break;
   }
 }
 
@@ -218,15 +264,41 @@ static void _pause_update(struct modal *modal,double elapsed) {
 
   // Poll input.
   if (g.input[1]!=g.pvinput[1]) {
-    if ((g.input[1]&EGG_BTN_SOUTH)&&!(g.pvinput[1]&EGG_BTN_SOUTH)) { pause_activate(modal); return; }
-    if ((g.input[1]&EGG_BTN_WEST)&&!(g.pvinput[1]&EGG_BTN_WEST)) { pause_cancel(modal); return; }
     if ((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1)) { pause_dismiss(modal); return; }
-    if ((g.input[1]&EGG_BTN_LEFT)&&!(g.pvinput[1]&EGG_BTN_LEFT)) pause_motion(modal,-1,0);
-    if ((g.input[1]&EGG_BTN_RIGHT)&&!(g.pvinput[1]&EGG_BTN_RIGHT)) pause_motion(modal,1,0);
-    if ((g.input[1]&EGG_BTN_UP)&&!(g.pvinput[1]&EGG_BTN_UP)) pause_motion(modal,0,-1);
-    if ((g.input[1]&EGG_BTN_DOWN)&&!(g.pvinput[1]&EGG_BTN_DOWN)) pause_motion(modal,0,1);
+    if (MODAL->pagep==PAGE_MAP) {
+      // Ignore dpad and thumb buttons while on the map page, we're in MOUSE mode. (dpad does continue reporting)
+    } else { // Most pages, dpad moves the cursor or page in discrete impulses.
+      if ((g.input[1]&EGG_BTN_SOUTH)&&!(g.pvinput[1]&EGG_BTN_SOUTH)) { pause_activate(modal); return; }
+      if ((g.input[1]&EGG_BTN_WEST)&&!(g.pvinput[1]&EGG_BTN_WEST)) { pause_cancel(modal); return; }
+      if ((g.input[1]&EGG_BTN_LEFT)&&!(g.pvinput[1]&EGG_BTN_LEFT)) pause_motion(modal,-1,0);
+      if ((g.input[1]&EGG_BTN_RIGHT)&&!(g.pvinput[1]&EGG_BTN_RIGHT)) pause_motion(modal,1,0);
+      if ((g.input[1]&EGG_BTN_UP)&&!(g.pvinput[1]&EGG_BTN_UP)) pause_motion(modal,0,-1);
+      if ((g.input[1]&EGG_BTN_DOWN)&&!(g.pvinput[1]&EGG_BTN_DOWN)) pause_motion(modal,0,1);
+    }
     if ((g.input[1]&EGG_BTN_L1)&&!(g.pvinput[1]&EGG_BTN_L1)) pause_page(modal,-1);
     if ((g.input[1]&EGG_BTN_R1)&&!(g.pvinput[1]&EGG_BTN_R1)) pause_page(modal,1);
+  }
+  
+  /* On PAGE_MAP, poll the cursor to check for page transitions.
+   * You can't change page with the mouse, but you can with the keyboard or gamepad, just push the cursor all the way to the edge.
+   * We also poll for thumb buttons here, separately, since we have to use [0] and not [1] for that.
+   */
+  if (MODAL->pagep==PAGE_MAP) {
+    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) { pause_activate(modal); return; }
+    else if (!(g.input[0]&EGG_BTN_SOUTH)&&(g.pvinput[0]&EGG_BTN_SOUTH)) pause_map_release(modal);
+    if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) { pause_cancel(modal); return; }
+    if (MODAL->map.blackout) { // Prevent reading the dpad initially, you have to release it first. Since the cursor often starts on the far side of the window.
+      if (!(g.input[1]&(EGG_BTN_LEFT|EGG_BTN_RIGHT))) {
+        MODAL->map.blackout=0;
+      }
+    } else {
+      int mx,my;
+      if (egg_input_get_mouse(&mx,&my)) {
+        if ((mx<=0)&&(g.input[1]&EGG_BTN_LEFT)) pause_page(modal,-1);
+        else if ((mx>=FBW-1)&&(g.input[1]&EGG_BTN_RIGHT)) pause_page(modal,1);
+        else jigsaw_motion(&MODAL->map.jigsaw,mx,my);
+      }
+    }
   }
 }
 
@@ -339,10 +411,16 @@ static void pause_render_page_achievements(struct modal *modal,int x,int y) {
 }
 
 /* Render content for the map page.
+ * We don't draw the cursor -- that only happens when map page is focussed, and we might be idling on the side right now.
  */
  
 static void pause_render_page_map(struct modal *modal,int x,int y) {
-  //TODO
+  // The margin is super sensitive. We need the bounds to go offscreen when not focussed, and we need room for 12x12 maps ie 240x144 pixels.
+  // At (8,8) margins, we hit it just right (marginx can increase if we like, there's 48 pixels leftover there).
+  const int marginx=8;
+  const int marginy=8;
+  jigsaw_set_bounds(&MODAL->map.jigsaw,x+marginx,y+marginy,PAGE_W-(marginx<<1),PAGE_H-(marginy<<1));
+  jigsaw_render(&MODAL->map.jigsaw);
 }
 
 /* Render content for the system page.
@@ -460,6 +538,17 @@ static void _pause_render(struct modal *modal) {
     if (x>=FBW) break;
     pagep++;
     pause_render_page(modal,pagep,x,y);
+  }
+  
+  /* If the map page is focussed, we are in EGG_INPUT_MODE_MOUSE.
+   * So draw the cursor.
+   */
+  if (MODAL->pagep==PAGE_MAP) {
+    int mx,my;
+    if (egg_input_get_mouse(&mx,&my)) {
+      graf_set_image(&g.graf,RID_image_pause);
+      graf_tile(&g.graf,mx,my,jigsaw_is_grabbed(&MODAL->map.jigsaw)?0x16:0x15,0);
+    }
   }
 }
 

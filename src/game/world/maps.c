@@ -8,6 +8,7 @@ struct plane {
   int x,y,w,h; // In maps.
   uint8_t oobx,ooby;
   struct map *v; // LRTB, size is (w*h) maps.
+  int parent; // mapid or zero, also recorded in all of my maps.
 };
 
 struct idix {
@@ -37,6 +38,7 @@ static int maps_install(int rid,const void *serial,int serialc) {
   int x=0,y=0,z=-1;
   int imageid=0,songid=-1;
   int oobx=0,ooby=0;
+  int parent=0;
   struct cmdlist_reader reader={.v=rmap.cmd,.c=rmap.cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
@@ -51,6 +53,7 @@ static int maps_install(int rid,const void *serial,int serialc) {
             return -1;
           }
         } break;
+      case CMD_map_parent: parent=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_position: x=(int8_t)cmd.arg[0]; y=(int8_t)cmd.arg[1]; z=cmd.arg[2]; break;
     }
   }
@@ -80,6 +83,21 @@ static int maps_install(int rid,const void *serial,int serialc) {
     } else {
       plane->oobx=oobx;
       plane->ooby=ooby;
+    }
+  }
+  
+  // Parent, same idea as OOB.
+  if (parent) {
+    if (plane->parent) {
+      if (plane->parent!=parent) {
+        fprintf(stderr,
+          "Conflicting map parents for plane %d. map:%d (from map:%d) vs map:%d.\n",
+          z,parent,rid,plane->parent
+        );
+        return -1;
+      }
+    } else {
+      plane->parent=parent;
     }
   }
   
@@ -170,10 +188,16 @@ int maps_init() {
   }
   
   // Any plane without a declared OOB strategy, force it to "null". Zero is not a legal oob strategy.
+  // Also in this pass, set (parent) in all maps where the plane has one.
   for (i=maps.planec,plane=maps.planev;i-->0;plane++) {
     if (!plane->oobx) {
       plane->oobx=NS_mapoob_null;
       plane->ooby=NS_mapoob_null;
+    }
+    if (plane->parent) {
+      struct map *map=plane->v;
+      int mapi=plane->w*plane->h;
+      for (;mapi-->0;map++) map->parent=plane->parent;
     }
   }
   

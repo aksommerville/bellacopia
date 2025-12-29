@@ -15,3 +15,4 @@ image image:meadow
 position 0 0 4 *
 sprite @8,4 sprite:hero (u32)0
 door @13,3 map:7 @13,3 0x0000
+parent map:7

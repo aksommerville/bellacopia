@@ -73,6 +73,7 @@ We'll group minigames by Zone.
 ## Side Quests
 
 - [ ] Jigsaw puzzle world map. See `xmark` project.
+- - We can do 1 pixel per cell if regions never exceed 12x12 screens. I think that's enough.
 - [ ] Find all the useful items.
 - [ ] Some kind of korokky collectible.
 - [ ] Lead livestock back to the farms.

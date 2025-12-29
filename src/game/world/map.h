@@ -19,6 +19,7 @@ struct map {
   const void *cmd; // Immutable (points into ROM).
   int cmdc;
   const uint8_t *physics; // 256 bytes, never null. Per (imageid).
+  int parent; // mapid or zero. If nonzero, this map's plane doesn't get a world map in the pause modal.
 };
 
 /* res_init() will call this after populating the TOC.
