@@ -3,6 +3,10 @@
 #define ARRIVE_SPEED  2.000 /* hz */
 #define DISMISS_SPEED 3.000 /* hz */
 #define PAGE_SPEED    4.000 /* hz */
+#define INV_CURSOR_SPEED 6.000 /* hz */
+
+#define INV_COLC 5
+#define INV_ROWC 5
 
 /* Each page is a little smaller than the framebuffer, enough to show the edges of our neighbor pages.
  * Pages' borders are baked into this; they tile at exactly PAGE_W.
@@ -23,6 +27,15 @@ struct modal_pause {
   double arrivitude; // 0..1 = ready..offscreen
   int pagep; // Updates immediately on page transitions.
   double page_transition; // Moves toward zero. <0 if camera is panning left, >0 if panning right.
+  double cursorclock; // For shared animated cursors.
+  int cursorframe; // 0..3
+  
+  // For the Inventory page.
+  struct {
+    int cfromx,cfromy; // Old cursor position in cells.
+    int ctox,ctoy; // True cursor position in cells.
+    double cclock; // Counts down while animating (from) to (to). 1..0, not necessarily seconds.
+  } inv;
 };
 
 #define MODAL ((struct modal_pause*)modal)
@@ -42,6 +55,10 @@ static int _pause_init(struct modal *modal) {
   MODAL->arrival=1;
   MODAL->arrivitude=1.0;
   //TODO Remember the last page we had open, make that part of the persistent storage.
+  
+  MODAL->inv.ctox=MODAL->inv.cfromx=INV_COLC>>1;
+  MODAL->inv.ctoy=MODAL->inv.cfromy=INV_ROWC>>1;
+  
   return 0;
 }
 
@@ -53,26 +70,33 @@ static void pause_dismiss(struct modal *modal) {
   MODAL->arrival=-1;
 }
 
+/* Swap equipped item with inventory.
+ */
+ 
+static void pause_equip_inventory(struct modal *modal) {
+  if ((MODAL->inv.ctox<0)||(MODAL->inv.ctox>=INV_COLC)) return;
+  if ((MODAL->inv.ctoy<0)||(MODAL->inv.ctoy>=INV_ROWC)) return;
+  int invp=MODAL->inv.ctoy*INV_COLC+MODAL->inv.ctox;
+  bm_sound(RID_sound_uiactivate,0.0);
+  fprintf(stderr,"%s:%d:TODO: Swap equipped item with inventory slot %d/%d\n",__FILE__,__LINE__,invp,INV_COLC*INV_ROWC);
+}
+
 /* Activate.
  */
  
 static void pause_activate(struct modal *modal) {
-  //TODO
+  switch (MODAL->pagep) {
+    case PAGE_INVENTORY: pause_equip_inventory(modal); break;
+    case PAGE_ACHIEVEMENTS: break;//TODO
+    case PAGE_MAP: break;//TODO
+    case PAGE_SYSTEM: break;//TODO
+  }
 }
 
 /* Cancel.
  */
  
 static void pause_cancel(struct modal *modal) {
-  //bm_sound(RID_sound_uicancel,0.0);
-  //MODAL->arrival=-1;
-}
-
-/* Regular motion.
- */
- 
-static void pause_motion(struct modal *modal,int dx,int dy) {
-  bm_sound(RID_sound_uimotion,0.0);
   //TODO
 }
 
@@ -85,6 +109,44 @@ static void pause_page(struct modal *modal,int d) {
   if (MODAL->pagep<0) MODAL->pagep=PAGE_COUNT-1;
   else if (MODAL->pagep>=PAGE_COUNT) MODAL->pagep=0;
   MODAL->page_transition+=d;
+  
+  // If there's a cursor on the new page, position it at the leading edge.
+  switch (MODAL->pagep) {
+    case PAGE_INVENTORY: {
+        MODAL->inv.ctox=MODAL->inv.cfromx=(d<0)?(INV_COLC-1):0;
+        MODAL->inv.cclock=0.0;
+      } break;
+  }
+}
+
+/* Regular motion.
+ * If cursor leaves the screen horizontally, we should call pause_page().
+ */
+ 
+static void pause_motion(struct modal *modal,int dx,int dy) {
+  switch (MODAL->pagep) {
+  
+    case PAGE_INVENTORY: {
+        MODAL->inv.cclock=1.0;
+        MODAL->inv.cfromx=MODAL->inv.ctox;
+        MODAL->inv.cfromy=MODAL->inv.ctoy;
+        MODAL->inv.ctox+=dx;
+        if (MODAL->inv.ctox<0) {
+          MODAL->inv.ctox=0;
+          pause_page(modal,-1);
+          return;
+        }
+        if (MODAL->inv.ctox>=INV_COLC) {
+          MODAL->inv.ctox=INV_COLC-1;
+          pause_page(modal,1);
+          return;
+        }
+        MODAL->inv.ctoy+=dy;
+        if (MODAL->inv.ctoy<0) MODAL->inv.ctoy=INV_ROWC-1;
+        else if (MODAL->inv.ctoy>=INV_ROWC) MODAL->inv.ctoy=0;
+        bm_sound(RID_sound_uimotion,0.0);
+      } break;
+  }
 }
 
 /* Update.
@@ -118,6 +180,14 @@ static void _pause_update(struct modal *modal,double elapsed) {
       MODAL->page_transition=0.0;
     }
   }
+  
+  /* Miscellaneous clocks.
+   */
+  if (MODAL->inv.cclock>0.0) MODAL->inv.cclock-=elapsed*INV_CURSOR_SPEED;
+  if ((MODAL->cursorclock-=elapsed)<0.0) {
+    MODAL->cursorclock+=0.200;
+    if (++(MODAL->cursorframe)>=4) MODAL->cursorframe=0;
+  }
 
   // Poll input.
   if (g.input[1]!=g.pvinput[1]) {
@@ -133,11 +203,98 @@ static void _pause_update(struct modal *modal,double elapsed) {
   }
 }
 
+/* Helper: Render an animated square cursor with a focus roughly the size of a tile, 16x16.
+ */
+ 
+static void pause_render_tile_cursor(struct modal *modal,int x,int y) {
+  const int halftile=8;
+  graf_set_image(&g.graf,RID_image_pause);
+  uint8_t tileid=0x03+MODAL->cursorframe;
+  graf_tile(&g.graf,x-halftile,y-halftile,tileid,EGG_XFORM_SWAP|EGG_XFORM_YREV);
+  graf_tile(&g.graf,x+halftile,y-halftile,tileid,EGG_XFORM_XREV|EGG_XFORM_YREV);
+  graf_tile(&g.graf,x-halftile,y+halftile,tileid,0);
+  graf_tile(&g.graf,x+halftile,y+halftile,tileid,EGG_XFORM_SWAP|EGG_XFORM_XREV);
+}
+
+/* Helper: Render an unsigned decimal integer at the lower-right corner of some box.
+ */
+ 
+static void pause_render_quantity(struct modal *modal,int x,int y,int w,int h,int n,uint32_t rgba) {
+  if (n<0) n=0;
+  x+=w-3;
+  y+=h-4;
+  graf_set_image(&g.graf,RID_image_pause);
+  graf_fancy(&g.graf,x,y,0x40+n%10,0,0,16,0,rgba);
+  for (;;) {
+    n/=10;
+    if (!n) return;
+    x-=4;
+    graf_fancy(&g.graf,x,y,0x40+n%10,0,0,16,0,rgba);
+  }
+}
+
 /* Render content for the inventory page.
  */
  
 static void pause_render_page_inventory(struct modal *modal,int x,int y) {
-  //TODO
+  const int tilesize=16;
+  const int colw=20;
+  const int rowh=20;
+  const int fldw=colw*INV_COLC;
+  const int fldh=rowh*INV_ROWC;
+  int fldx=x+(PAGE_W>>1)-((fldw+40)>>1); // Center with respect to the equipped-item hand too.
+  int fldy=y+(PAGE_H>>1)-(fldh>>1);
+  
+  // Field background.
+  const uint32_t fldcolor=0xbfa97cff;
+  graf_fill_rect(&g.graf,fldx,fldy,fldw,fldh,fldcolor);
+  graf_set_image(&g.graf,RID_image_pause);
+  
+  // Cursor.
+  int cursorx=fldx+MODAL->inv.ctox*colw+(colw>>1);
+  int cursory=fldy+MODAL->inv.ctoy*rowh+(rowh>>1);
+  if (MODAL->inv.cclock>0.0) {
+    int bx=fldx+MODAL->inv.cfromx*colw+(colw>>1);
+    int by=fldy+MODAL->inv.cfromy*rowh+(rowh>>1);
+    cursorx=(int)((double)cursorx*(1.0-MODAL->inv.cclock)+(double)bx*MODAL->inv.cclock);
+    cursory=(int)((double)cursory*(1.0-MODAL->inv.cclock)+(double)by*MODAL->inv.cclock);
+  }
+  pause_render_tile_cursor(modal,cursorx,cursory);
+  
+  // Inventory contents.
+  int celly=fldy+(rowh>>1);
+  int row=0;
+  for (;row<INV_ROWC;row++,celly+=rowh) {
+    int cellx=fldx+(colw>>1);
+    int col=0;
+    for (;col<INV_COLC;col++,cellx+=colw) {
+      graf_tile(&g.graf,cellx,celly,0x30+(row*INV_COLC+col)%9,0);//TODO inventory
+    }
+  }
+  
+  // Equipped item, with Dot's hand behind it.
+  int handx=fldx+fldw+20;
+  int handy=fldy+20;
+  graf_tile(&g.graf,handx-(tilesize>>1),handy-(tilesize>>1),0x13,0);
+  graf_tile(&g.graf,handx+(tilesize>>1),handy-(tilesize>>1),0x14,0);
+  graf_tile(&g.graf,handx-(tilesize>>1),handy+(tilesize>>1),0x23,0);
+  graf_tile(&g.graf,handx+(tilesize>>1),handy+(tilesize>>1),0x24,0);
+  graf_tile(&g.graf,handx,handy,0x30,0);//TODO equipped item
+  
+  // Quantity for inventory content, where warranted.
+  #define QTY(col,row,qty,limit) { \
+    uint32_t rgba; \
+    if ((qty)<=0) rgba=0x808080ff; \
+    else if ((qty)>=(limit)) rgba=0x00ff00ff; \
+    else rgba=0x00c080ff; \
+    pause_render_quantity(modal,fldx+col*colw,fldy+row*rowh,colw,rowh,qty,rgba); \
+  }
+  QTY(0,0,0,1)//TODO inventory quantities
+  QTY(2,1,9,9)
+  QTY(3,1,10,20)
+  QTY(4,4,99,99)
+  QTY(0,4,12345,12346)
+  #undef QTY
 }
 
 /* Render content for the achievements page.

@@ -30,7 +30,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Global state. Flags and small integers. Persist.
 - [ ] Pause modal.
-- - [ ] Inventory.
+- - [x] Inventory.
 - - [ ] Achievements.
 - - [ ] Map. (jigsaw)
 - - [ ] Remember last open page.
