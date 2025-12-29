@@ -31,7 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Global state. Flags and small integers. Persist.
 - [ ] Pause modal.
 - - [x] Inventory.
-- - [ ] Achievements.
+- - [x] Achievements.
 - - [ ] Map. (jigsaw)
 - - [ ] Remember last open page.
 - [x] Minigames framework.

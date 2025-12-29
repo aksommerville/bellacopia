@@ -36,6 +36,12 @@ struct modal_pause {
     int ctox,ctoy; // True cursor position in cells.
     double cclock; // Counts down while animating (from) to (to). 1..0, not necessarily seconds.
   } inv;
+  
+  // For the Achievements page. Dumb texture, generated the first time you visit Achievements.
+  struct {
+    int texid;
+    int x,y,w,h; // Position relative to the page.
+  } ach;
 };
 
 #define MODAL ((struct modal_pause*)modal)
@@ -44,6 +50,7 @@ struct modal_pause {
  */
  
 static void _pause_del(struct modal *modal) {
+  egg_texture_del(MODAL->ach.texid);
 }
 
 /* Init.
@@ -78,7 +85,19 @@ static void pause_equip_inventory(struct modal *modal) {
   if ((MODAL->inv.ctoy<0)||(MODAL->inv.ctoy>=INV_ROWC)) return;
   int invp=MODAL->inv.ctoy*INV_COLC+MODAL->inv.ctox;
   bm_sound(RID_sound_uiactivate,0.0);
-  fprintf(stderr,"%s:%d:TODO: Swap equipped item with inventory slot %d/%d\n",__FILE__,__LINE__,invp,INV_COLC*INV_ROWC);
+  fprintf(stderr,"%s:%d:TODO: Swap equipped item with inventory slot %d/%d\n",__FILE__,__LINE__,invp,INV_COLC*INV_ROWC);//TODO
+}
+
+/* Generate achievements texture if we don't have it yet.
+ * Achievements can't change while paused, so we only need this once per modal. Or zero times.
+ */
+ 
+static void pause_require_achievements(struct modal *modal) {
+  if (MODAL->ach.texid) return;
+  MODAL->ach.texid=bm_achievements_generate();
+  egg_texture_get_size(&MODAL->ach.w,&MODAL->ach.h,MODAL->ach.texid);
+  MODAL->ach.x=(PAGE_W>>1)-(MODAL->ach.w>>1);
+  MODAL->ach.y=(PAGE_H>>1)-(MODAL->ach.h>>1);
 }
 
 /* Activate.
@@ -87,7 +106,7 @@ static void pause_equip_inventory(struct modal *modal) {
 static void pause_activate(struct modal *modal) {
   switch (MODAL->pagep) {
     case PAGE_INVENTORY: pause_equip_inventory(modal); break;
-    case PAGE_ACHIEVEMENTS: break;//TODO
+    case PAGE_ACHIEVEMENTS: break;
     case PAGE_MAP: break;//TODO
     case PAGE_SYSTEM: break;//TODO
   }
@@ -110,12 +129,15 @@ static void pause_page(struct modal *modal,int d) {
   else if (MODAL->pagep>=PAGE_COUNT) MODAL->pagep=0;
   MODAL->page_transition+=d;
   
-  // If there's a cursor on the new page, position it at the leading edge.
+  /* If there's a cursor on the new page, position it at the leading edge.
+   * Plus any other stuff we might need to do on entering a page.
+   */
   switch (MODAL->pagep) {
     case PAGE_INVENTORY: {
         MODAL->inv.ctox=MODAL->inv.cfromx=(d<0)?(INV_COLC-1):0;
         MODAL->inv.cclock=0.0;
       } break;
+    case PAGE_ACHIEVEMENTS: pause_require_achievements(modal); break;
   }
 }
 
@@ -146,6 +168,11 @@ static void pause_motion(struct modal *modal,int dx,int dy) {
         else if (MODAL->inv.ctoy>=INV_ROWC) MODAL->inv.ctoy=0;
         bm_sound(RID_sound_uimotion,0.0);
       } break;
+    
+    // Any page without a cursor, horizontal motion changes page.
+    default: {
+        if (dx) pause_page(modal,dx);
+      }
   }
 }
 
@@ -301,7 +328,14 @@ static void pause_render_page_inventory(struct modal *modal,int x,int y) {
  */
  
 static void pause_render_page_achievements(struct modal *modal,int x,int y) {
-  //TODO
+  // Clip output horizontal bounds, just to detect whether it's visible. The actual render, we'll send the whole thing.
+  int vw=MODAL->ach.w;
+  int vx=x+MODAL->ach.x;
+  if (vx<0) { vw+=vx; vx=0; }
+  if (vx+vw>FBW) vw=FBW-vx;
+  if (vw<1) return;
+  graf_set_input(&g.graf,MODAL->ach.texid);
+  graf_decal(&g.graf,x+MODAL->ach.x,y+MODAL->ach.y,0,0,MODAL->ach.w,MODAL->ach.h);
 }
 
 /* Render content for the map page.
@@ -315,7 +349,13 @@ static void pause_render_page_map(struct modal *modal,int x,int y) {
  */
  
 static void pause_render_page_system(struct modal *modal,int x,int y) {
-  //TODO
+  //TODO Content for System page. For now it's a static "TODO" message.
+  graf_set_image(&g.graf,RID_image_pause);
+  int dstx=x+(PAGE_W>>1)-16;
+  int dsty=y+(PAGE_H>>1);
+  graf_tile(&g.graf,dstx,dsty,0xf0,0); dstx+=16;
+  graf_tile(&g.graf,dstx,dsty,0xf1,0); dstx+=16;
+  graf_tile(&g.graf,dstx,dsty,0xf2,0);
 }
 
 /* Render one page.
@@ -445,6 +485,5 @@ struct modal *modal_new_pause() {
     modal_del(modal);
     return 0;
   }
-  //TODO further init?
   return modal;
 }

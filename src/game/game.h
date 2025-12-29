@@ -76,4 +76,6 @@ void bm_begin_battle_soon(
  */
 int verbiage_begin_battle(char *dst,int dsta,const struct battle_type *type);
 
+int bm_achievements_generate(); // => texid, always substantially smaller than the framebuffer (will fit in a pause-modal page).
+
 #endif
