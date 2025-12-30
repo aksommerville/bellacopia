@@ -28,15 +28,19 @@ static int sprite_detect_collisions(
    */
   if (sprite->physics) {
     // Express the coverage bounds in integer plane meters.
-    int cola=(int)l; if (l<0.0) cola--;
-    int colz=(int)(r-SMIDGEON); if (r<0.0) colz--;
-    int rowa=(int)t; if (t<0.0) rowa--;
-    int rowz=(int)(b-SMIDGEON); if (b<0.0) rowz--;
+    int cola=(int)l;
+    int colz=(int)(r-SMIDGEON);
+    int rowa=(int)t;
+    int rowz=(int)(b-SMIDGEON);
     // Then turn those into the map coverage range.
     int mxa=cola/NS_sys_mapw; if (cola<0) mxa--;
     int mxz=colz/NS_sys_mapw; if (colz<0) mxz--;
     int mya=rowa/NS_sys_maph; if (rowa<0) mya--;
     int myz=rowz/NS_sys_maph; if (rowz<0) myz--;
+    if (l<0.0) { cola--; if ((cola%NS_sys_mapw)==-1) mxa--; }
+    if (r<0.0) colz--;
+    if (t<0.0) { rowa--; if ((rowa%NS_sys_maph)==-1) mya--; }
+    if (b<0.0) rowz--;
     // Iterate covered maps. If no map exists there, assume it's passable.
     int my=mya; for (;my<=myz;my++) {
       int mx=mxa; for (;mx<=mxz;mx++) {

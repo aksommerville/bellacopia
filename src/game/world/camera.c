@@ -286,11 +286,14 @@ static void camera_new_map(int x,int y) {
 static void camera_force_hero(int x,int y) {
   struct sprite *hero=sprites_get_hero();
   if (hero) {
+    hero->z=camera.mz;
     hero->x=x+0.5;
     hero->y=y+0.5;
     sprite_hero_ackpos(hero);
   } else {
-    hero=sprite_spawn(x+0.5,y+0.5,RID_sprite_hero,0,0,0,0);
+    if (hero=sprite_spawn(x+0.5,y+0.5,RID_sprite_hero,0,0,0,0)) {
+      hero->z=camera.mz;
+    }
   }
 }
 
