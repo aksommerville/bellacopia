@@ -28,13 +28,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
-- [ ] Global state. Flags and small integers. Persist.
+- [x] Global state. Flags and small integers. Persist.
 - - [x] Should jigsaw state persist somewhere else? It's pretty bulky. ...YES
 - [x] Pause modal.
 - - [x] Inventory.
 - - [x] Achievements.
 - - [x] Map. (jigsaw)
-- [ ] Pause: Remember last open page.
+- [x] Pause: Remember last open page.
 - [x] Jigsaw: Persist state.
 - [x] Minigames framework.
 - [ ] Diegetic witch toys.

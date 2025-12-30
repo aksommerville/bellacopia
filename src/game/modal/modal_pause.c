@@ -1,6 +1,9 @@
 #include "game/game.h"
 #include "game/jigsaw.h"
 
+static void pause_enter_map(struct modal *modal);
+static void pause_require_achievements(struct modal *modal);
+
 #define ARRIVE_SPEED  2.000 /* hz */
 #define DISMISS_SPEED 3.000 /* hz */
 #define PAGE_SPEED    4.000 /* hz */
@@ -21,6 +24,8 @@
 #define PAGE_MAP 2
 #define PAGE_SYSTEM 3
 #define PAGE_COUNT 4
+
+static int pause_last_pagep=0;
 
 struct modal_pause {
   struct modal hdr;
@@ -60,6 +65,7 @@ struct modal_pause {
 static void _pause_del(struct modal *modal) {
   egg_texture_del(MODAL->ach.texid);
   jigsaw_cleanup(&MODAL->map.jigsaw);
+  pause_last_pagep=MODAL->pagep;
 }
 
 /* Init.
@@ -71,10 +77,15 @@ static int _pause_init(struct modal *modal) {
   MODAL->arrival=1;
   MODAL->arrivitude=1.0;
   MODAL->input_blackout=1;
-  //TODO Remember the last page we had open, make that part of the persistent storage. Also trigger page-entry hooks, see pause_page(). Current default INVENTORY does not need any action.
-  
   MODAL->inv.ctox=MODAL->inv.cfromx=INV_COLC>>1;
   MODAL->inv.ctoy=MODAL->inv.cfromy=INV_ROWC>>1;
+  
+  MODAL->pagep=pause_last_pagep;
+  switch (MODAL->pagep) {
+    case PAGE_MAP: pause_enter_map(modal); break;
+    case PAGE_ACHIEVEMENTS: pause_require_achievements(modal); break;
+  }
+  
   
   return 0;
 }
@@ -171,6 +182,7 @@ static void pause_page(struct modal *modal,int d) {
   if (MODAL->pagep<0) MODAL->pagep=PAGE_COUNT-1;
   else if (MODAL->pagep>=PAGE_COUNT) MODAL->pagep=0;
   MODAL->page_transition+=d;
+  pause_last_pagep=MODAL->pagep;
   
   switch (pvpagep) {
     case PAGE_MAP: pause_exit_map(modal); break;

@@ -48,6 +48,8 @@ static int _jigpiece_init(struct sprite *sprite) {
   if (jxform!=0xff) return -1; // Already got it. This is perfectly normal.
   SPRITE->mapid=map->rid;
   
+  //TODO It's feasible to draw the actual puzzle piece. But lots of work, and coordination with jigsaw and maps. Do we want that?
+  
   return 0;
 }
 

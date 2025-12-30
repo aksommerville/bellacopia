@@ -521,6 +521,17 @@ static void jigsaw_detect_clusters(struct jigsaw *jigsaw) {
   for (jigpiece=jigsaw->jigpiecev,i=jigsaw->jigpiecec;i-->0;jigpiece++) if (jigpiece->clusterid==0xff) jigpiece->clusterid=0;
 }
 
+/* Tileid in RID_image_pause if this map deserves a blinking indicator.
+ * Zero means none; that's not a tile you'd want.
+ * Each jigpiece can have no more than one indicator.
+ * We're not choosing the hero indicator here; it's more convenient to do that once at the end.
+ */
+ 
+static uint8_t jigsaw_choose_indicator(const struct map *map) {
+  //TODO indicators?
+  return 0;
+}
+
 /* Generate pieces, with the maps and images already established.
  * (tho images aren't actually needed for this).
  */
@@ -574,9 +585,20 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
         jigpiece->y=y;
         jigpiece->tileid=(row<<4)|col;
         jigpiece->xform=xform;
+        jigpiece->indicator=jigsaw_choose_indicator(map);
       }
     }
   #endif
+  
+  /* If we have the currently-focussed piece, show the hero indicator on it.
+   */
+  if ((jigsaw->fx>=0)&&(jigsaw->fy>=0)&&(jigsaw->fx<jigsaw->colc)&&(jigsaw->fy<jigsaw->rowc)) {
+    uint8_t tileid=(jigsaw->fy<<4)|jigsaw->fx;
+    struct jigpiece *jigpiece=jigsaw_jigpiece_by_tileid(jigsaw,tileid);
+    if (jigpiece) {
+      jigpiece->indicator=0x26;
+    }
+  }
   
   // With the pieces made, determine which are already connected.
   jigsaw_detect_clusters(jigsaw);
@@ -760,15 +782,21 @@ void jigsaw_render(struct jigsaw *jigsaw) {
   if (jigsaw->oy<=-jigsaw->oh) return;
   
   if (jigsaw->cheerclock>0) jigsaw->cheerclock--;
+  jigsaw->blinkclock++;
+  int blink=(jigsaw->blinkclock&32);
   
   // Draw the pieces.
-  graf_set_input(&g.graf,jigsaw->texid);
   struct jigpiece *jigpiece=jigsaw->jigpiecev;
   int i=jigsaw->jigpiecec;
   for (;i-->0;jigpiece++) {
+    graf_set_input(&g.graf,jigsaw->texid);
     if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0x00ff0080);
     graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->tileid,jigpiece->xform);
     if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0);
+    if (blink&&jigpiece->indicator) {
+      graf_set_image(&g.graf,RID_image_pause);
+      graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->indicator,jigpiece->xform);
+    }
   }
   
   // Outline the grab or hover piece. This outline intentionally renders above any pieces occluding the focussed one.
@@ -783,8 +811,6 @@ void jigsaw_render(struct jigsaw *jigsaw) {
     graf_tile(&g.graf,jigsaw->ox+jigsaw->hover->x,jigsaw->oy+jigsaw->hover->y,jigsaw->hover->tileid,jigsaw->hover->xform);
     graf_set_tint(&g.graf,0);
   }
-  
-  //TODO Other highlights? This definitely will come up eventually, the whole point of a map is we can show "treasure here!" indicators on it.
 }
 
 /* Test grab.

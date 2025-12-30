@@ -22,12 +22,14 @@ struct jigsaw {
     uint8_t tileid;
     uint8_t xform;
     uint8_t clusterid; // Pieces with the same nonzero clusterid must move together.
+    uint8_t indicator; // Tileid in RID_image_pause if nonzero.
   } *jigpiecev;
   int jigpiecec;
   struct jigpiece *hover; // WEAK
   struct jigpiece *grab; // WEAK
   int cheerclock; // frames (we don't have a regular update)
   uint8_t cheercluster;
+  int blinkclock;
 };
 
 void jigsaw_cleanup(struct jigsaw *jigsaw);

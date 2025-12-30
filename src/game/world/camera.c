@@ -444,6 +444,12 @@ int camera_get_z() {
   return camera.mz;
 }
 
+void camera_get_focus(int *x,int *y,int *z) {
+  *x=camera.mx;
+  *y=camera.my;
+  *z=camera.mz;
+}
+
 int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,void *userdata),void *userdata) {
   int p=camera_poiv_search(x,y);
   const struct poi *poi=camera.poiv+p;

@@ -14,6 +14,7 @@ void camera_update(double elapsed);
 void camera_render();
 
 int camera_get_z();
+void camera_get_focus(int *x,int *y,int *z); // Focussed map position (world coords).
 
 int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,void *userdata),void *userdata);
 
