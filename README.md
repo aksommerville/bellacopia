@@ -25,7 +25,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Trigger battles on contact.
 - - [ ] How to spawn? Static spawn points in a map is not the right way.
 - [x] Camera: Removed sprites can re-spawn while in view. Check for that, and only spawn offscreen. Ensure the first screen after a cut, they do spawn.
-- [ ] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
+- [x] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Global state. Flags and small integers. Persist.
@@ -46,6 +46,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Bug Spray. Quantity.
 - - [ ] Candy. Quantity.
 - - [ ] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting?
-- [ ] Dialogue.
+- [x] Dialogue.
 - [x] `sprite_monster.c`: Can we keep the sprite visible during modal_battle's intro?
 - [ ] `modal_battle.c`: Show graphic input description per battle.
+- [ ] `modal_dialogue.c`: Typewriter text. Should we? I actually don't like that effect, and it would take considerable effort.
+- - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.
+- [ ] `modal_dialogue.c`: Arrive and dismiss animation, and a blinking indicator when no choices.

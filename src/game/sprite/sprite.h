@@ -56,6 +56,7 @@ void sprites_clear();
 struct sprite *sprites_get_hero();
 
 struct sprite *sprite_by_arg(const void *arg);
+struct sprite *sprite_by_type(const struct sprite_type *type);
 
 // Get the actual list. Please be careful.
 int sprites_get_all(struct sprite ***dstpp);
@@ -89,6 +90,8 @@ const struct sprite_type *sprite_type_by_id(int sprtype);
 const struct sprite_type *sprite_type_from_serial(const void *src,int srcc);
 
 void sprite_hero_ackpos(struct sprite *sprite);
+
+void sprite_polefairy_set_target(struct sprite *sprite,double x,double y);
 
 /* Physics.
  ***********************************************************************/

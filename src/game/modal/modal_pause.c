@@ -30,6 +30,7 @@ struct modal_pause {
   double page_transition; // Moves toward zero. <0 if camera is panning left, >0 if panning right.
   double cursorclock; // For shared animated cursors.
   int cursorframe; // 0..3
+  int input_blackout;
   
   // For the Inventory page.
   struct {
@@ -69,6 +70,7 @@ static int _pause_init(struct modal *modal) {
   modal->interactive=1;
   MODAL->arrival=1;
   MODAL->arrivitude=1.0;
+  MODAL->input_blackout=1;
   //TODO Remember the last page we had open, make that part of the persistent storage. Also trigger page-entry hooks, see pause_page(). Current default INVENTORY does not need any action.
   
   MODAL->inv.ctox=MODAL->inv.cfromx=INV_COLC>>1;
@@ -263,7 +265,9 @@ static void _pause_update(struct modal *modal,double elapsed) {
   }
 
   // Poll input.
-  if (g.input[1]!=g.pvinput[1]) {
+  if (MODAL->input_blackout) {
+    if (!(g.input[1]&(EGG_BTN_AUX1|EGG_BTN_SOUTH|EGG_BTN_WEST))) MODAL->input_blackout=0;
+  } else if (g.input[1]!=g.pvinput[1]) {
     if ((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1)) { pause_dismiss(modal); return; }
     if (MODAL->pagep==PAGE_MAP) {
       // Ignore dpad and thumb buttons while on the map page, we're in MOUSE mode. (dpad does continue reporting)

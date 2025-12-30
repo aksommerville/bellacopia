@@ -196,6 +196,37 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
   }
 }
 
+/* If there isn't currently a polefairy among the sprites, spawn one.
+ * (dy) is <0 for the Borealic Fairy and >0 for the Australic Fairy.
+ */
+ 
+static void camera_maybe_polefairy(int dy) {
+  if (sprite_by_type(&sprite_type_polefairy)) return;
+  
+  // They spawn pretty far ahead in the pole direction.
+  // That has a nice side effect, that you won't see them if travelling homeward.
+  double x=camera.fx;
+  double y=camera.fy;
+  double tx=camera.fx;
+  double ty=camera.fy;
+  if (dy<0) { // Borealic Fairy enters from the left and biases a little up.
+    x-=NS_sys_mapw*0.666;
+    tx-=NS_sys_mapw*0.125;
+    y-=20.0;
+    ty-=18.0;
+  } else { // Australic Fairy enters from the right and biases a little down.
+    x+=NS_sys_mapw*0.666;
+    tx+=NS_sys_mapw*0.125;
+    y+=20.0;
+    ty+=18.0;
+  }
+  
+  struct sprite *sprite=sprite_spawn(x,y,RID_sprite_polefairy,0,&sprite_type_polefairy,0,0);
+  if (!sprite) return;
+  sprite->z=camera.mz;
+  sprite_polefairy_set_target(sprite,tx,ty);
+}
+
 /* New map enters focus.
  */
  
@@ -233,6 +264,18 @@ static void camera_new_map(int x,int y) {
       const struct map *smap=camera.mapv+(adjy-camera.py)*camera.pw+(adjx-camera.px);
       if (!smap->cmdc) continue;
       camera_spawn_sprites(smap,camera.mx+rx,camera.my+ry);
+    }
+  }
+  
+  /* Should we spawn a polefairy?
+   */
+  if (camera.pooby==NS_mapoob_repeat) {
+    int dy;
+    // Thresholds of -3 and +2 cause it to occur first around the fourth instance of the edge screen.
+    if ((dy=y-camera.py)<=-3) {
+      camera_maybe_polefairy(-1);
+    } else if ((dy=y-camera.ph-camera.py)>=2) {
+      camera_maybe_polefairy(1);
     }
   }
 }
@@ -328,7 +371,6 @@ void camera_update(double elapsed) {
   int my=(int)camera.fy/NS_sys_maph;
   if (camera.fx<0.0) mx--; // We want floor, not trunc.
   if (camera.fy<0.0) my--;
-  //fprintf(stderr,"%s f=%.03f,%.03f m=%d,%d\n",__func__,camera.fx,camera.fy,mx,my);
   if ((mx!=camera.mx)||(my!=camera.my)) {
     camera_new_map(mx,my);
   }
@@ -417,4 +459,25 @@ void camera_enter_door(int mapid,int col,int row) {
   camera.doormapid=mapid;
   camera.doorx=col;
   camera.doory=row;
+}
+
+void camera_warp_home_soon() {
+  int col=NS_sys_mapw>>1;
+  int row=NS_sys_maph>>1;
+  struct map *map=map_by_id(RID_map_start);
+  if (map) {
+    struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)>0) {
+      if (cmd.opcode==CMD_map_sprite) {
+        int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+        if (rid==RID_sprite_hero) {
+          col=cmd.arg[0];
+          row=cmd.arg[1];
+          break;
+        }
+      }
+    }
+  }
+  camera_enter_door(RID_map_start,col,row);
 }

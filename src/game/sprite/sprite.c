@@ -121,6 +121,16 @@ struct sprite *sprite_by_arg(const void *arg) {
   return 0;
 }
 
+struct sprite *sprite_by_type(const struct sprite_type *type) {
+  struct sprite **p=sprites.v;
+  int i=sprites.c;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->type==type) return sprite;
+  }
+  return 0;
+}
+
 int sprites_get_all(struct sprite ***dstpp) {
   *dstpp=sprites.v;
   return sprites.c;

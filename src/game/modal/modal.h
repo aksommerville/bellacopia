@@ -63,6 +63,7 @@ void modal_drop_defunct();
 extern const struct modal_type modal_type_hello;
 extern const struct modal_type modal_type_world; // One must exist always, during a story-mode session.
 extern const struct modal_type modal_type_battle; // A minigame, either story or arcade mode.
+extern const struct modal_type modal_type_dialogue; // Single chunk of text, with optional enumerated responses.
 
 /* Typed ctors always return WEAK; the new modal was pushed to the global stack.
  */
@@ -70,7 +71,16 @@ struct modal *modal_new_hello();
 struct modal *modal_new_world();
 struct modal *modal_new_battle(const struct battle_type *type,int playerc,int handicap);
 struct modal *modal_new_pause();
+struct modal *modal_new_dialogue(int rid,int strix); // (rid,strix) as a convenience; (0,0) if you're going to configure.
 
 void modal_battle_set_callback(struct modal *modal,void (*cb)(void *userdata,int outcome),void *userdata);
+
+// All dialogue can be cancelled; we'll hit your callback with (choiceid<0).
+int modal_dialogue_set_res(struct modal *modal,int rid,int strix); // Static text.
+int modal_dialogue_set_text(struct modal *modal,const char *src,int srcc); // You're responsible for language etc.
+int modal_dialogue_set_fmt(struct modal *modal,int rid,int strix,const struct text_insertion *insv,int insc);
+void modal_dialogue_set_callback(struct modal *modal,void (*cb)(void *userdata,int choiceid),void *userdata);
+int modal_dialogue_add_choice_res(struct modal *modal,int choiceid,int rid,int strix); // => choiceid; we make one up if <=0.
+int modal_dialogue_add_choice_text(struct modal *modal,int choiceid,const char *src,int srcc);
 
 #endif

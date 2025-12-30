@@ -1,0 +1,6 @@
+image image:meadow_sprites
+tile 0x10 0
+type (u16:sprtype)polefairy
+solid
+hitbox -4 4 -4 4
+physics (b32:physics)solid,cliff,hookable

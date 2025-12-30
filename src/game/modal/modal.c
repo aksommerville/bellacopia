@@ -81,6 +81,7 @@ void modal_pull(struct modal *modal) {
 
 void modal_update_all(double elapsed) {
   int fg=1; // True until after we process an "interactive" modal.
+  int modalc0=g.modalc; // So we can detect new pushes.
   int i=g.modalc;
   struct modal **p=g.modalv+i-1;
   for (;i-->0;p--) {
@@ -96,6 +97,19 @@ void modal_update_all(double elapsed) {
     
     // If it's opaque, stop. Invisible modals never update.
     if (modal->opaque) break;
+  }
+  
+  /* If anything new got pushed, update them.
+   * We don't do this during the push, because the new modal might get configured after that.
+   * Modals should not be removed from the stack during the update cycle, so this should be safe.
+   * If two modals get pushed and the later one is opaque or interactive, we'll make incorrect calls here. I don't think that will happen.
+   */
+  if (g.modalc>modalc0) {
+    for (i=modalc0;i<g.modalc;i++) {
+      struct modal *modal=g.modalv[i];
+      if (modal->defunct) continue;
+      if (modal->type->update) modal->type->update(modal,elapsed);
+    }
   }
 }
 

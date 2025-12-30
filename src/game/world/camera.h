@@ -21,5 +21,6 @@ int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,
  * It doesn't happen immediately, will wait for the end of the update cycle.
  */
 void camera_enter_door(int mapid,int col,int row);
+void camera_warp_home_soon(); // Moves hero to the starting position.
 
 #endif
