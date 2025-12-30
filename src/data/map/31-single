@@ -16,3 +16,4 @@ position 0 0 2 *
 sprite @9,6 sprite:hero (u32)0
 door @12,5 map:4 @18,1 0x0000
 parent map:4
+sprite @18,2 sprite:jigpiece (u32)0

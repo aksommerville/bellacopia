@@ -57,11 +57,13 @@
 #define NS_sprtype_hero           1 /* (u32)0 */
 #define NS_sprtype_monster        2 /* (u16:battletype)0 (u16)0 */
 #define NS_sprtype_polefairy      3 /* (u24)0 (u8)0_left_1_right */
+#define NS_sprtype_jigpiece       4 /* (u32)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
   _(monster) \
-  _(polefairy)
+  _(polefairy) \
+  _(jigpiece)
   
 // Battle controllers.
 #define NS_battletype_fishing                1

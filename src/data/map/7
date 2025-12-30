@@ -14,3 +14,4 @@ a203020604050506000405030001010504060206
 image image:meadow
 position -1 1 1 *
 door @13,3 map:vert @13,3 0x0000
+sprite @9,7 sprite:jigpiece (u32)0

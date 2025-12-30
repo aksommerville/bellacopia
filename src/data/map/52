@@ -13,3 +13,4 @@ a1a1a1a1a1a1a1a2000600000000000000000000
 
 image image:meadow
 position 1 3 10 *
+sprite @13,6 sprite:jigpiece (u32)0

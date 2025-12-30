@@ -14,3 +14,4 @@
 image image:meadow
 door @8,5 map:start @16,10 0x0000
 position 0 0 10 *
+sprite @13,8 sprite:jigpiece (u32)0

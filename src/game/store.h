@@ -8,6 +8,9 @@
 #ifndef STORE_H
 #define STORE_H
 
+/* The general store.
+ *****************************************************************************/
+
 void store_reset();
 
 int store_get(int fld,int size);
@@ -27,5 +30,14 @@ void store_unlisten_all();
 int store_load();
 int store_save();
 int store_save_if_dirty();
+
+/* Jigsaw puzzle progress goes in a separate store, because it is bulky and highly structured.
+ ****************************************************************************************/
+ 
+void store_jigsaw_load();
+void store_jigsaw_save_if_dirty(int immediate); // (immediate) nonzero to skip the debounce.
+
+int store_jigsaw_get(int *x,int *y,uint8_t *xform,int mapid);
+int store_jigsaw_set(int mapid,int x,int y,uint8_t xform);
 
 #endif

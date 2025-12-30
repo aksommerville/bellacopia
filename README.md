@@ -29,13 +29,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Global state. Flags and small integers. Persist.
-- - [ ] Should jigsaw state persist somewhere else? It's pretty bulky.
+- - [x] Should jigsaw state persist somewhere else? It's pretty bulky. ...YES
 - [x] Pause modal.
 - - [x] Inventory.
 - - [x] Achievements.
 - - [x] Map. (jigsaw)
 - [ ] Pause: Remember last open page.
-- [ ] Jigsaw: Persist state.
+- [x] Jigsaw: Persist state.
 - [x] Minigames framework.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.

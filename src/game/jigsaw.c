@@ -191,6 +191,7 @@ static void jigsaw_eliminate_colors(uint32_t *img,int w,int h,int stridewords) {
 
 /* Initialize a new jigsaw, private.
  * (mapv,mapstride,colc,rowc) must have been set previously.
+ * All tiles get generated, whether we need them or not.
  */
  
 static int jigsaw_generate_puzzle(struct jigsaw *jigsaw) {
@@ -256,6 +257,7 @@ static int jigsaw_generate_puzzle(struct jigsaw *jigsaw) {
 /* Get coords for the "current map".
  * This is going to be complicated: There will be one-off planes where we want to show the outer world instead.
  * On success we populate: mapv,mapstride,colc,rowc,fx,fy
+ * We don't care at this point, whether the pieces have been found yet.
  */
  
 static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
@@ -331,6 +333,17 @@ static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
   return 0;
 }
 
+/* Tell the store about a changed jigpiece.
+ */
+ 
+static void jigsaw_dirty(struct jigsaw *jigsaw,struct jigpiece *jigpiece) {
+  int col=jigpiece->tileid&15;
+  int row=jigpiece->tileid>>4;
+  if ((col<0)||(row<0)||(col>=jigsaw->colc)||(row>=jigsaw->rowc)) return;
+  struct map *map=jigsaw->mapv+row*jigsaw->mapstride+col;
+  store_jigsaw_set(map->rid,jigpiece->x,jigpiece->y,jigpiece->xform);
+}
+
 /* Cluster and jigpiece primitives.
  */
  
@@ -393,6 +406,7 @@ static void jigsaw_move_cluster(struct jigsaw *jigsaw,uint8_t clusterid,int dx,i
     if (jigpiece->clusterid==clusterid) {
       jigpiece->x+=dx;
       jigpiece->y+=dy;
+      jigsaw_dirty(jigsaw,jigpiece);
     }
   }
 }
@@ -512,36 +526,59 @@ static void jigsaw_detect_clusters(struct jigsaw *jigsaw) {
  */
  
 static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
+
+  // Allocate space for enough pieces to fill the grid. We won't necessarily use all of it.
   int piecea=jigsaw->colc*jigsaw->rowc;
   if (piecea<1) return -1;
   jigsaw->jigpiecec=0;
   if (jigsaw->jigpiecev) free(jigsaw->jigpiecev);
   if (!(jigsaw->jigpiecev=calloc(sizeof(struct jigpiece),piecea))) return -1;
   
-  /* TODO We need to persist some info somewhere. For each piece:
-   *  - u8 transform, or oob if not yet acquired.
-   *  - u8,u8 position.
-   * Don't persist clusterid; we can infer clusters from the positions.
-   * For now, every piece will be visible, and we'll randomize the layout each time we initialize (ie each visit to the pause modal).
+  /* Fully-exposed and scattered map.
+   * Enable this for testing or whatever, if you need to disregard the persistent state.
+   * It's completely functional, but you get a new shuffle every time, which is extremely unhelpful in real life.
    */
-   
-  int row=0;
-  for (;row<jigsaw->rowc;row++) {
-    int col=0;
-    for (;col<jigsaw->colc;col++) {
-      struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
-      jigpiece->x=rand()%200; // aaaand of course, we don't know our bounds yet.
-      jigpiece->y=rand()%100;
-      jigpiece->tileid=(row<<4)|col;
-      switch (rand()&3) {
-        case 0: jigpiece->xform=0; break;
-        case 1: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
-        case 2: jigpiece->xform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
-        case 3: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
+  #if 0
+    int row=0;
+    for (;row<jigsaw->rowc;row++) {
+      int col=0;
+      for (;col<jigsaw->colc;col++) {
+        struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
+        jigpiece->x=rand()%200; // aaaand of course, we don't know our bounds yet.
+        jigpiece->y=rand()%100;
+        jigpiece->tileid=(row<<4)|col;
+        switch (rand()&3) {
+          case 0: jigpiece->xform=0; break;
+          case 1: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
+          case 2: jigpiece->xform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
+          case 3: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
+        }
       }
     }
-  }
   
+  /* The real thing: Read jigsaw state from the store.
+   */
+  #else
+    struct map *mrow=jigsaw->mapv;
+    int row=0;
+    for (;row<jigsaw->rowc;row++,mrow+=jigsaw->mapstride) {
+      struct map *map=mrow;
+      int col=0;
+      for (;col<jigsaw->colc;col++,map++) {
+        int x=0,y=0;
+        uint8_t xform=0;
+        if (store_jigsaw_get(&x,&y,&xform,map->rid)<0) continue; // No such map. Maybe the plane is non-rectangular. (that's illegal but hey).
+        if (xform==0xff) continue; // Piece has not been discovered yet. For our purposes then, it just doesn't exist.
+        struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
+        jigpiece->x=x;
+        jigpiece->y=y;
+        jigpiece->tileid=(row<<4)|col;
+        jigpiece->xform=xform;
+      }
+    }
+  #endif
+  
+  // With the pieces made, determine which are already connected.
   jigsaw_detect_clusters(jigsaw);
    
   return 0;
@@ -602,12 +639,17 @@ static int jigsaw_check_connections(struct jigsaw *jigsaw,struct jigpiece *jigpi
     int d=((dx<0)?-dx:dx)+((dy<0)?-dy:dy); \
     if (d<=tolerance) { \
       result=1; \
-      if (jigpiece->clusterid) { \
-        jigsaw_move_cluster(jigsaw,jigpiece->clusterid,dx,dy); \
-      } else { \
+      if (dx||dy) { \
+        if (jigpiece->clusterid) { \
+          jigsaw_move_cluster(jigsaw,jigpiece->clusterid,dx,dy); \
+        } else { \
+          jigpiece->clusterid=jigsaw_unused_clusterid(jigsaw); \
+          jigpiece->x+=dx; \
+          jigpiece->y+=dy; \
+          jigsaw_dirty(jigsaw,jigpiece); \
+        } \
+      } else if (!jigpiece->clusterid) { \
         jigpiece->clusterid=jigsaw_unused_clusterid(jigsaw); \
-        jigpiece->x+=dx; \
-        jigpiece->y+=dy; \
       } \
       if (name->clusterid) jigsaw_rename_cluster(jigsaw,name->clusterid,jigpiece->clusterid); \
       else name->clusterid=jigpiece->clusterid; \
@@ -688,10 +730,19 @@ int jigsaw_require(struct jigsaw *jigsaw) {
  */
 
 void jigsaw_set_bounds(struct jigsaw *jigsaw,int x,int y,int w,int h) {
+  if ((x==jigsaw->ox)&&(y==jigsaw->oy)&&(w==jigsaw->ow)&&(h==jigsaw->oh)) return;
+  
   jigsaw->ox=x;
   jigsaw->oy=y;
   jigsaw->ow=w;
   jigsaw->oh=h;
+  
+  struct jigpiece *jigpiece=jigsaw->jigpiecev;
+  int i=jigsaw->jigpiecec;
+  for (;i-->0;jigpiece++) {
+    if (jigpiece->x>=w) jigpiece->x=w-1;
+    if (jigpiece->y>=h) jigpiece->y=h-1;
+  }
 }
 
 /* Render.
@@ -721,7 +772,6 @@ void jigsaw_render(struct jigsaw *jigsaw) {
   }
   
   // Outline the grab or hover piece. This outline intentionally renders above any pieces occluding the focussed one.
-  //TODO Need to outline the whole cluster, not just the focus. Or do we?
   if (jigsaw->grab) {
     graf_set_input(&g.graf,jigsaw->texid_outline);
     graf_set_tint(&g.graf,0x00ffffff);
@@ -734,7 +784,7 @@ void jigsaw_render(struct jigsaw *jigsaw) {
     graf_set_tint(&g.graf,0);
   }
   
-  //TODO Other highlights?
+  //TODO Other highlights? This definitely will come up eventually, the whole point of a map is we can show "treasure here!" indicators on it.
 }
 
 /* Test grab.
@@ -779,6 +829,7 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
   else if (jigsaw->hover) jigpiece=jigsaw->hover;
   else return;
   jigpiece->xform=jigsaw_clockwise(jigpiece->xform);
+  jigsaw_dirty(jigsaw,jigpiece);
   if (jigpiece->clusterid) {
     int col=jigpiece->tileid&15;
     int row=jigpiece->tileid>>4;
@@ -792,6 +843,7 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
       int ocol=other->tileid&15;
       int orow=other->tileid>>4;
       jigsaw_neighbor_coords(&other->x,&other->y,jigpiece->x,jigpiece->y,jigpiece->xform,ocol-col,orow-row);
+      jigsaw_dirty(jigsaw,other);
     }
   }
   bm_sound(RID_sound_jigsaw_rotate,0.0);
@@ -814,10 +866,12 @@ void jigsaw_motion(struct jigsaw *jigsaw,int x,int y) {
         if (jigpiece->clusterid!=jigsaw->grab->clusterid) continue;
         jigpiece->x+=dx;
         jigpiece->y+=dy;
+        jigsaw_dirty(jigsaw,jigpiece);
       }
     } else {
       jigsaw->grab->x+=dx;
       jigsaw->grab->y+=dy;
+      jigsaw_dirty(jigsaw,jigsaw->grab);
     }
   } else {
     jigsaw->hover=jigsaw_find_hover(jigsaw,x-jigsaw->ox,y-jigsaw->oy);

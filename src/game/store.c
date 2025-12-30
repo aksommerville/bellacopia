@@ -4,7 +4,9 @@
 #define FIELD_SIZE_LIMIT 16
 
 static struct {
+  
   uint8_t v[STORE_SIZE_BYTES];
+  
   struct listener {
     int listenerid;
     int fld,size;
@@ -14,15 +16,37 @@ static struct {
   int listenerc,listenera;
   int listenerid_next;
   int dirty;
+  
+  /* Jigsaw content.
+   * (jc) is the size of both (jraw) and (jenc) in maps, not bytes.
+   * Each map is 3 bytes, and the stores are indexed by (mapid-1)*3.
+   * (jraw) is [x,y,xform] with (xform==0xff) if piece not found yet.
+   * (jenc) is 3 bytes of base64, ie 18 bits. Pack those big-endianly, then:
+   *    xxxxxx xxyyyy yyyyrr
+   *    (r) is the rotation: (0,1,2,3) = (natural,clockwise,180,deasil)
+   *    The entire construction is ones if not found yet. (y==255 is definitely not valid).
+   * Render order does not persist.
+   */
+  uint8_t *jraw;
+  char *jenc;
+  int jc;
+  int jdirty;
+  int jdebounce;
+  
 } store={0};
+
+static int store_jigsaw_init();
 
 /* Reset.
  */
  
 void store_reset() {
   if (store.listenerv) free(store.listenerv);
+  if (store.jraw) free(store.jraw);
+  if (store.jenc) free(store.jenc);
   memset(&store,0,sizeof(store));
   store.v[0]=0x02; // NS_fld_one = 1
+  store_jigsaw_init();
 }
 
 /* Immediate field access.
@@ -160,12 +184,13 @@ void store_unlisten_all() {
 /* Encode store for save.
  */
  
+static const char alphabet[]=
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  "abcdefghijklmnopqrstuvwxyz"
+  "0123456789+/"
+;
+ 
 static int store_encode(char *dst,int dsta,const uint8_t *src,int srcc) {
-  const char alphabet[]=
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789+/"
-  ;
   if (srcc<0) srcc=0;
   while (srcc%3) srcc--; // Assume the tail is zeroes, and get back to a multiple of 3.
   while ((srcc>=3)&&!src[srcc-1]&&!src[srcc-2]&&!src[srcc-3]) srcc-=3; // Drop zeroes, three bytes at a time.
@@ -245,4 +270,173 @@ int store_save() {
 int store_save_if_dirty() {
   if (!store.dirty) return 0;
   return store_save();
+}
+
+/* Jigsaw store.
+ *******************************************************************************/
+
+static int store_jigsaw_init() {
+
+  // Get the highest mapid.
+  int resp=res_search(EGG_TID_map+1,0);
+  if (resp<0) resp=-resp-1;
+  resp--;
+  if (resp<0) return -1; // No maps, and nothing TOC'd with (tid) less than map? Highly fishy!
+  const struct rom_entry *res=g.resv+resp;
+  if (res->tid!=EGG_TID_map) return -1; // No maps. Also fishy.
+  int mapc=res->rid; // We're going to store them sparsely, indexing on (mapid-1).
+  
+  // Allocate both buffers.
+  int bufsize=mapc*3;
+  if (!(store.jraw=malloc(bufsize))) return -1;
+  if (!(store.jenc=malloc(bufsize))) return -1;
+  
+  // They both start straight ones, ie no piece is found yet.
+  // But the encoded dump is pre-encoded, so "straight ones" means "slashes".
+  memset(store.jraw,0xff,bufsize);
+  memset(store.jenc,'/',bufsize);
+  
+  store.jc=mapc;
+  return 0;
+}
+
+/* Load jigsaw store.
+ */
+ 
+void store_jigsaw_load() {
+  if (store.jc<1) return;
+
+  /* Optimistically read directly from Egg's store into our encoded dump.
+   * If length doesn't match exactly, blank the whole thing.
+   */
+  int bufsize=store.jc*3;
+  int encc=egg_store_get(store.jenc,bufsize,"jigsaw",6);
+  if (encc!=bufsize) {
+    fprintf(stderr,"Blanking jigsaw due to incorrect encoded length. Expected %d, found %d.\n",bufsize,encc);
+    memset(store.jraw,0xff,bufsize);
+    memset(store.jenc,'/',bufsize);
+    return;
+  }
+  
+  /* Decode each unit in turn.
+   * Anything fishy at all, blank it all.
+   */
+  uint8_t *dst=store.jraw;
+  const char *src=store.jenc;
+  int i=store.jc;
+  for (;i-->0;dst+=3,src+=3) {
+    int a=store_decode_digit(src[0]);
+    int b=store_decode_digit(src[1]);
+    int c=store_decode_digit(src[2]);
+    if ((a<0)||(b<0)||(c<0)) {
+      fprintf(stderr,"Blanking jigsaw due to illegal character. One of these: 0x%02x 0x%02x 0x%02x.\n",src[0],src[1],src[2]);
+      memset(store.jraw,0xff,bufsize);
+      memset(store.jenc,'/',bufsize);
+      return;
+    }
+    // Unit is kosher. Swizzle into the expanded 3-byte construction.
+    if ((a==0x3f)&&(b==0x3f)&&(c==0x3f)) {
+      dst[0]=dst[1]=dst[2]=0xff;
+    } else {
+      dst[0]=(a<<2)|(b>>4);
+      dst[1]=(b<<4)|(c>>2);
+      switch (c&3) {
+        case 0: dst[2]=0; break;
+        case 1: dst[2]=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
+        case 2: dst[2]=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
+        case 3: dst[2]=EGG_XFORM_XREV|EGG_XFORM_SWAP; break;
+      }
+    }
+  }
+  
+  store.jdirty=0;
+}
+
+/* Save jigsaw store.
+ */
+
+void store_jigsaw_save_if_dirty(int immediate) {
+
+  // Get out if no action needed. We expect to be called at high frequency, redundantly.
+  if (!store.jdirty) return;
+  if (immediate) ;// Proceed regardless of debounce.
+  else if (store.jdebounce-->0) return; // High-frequency poll: Proceed only when the debounce hits zero.
+  store.jdirty=0;
+
+  // Rewrite (jenc) entirely, from (jraw).
+  char *dst=store.jenc;
+  const uint8_t *src=store.jraw;
+  int i=store.jc;
+  for (;i-->0;dst+=3,src+=3) {
+    // If xform is not one of the 4 natural-chirality rotations, the piece is undiscovered. That encodes differently.
+    int rot=-1;
+    switch (src[2]) {
+      case 0: rot=0; break;
+      case EGG_XFORM_SWAP|EGG_XFORM_YREV: rot=1; break;
+      case EGG_XFORM_XREV|EGG_XFORM_YREV: rot=2; break;
+      case EGG_XFORM_XREV|EGG_XFORM_SWAP: rot=3; break;
+    }
+    if (rot<0) {
+      dst[0]=dst[1]=dst[2]='/'; // Straight ones.
+    } else { // Valid.
+      int x=src[0];
+      int y=src[1];
+      if (y==0xff) y=0xfe; // Don't let it be straight ones. (y) should never go this high to begin with.
+      dst[0]=alphabet[x>>2];
+      dst[1]=alphabet[((x<<4)|(y>>4))&0x3f];
+      dst[2]=alphabet[((y<<2)|rot)&0x3f];
+    }
+  }
+  
+  // And hey presto, it's ready to deliver to Egg Store.
+  if (egg_store_set("jigsaw",6,store.jenc,store.jc*3)<0) {
+    fprintf(stderr,"!!! Failed to save jigsaw state.\n");
+  }
+}
+
+/* Get stored jigsaw piece.
+ */
+ 
+int store_jigsaw_get(int *x,int *y,uint8_t *xform,int mapid) {
+  if (mapid<1) return -1;
+  mapid--;
+  if (mapid>=store.jc) return -1;
+  const uint8_t *src=store.jraw+mapid*3;
+  *x=src[0];
+  *y=src[1];
+  *xform=src[2];
+  if (*xform==0xff) return 0;
+  return 1;
+}
+
+/* Save jigsaw piece.
+ */
+ 
+int store_jigsaw_set(int mapid,int x,int y,uint8_t xform) {
+  if (mapid<1) return -1;
+  mapid--;
+  if (mapid>=store.jc) return -1;
+  uint8_t *dst=store.jraw+mapid*3;
+  // Tolerate OOB (x,y). jigsaw.c lets them run wild.
+  if (x<0) x=0; else if (x>0xff) x=0xff;
+  if (y<0) y=0; else if (y>0xfe) y=0xfe;
+  // But if (xform) is not one of the legal ones, force it all to ones.
+  // (this isn't really our problem, it will get fixed up at encode either way, but let's try to stay straight throughout).
+  switch (xform) {
+    case 0:
+    case EGG_XFORM_SWAP|EGG_XFORM_YREV:
+    case EGG_XFORM_XREV|EGG_XFORM_YREV:
+    case EGG_XFORM_XREV|EGG_XFORM_SWAP:
+      break;
+    default: x=y=xform=0xff;
+  }
+  // Get out without dirtying if it's redundant.
+  if ((dst[0]==x)&&(dst[1]==y)&&(dst[2]==xform)) return 0;
+  // OK, write to our store, mark us dirty, and restart the debounce.
+  dst[0]=x;
+  dst[1]=y;
+  dst[2]=xform;
+  store.jdirty=1;
+  store.jdebounce=50;
+  return 0;
 }

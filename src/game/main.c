@@ -7,6 +7,7 @@ struct g g={0};
 
 void egg_client_quit(int status) {
   store_save_if_dirty();
+  store_jigsaw_save_if_dirty(1);
 }
 
 void egg_client_notify(int k,int v) {
@@ -32,6 +33,7 @@ int egg_client_init() {
   srand_auto();
   
   store_load();
+  store_jigsaw_load();
   
   return 0;
 }
@@ -45,8 +47,13 @@ void egg_client_update(double elapsed) {
   modal_update_all(elapsed);
   modal_drop_defunct();
   if (!g.modalc) {
-    if (!modal_new_hello()) egg_terminate(1);
+    if (!modal_new_hello()) {
+      egg_terminate(1);
+      return;
+    }
   }
+  store_save_if_dirty();
+  store_jigsaw_save_if_dirty(0);
 }
 
 void egg_client_render() {
