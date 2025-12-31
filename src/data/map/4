@@ -14,3 +14,4 @@
 image image:meadow
 position -1 0 1 *
 door @18,1 map:single @12,5 0x0000
+sprite @9,5 sprite:koala (u16:battletype)0 (u16)0

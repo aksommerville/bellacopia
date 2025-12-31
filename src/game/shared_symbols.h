@@ -67,9 +67,11 @@
   _(jigpiece)
   
 // Battle controllers.
-#define NS_battletype_fishing                1
+#define NS_battletype_fishing             1
+#define NS_battletype_boomerang           2
 #define FOR_EACH_BATTLETYPE \
-  _(fishing)
+  _(fishing) \
+  _(boomerang)
   
 // Store fields.
 #define NS_fld_zero                0 /* Read-only, always zero. */

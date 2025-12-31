@@ -7,7 +7,7 @@
  R2      Balacing          Orangutan          Jungle
   2      BodySlam          Yak                Taiga
   2      Bombing           Grenadier          Battlefield
-  2      Boomerang         Koala              Desert
+  2____D Boomerang         Koala              Desert
   2      Bouncing          Squirrel           Woodland
   2      Breaching         Whale              Sea
  R2      BroomRace         Witch              Labyrinth

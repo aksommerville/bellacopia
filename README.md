@@ -58,3 +58,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `modal_dialogue.c`: Typewriter text. Should we? I actually don't like that effect, and it would take considerable effort.
 - - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.
 - [ ] `modal_dialogue.c`: Arrive and dismiss animation, and a blinking indicator when no choices.
+- Extra tooling:
+- - [ ] Sprite hitbox.
+- Data validation:
+- - [ ] Jigpiece in every mappable map, just once.
+- - [ ] Mappable planes rectangular with no gaps.
+- - [ ] Every monster sprite has a battle declared.
