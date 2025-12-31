@@ -20,7 +20,7 @@
   1      Cheating          Hustler            City
   1      Chess             Sage               Labyrinth
   2      CheeseCutting     Executioner        City
-  2      Chopping          Octopus            Farm
+  2____D Chopping          Goat               Farm
   1      Cinematography    Filmmaker          Woodland
   2      ClamBaking        Dragon             Sea
   2      Climbing          Spider             Desert
@@ -122,7 +122,7 @@
   2      Swinging          Kid                City
   2      Telekinesis       Psychic            Labyrinth
   2      Tempting          Siren              Sea
-  2      TicTacToe         Goat               Woodland
+  2      TicTacToe         Raccoon            Woodland
   2      Topping           HotDogVendor       City
  R2      Traffic           Cop                City
  R2      Umbrella          Kitten             Farm

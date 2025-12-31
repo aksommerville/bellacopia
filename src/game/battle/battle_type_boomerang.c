@@ -155,7 +155,7 @@ static void *_boomerang_init(
   CTX->cb_finish=cb_finish;
   CTX->userdata=userdata;
   CTX->outcome=-2;
-  CTX->input_blackout[1]=CTX->input_blackout[2];
+  CTX->input_blackout[1]=CTX->input_blackout[2]=1;
   CTX->grab_time=GRAB_TIME_INITIAL;
   CTX->rang_speed=RANG_SPEED_INITIAL;
   

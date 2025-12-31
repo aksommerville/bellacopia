@@ -10,7 +10,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Got world map, one minigame, pause modal, jigsaws, physics.
 - - Everything looks doable.
 - - Let's figure one day per minigame, and 30 days for the rest, averaging out over work days and weekends... 159 days. Early June.
-- - I'm off today. Confirm ^ that assumption by making 4 minigames.
+- - I'm off today. Confirm ^ that assumption by making 4 minigames. ...Finished Boomerang and Chopping over about 9 hours. One day per battle might be optimistic.
 
 ## TODO
 
@@ -64,3 +64,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Jigpiece in every mappable map, just once.
 - - [ ] Mappable planes rectangular with no gaps.
 - - [ ] Every monster sprite has a battle declared.
+- Beta test logging.
+- - [ ] Client-side log service. Write tersely, and store to a new storage key every session.
+- - [ ] Some cudgel in the web runtime to pull those logs when the session ends, send them to me, and then drop from localStorage.
+- - - This cudgel must also interfere with the UI and explain itself. (partly because we will not spy on users without telling them, and partly so I don't accidentally deploy prod like that).
+- - [ ] Remote service (AWS?) to receive those logs.
+- - [ ] Dev-side tooling to digest logs.
