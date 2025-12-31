@@ -13,5 +13,5 @@
 
 image image:meadow
 position 0 -1 1 *
-sprite @7,4 sprite:cat (u16:battletype)fishing (u16)0
+sprite @7,4 sprite:leopard (u32)0
 sprite @16,7 sprite:jigpiece (u32)0

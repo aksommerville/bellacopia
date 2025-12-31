@@ -20,6 +20,7 @@
 #define CMD_sprite_tile    0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type    0x23 /* u16:sprtype */
 #define CMD_sprite_layer   0x24 /* s16:layer(0=default) */
+#define CMD_sprite_battle  0x25 /* u16:battletype ; NS_sprtype_monster. Spawn point overrides. */
 #define CMD_sprite_physics 0x40 /* (b32:physics)impassables */
 #define CMD_sprite_hitbox  0x41 /* s8:left s8:right s8:top s8:bottom ; pixels ie m/16 */
 

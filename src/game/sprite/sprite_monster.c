@@ -1,5 +1,6 @@
 /* sprite_monster.c
  * Walks about randomly, and on contact launches a minigame.
+ * My tile must face right naturally, and have two frames for animation.
  */
 
 #include "game/game.h"
@@ -26,6 +27,7 @@ struct sprite_monster {
   double stageclock;
   double dx,dy; // Speed, in STAGE_WALK. (m/s)
   int battleid;
+  double animclock;
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
@@ -34,12 +36,28 @@ struct sprite_monster {
  */
  
 static int _monster_init(struct sprite *sprite) {
-  SPRITE->battleid=(sprite->arg[0]<<8)|sprite->arg[1];
+
+  SPRITE->battleid=(sprite->arg[0]<<8)|sprite->arg[1]; // Spawn point overrides sprite def if nonzero.
   SPRITE->x0=sprite->x;
   SPRITE->y0=sprite->y;
   SPRITE->tileid0=sprite->tileid;
   SPRITE->stage=STAGE_IDLE;
   SPRITE->stageclock=INITIAL_IDLE_TIME;
+  
+  struct cmdlist_reader reader;
+  if (sprite_reader_init(&reader,sprite->serial,sprite->serialc)>=0) {
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)>0) {
+      switch (cmd.opcode) {
+        case CMD_sprite_battle: { // Only if we didn't get from spawn point.
+            if (!SPRITE->battleid) {
+              SPRITE->battleid=(cmd.arg[0]<<8)|cmd.arg[1];
+            }
+          } break;
+      }
+    }
+  }
+  
   return 0;
 }
 
@@ -180,6 +198,16 @@ static int monster_hero_in_range(struct sprite *sprite,struct sprite *hero) {
  
 static void _monster_update(struct sprite *sprite,double elapsed) {
 
+  // Animate always, even when standing still.
+  if ((SPRITE->animclock-=elapsed)<=0.0) {
+    SPRITE->animclock+=0.200;
+    if (sprite->tileid==SPRITE->tileid0) sprite->tileid++;
+    else sprite->tileid=SPRITE->tileid0;
+  }
+  
+  // Track horizontal motion.
+  double x0=sprite->x;
+
   /* If the hero is within ATTACK_RANGE and we're not already attacking, start attack, regardless of current stage.
    * Likewise, if we are attacking but the hero goes out of range, enter STAGE_IDLE.
    */
@@ -210,6 +238,10 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
       case STAGE_ATTACK: monster_attack_update(sprite,elapsed,hero); break;
     }
   }
+  
+  // If we moved horizontally, update xform accordingly. Right is natural.
+  if (sprite->x<x0) sprite->xform=EGG_XFORM_XREV;
+  else if (sprite->x>x0) sprite->xform=0;
 }
 
 /* End of battle.

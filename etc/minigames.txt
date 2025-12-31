@@ -1,7 +1,8 @@
 # R = Reference implementation exists. (bcpoc or cherteau; or maybe embedded in some other project)
 # C = Player count. 1 or 2.
+# D = Done.
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
-#RC_____ NAME              OPPONENT           ZONE
+#RC____D NAME              OPPONENT           ZONE
   2      ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
   2      BodySlam          Yak                Taiga
@@ -39,7 +40,7 @@
   2      Fencing           Samurai            Farm
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
-  2      Fishing           Leopard            Jungle
+  2____D Fishing           Leopard            Jungle
   2      Flapjack          Cook               City
  R2      Flapping          Albatross          Sea
   2      Flipping          Ostrich            Desert

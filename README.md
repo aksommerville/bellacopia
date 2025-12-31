@@ -4,8 +4,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Timeline
 
-2023-08-ish: Started musing on the concept.
-2025-12-18: Start work in earnest.
+- 2023-08-ish: Started musing on the concept.
+- 2025-12-18: Start work in earnest.
+- 2025-12-31: Assess, after 6 full days of work:
+- - Got world map, one minigame, pause modal, jigsaws, physics.
+- - Everything looks doable.
+- - Let's figure one day per minigame, and 30 days for the rest, averaging out over work days and weekends... 159 days. Early June.
+- - I'm off today. Confirm ^ that assumption by making 4 minigames.
 
 ## TODO
 
@@ -24,6 +29,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Walk about randomly.
 - - [x] Trigger battles on contact.
 - - [ ] How to spawn? Static spawn points in a map is not the right way.
+- - [ ] How to select handicap? See `sprite_monster.c`
 - [x] Camera: Removed sprites can re-spawn while in view. Check for that, and only spawn offscreen. Ensure the first screen after a cut, they do spawn.
 - [x] Pole fairies: If you travel too far north or south, a pole fairy occasionally appears and offers to warp you back home.
 - [ ] Songs per map: Crossfade and retain playhead.
