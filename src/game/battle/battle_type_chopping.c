@@ -68,9 +68,9 @@ static void player_cleanup(struct player *player) {
 }
  
 static void _chopping_del(void *ctx) {
-  free(ctx);
   player_cleanup(CTX->playerv+0);
   player_cleanup(CTX->playerv+1);
+  free(ctx);
 }
 
 /* Initialize player.

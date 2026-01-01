@@ -34,7 +34,7 @@
   2      Diving            Penguin            Taiga
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
-  2      Exterminating     Solider            Battlefield
+  2____D Exterminating     Solider            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
   2      Fencing           Samurai            Farm

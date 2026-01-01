@@ -1,0 +1,7 @@
+image image:meadow_sprites
+tile 0x06 0
+type (u16:sprtype)monster
+solid
+hitbox -4 4 -4 4
+physics (b32:physics)solid,water,hole,cliff,hookable,safe
+battle (u16:battletype)exterminating

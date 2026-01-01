@@ -3,7 +3,6 @@ Minigames, sorted roughly by estimated effort to implement.
 Remove finished games as you go.
 
 ## Easy
-Exterminating. 5x5 grid with random bugs. Whack a 3x3 section to XOR it, win when all the bugs are gone. Or fewest bugs when time runs out.
 Fire. L/R fast to fill a bar and start the fire. (rubbing sticks)
 Fission. Tap A until the atom splits.
 Flapjack. A to flip your pancake. Aim to cook both sides evenly.

@@ -70,10 +70,12 @@
 #define NS_battletype_fishing             1
 #define NS_battletype_boomerang           2
 #define NS_battletype_chopping            3
+#define NS_battletype_exterminating       4
 #define FOR_EACH_BATTLETYPE \
   _(fishing) \
   _(boomerang) \
-  _(chopping)
+  _(chopping) \
+  _(exterminating)
   
 // Store fields.
 #define NS_fld_zero                0 /* Read-only, always zero. */
