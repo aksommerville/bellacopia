@@ -2,6 +2,8 @@
  * You can inject dependencies just like any other class.
  */
  
+import { JigctabEditor } from "./JigctabEditor.js";
+ 
 export class Override {
   static getDependencies() {
     return [];
@@ -33,7 +35,7 @@ export class Override {
      * Custom editors will be searched in order, before the standard ones.
      */
     this.editors = [
-      //MyEditor,
+      JigctabEditor,
     ];
     
     /* Key is a map command opcode.

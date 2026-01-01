@@ -119,6 +119,7 @@ static int maps_install(int rid,const void *serial,int serialc) {
     idix->z=z;
   }
   map->physics=res_get_physics_table(map->imageid);
+  map->jigctab=res_get_jigctab_table(map->imageid);
   
   return 0;
 }

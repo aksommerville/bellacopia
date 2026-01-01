@@ -13,9 +13,22 @@
 #define CHEER_TIME 30 /* Brief highlight after making a connection. */
 
 // Assume little-endian, so they look ABGR. Need to rephrase these if we ever target a big-endian host, which I really don't expect ever.
+/*XXX use *map->jigctab) instead.
 #define COLOR_SOLID  0xff008000
 #define COLOR_WATER  0xffff0000
 #define COLOR_VACANT 0xffc0e0f0
+*/
+
+/* 32-bit pixel from jigctab's rgb332.
+ * If we're going to support big-endian hosts, need to manage that here.
+ */
+ 
+static uint32_t jigsaw_pixel_from_rgb332(uint8_t src) {
+  uint8_t r=src&0xe0; r|=r>>3; r|=r>>6;
+  uint8_t g=src&0x1c; g|=g<<3; g|=g>>6;
+  uint8_t b=src&0x03; b|=b<<2; b|=b<<4;
+  return r|(g<<8)|(b<<16)|0xff000000;
+}
 
 /* Draw one map into an RGBA buffer.
  * Output has a constant stride (JTILESIZE*16*4), and dimensions (JTILESIZE,JTILESIZE).
@@ -30,6 +43,7 @@ static void jigsaw_draw_map(uint32_t *dst,const struct map *map) {
     uint32_t *dstp=dst;
     int xi=NS_sys_mapw;
     for (;xi-->0;dstp++,src++) {
+      /*XXX
       switch (map->physics[*src]) {
         case NS_physics_solid:
         case NS_physics_cliff:
@@ -46,6 +60,8 @@ static void jigsaw_draw_map(uint32_t *dst,const struct map *map) {
             *dstp=COLOR_VACANT;
             break;
       }
+      */
+      *dstp=jigsaw_pixel_from_rgb332(map->jigctab[*src]);
     }
   }
 }

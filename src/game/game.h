@@ -56,6 +56,7 @@ int res_init();
 int res_search(int tid,int rid);
 int res_get(void *dstpp,int tid,int rid);
 const uint8_t *res_get_physics_table(int tilesheetid); // => 256 bytes, never null
+const uint8_t *res_get_jigctab_table(int tilesheetid); // ''
 
 /* Preferred entry point for battles.
  * We'll validate, push the modal, and return >=0.

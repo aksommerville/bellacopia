@@ -1,3 +1,19 @@
 /* This file exists only to be overridden by client projects.
  * It should always be empty.
  */
+
+.JigctabEditor > .visual {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.Rgb332Modal {
+  display: flex;
+  flex-direction: column;
+}
+.Rgb332Modal .preview {
+  min-width: 100px;
+  min-height: 100px;
+}

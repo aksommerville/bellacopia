@@ -8,8 +8,9 @@ static const uint8_t physics_default[256]={0};
  
 static struct {
 
-  // Physics table from each tilesheet, expanded.
+  // Physics and jigctab table from each tilesheet, expanded.
   uint8_t *physicsv;
+  uint8_t *jigctabv;
   int *physicsidv;
   int physicsidc,physicsida;
   
@@ -20,12 +21,17 @@ static struct {
  
 static int res_welcome_tilesheet(int rid,const void *v,int c) {
   uint8_t *dst;
+  uint8_t *dst_jigctab;
   {
     void *nv=realloc(res.physicsv,(res.physicsidc+1)*256);
     if (!nv) return -1;
     res.physicsv=nv;
     dst=res.physicsv+res.physicsidc*256;
     memset(dst,0,256);
+    if (!(nv=realloc(res.jigctabv,(res.physicsidc+1)*256))) return -1;
+    res.jigctabv=nv;
+    dst_jigctab=res.jigctabv+res.physicsidc*256;
+    memset(dst_jigctab,0,256);
   }
   if (res.physicsidc>=res.physicsida) {
     int na=res.physicsidc+8;
@@ -42,6 +48,8 @@ static int res_welcome_tilesheet(int rid,const void *v,int c) {
   while (tilesheet_reader_next(&entry,&reader)>0) {
     if (entry.tableid==NS_tilesheet_physics) {
       memcpy(dst+entry.tileid,entry.v,entry.c);
+    } else if (entry.tableid==NS_tilesheet_jigctab) {
+      memcpy(dst_jigctab+entry.tileid,entry.v,entry.c);
     }
   }
   return 0; // >0 to TOC it, but there's no need.
@@ -142,4 +150,15 @@ const uint8_t *res_get_physics_table(int tilesheetid) {
     if (*id>tilesheetid) break;
   }
   return physics_default;
+}
+ 
+const uint8_t *res_get_jigctab_table(int tilesheetid) {
+  uint8_t *table=res.jigctabv;
+  const int *id=res.physicsidv;
+  int i=res.physicsidc;
+  for (;i-->0;id++,table+=256) {
+    if (*id==tilesheetid) return table;
+    if (*id>tilesheetid) break;
+  }
+  return physics_default; // Straight zeroes, also appropriate for the jigctab default.
 }
