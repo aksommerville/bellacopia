@@ -1,4 +1,5 @@
 #include "game/game.h"
+#include "game/world/camera.h"
 #include "sprite.h"
 
 /* Globals.
@@ -46,6 +47,7 @@ struct sprite *sprite_spawn(
   sprite->type=type;
   sprite->x=x;
   sprite->y=y;
+  sprite->z=camera_get_z();
   sprite->rid=rid;
   sprite->serial=serial;
   sprite->serialc=serialc;

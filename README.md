@@ -58,7 +58,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `modal_dialogue.c`: Typewriter text. Should we? I actually don't like that effect, and it would take considerable effort.
 - - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.
 - [ ] `modal_dialogue.c`: Arrive and dismiss animation, and a blinking indicator when no choices.
-- [ ] jigpiece sprite broken after you circumnavigate the globe: `_jigpiece_init: (197.500000,-14.500000) appears to be outside plane 1 (-2,-3,5,6).` (even if collected already)
+- [x] jigpiece sprite broken after you circumnavigate the globe: `_jigpiece_init: (197.500000,-14.500000) appears to be outside plane 1 (-2,-3,5,6).` (even if collected already)
+- - Also, the map highlight is missing then.
 - Extra tooling:
 - - [ ] Sprite hitbox.
 - Data validation:

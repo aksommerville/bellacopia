@@ -18,7 +18,7 @@ struct sprite {
   int serialc;
   const uint8_t *arg; // 4 bytes, always present (canned zeroes if not available). Can use as identity for map-spawned sprites.
   double x,y; // Position in plane meters.
-  int z; // Plane ID. Camera should populate before the first update. Beware, it will not be valid at init. (camera_get_z() if you need it).
+  int z; // Plane ID.
   int imageid;
   uint8_t tileid,xform;
   int layer;

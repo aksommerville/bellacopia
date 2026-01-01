@@ -87,7 +87,8 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
   }
   
   // Move on each axis independently.
-  const double speed=6.0; // m/s
+  double speed=6.0; // m/s
+  if (g.input[0]&EGG_BTN_EAST) speed*=3.0;//XXX TEMP
   if (SPRITE->indx) {
     if (sprite_move(sprite,SPRITE->indx*speed*elapsed,0.0)) {
       // ok walking horz

@@ -10,14 +10,7 @@
 #define HLIMIT 12 /* Would need some painful UI redesign to increase. */
 #define X0 ((JTILESIZE>>1)-(NS_sys_mapw>>1)) /* Start position within a tile. Nubs go outside this. */
 #define Y0 ((JTILESIZE>>1)-(NS_sys_maph>>1))
-#define CHEER_TIME 30 /* Brief highlight after making a connection. */
-
-// Assume little-endian, so they look ABGR. Need to rephrase these if we ever target a big-endian host, which I really don't expect ever.
-/*XXX use *map->jigctab) instead.
-#define COLOR_SOLID  0xff008000
-#define COLOR_WATER  0xffff0000
-#define COLOR_VACANT 0xffc0e0f0
-*/
+#define CHEER_TIME 20 /* Brief highlight after making a connection. */
 
 /* 32-bit pixel from jigctab's rgb332.
  * If we're going to support big-endian hosts, need to manage that here.
@@ -43,24 +36,6 @@ static void jigsaw_draw_map(uint32_t *dst,const struct map *map) {
     uint32_t *dstp=dst;
     int xi=NS_sys_mapw;
     for (;xi-->0;dstp++,src++) {
-      /*XXX
-      switch (map->physics[*src]) {
-        case NS_physics_solid:
-        case NS_physics_cliff:
-        case NS_physics_hookable:
-            *dstp=COLOR_SOLID;
-            break;
-        case NS_physics_water:
-        case NS_physics_hole:
-            *dstp=COLOR_WATER;
-            break;
-        case NS_physics_vacant:
-        case NS_physics_safe:
-        default:
-            *dstp=COLOR_VACANT;
-            break;
-      }
-      */
       *dstp=jigsaw_pixel_from_rgb332(map->jigctab[*src]);
     }
   }
@@ -315,11 +290,16 @@ static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
     }
   }
   
+  // Acquire the normalized focus position. Important to do this before the OOB trim below!
+  jigsaw->fx=map_apply_oob(fx-x,w,oobx);
+  jigsaw->fy=map_apply_oob(fy-y,h,ooby);
+  
   // Trim a one-map border for OOB modes "repeat" and "farloop". Use the whole axis for "null" or "loop".
   int stride=w;
   switch (oobx) {
     case NS_mapoob_repeat:
     case NS_mapoob_farloop: if (w>2) {
+        jigsaw->fx-=1;
         x+=1;
         w-=2;
         mapv+=1;
@@ -328,6 +308,7 @@ static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
   switch (ooby) {
     case NS_mapoob_repeat:
     case NS_mapoob_farloop: if (h>2) {
+        jigsaw->fy-=1;
         y+=1;
         h-=2;
         mapv+=stride;
@@ -343,8 +324,6 @@ static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
   jigsaw->mapstride=stride;
   jigsaw->colc=w;
   jigsaw->rowc=h;
-  jigsaw->fx=fx-x;
-  jigsaw->fy=fy-y;
   
   return 0;
 }
@@ -561,50 +540,26 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
   if (jigsaw->jigpiecev) free(jigsaw->jigpiecev);
   if (!(jigsaw->jigpiecev=calloc(sizeof(struct jigpiece),piecea))) return -1;
   
-  /* Fully-exposed and scattered map.
-   * Enable this for testing or whatever, if you need to disregard the persistent state.
-   * It's completely functional, but you get a new shuffle every time, which is extremely unhelpful in real life.
+  /* Generate a piece for each appropriate map.
    */
-  #if 0
-    int row=0;
-    for (;row<jigsaw->rowc;row++) {
-      int col=0;
-      for (;col<jigsaw->colc;col++) {
-        struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
-        jigpiece->x=rand()%200; // aaaand of course, we don't know our bounds yet.
-        jigpiece->y=rand()%100;
-        jigpiece->tileid=(row<<4)|col;
-        switch (rand()&3) {
-          case 0: jigpiece->xform=0; break;
-          case 1: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
-          case 2: jigpiece->xform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
-          case 3: jigpiece->xform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
-        }
-      }
+  struct map *mrow=jigsaw->mapv;
+  int row=0;
+  for (;row<jigsaw->rowc;row++,mrow+=jigsaw->mapstride) {
+    struct map *map=mrow;
+    int col=0;
+    for (;col<jigsaw->colc;col++,map++) {
+      int x=0,y=0;
+      uint8_t xform=0;
+      if (store_jigsaw_get(&x,&y,&xform,map->rid)<0) continue; // No such map. Maybe the plane is non-rectangular. (that's illegal but hey).
+      if (xform==0xff) continue; // Piece has not been discovered yet. For our purposes then, it just doesn't exist.
+      struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
+      jigpiece->x=x;
+      jigpiece->y=y;
+      jigpiece->tileid=(row<<4)|col;
+      jigpiece->xform=xform;
+      jigpiece->indicator=jigsaw_choose_indicator(map);
     }
-  
-  /* The real thing: Read jigsaw state from the store.
-   */
-  #else
-    struct map *mrow=jigsaw->mapv;
-    int row=0;
-    for (;row<jigsaw->rowc;row++,mrow+=jigsaw->mapstride) {
-      struct map *map=mrow;
-      int col=0;
-      for (;col<jigsaw->colc;col++,map++) {
-        int x=0,y=0;
-        uint8_t xform=0;
-        if (store_jigsaw_get(&x,&y,&xform,map->rid)<0) continue; // No such map. Maybe the plane is non-rectangular. (that's illegal but hey).
-        if (xform==0xff) continue; // Piece has not been discovered yet. For our purposes then, it just doesn't exist.
-        struct jigpiece *jigpiece=jigsaw->jigpiecev+jigsaw->jigpiecec++;
-        jigpiece->x=x;
-        jigpiece->y=y;
-        jigpiece->tileid=(row<<4)|col;
-        jigpiece->xform=xform;
-        jigpiece->indicator=jigsaw_choose_indicator(map);
-      }
-    }
-  #endif
+  }
   
   /* If we have the currently-focussed piece, show the hero indicator on it.
    */

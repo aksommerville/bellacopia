@@ -236,36 +236,8 @@ struct map *map_by_position(int x,int y,int z) {
   y-=plane->y;
   
   // Apply OOB strategy if needed.
-  switch (plane->oobx) {
-    case NS_mapoob_loop: while (x<0) x+=plane->w; x%=plane->w; break;
-    case NS_mapoob_repeat: if (x<0) x=0; else if (x>=plane->w) x=plane->w-1; break;
-    case NS_mapoob_farloop: {
-        int twice=plane->w<<1;
-        int half=plane->w>>1;
-        int adjx=x+half;
-        while (adjx<0) adjx+=twice;
-        adjx%=twice;
-        x=adjx-half;
-        if (x<0) x=0; else if (x>=plane->w) x=plane->w-1;
-      } break;
-    case NS_mapoob_null:
-    default: if ((x<0)||(x>=plane->w)) return 0; break;
-  }
-  switch (plane->ooby) {
-    case NS_mapoob_loop: while (y<0) y+=plane->h; y%=plane->h; break;
-    case NS_mapoob_repeat: if (y<0) y=0; else if (y>=plane->h) y=plane->h-1; break;
-    case NS_mapoob_farloop: {
-        int twice=plane->h<<1;
-        int half=plane->h>>1;
-        int adjy=y+half;
-        while (adjy<0) adjy+=twice;
-        adjy%=twice;
-        y=adjy-half;
-        if (y<0) y=0; else if (y>=plane->h) y=plane->h-1;
-      } break;
-    case NS_mapoob_null:
-    default: if ((y<0)||(y>=plane->h)) return 0; break;
-  }
+  x=map_apply_oob(x,plane->w,plane->oobx);
+  y=map_apply_oob(y,plane->h,plane->ooby);
   
   return plane->v+y*plane->w+x;
 }
@@ -293,4 +265,50 @@ struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z
     *ooby=plane->ooby;
     return plane->v;
   }
+}
+
+/* Locate the map for a sprite.
+ */
+ 
+struct map *plane_position_from_sprite(int *px,int *py,double sx,double sy,int z) {
+  if ((z<0)||(z>=maps.planec)) {
+    *px=*py=0;
+    return 0;
+  }
+  const struct plane *plane=maps.planev+z;
+  if ((plane->w<1)||(plane->h<1)) {
+    *px=*py=0;
+    return 0;
+  }
+  int cellx=(int)sx; if (sx<0.0) cellx--;
+  int celly=(int)sy; if (sy<0.0) celly--;
+  int lng=cellx/NS_sys_mapw; if (cellx<0) lng--;
+  int lat=celly/NS_sys_maph; if (celly<0) lat--;
+  lng=map_apply_oob(lng-plane->x,plane->w,plane->oobx);
+  lat=map_apply_oob(lat-plane->y,plane->h,plane->ooby);
+  *px=lng+plane->x;
+  *py=lat+plane->y;
+  if ((lng<0)||(lat<0)||(lng>=plane->w)||(lat>=plane->h)) return 0;
+  return plane->v+lat*plane->w+lng;
+}
+
+/* Apply abstract one-dimensional oob strategy.
+ */
+ 
+int map_apply_oob(int v,int limit,int mapoob) {
+  if (limit<1) return v;
+  switch (mapoob) {
+    case NS_mapoob_loop: while (v<0) v+=limit; v%=limit; break;
+    case NS_mapoob_repeat: if (v<0) v=0; else if (v>=limit) v=limit-1; break;
+    case NS_mapoob_farloop: {
+        int twice=limit<<1;
+        int half=limit>>1;
+        int adj=v+half;
+        while (adj<0) adj+=twice;
+        adj%=twice;
+        v=adj-half;
+        if (v<0) v=0; else if (v>=limit) v=limit-1;
+      } break;
+  }
+  return v;
 }

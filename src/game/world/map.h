@@ -47,4 +47,12 @@ struct map *map_by_id(int rid);
  */
 struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z);
 
+/* Returns longitude and latitude in (px,py), comparable to the (x,y,w,h) from maps_get_plane().
+ * We also return the map, since we're there anyway.
+ * You provide a sprite position in world meters.
+ */
+struct map *plane_position_from_sprite(int *px,int *py,double sx,double sy,int z);
+
+int map_apply_oob(int v,int limit,int mapoob);
+
 #endif

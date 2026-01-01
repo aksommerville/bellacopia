@@ -22,17 +22,12 @@ static int _jigpiece_init(struct sprite *sprite) {
     fprintf(stderr,"%s: z=%d, failed to acquire plane.\n",__func__,z);
     return -1;
   }
-  int pcellx=(int)sprite->x;
-  int pcelly=(int)sprite->y;
-  int fx=pcellx/NS_sys_mapw; if (sprite->x<0.0) fx--;
-  int fy=pcelly/NS_sys_maph; if (sprite->y<0.0) fy--;
-  if ((fx<px)||(fy<py)||(fx>=px+pw)||(fy>=py+ph)) {
+  int fx,fy;
+  struct map *map=plane_position_from_sprite(&fx,&fy,sprite->x,sprite->y,z);
+  if (!map||(fx<px)||(fy<py)||(fx>=px+pw)||(fy>=py+ph)) {
     fprintf(stderr,"%s: (%f,%f) appears to be outside plane %d (%d,%d,%d,%d).\n",__func__,sprite->x,sprite->y,z,px,py,pw,ph);
     return -1;
   }
-  int nx=fx-px;
-  int ny=fy-py;
-  struct map *map=mapv+ny*pw+nx;
   if (map->parent) {
     if (!(map=map_by_id(map->parent))) {
       fprintf(stderr,"%s: Parent map not found!\n",__func__); // Oops, can't report the id now, whatever.
