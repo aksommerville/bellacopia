@@ -16,11 +16,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Can we cause new jigsaw pieces to appear on vacant space instead of overlapping existing ones? Best effort only, of course.
+- [ ] Jigsaw breaks near the south center, every time I leave the pause modal.
+- - UPDATE: With the entire jigsaw assembled, it does stay put.
 - [ ] Monster sprite.
 - - [ ] How to spawn? Static spawn points in a map is not the right way.
 - - [ ] How to select handicap? See `sprite_monster.c`
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
+- [ ] Off-axis correction for the hero when blocked.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
