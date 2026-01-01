@@ -1,0 +1,6 @@
+image image:hero
+tile 129 0
+type (u16:sprtype)treasure
+solid
+hitbox -8 8 -8 8
+physics (b32:physics)solid,water,hole,cliff,hookable,safe

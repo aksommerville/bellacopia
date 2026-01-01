@@ -8,6 +8,7 @@ struct g g={0};
 void egg_client_quit(int status) {
   store_save_if_dirty();
   store_jigsaw_save_if_dirty(1);
+  inventory_save_if_dirty();
 }
 
 void egg_client_notify(int k,int v) {
@@ -54,6 +55,7 @@ void egg_client_update(double elapsed) {
   }
   store_save_if_dirty();
   store_jigsaw_save_if_dirty(0);
+  inventory_save_if_dirty();
 }
 
 void egg_client_render() {

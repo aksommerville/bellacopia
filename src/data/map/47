@@ -14,3 +14,4 @@
 image image:meadow
 position 3 0 10 *
 sprite @10,6 sprite:jigpiece (u32)0
+sprite @15,4 sprite:treasure (u8:itemid)bugspray (u8:quantity)40 (u16:fld)0

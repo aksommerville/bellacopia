@@ -21,6 +21,7 @@ static void _world_del(struct modal *modal) {
 static int _world_init(struct modal *modal) {
   modal->opaque=1;
   modal->interactive=1;
+  inventory_reset();
   if (camera_reset(RID_map_start)<0) return -1;
   return 0;
 }

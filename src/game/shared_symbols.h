@@ -54,18 +54,31 @@
 #define NS_dir_s    0x02
 #define NS_dir_se   0x01
 
+// Inventory items.
+#define NS_itemid_broom           1
+#define NS_itemid_divining_rod    2
+#define NS_itemid_hookshot        3
+#define NS_itemid_fishpole        4
+#define NS_itemid_match           5
+#define NS_itemid_bugspray        6
+#define NS_itemid_candy           7
+#define NS_itemid_wand            8
+#define NS_itemid_magnifier       9
+
 // Sprite controllers.
 #define NS_sprtype_dummy          0 /* (u32)0 */
 #define NS_sprtype_hero           1 /* (u32)0 */
 #define NS_sprtype_monster        2 /* (u16:battletype)0 (u16)0 */
 #define NS_sprtype_polefairy      3 /* (u24)0 (u8)0_left_1_right */
 #define NS_sprtype_jigpiece       4 /* (u32)0 */
+#define NS_sprtype_treasure       5 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
   _(monster) \
   _(polefairy) \
-  _(jigpiece)
+  _(jigpiece) \
+  _(treasure)
   
 // Battle controllers.
 #define NS_battletype_fishing             1

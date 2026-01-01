@@ -13,3 +13,4 @@
 
 image image:meadow
 position 0 1 4 *
+sprite @9,7 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0

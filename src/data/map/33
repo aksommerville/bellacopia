@@ -13,3 +13,5 @@
 
 image image:meadow
 position 1 0 3 *
+sprite @13,3 sprite:treasure (u8:itemid)divining_rod (u8:quantity)0 (u16:fld)0
+sprite @16,8 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0

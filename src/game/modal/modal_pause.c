@@ -98,7 +98,10 @@ static void pause_equip_inventory(struct modal *modal) {
   if ((MODAL->inv.ctoy<0)||(MODAL->inv.ctoy>=INV_ROWC)) return;
   int invp=MODAL->inv.ctoy*INV_COLC+MODAL->inv.ctox;
   bm_sound(RID_sound_uiactivate,0.0);
-  fprintf(stderr,"%s:%d:TODO: Swap equipped item with inventory slot %d/%d\n",__FILE__,__LINE__,invp,INV_COLC*INV_ROWC);//TODO
+  struct inventory tmp=g.equipped;
+  g.equipped=g.inventoryv[invp];
+  g.inventoryv[invp]=tmp;
+  g.inventory_dirty=1;
 }
 
 /* Generate achievements texture if we don't have it yet.
@@ -334,8 +337,12 @@ static void pause_render_tile_cursor(struct modal *modal,int x,int y) {
 /* Helper: Render an unsigned decimal integer at the lower-right corner of some box.
  */
  
-static void pause_render_quantity(struct modal *modal,int x,int y,int w,int h,int n,uint32_t rgba) {
+static void pause_render_quantity(struct modal *modal,int x,int y,int w,int h,int n,int limit) {
   if (n<0) n=0;
+  uint32_t rgba;
+  if (!n) rgba=0x808080ff;
+  else if (n>=limit) rgba=0x00ff00ff;
+  else rgba=0x00c080ff;
   x+=w-3;
   y+=h-4;
   graf_set_image(&g.graf,RID_image_pause);
@@ -377,13 +384,15 @@ static void pause_render_page_inventory(struct modal *modal,int x,int y) {
   pause_render_tile_cursor(modal,cursorx,cursory);
   
   // Inventory contents.
+  struct inventory *inventory=g.inventoryv;
   int celly=fldy+(rowh>>1);
   int row=0;
   for (;row<INV_ROWC;row++,celly+=rowh) {
     int cellx=fldx+(colw>>1);
     int col=0;
-    for (;col<INV_COLC;col++,cellx+=colw) {
-      graf_tile(&g.graf,cellx,celly,0x30+(row*INV_COLC+col)%9,0);//TODO inventory
+    for (;col<INV_COLC;col++,cellx+=colw,inventory++) {
+      if (!inventory->itemid) continue;
+      graf_tile(&g.graf,cellx,celly,tileid_for_item(inventory->itemid,inventory->quantity),0);
     }
   }
   
@@ -394,22 +403,22 @@ static void pause_render_page_inventory(struct modal *modal,int x,int y) {
   graf_tile(&g.graf,handx+(tilesize>>1),handy-(tilesize>>1),0x14,0);
   graf_tile(&g.graf,handx-(tilesize>>1),handy+(tilesize>>1),0x23,0);
   graf_tile(&g.graf,handx+(tilesize>>1),handy+(tilesize>>1),0x24,0);
-  graf_tile(&g.graf,handx,handy,0x30,0);//TODO equipped item
+  if (g.equipped.itemid) {
+    graf_tile(&g.graf,handx,handy,tileid_for_item(g.equipped.itemid,g.equipped.quantity),0);
+  }
   
   // Quantity for inventory content, where warranted.
-  #define QTY(col,row,qty,limit) { \
-    uint32_t rgba; \
-    if ((qty)<=0) rgba=0x808080ff; \
-    else if ((qty)>=(limit)) rgba=0x00ff00ff; \
-    else rgba=0x00c080ff; \
-    pause_render_quantity(modal,fldx+col*colw,fldy+row*rowh,colw,rowh,qty,rgba); \
+  for (row=0,inventory=g.inventoryv;row<INV_ROWC;row++) {
+    int col=0;
+    for (;col<INV_COLC;col++,inventory++) {
+      if (!inventory->itemid) continue;
+      if (!inventory->limit) continue;
+      pause_render_quantity(modal,fldx+col*colw,fldy+row*rowh,colw,rowh,inventory->quantity,inventory->limit);
+    }
   }
-  QTY(0,0,0,1)//TODO inventory quantities
-  QTY(2,1,9,9)
-  QTY(3,1,10,20)
-  QTY(4,4,99,99)
-  QTY(0,4,12345,12346)
-  #undef QTY
+  if (g.equipped.itemid&&g.equipped.limit) {
+    pause_render_quantity(modal,handx-tilesize,handy-tilesize,tilesize<<1,tilesize<<1,g.equipped.quantity,g.equipped.limit);
+  }
 }
 
 /* Render content for the achievements page.
@@ -584,6 +593,12 @@ const struct modal_type modal_type_pause={
  */
  
 struct modal *modal_new_pause() {
+
+  if (INV_COLC*INV_ROWC!=INVENTORY_SIZE) {
+    fprintf(stderr,"Please update INVENTORY_SIZE (%d) or INV_COLC,INV_ROWC (%d,%d)\n",INVENTORY_SIZE,INV_COLC,INV_ROWC);
+    return 0;
+  }
+
   struct modal *modal=modal_new(&modal_type_pause);
   if (!modal) return 0;
   if (modal_push(modal)<0) {

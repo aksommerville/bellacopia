@@ -19,6 +19,8 @@
 #define SOUND_BLACKOUT_LIMIT 16
 #define MODAL_LIMIT 8
 
+#define INVENTORY_SIZE 25 /* Must yield an agreeable rectangle for presentation. 5x5. */
+
 extern struct g {
   void *rom;
   int romc;
@@ -44,6 +46,14 @@ extern struct g {
     void (*cb)(void *userdata,int outcome);
     void *userdata;
   } deferred_battle;
+  
+  struct inventory {
+    int itemid; // 0 if slot vacant. 0..255
+    int limit; // 0 if not counted. 0..16383
+    int quantity; // 0..limit. If limit==0, we can abuse these 14 bits for additional state. eg "sword broken"?
+  } inventoryv[INVENTORY_SIZE];
+  struct inventory equipped; // The equipped item is just another inventory slot; this item is not in your backpack.
+  int inventory_dirty;
 } g;
 
 /* The song mentioned by bm_song() is exclusive, it stops the old one.
@@ -79,5 +89,15 @@ void bm_begin_battle_soon(
 int verbiage_begin_battle(char *dst,int dsta,const struct battle_type *type);
 
 int bm_achievements_generate(); // => texid, always substantially smaller than the framebuffer (will fit in a pause-modal page).
+
+/* inventory.c
+ * tileid_for_item() returns zero if none, otherwise a tile in RID_image_pause.
+ * It takes (quantity) in case we use that as extra state for certain items. Normal quantities are never involved.
+ */
+void inventory_reset();
+int inventory_save_if_dirty();
+uint8_t tileid_for_item(int itemid,int quantity);
+struct inventory *inventory_search(int itemid); // Null if we don't have it.
+int inventory_acquire(int itemid,int quantity); // Nonzero if accepted. Does all the sound effects, storage, modals, whatever.
 
 #endif

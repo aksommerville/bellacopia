@@ -14,3 +14,4 @@
 image image:meadow
 position 3 -2 10 *
 sprite @15,5 sprite:jigpiece (u32)0
+sprite @9,3 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0

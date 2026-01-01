@@ -17,3 +17,4 @@ oob (u8:mapoob)farloop (u8:mapoob)repeat
 sprite @9,5 sprite:hero (u32)0
 door @16,10 map:dungeon @8,5 0x0000
 sprite @1,10 sprite:jigpiece (u32)0
+sprite @16,2 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
