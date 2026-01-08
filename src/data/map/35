@@ -11,7 +11,7 @@
 0403000302010204010303040300020405010400
 0401020000030105050202010005000003030404
 
-image image:meadow
+image image:desert
 position 3 4 1 *
 sprite @10,5 sprite:jigpiece (u32)0
 song song:blood_for_silver

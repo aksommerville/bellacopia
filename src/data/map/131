@@ -11,7 +11,7 @@
 919183a204000001030505000505050104020303
 9191920003020103050604030303060604010305
 
-image image:meadow
+image image:tundra
 position 3 -4 1 *
 sprite @10,2 sprite:jigpiece (u32)0
 song song:first_frost
