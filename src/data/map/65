@@ -15,3 +15,4 @@ image image:botire
 position -3 0 1 *
 sprite @6,9 sprite:jigpiece (u32)0
 song song:snowglobe
+door @11,6 map:136 @8,10 0x0000

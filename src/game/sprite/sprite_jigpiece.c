@@ -15,19 +15,31 @@ struct sprite_jigpiece {
 static int _jigpiece_init(struct sprite *sprite) {
   
   // Determine which map we belong to. Abort if undeterminable or already collected.
+  struct map *map=0;
   int z=camera_get_z(); // Not (sprite->z), that hasn't been established yet. But we know what it's going to be.
-  int px=0,py=0,pw=0,ph=0,oobx=0,ooby=0;
-  struct map *mapv=maps_get_plane(&px,&py,&pw,&ph,&oobx,&ooby,z);
-  if (!mapv||(pw<1)||(ph<1)) {
-    fprintf(stderr,"%s: z=%d, failed to acquire plane.\n",__func__,z);
-    return -1;
+  if (z<0) {
+    // Solo maps handle a little different.
+    int mapid=camera_get_mapid();
+    if (!(map=map_by_id(mapid))) {
+      fprintf(stderr,"%s: Solo map:%d not found.\n",__func__,mapid);
+      return -1;
+    }
+  } else {
+    // Map belongs to a plane.
+    int px=0,py=0,pw=0,ph=0,oobx=0,ooby=0;
+    struct map *mapv=maps_get_plane(&px,&py,&pw,&ph,&oobx,&ooby,z);
+    if (!mapv||(pw<1)||(ph<1)) {
+      fprintf(stderr,"%s: z=%d, failed to acquire plane.\n",__func__,z);
+      return -1;
+    }
+    int fx,fy;
+    map=plane_position_from_sprite(&fx,&fy,sprite->x,sprite->y,z);
+    if (!map||(fx<px)||(fy<py)||(fx>=px+pw)||(fy>=py+ph)) {
+      fprintf(stderr,"%s: (%f,%f) appears to be outside plane %d (%d,%d,%d,%d).\n",__func__,sprite->x,sprite->y,z,px,py,pw,ph);
+      return -1;
+    }
   }
-  int fx,fy;
-  struct map *map=plane_position_from_sprite(&fx,&fy,sprite->x,sprite->y,z);
-  if (!map||(fx<px)||(fy<py)||(fx>=px+pw)||(fy>=py+ph)) {
-    fprintf(stderr,"%s: (%f,%f) appears to be outside plane %d (%d,%d,%d,%d).\n",__func__,sprite->x,sprite->y,z,px,py,pw,ph);
-    return -1;
-  }
+  
   if (map->parent) {
     if (!(map=map_by_id(map->parent))) {
       fprintf(stderr,"%s: Parent map not found!\n",__func__); // Oops, can't report the id now, whatever.

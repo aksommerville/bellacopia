@@ -1,5 +1,6 @@
 #include "game/game.h"
 #include "game/world/map.h"
+#include "game/world/camera.h"
 #include "sprite.h"
 
 #define SMIDGEON 0.001
@@ -44,7 +45,13 @@ static int sprite_detect_collisions(
     // Iterate covered maps. If no map exists there, assume it's passable.
     int my=mya; for (;my<=myz;my++) {
       int mx=mxa; for (;mx<=mxz;mx++) {
-        const struct map *map=map_by_position(mx,my,sprite->z);
+        const struct map *map;
+        if (sprite->z<0) {
+          if (mx||my) continue;
+          map=camera_get_map();
+        } else {
+          map=map_by_position(mx,my,sprite->z);
+        }
         if (!map) continue;
         int mx0=mx*NS_sys_mapw;
         int my0=my*NS_sys_maph;

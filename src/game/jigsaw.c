@@ -254,12 +254,20 @@ static int jigsaw_generate_puzzle(struct jigsaw *jigsaw) {
 static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
 
   // Get the plane where the camera is currently focussed.
+  int x=0,y=0,w=1,h=1,oobx=0,ooby=0;
+  struct map *mapv=0;
   int z=camera_get_z();
-  int x=0,y=0,w=0,h=0,oobx=0,ooby=0;
-  struct map *mapv=maps_get_plane(&x,&y,&w,&h,&oobx,&ooby,z);
-  if (!mapv||(w<1)||(h<1)) {
-    fprintf(stderr,"%s: Plane %d not found!\n",__func__,z);
-    return -1;
+  if (z<0) {
+    if (!(mapv=map_by_id(camera_get_mapid()))) {
+      fprintf(stderr,"%s: Solo map not found!\n",__func__);
+      return -1;
+    }
+  } else {
+    mapv=maps_get_plane(&x,&y,&w,&h,&oobx,&ooby,z);
+    if (!mapv||(w<1)||(h<1)) {
+      fprintf(stderr,"%s: Plane %d not found!\n",__func__,z);
+      return -1;
+    }
   }
   int fx=x,fy=y;
   
@@ -270,7 +278,7 @@ static int jigsaw_acquire_current_position(struct jigsaw *jigsaw) {
       fprintf(stderr,"map:%d not found, declared as parent of map:%d (plane %d)\n",mapv->parent,mapv->rid,z);
       return -1;
     }
-    z=map->z;
+    z=map->z; // Parent planes must not be solo.
     if (!(mapv=maps_get_plane(&x,&y,&w,&h,&oobx,&ooby,z))||(w<1)||(h<1)) {
       fprintf(stderr,"%s: Plane %d not found!\n",__func__,z);
       return -1;

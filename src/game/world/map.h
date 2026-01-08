@@ -10,7 +10,7 @@
 
 struct map {
   int8_t x,y; // Absolute position in plane, in screenfuls.
-  uint8_t z; // Plane ID.
+  int16_t z; // Plane ID or -1.
   int rid;
   int imageid;
   int songid; // <0=unspecified; 0=silent.

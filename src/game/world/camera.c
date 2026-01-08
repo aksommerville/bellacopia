@@ -314,12 +314,19 @@ int camera_reset(int mapid) {
   camera.mx=map->x;
   camera.my=map->y;
   camera.mz=map->z;
-  if (!(camera.mapv=maps_get_plane(
-    &camera.px,&camera.py,
-    &camera.pw,&camera.ph,
-    &camera.poobx,&camera.pooby,
-    camera.mz
-  ))) return -1;
+  if (map->z<0) {
+    camera.mapv=map;
+    camera.px=camera.py=0;
+    camera.pw=camera.ph=1;
+    camera.poobx=camera.pooby=NS_mapoob_null;
+  } else {
+    if (!(camera.mapv=maps_get_plane(
+      &camera.px,&camera.py,
+      &camera.pw,&camera.ph,
+      &camera.poobx,&camera.pooby,
+      camera.mz
+    ))) return -1;
+  }
   camera.fx=(double)(map->x*NS_sys_mapw)+NS_sys_mapw*0.5;
   camera.fy=(double)(map->y*NS_sys_maph)+NS_sys_maph*0.5;
   sprites_clear();
@@ -442,6 +449,14 @@ void camera_render() {
  
 int camera_get_z() {
   return camera.mz;
+}
+
+int camera_get_mapid() {
+  return camera.mapv->rid;
+}
+
+const struct map *camera_get_map() {
+  return camera.mapv;
 }
 
 void camera_get_focus(int *x,int *y,int *z) {

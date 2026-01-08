@@ -14,4 +14,5 @@ a1a1a1a1a1a1a115a1a1a1a1a1a1a1a184919191
 image image:botire
 position -2 -1 1 *
 song song:snowglobe
-sprite @8,6 sprite:jigpiece (u32)0
+door @12,7 map:133 @12,10 0x0000
+door @1,7 map:134 @11,10 0x0000

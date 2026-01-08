@@ -5,6 +5,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+struct map;
+
 /* Resetting camera deletes all the sprites immediately.
  * We load the given map from scratch and begin centered on it.
  */
@@ -14,6 +16,8 @@ void camera_update(double elapsed);
 void camera_render();
 
 int camera_get_z();
+int camera_get_mapid(); // Only valid if (z<0), ie a solo plane.
+const struct map *camera_get_map(); // ''
 void camera_get_focus(int *x,int *y,int *z); // Focussed map position (world coords).
 
 int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,void *userdata),void *userdata);

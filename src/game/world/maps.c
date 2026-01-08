@@ -13,7 +13,7 @@ struct plane {
 
 struct idix {
   int8_t x,y;
-  uint8_t z;
+  int16_t z; // Must accomodate (-1..255)
 };
 
 static struct {
@@ -21,6 +21,8 @@ static struct {
   int planec; // How many we actually use.
   struct idix *idixv; // Indexed by rid.
   int idixc;
+  struct map *solov; // Maps that don't declare a plane go here, each is implicitly a 1x1 plane.
+  int soloc;
 } maps={0};
 
 /* Install one map, during initial scan.
@@ -58,54 +60,71 @@ static int maps_install(int rid,const void *serial,int serialc) {
     }
   }
   
-  // Identify the plane, confirm in bounds, and confirm not occupied.
-  // Only the double-occupancy error matters here; the others should have been caught earlier.
-  if (z<0) return -1;
-  if (z>=maps.planec) return -1;
-  struct plane *plane=maps.planev+z;
-  if ((x<plane->x)||(y<plane->y)||(x>=plane->x+plane->w)||(y>=plane->y+plane->h)) return -1;
-  struct map *map=plane->v+(y-plane->y)*plane->w+(x-plane->x);
-  if (map->rid) {
-    fprintf(stderr,"map:%d and map:%d both claim position (%d,%d,%d)\n",map->rid,rid,x,y,z);
-    return -1;
-  }
+  struct map *map=0;
+  if (z>=0) {
+    // Identify the plane, confirm in bounds, and confirm not occupied.
+    // Only the double-occupancy error matters here; the others should have been caught earlier.
+    if (z>=maps.planec) return -1;
+    struct plane *plane=maps.planev+z;
+    if ((x<plane->x)||(y<plane->y)||(x>=plane->x+plane->w)||(y>=plane->y+plane->h)) return -1;
+    map=plane->v+(y-plane->y)*plane->w+(x-plane->x);
+    if (map->rid) {
+      fprintf(stderr,"map:%d and map:%d both claim position (%d,%d,%d)\n",map->rid,rid,x,y,z);
+      return -1;
+    }
   
-  // If the map declared OOB handling strategy, commit to to plane and ensure it agrees.
-  if (oobx) {
-    if (plane->oobx) {
-      if ((oobx!=plane->oobx)||(ooby!=plane->ooby)) {
-        fprintf(stderr,
-          "Conflicting OOB strategy for plane %d. (%d,%d) vs (%d,%d). map:%d is one, don't know the other.\n",
-          z,oobx,ooby,plane->oobx,plane->ooby,rid
-        );
-        return -1;
+    // If the map declared OOB handling strategy, commit to to plane and ensure it agrees.
+    if (oobx) {
+      if (plane->oobx) {
+        if ((oobx!=plane->oobx)||(ooby!=plane->ooby)) {
+          fprintf(stderr,
+            "Conflicting OOB strategy for plane %d. (%d,%d) vs (%d,%d). map:%d is one, don't know the other.\n",
+            z,oobx,ooby,plane->oobx,plane->ooby,rid
+          );
+          return -1;
+        }
+      } else {
+        plane->oobx=oobx;
+        plane->ooby=ooby;
       }
-    } else {
-      plane->oobx=oobx;
-      plane->ooby=ooby;
+    }
+  
+    // Parent, same idea as OOB.
+    if (parent) {
+      if (plane->parent) {
+        if (plane->parent!=parent) {
+          fprintf(stderr,
+            "Conflicting map parents for plane %d. map:%d (from map:%d) vs map:%d.\n",
+            z,parent,rid,plane->parent
+          );
+          return -1;
+        }
+      } else {
+        plane->parent=parent;
+      }
+    }
+    
+  /* If there wasn't a declared position, put it in the first available solo slot.
+   * (soloc) is already set, during init.
+   */
+  } else {
+    struct map *solo=maps.solov;
+    int i=maps.soloc;
+    for (;i-->0;solo++) {
+      if (!solo->rid) {
+        map=solo;
+        break;
+      }
     }
   }
-  
-  // Parent, same idea as OOB.
-  if (parent) {
-    if (plane->parent) {
-      if (plane->parent!=parent) {
-        fprintf(stderr,
-          "Conflicting map parents for plane %d. map:%d (from map:%d) vs map:%d.\n",
-          z,parent,rid,plane->parent
-        );
-        return -1;
-      }
-    } else {
-      plane->parent=parent;
-    }
-  }
+  if (!map) return -1;
   
   // Populate the map.
   map->x=x;
   map->y=y;
   map->z=z;
   map->rid=rid;
+  map->parent=parent;
   map->imageid=imageid;
   map->songid=songid;
   map->ro=rmap.v;
@@ -152,8 +171,8 @@ int maps_init() {
       }
     }
     if (z<0) {
-      fprintf(stderr,"map:%d didn't declare its position\n",res->rid);
-      return -1;
+      maps.soloc++;
+      continue;
     }
     if (z>=maps.planec) maps.planec=z+1;
     struct plane *plane=maps.planev+z;
@@ -169,6 +188,11 @@ int maps_init() {
       plane->w=1;
       plane->h=1;
     }
+  }
+  
+  // Allocate the solo list.
+  if (maps.soloc) {
+    if (!(maps.solov=calloc(maps.soloc,sizeof(struct map)))) return -1;
   }
   
   // Allocate the id index.
@@ -202,6 +226,14 @@ int maps_init() {
     }
   }
   
+  // Confirm that we filled the solo list.
+  if (maps.soloc) {
+    if (!maps.solov[maps.soloc-1].rid) {
+      fprintf(stderr,"Expected %d solo maps but apparently didn't find all of them.\n",maps.soloc);
+      return -1;
+    }
+  }
+  
   return 0;
 }
 
@@ -219,6 +251,11 @@ void maps_reset() {
       memcpy(map->v,map->ro,sizeof(map->v));
     }
   }
+  struct map *map=maps.solov;
+  for (i=maps.soloc;i-->0;map++) {
+    if (!map->ro) continue; // Shouldn't be any empties in (solov) but no harm in checking.
+    memcpy(map->v,map->ro,sizeof(map->v));
+  }
 }
 
 /* Find map, public.
@@ -226,7 +263,7 @@ void maps_reset() {
  
 struct map *map_by_position(int x,int y,int z) {
 
-  // Unknown or empty plane, return null.
+  // Unknown, empty, or solo plane, return null.
   if ((z<0)||(z>=maps.planec)) return 0;
   struct plane *plane=maps.planev+z;
   if ((plane->w<1)||(plane->h<1)) return 0;
@@ -245,6 +282,17 @@ struct map *map_by_position(int x,int y,int z) {
 struct map *map_by_id(int rid) {
   if ((rid<0)||(rid>=maps.idixc)) return 0;
   const struct idix *idix=maps.idixv+rid;
+  if (idix->z<0) { // Solo.
+    int lo=0,hi=maps.soloc;
+    while (lo<hi) {
+      int ck=(lo+hi)>>1;
+      struct map *q=maps.solov+ck;
+           if (rid<q->rid) hi=ck;
+      else if (rid>q->rid) lo=ck+1;
+      else return q;
+    }
+    return 0;
+  }
   return map_by_position(idix->x,idix->y,idix->z);
 }
 
@@ -252,7 +300,12 @@ struct map *map_by_id(int rid) {
  */
  
 struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z) {
-  if ((z<0)||(z>=maps.planec)) {
+  if (z<0) { // Anything <0 means a solo map. No actual plane record but we know how to fake it.
+    *x=*y=0;
+    *w=*h=1;
+    *oobx=*ooby=NS_mapoob_null;
+    return 0;
+  } else if (z>=maps.planec) {
     *x=*y=*w=*h=*oobx=*ooby=0;
     return 0;
   } else {
