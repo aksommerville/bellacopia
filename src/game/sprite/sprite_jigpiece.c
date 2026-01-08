@@ -55,8 +55,8 @@ static void _jigpiece_update(struct sprite *sprite,double elapsed) {
     if ((dx>=-RADIUS)&&(dx<RADIUS)) {
       double dy=sprite->y-hero->y;
       if ((dy>=-RADIUS)&&(dy<=RADIUS)) {
-        int x=rand()%200;//TODO
-        int y=rand()%100;//TODO
+        int x,y;
+        store_jigpiece_new_position(&x,&y,sprite->z);
         uint8_t xform;
         switch (rand()&3) {
           case 0: xform=0; break;

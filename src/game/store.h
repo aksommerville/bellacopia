@@ -40,4 +40,9 @@ void store_jigsaw_save_if_dirty(int immediate); // (immediate) nonzero to skip t
 int store_jigsaw_get(int *x,int *y,uint8_t *xform,int mapid);
 int store_jigsaw_set(int mapid,int x,int y,uint8_t xform);
 
+/* Populate (x,y) in (0..255,143), attempting not to use any space occupied by a known piece on plane (z).
+ * This is more expensive than it sounds, since we have to search the map store for all the maps on (z).
+ */
+void store_jigpiece_new_position(int *x,int *y,int z);
+
 #endif

@@ -1,4 +1,5 @@
 #include "game.h"
+#include "world/map.h"
 
 #define STORE_SIZE_BYTES 1024
 #define FIELD_SIZE_LIMIT 16
@@ -439,4 +440,76 @@ int store_jigsaw_set(int mapid,int x,int y,uint8_t xform) {
   store.jdirty=1;
   store.jdebounce=50;
   return 0;
+}
+
+/* Random position for a new jigpiece.
+ * We'll make an effort to put it somewhere vacant.
+ */
+ 
+void store_jigpiece_new_position(int *x,int *y,int z) {
+  const int fldw=256;
+  const int fldh=144;
+  
+  // Acquire the plane.
+  int px,py,pw=0,ph=0,oobx,ooby; // We only care about (pw,ph).
+  struct map *mapv=maps_get_plane(&px,&py,&pw,&ph,&oobx,&ooby,z);
+  int mapc=pw*ph;
+  if (!mapv||(mapc<1)) {
+    *x=rand()%fldw;
+    *y=rand()%fldh;
+    return;
+  }
+  
+  /* Record the jigpiece position for each map in the plane.
+   * Fair to assume that there will never be a jigsaw with more than 128 pieces.
+   * (I think our largest is 90).
+   */
+  #define posa 128
+  struct pos { int x,y; } posv[posa];
+  int posc=0;
+  struct map *map=mapv;
+  int i=mapc;
+  for (;i-->0;map++) {
+    int mx,my;
+    uint8_t mxform;
+    if (store_jigsaw_get(&mx,&my,&mxform,map->rid)<=0) continue;
+    struct pos *pos=posv+posc++;
+    pos->x=mx;
+    pos->y=my;
+    if (posc>=posa) break;
+  }
+  #undef posa
+  if (posc<1) {
+    *x=rand()%fldw;
+    *y=rand()%fldh;
+    return;
+  }
+  
+  /* Pick something randomly in (0..fldw,fldh), maximizing distance to everything in (posv).
+   * This is an interesting geometry problem that I don't know the solution to it.
+   * But of course it's supposed to be imperfect. So do it dumbly:
+   * Take a few random samples, and pick whichever yields the highest sum of manhattan distances.
+   */
+  int hiscore=0;
+  int samplec=10; // Arbitrary.
+  while (samplec-->0) {
+    int score=0;
+    int qx=rand()%fldw;
+    int qy=rand()%fldh;
+    const struct pos *pos=posv;
+    int i=posc;
+    for (;i-->0;pos++) {
+      int dx=qx-pos->x; if (dx<0) score-=dx; else score+=dx;
+      int dy=qy-pos->y; if (dy<0) score-=dy; else score+=dy;
+    }
+    if (score>hiscore) {
+      hiscore=score;
+      *x=qx;
+      *y=qy;
+    }
+  }
+  if (!hiscore) { // eg just one piece and we guessed its exact location every time. Narrowly possible.
+    *x=rand()%fldw;
+    *y=rand()%fldh;
+  }
 }

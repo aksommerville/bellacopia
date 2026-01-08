@@ -447,8 +447,6 @@ static int jigsaw_clockwise(int xform) {
  */
  
 static void jigsaw_detect_clusters_1(struct jigsaw *jigsaw,struct jigpiece *jigpiece) {
-  if (jigpiece->clusterid) return; // Been here already.
-  jigpiece->clusterid=0xff; // Mark visited temporarily. We'll update if a neighbor is detected.
   int col=jigpiece->tileid&0x0f;
   int row=jigpiece->tileid>>4;
   struct jigpiece *l=col?jigsaw_jigpiece_by_tileid(jigsaw,jigpiece->tileid-1):0;
@@ -485,22 +483,30 @@ static void jigsaw_detect_clusters_1(struct jigsaw *jigsaw,struct jigpiece *jigp
     if ((b->x!=qx)||(b->y!=qy)) b=0;
   }
   if (!l&&!r&&!t&&!b) return;
-  // OK, the remaining neighbors are real, we need a clusterid. If any neighbor already has one, rename all of it.
-  jigpiece->clusterid=jigsaw_unused_clusterid(jigsaw);
+  // OK, the remaining neighbors are real, we need a clusterid.
+  if (!jigpiece->clusterid) {
+    jigpiece->clusterid=jigsaw_unused_clusterid(jigsaw);
+  }
+  // Neighbors already marked as this cluster are ok, drop them.
+  if (l&&(l->clusterid==jigpiece->clusterid)) l=0;
+  if (r&&(r->clusterid==jigpiece->clusterid)) r=0;
+  if (t&&(t->clusterid==jigpiece->clusterid)) t=0;
+  if (b&&(b->clusterid==jigpiece->clusterid)) b=0;
+  // If a neighbor already has a clusterid, rename that whole cluster. Otherwise, assign it simply to ours.
   if (l) {
-    if (l->clusterid&&(l->clusterid!=0xff)) jigsaw_rename_cluster(jigsaw,l->clusterid,jigpiece->clusterid);
+    if (l->clusterid) jigsaw_rename_cluster(jigsaw,l->clusterid,jigpiece->clusterid);
     else l->clusterid=jigpiece->clusterid;
   }
   if (r) {
-    if (r->clusterid&&(r->clusterid!=0xff)) jigsaw_rename_cluster(jigsaw,r->clusterid,jigpiece->clusterid);
+    if (r->clusterid) jigsaw_rename_cluster(jigsaw,r->clusterid,jigpiece->clusterid);
     else r->clusterid=jigpiece->clusterid;
   }
   if (t) {
-    if (t->clusterid&&(t->clusterid!=0xff)) jigsaw_rename_cluster(jigsaw,t->clusterid,jigpiece->clusterid);
+    if (t->clusterid) jigsaw_rename_cluster(jigsaw,t->clusterid,jigpiece->clusterid);
     else t->clusterid=jigpiece->clusterid;
   }
   if (b) {
-    if (b->clusterid&&(b->clusterid!=0xff)) jigsaw_rename_cluster(jigsaw,b->clusterid,jigpiece->clusterid);
+    if (b->clusterid) jigsaw_rename_cluster(jigsaw,b->clusterid,jigpiece->clusterid);
     else b->clusterid=jigpiece->clusterid;
   }
 }
@@ -510,10 +516,8 @@ static void jigsaw_detect_clusters(struct jigsaw *jigsaw) {
   int i;
   for (jigpiece=jigsaw->jigpiecev,i=jigsaw->jigpiecec;i-->0;jigpiece++) jigpiece->clusterid=0;
   for (jigpiece=jigsaw->jigpiecev,i=jigsaw->jigpiecec;i-->0;jigpiece++) {
-    if (jigpiece->clusterid) continue; // Already visited, no worries.
     jigsaw_detect_clusters_1(jigsaw,jigpiece);
   }
-  for (jigpiece=jigsaw->jigpiecev,i=jigsaw->jigpiecec;i-->0;jigpiece++) if (jigpiece->clusterid==0xff) jigpiece->clusterid=0;
 }
 
 /* Tileid in RID_image_pause if this map deserves a blinking indicator.
@@ -680,6 +684,37 @@ static int jigsaw_check_connections_all(struct jigsaw *jigsaw,struct jigpiece *j
   }
 }
 
+/* If any piece is out of bounds, move its entire cluster to get in bounds.
+ * This should be called after each move.
+ */
+ 
+static void jigsaw_force_legal_positions(struct jigsaw *jigsaw) {
+  struct jigpiece *jigpiece=jigsaw->jigpiecev;
+  int i=jigsaw->jigpiecec;
+  for (;i-->0;jigpiece++) {
+    int dx=0,dy=0;
+    if (jigpiece->x<0) dx=-jigpiece->x;
+    else if (jigpiece->x>jigsaw->ow) dx=jigsaw->ow-jigpiece->x;
+    if (jigpiece->y<0) dy=-jigpiece->y;
+    else if (jigpiece->y>jigsaw->oh) dy=jigsaw->oh-jigpiece->y;
+    if (!dx&&!dy) continue;
+    if (jigpiece->clusterid) {
+      struct jigpiece *other=jigsaw->jigpiecev;
+      int oi=jigsaw->jigpiecec;
+      for (;oi-->0;other++) {
+        if (jigpiece->clusterid!=other->clusterid) continue;
+        other->x+=dx;
+        other->y+=dy;
+        jigsaw_dirty(jigsaw,other);
+      }
+    } else {
+      jigpiece->x+=dx;
+      jigpiece->y+=dy;
+      jigsaw_dirty(jigsaw,jigpiece);
+    }
+  }
+}
+
 /* Public API.
  **************************************************************************************************************/
 
@@ -723,6 +758,14 @@ int jigsaw_require(struct jigsaw *jigsaw) {
  */
 
 void jigsaw_set_bounds(struct jigsaw *jigsaw,int x,int y,int w,int h) {
+  if (w>256) {
+    x+=(w-256)>>1;
+    w=256;
+  }
+  if (h>256) {
+    y+=(h-256)>>1;
+    h=256;
+  }
   if ((x==jigsaw->ox)&&(y==jigsaw->oy)&&(w==jigsaw->ow)&&(h==jigsaw->oh)) return;
   
   jigsaw->ox=x;
@@ -815,6 +858,7 @@ void jigsaw_release(struct jigsaw *jigsaw) {
   } else {
     bm_sound(RID_sound_jigsaw_drop,0.0);
   }
+  jigsaw_force_legal_positions(jigsaw);
 }
 
 /* Rotate.

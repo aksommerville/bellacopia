@@ -16,9 +16,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Can we cause new jigsaw pieces to appear on vacant space instead of overlapping existing ones? Best effort only, of course.
-- [ ] Jigsaw breaks near the south center, every time I leave the pause modal.
+- [x] Can we cause new jigsaw pieces to appear on vacant space instead of overlapping existing ones? Best effort only, of course.
+- [x] Jigsaw breaks near the south center, every time I leave the pause modal.
 - - UPDATE: With the entire jigsaw assembled, it does stay put.
+- - [x] Determine, document, and verify a minimal repro. This is a tricky one.
+- - - etc/regression/20260108-broken-jigsaw.save
+- - - ^ 22 pieces, all connected, but jigsaw_detect_clusters detects three.
+- - ...looks like I started jigsaw_detect_clusters assuming it would operate recursively, but it's not recursive. Fixed.
 - [ ] Monster sprite.
 - - [ ] How to spawn? Static spawn points in a map is not the right way.
 - - [ ] How to select handicap? See `sprite_monster.c`
