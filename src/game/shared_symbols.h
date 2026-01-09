@@ -14,6 +14,7 @@
 #define CMD_map_position   0x40 /* s8:long s8:lat u8:plane u8:reserved */
 #define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
+#define CMD_map_rsprite    0x62 /* u16:reserved u16:spriteid u32:arg ; May spawn anywhere vacant. One per command. */
 
 #define CMD_sprite_solid   0x01 /* --- */
 #define CMD_sprite_image   0x20 /* u16:imageid */

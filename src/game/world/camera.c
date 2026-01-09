@@ -149,14 +149,114 @@ static int camera_add_poi(int x,int y,uint8_t opcode,const uint8_t *arg) {
   return 0;
 }
 
+/* Spawn one sprite from an "rsprite" command.
+ * May decline if we can't find space for it.
+ */
+ 
+static struct sprite *camera_spawn_rsprite(const struct cmdlist_entry *cmd,const struct map *map,int mx,int my) {
+
+  // Parse command, and get out if the sprite is already live.
+  int rid=(cmd->arg[2]<<8)|cmd->arg[3];
+  const uint8_t *arg=cmd->arg+4;
+  if (sprite_by_arg(arg)) return 0; // Already have one. It's strictly one sprite per rsprite command.
+  
+  //TODO I think we ought to use the first 16 bits of the rsprite command for more conditions.
+  // Current naive logic is probably going to be a bit too spawn-happy.
+  // Maybe a registry of recent random spawns, and you have to travel a certain distance to evict entries from that registry?
+  
+  /* Choose the valid bounds within map.
+   * We'll crop out anything currently visible, unless it's a cut.
+   * Possible that we'll reduce to zero here, then just decline to spawn.
+   */
+  int cola=0,rowa=0,colc=NS_sys_mapw,rowc=NS_sys_maph;
+  if (camera.cut) {
+  } else {
+    int vx=camera.vx/NS_sys_tilesize-mx*NS_sys_mapw;
+    int vy=camera.vy/NS_sys_tilesize-my*NS_sys_maph;
+    if (camera.vx<0) vx--;
+    if (camera.vy<0) vy--;
+    if ((vx<=-NS_sys_mapw)||(vx>=NS_sys_mapw)||(vy<=-NS_sys_maph)||(vy>=NS_sys_maph)) {
+    } else {
+      // Reduce futher than necessary, to the diagonal quadrant. For simplicity's sake.
+      if (vx>0) colc=vx;
+      else if (vx<0) {
+        cola=vx+NS_sys_mapw;
+        colc=NS_sys_mapw-cola;
+      }
+      if (vy>0) rowc=vy;
+      else if (vy<0) {
+        rowa=vy+NS_sys_maph;
+        rowc=NS_sys_maph-rowa;
+      }
+    }
+  }
+  
+  /* Find a position within this map, on a vacant cell, where no sprite already exists.
+   * We assume sprites are roughly one meter square, not doing actual collision tests.
+   * Also: Reject positions that are currently in view.
+   */
+  int panic=100;
+  for (;;) {
+    if (--panic<0) return 0; // Figure there's no space available. Easy come easy go.
+    
+    // Random cell in this map, and reject if not vacant.
+    int subx=cola+rand()%colc;
+    int suby=rowa+rand()%rowc;
+    uint8_t physics=map->physics[map->v[suby*NS_sys_mapw+subx]];
+    if (physics!=NS_physics_vacant) continue;
+    
+    // Rephrase position in plane meters, then reject if any other sprite is too near it.
+    // Including decorative sprites, defunct ones, everything. That might be too broad.
+    double sx=subx+0.5+(double)(mx*NS_sys_mapw);
+    double sy=suby+0.5+(double)(my*NS_sys_maph);
+    int collision=0;
+    struct sprite **otherp=0;
+    int i=sprites_get_all(&otherp);
+    for (;i-->0;otherp++) {
+      struct sprite *other=*otherp;
+      double dx=other->x-sx;
+      if ((dx<-0.5)||(dx>0.5)) continue;
+      double dy=other->y-sy;
+      if ((dy<-0.5)||(dy>0.5)) continue;
+      collision=1;
+      break;
+    }
+    if (collision) continue;
+    
+    // OK, spawn it!
+    struct sprite *sprite=sprite_spawn(sx,sy,rid,arg,0,0,0);
+    if (sprite) {
+      sprite->z=camera.mz;
+    }
+    return sprite;
+  }
+}
+
 /* Spawn sprites and poi for a map. It's either the focus map or a neighbor.
  */
  
 static void camera_spawn_sprites(const struct map *map,int mx,int my) {
+
+  /* For random sprites, the first pass over commands just gathers parameters.
+   * Their positioning might be influenced by fixed-position sprites, so defer until after.
+   */
+  #define RSPRITE_LIMIT 16
+  int rspritec=0;
+  struct cmdlist_entry rspritev[RSPRITE_LIMIT];
+  
+  // Main pass over commands, where most work should happen.
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
+    
+      case CMD_map_rsprite: {
+          if (rspritec>=RSPRITE_LIMIT) {
+            fprintf(stderr,"WARNING: map:%d contains too many rsprite commands, limit %d.\n",map->rid,RSPRITE_LIMIT);
+          } else {
+            rspritev[rspritec++]=cmd;
+          }
+        } break;
     
       case CMD_map_sprite: {
           double sx=cmd.arg[0]+0.5+(double)(mx*NS_sys_mapw);
@@ -192,6 +292,17 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
       case CMD_map_door: {
           camera_add_poi(mx*NS_sys_mapw+cmd.arg[0],my*NS_sys_maph+cmd.arg[1],cmd.opcode,cmd.arg);
         } break;
+    }
+  }
+  
+  /* If there are random sprites, make the calculations and spawn them.
+   * With random counts, it's not purely random.
+   * Treat it like a bag: Each set of (rspritec) within (spawnc) spawns one of each sprite.
+   * The remaining (rspritec<spawnc) all get different sprites, random choices.
+   */
+  if (rspritec>0) {
+    while (rspritec-->0) {
+      camera_spawn_rsprite(rspritev+rspritec,map,mx,my);
     }
   }
 }

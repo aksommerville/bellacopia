@@ -8,9 +8,11 @@ struct sprite_dummy {
 #define SPRITE ((struct sprite_dummy*)sprite)
 
 static void _dummy_del(struct sprite *sprite) {
+  fprintf(stderr,"%p %s\n",sprite,__func__);
 }
 
 static int _dummy_init(struct sprite *sprite) {
+  fprintf(stderr,"%p %s\n",sprite,__func__);
   return 0;
 }
 

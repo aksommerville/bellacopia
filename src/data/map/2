@@ -18,3 +18,4 @@ sprite @6,5 sprite:jigpiece (u32)0
 sprite @14,8 sprite:treasure (u8:itemid)divining_rod (u8:quantity)0 (u16:fld)0
 sprite @3,6 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0
 sprite @8,8 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
+rsprite (u16)0 sprite:goat (u32)0

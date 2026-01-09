@@ -83,6 +83,7 @@ We'll group minigames by Zone.
 - [ ] Races across the world, once you have a Broom.
 - [ ] In the goblins' cave, a substitution cipher a la Mysteries of the Crypt, granting a password to... something.
 - [ ] Rescue the princess and escort her home a la Dead Weight.
+- - Monsters are drawn to her instead of you, and you get to watch her play and lose the minigames.
 - [ ] Various and sundry one-off fetch quests. Find my hat, etc.
 - [ ] After completing a dungeon, a side quest to go back and clean up after yourself, like we did in Spelling Bee, it's hilarious.
 - [ ] Buy and sell hearts at blood banks. Include at least one blood bank with a sell price high enough to encourage coin farming there.

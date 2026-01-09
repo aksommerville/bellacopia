@@ -24,8 +24,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ^ 22 pieces, all connected, but jigsaw_detect_clusters detects three.
 - - ...looks like I started jigsaw_detect_clusters assuming it would operate recursively, but it's not recursive. Fixed.
 - [ ] Monster sprite.
-- - [ ] How to spawn? Static spawn points in a map is not the right way.
+- - [x] How to spawn? Static spawn points in a map is not the right way.
 - - [ ] How to select handicap? See `sprite_monster.c`
+- [ ] Editor action to show a full plane, with rsprite prominently displayed for each map.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Off-axis correction for the hero when blocked.
@@ -48,6 +49,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Jigpiece in every mappable map, just once.
 - - [ ] Mappable planes rectangular with no gaps.
 - - [ ] Every monster sprite has a battle declared.
+- - [ ] rsprite monsters in every map that ought to.
 - Beta test logging.
 - - [ ] Client-side log service. Write tersely, and store to a new storage key every session.
 - - [ ] Some cudgel in the web runtime to pull those logs when the session ends, send them to me, and then drop from localStorage.

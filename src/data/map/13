@@ -15,7 +15,4 @@ image image:meadow
 position 1 0 1 *
 sprite @2,8 sprite:jigpiece (u32)0
 song song:toil_and_trouble
-sprite @7,4 sprite:leopard (u16:battletype)0 (u16)0
-sprite @9,5 sprite:koala (u16:battletype)0 (u16)0
-sprite @12,6 sprite:goat (u16:battletype)0 (u16)0
-sprite @13,9 sprite:soldier (u16:battletype)0 (u16)0
+rsprite (u16)0 sprite:koala (u16:battletype)0 (u16)0
