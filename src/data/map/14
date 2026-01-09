@@ -17,5 +17,5 @@ song song:snowglobe
 sprite @2,8 sprite:treasure (u8:itemid)match (u8:quantity)10 (u16:fld)0
 sprite @2,9 sprite:treasure (u8:itemid)bugspray (u8:quantity)10 (u16:fld)0
 sprite @4,9 sprite:treasure (u8:itemid)candy (u8:quantity)10 (u16:fld)0
-door @12,4 map:139 @5,8 0x0000
+door @12,4 map:139 @9,8 0x0000
 door @15,9 map:140 @15,9 0x0000

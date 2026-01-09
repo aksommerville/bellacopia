@@ -17,3 +17,21 @@
   min-width: 100px;
   min-height: 100px;
 }
+
+.EditWorldModal {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.EditWorldModal .topRow {
+  display: flex;
+  flex-direction: row;
+}
+.EditWorldModal .topRow .spacer {
+  flex: 1;
+}
+.EditWorldModal .visual {
+  flex: 1;
+  min-width: 700px;
+  min-height: 600px;
+}

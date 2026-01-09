@@ -2,13 +2,16 @@
  * You can inject dependencies just like any other class.
  */
  
+import { Dom } from "../js/Dom.js";
 import { JigctabEditor } from "./JigctabEditor.js";
+import { EditWorldModal } from "./EditWorldModal.js";
  
 export class Override {
   static getDependencies() {
-    return [];
+    return [Dom];
   }
-  constructor() {
+  constructor(dom) {
+    this.dom = dom;
   
     /* Each action is: {
      *   name: Unique string for internal bookkeeping.
@@ -18,7 +21,7 @@ export class Override {
      * These will appear in the global actions menu, before standard actions.
      */
     this.actions = [
-      //{ name: "doMyThing", label: "Do My Thing", fn: () => this.doMyThing() },
+      { name: "editWorld", label: "Edit World...", fn: () => this.dom.spawnModal(EditWorldModal) },
     ];
     
     /* Each editor is a class:

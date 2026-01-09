@@ -13,20 +13,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - I'm off today. Confirm ^ that assumption by making 4 minigames. ...Finished Boomerang and Chopping over about 9 hours. One day per battle might be optimistic.
 - 2026-01-01: Outer world works crudely. Jigsaws are done-ish. Dialogue and pause mostly there. 4 battles: fishing, chopping, boomerang, exterminating.
 - - Reassess at the end of January to confirm we're on track to finish in June. Or at least, by GDEX.
+- 2026-01-09: Finished Inversion for Uplifting Jam #6 and got right back to this. So we have scientifically established that it is possible to do game jams concurrently with Bellacopia. :)
 
 ## TODO
 
-- [x] Can we cause new jigsaw pieces to appear on vacant space instead of overlapping existing ones? Best effort only, of course.
-- [x] Jigsaw breaks near the south center, every time I leave the pause modal.
-- - UPDATE: With the entire jigsaw assembled, it does stay put.
-- - [x] Determine, document, and verify a minimal repro. This is a tricky one.
-- - - etc/regression/20260108-broken-jigsaw.save
-- - - ^ 22 pieces, all connected, but jigsaw_detect_clusters detects three.
-- - ...looks like I started jigsaw_detect_clusters assuming it would operate recursively, but it's not recursive. Fixed.
-- [ ] Monster sprite.
-- - [x] How to spawn? Static spawn points in a map is not the right way.
-- - [ ] How to select handicap? See `sprite_monster.c`
-- [ ] Editor action to show a full plane, with rsprite prominently displayed for each map.
+- [ ] How to select handicap? See `sprite_monster.c`
+- [x] Editor action to show a full plane, with rsprite prominently displayed for each map.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] Off-axis correction for the hero when blocked.

@@ -12,7 +12,7 @@
 
 #define INITIAL_IDLE_TIME 1.000
 #define ROAM_RANGE_2 25.0 /* m**2 from initial position */
-#define ATTACK_RANGE_2 9.0 /* m**2, when the hero is this close, we approach. */
+#define ATTACK_RANGE_2 16.0 /* m**2, when the hero is this close, we approach. */
 #define ATTACK_SPEED 5.0 /* m/s */
 #define WALK_SPEED 3.0 /* m/s */
 

@@ -77,6 +77,7 @@ We'll group minigames by Zone.
 - [ ] Find all the useful items.
 - [ ] Some kind of korokky collectible.
 - [ ] Lead livestock back to the farms.
+- [ ] Lead monsters to the scientist so he can catch 'em all. Using only their natural chase instinct.
 - [ ] Gyms a la Pokemon with much harder minigames, but entirely optional.
 - [ ] A town where everyone is sick and you need to raise money for medicine. Just money. Incrementally heal them, but the last few will be outrageously expensive.
 - [ ] Get a Broom for flying. Require a few main quests first, not sure how to gate that.

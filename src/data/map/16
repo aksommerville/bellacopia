@@ -15,3 +15,4 @@ image image:cheapside
 position 2 1 1 *
 door @3,9 map:141 @7,6 0x0000
 door @8,4 map:142 @11,6 0x0000
+song song:snowglobe
