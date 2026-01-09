@@ -94,5 +94,10 @@
 // Store fields.
 #define NS_fld_zero                0 /* Read-only, always zero. */
 #define NS_fld_one                 1 /* Read-only, always one. */
+
+/* Registry of map planes, since they aren't conveniently listed anywhere else.
+ * 1 Outer world.
+ * 2 Cheapside-Botire tunnel.
+ */
   
 #endif

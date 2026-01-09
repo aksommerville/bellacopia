@@ -40,6 +40,7 @@ export class JigctabEditor {
     try {
       this.ctab = this.decode(this.res.serial);
     } catch (e) {
+      console.error(e);
       this.ctab = [];
     }
     this.data.getImageAsync(res.rid).then(image => {
@@ -72,7 +73,7 @@ export class JigctabEditor {
     ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
     for (let dsty=8, yi=16, ctabp=0; yi-->0; dsty+=16) {
       for (let dstx=8, xi=16; xi-->0; dstx+=16, ctabp++) {
-        ctx.fillStyle = this.ctab[ctabp];
+        ctx.fillStyle = this.ctab[ctabp] || "#000";
         ctx.fillRect(dstx, dsty, 8, 8);
         if (ctabp === this.selp) {
           ctx.fillStyle = "#ff08";
@@ -131,7 +132,7 @@ export class JigctabEditor {
   encode(ctab) {
     let dst = "";
     const src = new TextDecoder("utf8").decode(this.res.serial);
-    let skip = false;
+    let skip = false, emitted = false;
     for (let srcp=0, lineno=1; srcp<src.length; lineno++) {
       let nlp = src.indexOf("\n", srcp);
       if (nlp < 0) nlp = src.length;
@@ -147,10 +148,15 @@ export class JigctabEditor {
         dst += "jigctab\n";
         dst += this.encodeTable(ctab);
         dst += "\n";
+        emitted = true;
       } else if (skip) {
       } else {
         dst += line + "\n";
       }
+    }
+    if (!emitted) {
+      dst += "jigctab\n";
+      dst += this.encodeTable(ctab);
     }
     return new TextEncoder("utf8").encode(dst);
   }
