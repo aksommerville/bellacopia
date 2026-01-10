@@ -20,3 +20,4 @@ oob (u8:mapoob)farloop (u8:mapoob)repeat
 sprite @5,7 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
 sprite @13,8 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
 sprite @7,2 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
+sprite @12,2 sprite:firepot (u32)0

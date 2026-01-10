@@ -25,6 +25,7 @@ struct sprite {
   int solid; // Participates in physics.
   uint32_t physics; // Bitfields, (1<<NS_physics_*), for the impassable ones.
   double hbl,hbr,hbt,hbb; // Hitbox, relative to (x,y). Negative and positive 1/2 by default.
+  double light_radius; // >0 if this sprite is a light source.
 };
 
 /* If you don't provide (type), you must provide (serial) to read it from, or (rid) to get that from.
@@ -48,9 +49,11 @@ int sprite_is_resident(const struct sprite *sprite);
  */
 void sprites_update(double elapsed);
 void sprites_render(int scrollx,int scrolly);
+void sprites_render_1(int scrollx,int scrolly,struct sprite *sprite); // Camera needs this when it temporarily defuncts hero during darkness.
 
 // Deletes all immediately. Be careful not to call during iteration.
 void sprites_clear();
+void sprites_clear_except_hero();
 
 // We track the hero sprite via magic.
 struct sprite *sprites_get_hero();

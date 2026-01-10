@@ -41,11 +41,12 @@ static int maps_install(int rid,const void *serial,int serialc) {
   int x=0,y=0,z=-1;
   int imageid=0,songid=-1;
   int oobx=0,ooby=0;
-  int parent=0;
+  int parent=0,dark=0;
   struct cmdlist_reader reader={.v=rmap.cmd,.c=rmap.cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
+      case CMD_map_dark: dark=1; break;
       case CMD_map_image: imageid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_song: songid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_oob: {
@@ -126,6 +127,7 @@ static int maps_install(int rid,const void *serial,int serialc) {
   map->z=z;
   map->rid=rid;
   map->parent=parent;
+  map->dark=dark;
   map->imageid=imageid;
   map->songid=songid;
   map->ro=rmap.v;

@@ -16,6 +16,7 @@ struct sprite_hero {
   int animframe;
   uint8_t itemid_in_progress; // Zero if none. Not necessarily the equipped item.
   int item_blackout; // If nonzero, wait for SOUTH to release.
+  double matchclock;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

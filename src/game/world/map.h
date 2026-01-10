@@ -21,6 +21,7 @@ struct map {
   const uint8_t *physics; // 256 bytes, never null. Per (imageid).
   const uint8_t *jigctab; // ''
   int parent; // mapid or zero. If nonzero, this map's plane doesn't get a world map in the pause modal.
+  uint8_t dark;
 };
 
 /* res_init() will call this after populating the TOC.

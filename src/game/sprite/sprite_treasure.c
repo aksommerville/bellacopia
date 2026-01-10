@@ -20,7 +20,11 @@ static int _treasure_init(struct sprite *sprite) {
   SPRITE->fld=(sprite->arg[2]<<8)|sprite->arg[3];
   SPRITE->tileid0=sprite->tileid;
   
-  if (SPRITE->fld) { // If (fld) provided, that explicitly controls our presence.
+  if (SPRITE->fld==NS_fld_always) { // Explicitly "always". Easy.
+  } else if (SPRITE->fld==NS_fld_if_depleted) { // We only appear if the item is either absent or has quantity zero.
+    struct inventory *inventory=inventory_search(SPRITE->itemid);
+    if (inventory&&inventory->limit&&inventory->quantity) return -1;
+  } else if (SPRITE->fld) { // If (fld) provided, that explicitly controls our presence.
     if (store_get(SPRITE->fld,1)) return -1;
   } else if (!SPRITE->itemid) { // Itemid zero is weird and probably shouldn't be used. But if so, we're present and empty.
     sprite->tileid=SPRITE->tileid0+1;

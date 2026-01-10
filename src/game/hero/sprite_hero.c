@@ -4,12 +4,14 @@
  */
  
 static void _hero_del(struct sprite *sprite) {
+  //fprintf(stderr,"%p %s\n",sprite,__func__);
 }
 
 /* Init.
  */
  
 static int _hero_init(struct sprite *sprite) {
+  //fprintf(stderr,"%p %s\n",sprite,__func__);
   SPRITE->facedy=1;
   SPRITE->item_blackout=1;
   
@@ -59,6 +61,9 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   int itemdx=0,itemdy=0;
   uint8_t itemxform=0;
   uint8_t itemtile=hand_tileid_for_item(g.equipped.itemid,g.equipped.quantity);
+  if ((g.equipped.itemid==NS_itemid_match)&&(SPRITE->matchclock>0.0)) { // If a match is light, draw that. NB even if quantity is zero.
+    itemtile=0x84+(SPRITE->animframe&1);
+  }
   if (itemtile) {
     if (SPRITE->facedy<0) { // Draw it now.
       graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);

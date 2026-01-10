@@ -7,6 +7,7 @@
 #define NS_sys_mapw 20 /* Maps must be at least as large as the framebuffer, not a pixel less. */
 #define NS_sys_maph 12 /* Because map renderer will assume a 2x2 set of neighbor maps is all you can ever see. */
 
+#define CMD_map_dark       0x01 /* --- ; Lights out initially, matches required. */
 #define CMD_map_image      0x20 /* u16:imageid */
 #define CMD_map_song       0x21 /* u16:songid */
 #define CMD_map_oob        0x22 /* u8:long u8:lat ; Only one map per plane needs to specify. If more, they must agree. */
@@ -74,6 +75,7 @@
 #define NS_sprtype_jigpiece       4 /* (u32)0 */
 #define NS_sprtype_treasure       5 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
 #define NS_sprtype_candy          6 /* (u32)0 */
+#define NS_sprtype_firepot        7 /* (u32)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
@@ -81,7 +83,8 @@
   _(polefairy) \
   _(jigpiece) \
   _(treasure) \
-  _(candy)
+  _(candy) \
+  _(firepot)
   
 // Battle controllers.
 #define NS_battletype_fishing             1
@@ -97,6 +100,8 @@
 // Store fields.
 #define NS_fld_zero                0 /* Read-only, always zero. */
 #define NS_fld_one                 1 /* Read-only, always one. */
+#define NS_fld_always              2 /* Special to sprite_treasure. Value not used. */
+#define NS_fld_if_depleted         3 /* '' */
 
 /* Registry of map planes, since they aren't conveniently listed anywhere else.
  * 1 Outer world.

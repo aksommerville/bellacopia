@@ -55,6 +55,7 @@ struct sprite *sprite_spawn(
   sprite->physics=(1<<NS_physics_solid)|(1<<NS_physics_water)|(1<<NS_physics_hole)|(1<<NS_physics_cliff)|(1<<NS_physics_hookable);
   sprite->hbl=sprite->hbt=-0.5;
   sprite->hbr=sprite->hbb=0.5;
+  sprite->light_radius=0.0;
   
   // If we have serial, apply standard commands.
   struct cmdlist_reader reader;
@@ -217,6 +218,18 @@ void sprites_render(int scrollx,int scrolly) {
   }
 }
 
+void sprites_render_1(int scrollx,int scrolly,struct sprite *sprite) {
+  if (!sprite||sprite->defunct) return;
+  int dstx=lround(sprite->x*NS_sys_tilesize)-scrollx;
+  int dsty=lround(sprite->y*NS_sys_tilesize)-scrolly;
+  if (sprite->type->render) {
+    sprite->type->render(sprite,dstx,dsty);
+  } else {
+    graf_set_image(&g.graf,sprite->imageid);
+    graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+  }
+}
+
 /* Clear global list.
  */
 
@@ -224,6 +237,22 @@ void sprites_clear() {
   while (sprites.c>0) {
     sprites.c--;
     sprite_del(sprites.v[sprites.c]);
+  }
+}
+
+void sprites_clear_except_hero() {
+  int p=sprites.c;
+  while (p>0) {
+    int rmc=0;
+    while (p&&(sprites.v[p-1]->type!=&sprite_type_hero)) { p--; rmc++; }
+    if (rmc) {
+      sprites.c-=rmc;
+      struct sprite **delp=sprites.v+p;
+      int deli=rmc;
+      for (;deli-->0;delp++) sprite_del(*delp);
+      memmove(sprites.v+p,sprites.v+p+rmc,sizeof(void*)*(sprites.c-p));
+    }
+    p--;
   }
 }
 

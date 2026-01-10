@@ -14,3 +14,4 @@
 image image:caves
 position -1 0 2 *
 parent map:14
+dark

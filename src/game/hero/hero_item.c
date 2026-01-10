@@ -50,14 +50,29 @@ static int _fishpole_begin(struct sprite *sprite) {
 
 /* Match.
  */
+
+#define LIGHT_DURATION 8.0 /* s per match. Includes ramp-up time but not ramp-down time. */
+#define LIGHT_RADIUS 3.5 /* m */
+#define LIGHTS_ON_SPEED 4.0 /* m/s */
+#define LIGHTS_OFF_SPEED 1.0 /* m/s */
  
 static void _match_update(struct sprite *sprite,double elapsed) {
-  //TODO
+  // This is called whenever matchclock or light_radius is positive. Not just when matches are armed.
+  if (SPRITE->matchclock>0.0) {
+    SPRITE->matchclock-=elapsed;
+    if ((sprite->light_radius+=LIGHTS_ON_SPEED*elapsed)>LIGHT_RADIUS) sprite->light_radius=LIGHT_RADIUS;
+  } else {
+    if ((sprite->light_radius-=LIGHTS_OFF_SPEED*elapsed)<0.0) sprite->light_radius=0.0;
+  }
 }
 
 static int _match_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  if (g.equipped.quantity<1) return 0;
+  g.equipped.quantity--;
+  g.inventory_dirty=1;
+  bm_sound(RID_sound_match,0.0);
+  SPRITE->matchclock+=LIGHT_DURATION;
+  return 1;
 }
 
 /* Bugspray.
@@ -126,6 +141,11 @@ static int _magnifier_begin(struct sprite *sprite) {
  
 void hero_update_item(struct sprite *sprite,double elapsed) {
 
+  // Updating match is special, it can proceed even when other items are being used.
+  if ((SPRITE->matchclock>0.0)||(sprite->light_radius>0.0)) {
+    _match_update(sprite,elapsed);
+  }
+
   /* If an item is in progress, it takes full control of the update.
    */
   if (SPRITE->itemid_in_progress) switch (SPRITE->itemid_in_progress) {
@@ -133,7 +153,6 @@ void hero_update_item(struct sprite *sprite,double elapsed) {
     case NS_itemid_divining_rod: _divining_rod_update(sprite,elapsed); return;
     case NS_itemid_hookshot: _hookshot_update(sprite,elapsed); return;
     case NS_itemid_fishpole: _fishpole_update(sprite,elapsed); return;
-    case NS_itemid_match: _match_update(sprite,elapsed); return;
     case NS_itemid_wand: _wand_update(sprite,elapsed); return;
     case NS_itemid_magnifier: _magnifier_update(sprite,elapsed); return;
   }

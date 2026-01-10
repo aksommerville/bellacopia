@@ -3,6 +3,10 @@
 #include "map.h"
 #include "camera.h"
 
+#define DARK_SPEED 1.000 /* hz */
+#define LIGHTS_FLICKER_PERIOD 1.000 /* s */
+#define LIGHTS_FLICKER_RANGE 3.0 /* px */
+
 /* Private globals.
  */
  
@@ -27,6 +31,12 @@ static struct {
   
   int doormapid,doorx,doory; // Deferred door entry.
   int cut;
+  
+  int dark; // 0,1. From focussed map.
+  double darklevel; // 0..1 = light..dark. So it doesn't click on and off. Beware: You can see into dark rooms by standing in an adjacent room.
+  int dark_mask; // texid
+  uint32_t *dark_bits; // framebuffer size
+  double flickerclock;
   
 } camera={0};
 
@@ -339,6 +349,7 @@ static void camera_maybe_polefairy(int dy) {
 }
 
 /* New map enters focus.
+ * There is just one of these at a time, recorded in (camera.mx,my,mz).
  */
  
 static void camera_new_map(int x,int y) {
@@ -352,12 +363,22 @@ static void camera_new_map(int x,int y) {
   camera.my=y;
   
   /* Do things specific to the focus map.
-   * Song. Maybe others.
    */
   if (map) {
+    // Change song.
     if (map->songid>=0) {
       //TODO Instead of jumping right to the new song, can we do a crossfade, and retain the playhead of the outgoing one?
       bm_song(map->songid,1);
+    }
+    // Change global darkness.
+    if (map->dark) {
+      if (!camera.dark) {
+        camera.dark=1;
+        if (camera.cut) camera.darklevel=1.0;
+      }
+    } else if (camera.dark) {
+      camera.dark=0;
+      if (camera.cut) camera.darklevel=0.0;
     }
   }
   
@@ -440,7 +461,7 @@ int camera_reset(int mapid) {
   }
   camera.fx=(double)(map->x*NS_sys_mapw)+NS_sys_mapw*0.5;
   camera.fy=(double)(map->y*NS_sys_maph)+NS_sys_maph*0.5;
-  sprites_clear();
+  sprites_clear_except_hero();
   camera.cut=1;
   camera_new_map(camera.mx,camera.my);
   if (was_door) camera_force_hero(herox,heroy);
@@ -458,6 +479,14 @@ void camera_update(double elapsed) {
   if (camera.doormapid) {
     camera_reset(camera.doormapid);
   }
+  
+  // Advance (darklevel) if needed.
+  if (camera.dark) {
+    if ((camera.darklevel+=DARK_SPEED*elapsed)>1.0) camera.darklevel=1.0;
+  } else {
+    if ((camera.darklevel-=DARK_SPEED*elapsed)<0.0) camera.darklevel=0.0;
+  }
+  if ((camera.flickerclock+=elapsed)>=LIGHTS_FLICKER_PERIOD) camera.flickerclock-=LIGHTS_FLICKER_PERIOD;
 
   // If we don't have sensible plane bounds, get out.
   if ((camera.pw<1)||(camera.ph<1)) return;
@@ -518,6 +547,88 @@ static void camera_render_map(int dstx,int dsty,const struct map *map) {
   }
 }
 
+/* Generate the framebuffer-sized darkness mask.
+ * What we generate always has full alpha. camera_render() may apply extra alpha to it per (gamera.darklevel).
+ */
+ 
+static void camera_fill_row(uint32_t *fb,int x,int y,int w,uint32_t pixel) {
+  if ((y<0)||(y>=FBH)) return;
+  if (x<0) { w+=x; x=0; }
+  if (x>FBW-w) w=FBW-x;
+  if (w<1) return;
+  fb+=y*FBW+x;
+  for (;w-->0;fb++) *fb=pixel;
+}
+ 
+static void camera_fill_circle(uint32_t *fb,int x,int y,int r,uint32_t pixel) {
+  if (r>0x8000) return; // Ensure it's small enough to square. (framebuffer is 320 wide; this limit is already outrageously high).
+  /* Rasterize the circle rowwise, exploiting its 4-way symmetry.
+   * Also lean on sequential squares.
+   * We have a little boundary problem: The most naive loop produces always a 2-row high column at the edges.
+   * If we check (rx2+ry2) before committing a change to rx, same problem on the other axis.
+   * Since we don't need to be perfect circles, let's cheese it by artificially reducing the first set of outputs.
+   */
+  int r2=r*r;
+  int ry=0;
+  int ry2=0;
+  int rx=r;
+  int rx2=rx*rx;
+  // First pair, cheesed inward:
+  camera_fill_row(fb,x-rx+1,y,(rx<<1)-2,pixel);
+  camera_fill_row(fb,x-rx+1,y+1,(rx<<1)-2,pixel);
+  ry2+=(ry<<1)+1; // sequential squares
+  ry++;
+  while (ry2+rx2>r2) {
+    if (rx<1) return;
+    rx--;
+    rx2-=(rx<<1)+1; // sequential squares
+  }
+  // Remainder:
+  while (ry<r) {
+    camera_fill_row(fb,x-rx,y-ry,rx<<1,pixel);
+    camera_fill_row(fb,x-rx,y+ry+1,rx<<1,pixel);
+    ry2+=(ry<<1)+1; // sequential squares
+    ry++;
+    while (ry2+rx2>r2) {
+      if (rx<1) return;
+      rx--;
+      rx2-=(rx<<1)+1; // sequential squares
+    }
+  }
+}
+ 
+static void camera_generate_dark_mask() {
+  if (!camera.dark_mask) camera.dark_mask=egg_texture_new();
+  if (!camera.dark_bits) {
+    if (!(camera.dark_bits=malloc(FBW*FBH*4))) return;
+  }
+  
+  // Starts entirely black.
+  uint32_t *p=camera.dark_bits;
+  int i=FBW*FBH;
+  for (;i-->0;p++) *p=0xff000000;
+  
+  // Then carve out a circle around each light source.
+  double flicker=sin((camera.flickerclock*M_PI*2.0)/LIGHTS_FLICKER_PERIOD)*LIGHTS_FLICKER_RANGE;
+  struct sprite **spritep=0;
+  int spritei=sprites_get_all(&spritep);
+  for (;spritei-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    if (sprite->defunct) continue;
+    if (sprite->light_radius<=0.0) continue;
+    int dstx=lround(sprite->x*NS_sys_tilesize)-camera.vx;
+    int dsty=lround(sprite->y*NS_sys_tilesize)-camera.vy;
+    int r=(int)(sprite->light_radius*NS_sys_tilesize+flicker);
+    if (dstx-r>=FBW) continue;
+    if (dstx+r<0) continue;
+    if (dsty-r>=FBH) continue;
+    if (dsty+r<0) continue;
+    camera_fill_circle(camera.dark_bits,dstx,dsty,r,0x00000000);
+  }
+
+  egg_texture_load_raw(camera.dark_mask,FBW,FBH,FBW<<2,camera.dark_bits,FBW*FBH*4);
+}
+
 /* Render.
  */
  
@@ -551,8 +662,27 @@ void camera_render() {
     }
   }
   
-  // Render sprites.
+  /* Render sprites.
+   * If it's dark, skip the hero and draw her after the darkness.
+   */
+  struct sprite *hero=sprites_get_hero();
+  if (camera.darklevel>0.0) {
+    if (hero) hero->defunct=1;
+  }
   sprites_render(camera.vx,camera.vy);
+  if (hero) hero->defunct=0;
+  
+  /* If there is darkness, apply it.
+   */
+  if (camera.darklevel>0.0) {
+    camera_generate_dark_mask();
+    int alpha=(int)(camera.darklevel*255.0);
+    if (alpha<0xff) graf_set_alpha(&g.graf,alpha);
+    graf_set_input(&g.graf,camera.dark_mask);
+    graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+    graf_set_alpha(&g.graf,0xff);
+    if (hero) sprites_render_1(camera.vx,camera.vy,hero);
+  }
 }
 
 /* Trivial accessors.
