@@ -1,0 +1,4 @@
+image image:meadow_sprites
+tile 36 0
+type (u16:sprtype)npc
+solid

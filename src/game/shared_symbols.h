@@ -107,9 +107,17 @@
 #define NS_fld_one                 1 /* Read-only, always one. */
 #define NS_fld_always              2 /* Special to sprite_treasure. Value not used. */
 #define NS_fld_if_depleted         3 /* '' */
+#define NS_fld_hp                  4 /* 4 bits */
+#define NS_fld_hpmax               8 /* 4 bits */
+#define NS_fld_gold               12 /* 10 bits, limit artificially to 999. */
+#define NS_fld_greenfish          22 /* 7 bits, limit artificially to 99. */
+#define NS_fld_bluefish           29 /* 7 bits, limit artificially to 99. */
+#define NS_fld_redfish            36 /* 7 bits, limit artificially to 99. */
+#define NS_fld_next               43
 
 // NPC or similar triggerable activity.
 #define NS_activity_carpenter 1
+#define NS_activity_cheapside_clinic 2
 
 /* Registry of map planes, since they aren't conveniently listed anywhere else.
  * 1 Outer world.

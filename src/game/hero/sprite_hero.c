@@ -92,10 +92,10 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
         case 5: itemtile=0x87; break;
       }
     }
-  }
-  if (SPRITE->facedy<0) { // Facing north, draw the item first.
-    graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);
-    itemtile=0;
+    if (SPRITE->facedy<0) { // Facing north, draw the item first.
+      graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);
+      itemtile=0;
+    }
   }
   
   graf_tile(&g.graf,dstx,dsty,tileid,xform);

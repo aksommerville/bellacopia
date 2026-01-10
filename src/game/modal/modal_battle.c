@@ -99,12 +99,58 @@ static void battle_cb_finish(void *userdata,int outcome) {
   MODAL->outcome=outcome;
   MODAL->stage=BATTLE_STAGE_FINAL;
   battle_drop_labels(modal);
-  char msg[11]="outcome: .";
-  if (outcome>0) msg[9]='+'; else if (outcome<0) msg[9]='-'; else msg[9]='?';
-  battle_add_label(modal,msg,10,0xffffffff);
+  
+  /* Choose consequences.
+   */
+  int dgold=0,dhp=0;
+  if (MODAL->playerc==1) {
+    if (outcome>0) {
+      dgold=1; // TODO Configure per battle? Or will it always be one?
+      int gold=store_get(NS_fld_gold,10);
+      if (gold+dgold>999) dgold=999-gold;
+      gold+=dgold;
+      store_set(NS_fld_gold,10,gold);
+    } else if (outcome<0) {
+      dhp=-1;
+      int hp=store_get(NS_fld_hp,4);
+      if (!hp) dhp=0;
+      else {
+        hp+=dhp;
+        store_set(NS_fld_hp,4,hp);
+      }
+    }
+  }
+  
+  /* Headline.
+   */
+  {
+    int strix;
+    if (outcome==0) strix=14; // A tie is a tie no matter who's playing.
+    if (MODAL->playerc==1) strix=(outcome>0)?12:13; // One-player mode gets privileged verbiage.
+    else strix=(outcome>0)?10:11; // Two or zero players, we use generic "player 1", "player 2".
+    const char *msg=0;
+    int msgc=text_get_string(&msg,1,strix);
+    battle_add_label(modal,msg,msgc,0xffffffff);
+  }
+  
+  /* Another line for each consequence.
+   */
+  if (dgold) {
+    struct text_insertion insv={.mode='i',.i=dgold};
+    char msg[64];
+    int msgc=text_format_res(msg,sizeof(msg),1,15,&insv,1);
+    if ((msgc<1)||(msgc>sizeof(msg))) msgc=0;
+    battle_add_label(modal,msg,msgc,0xffffffff);
+  }
+  if (dhp) {
+    struct text_insertion insv={.mode='i',.i=-dhp};
+    char msg[64];
+    int msgc=text_format_res(msg,sizeof(msg),1,16,&insv,1);
+    if ((msgc<1)||(msgc>sizeof(msg))) msgc=0;
+    battle_add_label(modal,msg,msgc,0xffffffff);
+  }
+  
   battle_pack_labels(modal);
-  //TODO Consequences. Adjust HP, gold, etc.
-  //TODO Standard reporting to user.
   if (MODAL->cb) {
     MODAL->cb(MODAL->userdata,outcome);
     MODAL->cb=0;
@@ -163,6 +209,7 @@ static void battle_update_INTRO(struct modal *modal,double elapsed) {
 static void battle_update_FINAL(struct modal *modal,double elapsed) {
   if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
     modal->defunct=1;
+    //TODO If hp is zero in story mode, it's game over. Is that our problem or someone else's?
   }
 }
 
@@ -211,7 +258,7 @@ static void battle_render_INTRO(struct modal *modal) {
  */
  
 static void battle_render_FINAL(struct modal *modal) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x603010ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
   struct label *label=MODAL->labelv;
   int i=MODAL->labelc;
   for (;i-->0;label++) {

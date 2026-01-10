@@ -47,6 +47,8 @@ void store_reset() {
   if (store.jenc) free(store.jenc);
   memset(&store,0,sizeof(store));
   store.v[0]=0x02; // NS_fld_one = 1
+  store_set(NS_fld_hp,4,3);
+  store_set(NS_fld_hpmax,4,3);
   store_jigsaw_init();
 }
 
@@ -263,7 +265,7 @@ int store_save() {
     fprintf(stderr,"Failed to encode saved game!\n");
     return -1;
   }
-  fprintf(stderr,"Encoded saved game: '%.*s'\n",tmpc,tmp);
+  //fprintf(stderr,"Encoded saved game: '%.*s'\n",tmpc,tmp);
   store.dirty=0;
   return egg_store_set("save",4,tmp,tmpc);
 }
