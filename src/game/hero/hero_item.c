@@ -85,8 +85,12 @@ static int _match_begin(struct sprite *sprite) {
  */
 
 static int _bugspray_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  if (g.equipped.quantity<1) return 0;
+  g.equipped.quantity--;
+  g.inventory_dirty=1;
+  bm_sound(RID_sound_bugspray,0.0);
+  g.bugspray+=10.0;
+  return 1;
 }
 
 /* Candy.

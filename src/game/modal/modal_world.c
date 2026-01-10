@@ -30,6 +30,9 @@ static int _world_init(struct modal *modal) {
  */
  
 static void _world_update(struct modal *modal,double elapsed) {
+
+  if (g.bugspray>0.0) g.bugspray-=elapsed;
+
   sprites_update(elapsed);
   camera_update(elapsed);
   

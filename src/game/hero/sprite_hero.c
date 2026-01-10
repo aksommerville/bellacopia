@@ -100,6 +100,17 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
   if (itemtile) graf_tile(&g.graf,dstx+itemdx,dsty+itemdy,itemtile,itemxform);
+  
+  if (g.bugspray>0.0) {
+    uint8_t bstileid=0x60+((g.framec/4)&7);
+    if (g.bugspray<1.0) {
+      int alpha=(int)(g.bugspray*255.0);
+      if (alpha<0) alpha=0; else if (alpha>0xff) alpha=0xff;
+      graf_set_alpha(&g.graf,alpha);
+    }
+    graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,bstileid,0);
+    graf_set_alpha(&g.graf,0xff);
+  }
 }
 
 /* Type definition.

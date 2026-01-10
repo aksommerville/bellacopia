@@ -226,6 +226,7 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
      */
     if (other->type==&sprite_type_hero) { //TODO "or princess"
       if (best&&(best->type==&sprite_type_candy)) continue; // Prefer Candy.
+      if ((other->type==&sprite_type_hero)&&(g.bugspray>0.0)) continue; // Hero invisible while bugspray'd.
       double dx=other->x-sprite->x;
       double dy=other->y-sprite->y;
       double d2=dx*dx+dy*dy;

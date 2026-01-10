@@ -336,10 +336,10 @@ struct map *plane_position_from_sprite(int *px,int *py,double sx,double sy,int z
     *px=*py=0;
     return 0;
   }
-  int cellx=(int)sx; if (sx<0.0) cellx--;
-  int celly=(int)sy; if (sy<0.0) celly--;
-  int lng=cellx/NS_sys_mapw; if (cellx<0) lng--;
-  int lat=celly/NS_sys_maph; if (celly<0) lat--;
+  int cellx=(int)sx;
+  int celly=(int)sy;
+  int lng=cellx/NS_sys_mapw; if (sx<0.0) lng--;
+  int lat=celly/NS_sys_maph; if (sy<0.0) lat--;
   lng=map_apply_oob(lng-plane->x,plane->w,plane->oobx);
   lat=map_apply_oob(lat-plane->y,plane->h,plane->ooby);
   *px=lng+plane->x;

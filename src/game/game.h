@@ -57,6 +57,8 @@ extern struct g {
   } inventoryv[INVENTORY_SIZE];
   struct inventory equipped; // The equipped item is just another inventory slot; this item is not in your backpack.
   int inventory_dirty;
+  
+  double bugspray; // Counts down.
 } g;
 
 /* The song mentioned by bm_song() is exclusive, it stops the old one.

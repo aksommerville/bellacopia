@@ -32,7 +32,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Divining Rod.
 - - [ ] Fish Pole.
 - - [x] Matches. Quantity.
-- - [ ] Bug Spray. Quantity.
+- - [x] Bug Spray. Quantity.
 - - [x] Candy. Quantity.
 - - [ ] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting?
 - [ ] Passive items.
