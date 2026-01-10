@@ -66,9 +66,6 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   }
   if (itemtile) {
     if (SPRITE->facedy<0) { // Draw it now.
-      graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);
-      itemtile=0;
-      tileid+=3;
     } else if (SPRITE->facedy>0) {
       itemdx=-6;
     } else if (SPRITE->facedx<0) {
@@ -82,7 +79,24 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
       itemtile=0;
     }
   }
-  if (itemtile) tileid+=3;
+  if (itemtile) {
+    tileid+=3;
+    if ((itemtile==0x71)&&hero_roots_present(sprite)) { // Divining Rod. If roots are present, animate.
+      int frame=(g.framec/3)%6;
+      switch (frame) {
+        case 0: itemtile=0x86; break;
+        case 1: itemtile=0x87; break;
+        case 2: itemtile=0x88; break;
+        case 3: itemtile=0x89; break;
+        case 4: itemtile=0x88; break;
+        case 5: itemtile=0x87; break;
+      }
+    }
+  }
+  if (SPRITE->facedy<0) { // Facing north, draw the item first.
+    graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);
+    itemtile=0;
+  }
   
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
   if (itemtile) graf_tile(&g.graf,dstx+itemdx,dsty+itemdy,itemtile,itemxform);

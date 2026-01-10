@@ -64,6 +64,7 @@ void egg_client_update(double elapsed) {
 }
 
 void egg_client_render() {
+  g.framec++;
   graf_reset(&g.graf);
   modal_render_all();
   graf_flush(&g.graf);

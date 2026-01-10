@@ -24,5 +24,6 @@ struct sprite_hero {
 void hero_update_item(struct sprite *sprite,double elapsed);
 void hero_update_motion(struct sprite *sprite,double elapsed);
 void hero_check_qpos(struct sprite *sprite);
+int hero_roots_present(const struct sprite *sprite);
 
 #endif

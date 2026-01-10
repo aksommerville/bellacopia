@@ -24,11 +24,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [x] Off-axis correction for the hero when blocked.
+- [ ] How to define root paths for the Divining Rod? See `hero_item.c:hero_roots_present`
 - [ ] Diegetic witch toys.
 - - [x] Stick. Abundant in the forest. You can only carry one, and there will be a carpenter that can transform it into Divining Rod, Broom, Wand, or Fishpole.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
-- - [ ] Divining Rod.
+- - [x] Divining Rod.
 - - [ ] Fish Pole.
 - - [x] Matches. Quantity.
 - - [ ] Bug Spray. Quantity.

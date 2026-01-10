@@ -40,6 +40,7 @@ extern struct g {
   struct modal *modalv[MODAL_LIMIT];
   int modalc;
   int input[3],pvinput[3]; // We track the aggregate and players 1 and 2, at all times.
+  int framec;
   
   struct {
     int battletype;

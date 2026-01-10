@@ -14,14 +14,20 @@ static int _broom_begin(struct sprite *sprite) {
 
 /* Divining Rod.
  */
- 
-static void _divining_rod_update(struct sprite *sprite,double elapsed) {
-  //TODO
-}
 
 static int _divining_rod_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  if (hero_roots_present(sprite)) {
+    bm_sound(RID_sound_affirmative,0.0);
+  } else {
+    bm_sound(RID_sound_negatory,0.0);
+  }
+  return 0;
+}
+ 
+int hero_roots_present(const struct sprite *sprite) {
+  uint8_t physics=physics_at_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (physics==NS_physics_safe) return 1;//TODO Decide how we're going to define the root paths. Was thinking lookalike tiles with telltale physics, but that's an ugly hack.
+  return 0;
 }
 
 /* Hookshot.
@@ -150,7 +156,6 @@ void hero_update_item(struct sprite *sprite,double elapsed) {
    */
   if (SPRITE->itemid_in_progress) switch (SPRITE->itemid_in_progress) {
     case NS_itemid_broom: _broom_update(sprite,elapsed); return;
-    case NS_itemid_divining_rod: _divining_rod_update(sprite,elapsed); return;
     case NS_itemid_hookshot: _hookshot_update(sprite,elapsed); return;
     case NS_itemid_fishpole: _fishpole_update(sprite,elapsed); return;
     case NS_itemid_wand: _wand_update(sprite,elapsed); return;
