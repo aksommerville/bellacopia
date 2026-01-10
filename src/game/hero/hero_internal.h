@@ -11,6 +11,8 @@ struct sprite_hero {
   int indx,indy; // Digested dpad state.
   int walking;
   int qx,qy; // Plane meters, quantized.
+  double animclock;
+  int animframe;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

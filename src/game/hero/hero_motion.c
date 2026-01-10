@@ -21,6 +21,8 @@ static void hero_end_walk(struct sprite *sprite) {
  
 static int hero_begin_walk(struct sprite *sprite) {
   SPRITE->walking=1;
+  SPRITE->animclock=0.0;
+  SPRITE->animframe=0;
   return 1;
 }
 
@@ -32,6 +34,43 @@ static void hero_check_push(struct sprite *sprite,double x,double y,double elaps
   // TODO Wall switches?
   // TODO NPC dialogue.
   // TODO Pushable blocks?
+}
+
+/* When motion is blocked and the other axis is zero, fudge toward neat intervals on the zero axis.
+ */
+ 
+#define FUDGELESS_STRETCH 0.200
+#define FUDGE_ALIGN_SPEED 1.000
+ 
+static void hero_nudge_align_horz(struct sprite *sprite,double elapsed) {
+  // Get the misalignment. If it's close to zero or one, leave it be. She's close to a half-tile, no sense aligning.
+  double whole,fract;
+  fract=modf(sprite->x,&whole);
+  if (sprite->x<0.0) { whole-=1.0; fract+=1.0; }
+  if (fract<=FUDGELESS_STRETCH) return;
+  if (fract>=1.0-FUDGELESS_STRETCH) return;
+  if (fract<0.5) {
+    sprite_move(sprite,FUDGE_ALIGN_SPEED*elapsed,0.0);
+    if (sprite->x>whole+0.5) sprite->x=whole+0.5;
+  } else if (fract>0.5) {
+    sprite_move(sprite,-FUDGE_ALIGN_SPEED*elapsed,0.0);
+    if (sprite->x<whole+0.5) sprite->x=whole+0.5;
+  }
+}
+
+static void hero_nudge_align_vert(struct sprite *sprite,double elapsed) {
+  double whole,fract;
+  fract=modf(sprite->y,&whole);
+  if (sprite->y<0.0) { whole-=1.0; fract+=1.0; }
+  if (fract<=FUDGELESS_STRETCH) return;
+  if (fract>=1.0-FUDGELESS_STRETCH) return;
+  if (fract<0.5) {
+    sprite_move(sprite,0.0,FUDGE_ALIGN_SPEED*elapsed);
+    if (sprite->y>whole+0.5) sprite->y=whole+0.5;
+  } else if (fract>0.5) {
+    sprite_move(sprite,0.0,-FUDGE_ALIGN_SPEED*elapsed);
+    if (sprite->y<whole+0.5) sprite->y=whole+0.5;
+  }
 }
 
 /* Update motion.
@@ -88,12 +127,12 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
   
   // Move on each axis independently.
   double speed=6.0; // m/s
-  if (g.input[0]&EGG_BTN_EAST) speed*=3.0;//XXX TEMP
   if (SPRITE->indx) {
     if (sprite_move(sprite,SPRITE->indx*speed*elapsed,0.0)) {
       // ok walking horz
     } else if (SPRITE->facedx==SPRITE->indx) {
       hero_check_push(sprite,sprite->x+SPRITE->indx,sprite->y,elapsed);
+      if (!SPRITE->indy) hero_nudge_align_vert(sprite,elapsed);
     } else {
       // blocked but facing vert -- don't actuate anything.
     }
@@ -103,6 +142,7 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
       // ok walking vert
     } else if (SPRITE->facedy==SPRITE->indy) {
       hero_check_push(sprite,sprite->x,sprite->y+SPRITE->indy,elapsed);
+      if (!SPRITE->indx) hero_nudge_align_horz(sprite,elapsed);
     } else {
       // blocked but facing horz -- don't actuate anything.
     }

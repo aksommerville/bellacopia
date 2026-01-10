@@ -15,3 +15,4 @@ image image:meadow
 position -2 2 1 *
 song song:toil_and_trouble
 sprite @13,6 sprite:jigpiece (u32)0
+rsprite (u16)0 sprite:goat (u32)0

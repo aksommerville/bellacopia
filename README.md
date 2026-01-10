@@ -21,7 +21,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Editor action to show a full plane, with rsprite prominently displayed for each map.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
-- [ ] Off-axis correction for the hero when blocked.
+- [x] Off-axis correction for the hero when blocked.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.

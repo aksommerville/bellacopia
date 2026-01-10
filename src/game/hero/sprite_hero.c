@@ -25,6 +25,10 @@ static int _hero_init(struct sprite *sprite) {
 static void _hero_update(struct sprite *sprite,double elapsed) {
   hero_update_motion(sprite,elapsed);
   hero_check_qpos(sprite);
+  if ((SPRITE->animclock-=elapsed)<=0.0) {
+    SPRITE->animclock+=0.200;
+    if (++(SPRITE->animframe)>=4) SPRITE->animframe=0;
+  }
 }
 
 /* Render.
@@ -34,9 +38,18 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   graf_set_image(&g.graf,sprite->imageid);
   uint8_t tileid=sprite->tileid;
   uint8_t xform=0;
+  
   if (SPRITE->facedx<0) tileid+=0x02;
   else if (SPRITE->facedx>0) { tileid+=0x02; xform=EGG_XFORM_XREV; }
   else if (SPRITE->facedy<0) tileid+=0x01;
+  
+  if (SPRITE->walking) {
+    switch (SPRITE->animframe) {
+      case 1: tileid+=0x10; break;
+      case 3: tileid+=0x20; break;
+    }
+  }
+  
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
 }
 
