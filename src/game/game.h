@@ -13,6 +13,8 @@
 #include "battle/battle.h"
 #include "store.h"
 
+struct sprite;
+
 #define FBW 320
 #define FBH 180
 
@@ -100,5 +102,8 @@ uint8_t tileid_for_item(int itemid,int quantity); // RID_image_pause
 uint8_t hand_tileid_for_item(int itemid,int quantity); // RID_image_hero
 struct inventory *inventory_search(int itemid); // Null if we don't have it.
 int inventory_acquire(int itemid,int quantity); // Nonzero if accepted. Does all the sound effects, storage, modals, whatever.
+void strings_for_item(int *strix_name,int *strix_desc,int itemid); // RID_strings_dialogue
+
+void bm_begin_activity(int activity,struct sprite *subject);
 
 #endif

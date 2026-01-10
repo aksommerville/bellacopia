@@ -128,6 +128,7 @@ uint8_t tileid_for_item(int itemid,int quantity) {
     case NS_itemid_candy: return 0x36;
     case NS_itemid_wand: return 0x37;
     case NS_itemid_magnifier: return 0x38;
+    case NS_itemid_stick: return 0x39;
   }
   return 0;
 }
@@ -143,6 +144,7 @@ uint8_t hand_tileid_for_item(int itemid,int quantity) {
     case NS_itemid_candy: return quantity?0x76:0;
     case NS_itemid_wand: return 0x77;
     case NS_itemid_magnifier: return 0x78;
+    case NS_itemid_stick: return 0x79;
   }
   return 0;
 }
@@ -164,7 +166,7 @@ static int initial_limit_for_itemid(int itemid) {
 /* Strings (in RID_strings_dialogue) by itemid.
  */
  
-static void strings_for_item(int *strix_name,int *strix_desc,int itemid) {
+void strings_for_item(int *strix_name,int *strix_desc,int itemid) {
   switch (itemid) {
     case NS_itemid_broom:        *strix_name= 5; *strix_desc= 6; break;
     case NS_itemid_divining_rod: *strix_name= 7; *strix_desc= 8; break;
@@ -175,7 +177,8 @@ static void strings_for_item(int *strix_name,int *strix_desc,int itemid) {
     case NS_itemid_candy:        *strix_name=17; *strix_desc=18; break;
     case NS_itemid_wand:         *strix_name=19; *strix_desc=20; break;
     case NS_itemid_magnifier:    *strix_name=21; *strix_desc=22; break;
-    default: *strix_name=23; *strix_desc=0; break;
+    case NS_itemid_stick:        *strix_name=23; *strix_desc=24; break;
+    default: *strix_name=25; *strix_desc=0; break;
   }
 }
 
@@ -217,7 +220,8 @@ static struct inventory *inventory_add(int itemid,int quantity) {
     if (quantity>inventory->limit) quantity=inventory->limit;
     inventory->quantity=quantity;
   } else {
-    if (quantity) fprintf(stderr,"WARNING: %s itemid=%d, ignoring unexpected quantity %d.\n",__func__,itemid,quantity);
+    // Don't warn about this, it's not important.
+    //if (quantity) fprintf(stderr,"WARNING: %s itemid=%d, ignoring unexpected quantity %d.\n",__func__,itemid,quantity);
     inventory->quantity=0;
   }
   return inventory;

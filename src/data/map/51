@@ -15,3 +15,5 @@ image image:meadow
 position 1 -1 1 *
 sprite @3,8 sprite:jigpiece (u32)0
 song song:toil_and_trouble
+sprite @1,7 sprite:stick (u32)0
+sprite @7,4 sprite:stick (u32)0

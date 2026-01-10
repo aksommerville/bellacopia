@@ -66,6 +66,7 @@
 #define NS_itemid_candy           7
 #define NS_itemid_wand            8
 #define NS_itemid_magnifier       9
+#define NS_itemid_stick          10
 
 // Sprite controllers.
 #define NS_sprtype_dummy          0 /* (u32)0 */
@@ -76,6 +77,8 @@
 #define NS_sprtype_treasure       5 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
 #define NS_sprtype_candy          6 /* (u32)0 */
 #define NS_sprtype_firepot        7 /* (u32)0 */
+#define NS_sprtype_stick          8 /* (u32)0 */
+#define NS_sprtype_npc            9 /* (u16:activity)0 (u16)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
@@ -84,7 +87,9 @@
   _(jigpiece) \
   _(treasure) \
   _(candy) \
-  _(firepot)
+  _(firepot) \
+  _(stick) \
+  _(npc)
   
 // Battle controllers.
 #define NS_battletype_fishing             1
@@ -102,6 +107,9 @@
 #define NS_fld_one                 1 /* Read-only, always one. */
 #define NS_fld_always              2 /* Special to sprite_treasure. Value not used. */
 #define NS_fld_if_depleted         3 /* '' */
+
+// NPC or similar triggerable activity.
+#define NS_activity_carpenter 1
 
 /* Registry of map planes, since they aren't conveniently listed anywhere else.
  * 1 Outer world.

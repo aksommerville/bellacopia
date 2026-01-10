@@ -21,3 +21,5 @@ sprite @5,7 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
 sprite @13,8 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
 sprite @7,2 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
 sprite @12,2 sprite:firepot (u32)0
+sprite @7,8 sprite:stick (u32)0
+sprite @16,5 sprite:stick (u32)0

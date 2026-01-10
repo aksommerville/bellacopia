@@ -8,6 +8,7 @@
 struct modal;
 struct modal_type;
 struct battle_type;
+struct inventory;
 
 /* Generic modal.
  ******************************************************************************/
@@ -82,5 +83,6 @@ int modal_dialogue_set_fmt(struct modal *modal,int rid,int strix,const struct te
 void modal_dialogue_set_callback(struct modal *modal,void (*cb)(void *userdata,int choiceid),void *userdata);
 int modal_dialogue_add_choice_res(struct modal *modal,int choiceid,int rid,int strix); // => choiceid; we make one up if <=0.
 int modal_dialogue_add_choice_text(struct modal *modal,int choiceid,const char *src,int srcc);
+int modal_dialogue_set_shop(struct modal *modal,const struct inventory *merchv,int merchc); // Prepares options for you. (choiceid) is (itemid). (merch->limit) is the price.
 
 #endif

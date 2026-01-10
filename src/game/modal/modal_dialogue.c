@@ -149,7 +149,7 @@ static void _dialogue_update(struct modal *modal,double elapsed) {
     }
   } else if (g.input[0]!=g.pvinput[0]) {
     if ((g.input[0]&EGG_BTN_UP)&&!(g.pvinput[0]&EGG_BTN_UP)) dialogue_move(modal,-1);
-    else if ((g.input[0]&EGG_BTN_DOWN)&&!(g.pvinput[0]&EGG_BTN_DOWN)) dialogue_move(modal,-1);
+    else if ((g.input[0]&EGG_BTN_DOWN)&&!(g.pvinput[0]&EGG_BTN_DOWN)) dialogue_move(modal,1);
     if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) dialogue_activate(modal);
     else if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) dialogue_cancel(modal);
   }
@@ -280,4 +280,28 @@ int modal_dialogue_add_choice_res(struct modal *modal,int choiceid,int rid,int s
   const char *src=0;
   int srcc=text_get_string(&src,rid,strix);
   return modal_dialogue_add_choice_text(modal,choiceid,src,srcc);
+}
+
+/* Add choices in a standard format for shops.
+ */
+
+int modal_dialogue_set_shop(struct modal *modal,const struct inventory *merch,int merchc) {
+  if (!modal||(modal->type!=&modal_type_dialogue)) return -1;
+  for (;merchc-->0;merch++) {
+    int strix=100,itemname=0,dummy;
+    if (merch->quantity) {
+      strix=101;
+    }
+    strings_for_item(&itemname,&dummy,merch->itemid);
+    struct text_insertion insv[]={
+      {.mode='i',.i=merch->limit},
+      {.mode='r',.r={.rid=RID_strings_dialogue,.strix=itemname}},
+      {.mode='i',.i=merch->quantity},
+    };
+    char msg[64];
+    int msgc=text_format_res(msg,sizeof(msg),RID_strings_dialogue,strix,insv,sizeof(insv)/sizeof(insv[0]));
+    if ((msgc<0)||(msgc>sizeof(msg))) msgc=0;
+    if (modal_dialogue_add_choice_text(modal,merch->itemid,msg,msgc)<0) return -1;
+  }
+  return 0;
 }
