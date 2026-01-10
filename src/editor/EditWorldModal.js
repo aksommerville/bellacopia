@@ -249,7 +249,7 @@ export class EditWorldModal {
           // Show options that have been used as "rsprite" in other maps on this plane.
           // Could use all planes, or all sprites, or sprites with "monster" type, but any of those would be too many.
           // In fact even this approach might be a bit much.
-          const options = ["OTHER"];
+          const options = ["OTHER", "NONE"];
           for (const res of this.layer.v) {
             const map = res?.map;
             if (!map) continue;
@@ -263,13 +263,15 @@ export class EditWorldModal {
         
       case "song": {
           // Show all songs in the TOC. It shouldn't be too unwieldly a set.
-          return this.data.resv.filter(r => r.type === "song").map(r => `song:${r.name || r.rid}`);
+          const options = this.data.resv.filter(r => r.type === "song").map(r => `song:${r.name || r.rid}`);
+          options.splice(0, 0, "NONE");
+          return options;
         }
         
       case "parent": {
           // Show all parents used by maps in this plane.
           // All maps is too many, and all maps with a door is probably also too many.
-          const options = ["OTHER"];
+          const options = ["OTHER", "NONE"];
           for (const res of this.layer.v) {
             const map = res?.map;
             if (!map) continue;
@@ -298,6 +300,14 @@ export class EditWorldModal {
               return true;
             });
           }
+          if (option === "NONE") {
+            const p = map.cmd.commands.findIndex(c => c[0] === "rsprite");
+            if (p >= 0) {
+              map.cmd.commands.splice(p, 1);
+              return true;
+            }
+            return false;
+          }
           const cmd = map.cmd.commands.find(c => c[0] === "rsprite");
           if (cmd) {
             if (cmd[2] === option) return false;
@@ -308,6 +318,14 @@ export class EditWorldModal {
         } return true;
         
       case "song": {
+          if (option === "NONE") {
+            const p = map.cmd.commands.findIndex(c => c[0] === "song");
+            if (p >= 0) {
+              map.cmd.commands.splice(p, 1);
+              return true;
+            }
+            return false;
+          }
           const cmd = map.cmd.commands.find(c => c[0] === "song");
           if (cmd) {
             if (cmd[1] === option) return false;
@@ -326,6 +344,14 @@ export class EditWorldModal {
               else map.cmd.commands.push(["parent", `map:${rsp}`]);
               return true;
             });
+          }
+          if (option === "NONE") {
+            const p = map.cmd.commands.findIndex(c => c[0] === "parent");
+            if (p >= 0) {
+              map.cmd.commands.splice(p, 1);
+              return true;
+            }
+            return false;
           }
           const cmd = map.cmd.commands.find(c => c[0] === "parent");
           if (cmd) {

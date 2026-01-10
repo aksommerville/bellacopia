@@ -26,7 +26,7 @@ I'm too excited for this. Ready or not, I'm starting.
 - Continuously-scrolling outer world. Maps are a screenful each, but we stitch them together real-time so the user never notices the boundaries. Music, tilesheets, and sprite spawning will be tricky.
 - Minigames should lead with a passive and standard controls description. eg "Hold L/R, Tap A" but graphical.
 - Figure out an efficient way to make stuffed witches, and make a bunch of them to hand out at GDEX.
-- At this writing, there's 8 letters remaining in my quest to fill the alphabet on Itch. Would be cool if Bellacopia finishes the set. (AIJKLXY first)
+- At this writing, there's 7 letters remaining in my quest to fill the alphabet on Itch. Would be cool if Bellacopia finishes the set. (AJKLXY first)
 - We should do an open beta when it's close to ready. Like, sending me stats from players on Itch. Include a big warning and apology, because this is not something I'd normally do.
 - I want this to be huge. An arbitrary goalpost: I should not be able to finish the main quests in under an hour, even knowing the optimal path.
 
@@ -94,7 +94,7 @@ We'll group minigames by Zone.
 - - Fishing too much in one area, the odds of a catch decrease.
 - - Can we do a complex animation for the water, with subtle hints toward the fish density there? Something hard to explain but easy to detect once you've learned how.
 - [ ] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
-- [ ] Talking trees that are bored and want to you tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
+- [ ] Talking trees that are bored and want you to tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
 - [ ] Circumnavigate the globe. Since it's possible, there ought to be some fanfare the first time you do it.
 

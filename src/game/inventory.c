@@ -132,6 +132,21 @@ uint8_t tileid_for_item(int itemid,int quantity) {
   return 0;
 }
 
+uint8_t hand_tileid_for_item(int itemid,int quantity) {
+  switch (itemid) {
+    case NS_itemid_broom: return 0x70;
+    case NS_itemid_divining_rod: return 0x71;
+    case NS_itemid_hookshot: return 0x72;
+    case NS_itemid_fishpole: return 0x73;
+    case NS_itemid_match: return quantity?0x74:0;
+    case NS_itemid_bugspray: return quantity?0x75:0;
+    case NS_itemid_candy: return quantity?0x76:0;
+    case NS_itemid_wand: return 0x77;
+    case NS_itemid_magnifier: return 0x78;
+  }
+  return 0;
+}
+
 /* Default limit by itemid.
  * This is the authority for whether items use quantity or not.
  * But it's generally not enforced generically; spawn points need to be careful to correctly supply zero or nonzero quantity per itemid.

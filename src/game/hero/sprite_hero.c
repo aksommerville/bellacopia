@@ -50,7 +50,35 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
     }
   }
   
+  /* If there's an item equipped, draw it in my hand.
+   * Dot's tile shifts 3 to right, and we overlay one at an offset.
+   * If facing up, draw the overlay first.
+   */
+  int itemdx=0,itemdy=0;
+  uint8_t itemxform=0;
+  uint8_t itemtile=hand_tileid_for_item(g.equipped.itemid,g.equipped.quantity);
+  if (itemtile) {
+    if (SPRITE->facedy<0) { // Draw it now.
+      graf_tile(&g.graf,dstx+7,dsty-1,itemtile,EGG_XFORM_XREV);
+      itemtile=0;
+      tileid+=3;
+    } else if (SPRITE->facedy>0) {
+      itemdx=-6;
+    } else if (SPRITE->facedx<0) {
+      itemdx=-1;
+      itemdy=1;
+      itemxform=EGG_XFORM_XREV;
+    } else if (SPRITE->facedx>0) {
+      itemdx=1;
+      itemdy=1;
+    } else {
+      itemtile=0;
+    }
+  }
+  if (itemtile) tileid+=3;
+  
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
+  if (itemtile) graf_tile(&g.graf,dstx+itemdx,dsty+itemdy,itemtile,itemxform);
 }
 
 /* Type definition.

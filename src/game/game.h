@@ -96,7 +96,8 @@ int bm_achievements_generate(); // => texid, always substantially smaller than t
  */
 void inventory_reset();
 int inventory_save_if_dirty();
-uint8_t tileid_for_item(int itemid,int quantity);
+uint8_t tileid_for_item(int itemid,int quantity); // RID_image_pause
+uint8_t hand_tileid_for_item(int itemid,int quantity); // RID_image_hero
 struct inventory *inventory_search(int itemid); // Null if we don't have it.
 int inventory_acquire(int itemid,int quantity); // Nonzero if accepted. Does all the sound effects, storage, modals, whatever.
 
