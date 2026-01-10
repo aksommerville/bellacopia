@@ -73,13 +73,15 @@
 #define NS_sprtype_polefairy      3 /* (u24)0 (u8)0_left_1_right */
 #define NS_sprtype_jigpiece       4 /* (u32)0 */
 #define NS_sprtype_treasure       5 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
+#define NS_sprtype_candy          6 /* (u32)0 */
 #define FOR_EACH_SPRTYPE \
   _(dummy) \
   _(hero) \
   _(monster) \
   _(polefairy) \
   _(jigpiece) \
-  _(treasure)
+  _(treasure) \
+  _(candy)
   
 // Battle controllers.
 #define NS_battletype_fishing             1

@@ -18,6 +18,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] How to select handicap? See `sprite_monster.c`
+- [ ] Monsters should have configurable detect radius and chase speed.
+- [ ] Yeti and Chupacabra: They'll appear at the polar limits and must be extremely difficult. To discourage polar exploration.
 - [x] Editor action to show a full plane, with rsprite prominently displayed for each map.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
@@ -29,7 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Fish Pole.
 - - [ ] Matches. Quantity.
 - - [ ] Bug Spray. Quantity.
-- - [ ] Candy. Quantity.
+- - [x] Candy. Quantity.
 - - [ ] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting?
 - [ ] Passive items.
 - - [ ] Boat. Lets you convert at docks, and travel freely over water.

@@ -53,6 +53,11 @@ struct map *maps_get_plane(int *x,int *y,int *w,int *h,int *oobx,int *ooby,int z
  */
 struct map *plane_position_from_sprite(int *px,int *py,double sx,double sy,int z);
 
+/* (x,y) as they would be recorded in a sprite, ie plane meters.
+ * Returns one of NS_physics_*.
+ */
+uint8_t physics_at_sprite_position(double x,double y,int z);
+
 int map_apply_oob(int v,int limit,int mapoob);
 
 #endif

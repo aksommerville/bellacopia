@@ -1,4 +1,5 @@
 #include "game/game.h"
+#include "camera.h"
 #include "map.h"
 
 /* Global registry.
@@ -343,6 +344,27 @@ struct map *plane_position_from_sprite(int *px,int *py,double sx,double sy,int z
   *py=lat+plane->y;
   if ((lng<0)||(lat<0)||(lng>=plane->w)||(lat>=plane->h)) return 0;
   return plane->v+lat*plane->w+lng;
+}
+
+/* Physics under a floating-point position in plane meters.
+ */
+ 
+uint8_t physics_at_sprite_position(double x,double y,int z) {
+  struct map *map=0;
+  int col=(int)x; if (x<0.0) col--;
+  int row=(int)y; if (y<0.0) row--;
+  if (z<0) {
+    int mapid=camera_get_mapid();
+    map=map_by_id(mapid);
+  } else {
+    int px,py;
+    map=plane_position_from_sprite(&px,&py,x,y,z);
+    col-=px*NS_sys_mapw;
+    row-=py*NS_sys_maph;
+  }
+  if (!map) return NS_physics_vacant;
+  if ((col<0)||(row<0)||(col>=NS_sys_mapw)||(row>=NS_sys_maph)) return NS_physics_vacant;
+  return map->physics[map->v[row*NS_sys_mapw+col]];
 }
 
 /* Apply abstract one-dimensional oob strategy.

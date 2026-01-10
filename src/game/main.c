@@ -36,6 +36,11 @@ int egg_client_init() {
   store_load();
   store_jigsaw_load();
   
+  if (0) { //XXX Starup hacks.
+    // Acquiring inventory here will work, but will also clear any saved inventory and present an unexpected modal initially.
+    inventory_acquire(NS_itemid_candy,10);
+  }
+  
   return 0;
 }
 

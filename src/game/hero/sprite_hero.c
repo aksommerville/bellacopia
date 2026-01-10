@@ -11,6 +11,7 @@ static void _hero_del(struct sprite *sprite) {
  
 static int _hero_init(struct sprite *sprite) {
   SPRITE->facedy=1;
+  SPRITE->item_blackout=1;
   
   // Initializing (qx,qy) prevents the cell we're born on from triggering. Important for doors.
   SPRITE->qx=(int)sprite->x; if (sprite->x<0.0) SPRITE->qx--;
@@ -23,6 +24,7 @@ static int _hero_init(struct sprite *sprite) {
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
+  hero_update_item(sprite,elapsed);
   hero_update_motion(sprite,elapsed);
   hero_check_qpos(sprite);
   if ((SPRITE->animclock-=elapsed)<=0.0) {
