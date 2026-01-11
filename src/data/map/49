@@ -14,7 +14,7 @@
 image image:meadow
 position 0 -1 1 *
 sprite @11,1 sprite:jigpiece (u32)0
-song song:toil_and_trouble
+song song:barrel_of_salt
 rsprite (u16)0 sprite:leopard (u32)0
 sprite @13,6 sprite:stick (u32)0
 sprite @2,6 sprite:stick (u32)0

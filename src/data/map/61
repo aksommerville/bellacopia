@@ -13,7 +13,7 @@ a18491919191919191919191919191919183a230
 
 image image:meadow
 position 0 -2 1 *
-song song:toil_and_trouble
+song song:barrel_of_salt
 sprite @17,4 sprite:jigpiece (u32)0
 sprite @12,8 sprite:stick (u32)0
 root @0,6 (u16:fld)root5

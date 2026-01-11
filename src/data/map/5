@@ -13,6 +13,6 @@ a1a2060301404141243125253131313135312535
 
 image image:meadow
 position -1 1 1 *
-song song:toil_and_trouble
+song song:barrel_of_salt
 sprite @11,6 sprite:jigpiece (u32)0
 rsprite (u16)0 sprite:leopard (u32)0

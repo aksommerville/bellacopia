@@ -13,7 +13,7 @@
 
 image image:meadow
 position 0 1 1 *
-song song:toil_and_trouble
+song song:barrel_of_salt
 sprite @6,5 sprite:jigpiece (u32)0
 sprite @14,8 sprite:treasure (u8:itemid)divining_rod (u8:quantity)0 (u16:fld)0
 sprite @3,6 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0
