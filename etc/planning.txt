@@ -102,13 +102,13 @@ We'll group minigames by Zone.
 
 Ought to have seven distinct narrative quests, one guarding each Root Devil.
 
-- [ ] 1. Unguarded. Just some random encounters. So you get your bearings first.
-- [ ] 2. Run for mayor.
-- [ ] 3. Troll at the bridge sends you on a fetch quest. When you get back, his shift is done and the new troll sends you on a different fetch quest.
-- [ ] 4. Hire a guide to lead you through the deadly labyrinth -- Generate a new labyrinth for each campaign.
-- [ ] 5. Two armies at war and you can't get past. Volunteer as messenger, and take the kings' letters to Cyrano first to rewrite, so they make peace.
-- [ ] 6. Get kidnapped by goblins and escape from their cave.
-- [ ] 7. Toad promises to remove a boulder if you transform him into an elephant but once transformed, he renegs and goes on a rampage. Catch the elephant, turn him back into a toad, and hire a contractor instead.
+- [ ] 1. FARM. Unguarded. Just some random encounters. So you get your bearings first.
+- [ ] 2. FRACTIA. Run for mayor.
+- [ ] 3. JUNGLE. Troll at the bridge sends you on a fetch quest. When you get back, his shift is done and the new troll sends you on a different fetch quest.
+- [ ] 4. JUNGLE. Hire a guide to lead you through the deadly labyrinth -- Generate a new labyrinth for each campaign.
+- [ ] 5. BATTLEFIELD. Two armies at war and you can't get past. Volunteer as messenger, and take the kings' letters to Cyrano first to rewrite, so they make peace.
+- [ ] 6. MOUNTAINS. Get kidnapped by goblins and escape from their cave.
+- [ ] 7. DESERT. Toad promises to remove a boulder if you transform him into an elephant but once transformed, he renegs and goes on a rampage. Catch the elephant, turn him back into a toad, and hire a contractor instead.
 
 ## Minigames
 

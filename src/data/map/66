@@ -15,3 +15,18 @@ image image:meadow
 position -4 0 1 *
 song song:toil_and_trouble
 sprite @10,5 sprite:jigpiece (u32)0
+root @8,11 (u16:fld)root3
+root @19,8 (u16:fld)root3
+root @18,8 (u16:fld)root3
+root @17,8 (u16:fld)root3
+root @16,8 (u16:fld)root3
+root @15,8 (u16:fld)root3
+root @14,8 (u16:fld)root3
+root @13,8 (u16:fld)root3
+root @12,8 (u16:fld)root3
+root @11,8 (u16:fld)root3
+root @10,8 (u16:fld)root3
+root @9,8 (u16:fld)root3
+root @8,8 (u16:fld)root3
+root @8,9 (u16:fld)root3
+root @8,10 (u16:fld)root3

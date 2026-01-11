@@ -9,10 +9,26 @@
 0104010402040002010000020106040206010000
 4503000405010501030106000006010104040404
 0200060402040402030205010003020406020600
-2205430044014404430545034400450044054404
+4305430044014404430545034400450044054404
 
 image image:meadow
 position -1 2 1 *
 song song:toil_and_trouble
 sprite @9,5 sprite:jigpiece (u32)0
 rsprite (u16)0 sprite:leopard (u32)0
+root @8,11 (u16:fld)root1
+root @19,7 (u16:fld)root1
+root @18,7 (u16:fld)root1
+root @17,7 (u16:fld)root1
+root @16,7 (u16:fld)root1
+root @15,7 (u16:fld)root1
+root @14,7 (u16:fld)root1
+root @13,7 (u16:fld)root1
+root @12,7 (u16:fld)root1
+root @11,7 (u16:fld)root1
+root @10,7 (u16:fld)root1
+root @9,7 (u16:fld)root1
+root @8,7 (u16:fld)root1
+root @8,8 (u16:fld)root1
+root @8,9 (u16:fld)root1
+root @8,10 (u16:fld)root1

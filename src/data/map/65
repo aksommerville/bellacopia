@@ -16,3 +16,23 @@ position -3 0 1 *
 sprite @6,9 sprite:jigpiece (u32)0
 song song:snowglobe
 door @11,6 map:136 @8,10 0x0000
+root @0,8 (u16:fld)root3
+root @19,8 (u16:fld)root3
+root @18,8 (u16:fld)root3
+root @17,8 (u16:fld)root3
+root @16,8 (u16:fld)root3
+root @15,8 (u16:fld)root3
+root @14,8 (u16:fld)root3
+root @13,8 (u16:fld)root3
+root @12,8 (u16:fld)root3
+root @11,8 (u16:fld)root3
+root @10,8 (u16:fld)root3
+root @9,8 (u16:fld)root3
+root @8,8 (u16:fld)root3
+root @7,8 (u16:fld)root3
+root @6,8 (u16:fld)root3
+root @5,8 (u16:fld)root3
+root @4,8 (u16:fld)root3
+root @3,8 (u16:fld)root3
+root @2,8 (u16:fld)root3
+root @1,8 (u16:fld)root3

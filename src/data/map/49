@@ -19,3 +19,31 @@ rsprite (u16)0 sprite:leopard (u32)0
 sprite @13,6 sprite:stick (u32)0
 sprite @2,6 sprite:stick (u32)0
 sprite @6,2 sprite:stick (u32)0
+root @7,1 (u16:fld)root5
+root @9,11 (u16:fld)root5
+root @9,10 (u16:fld)root5
+root @9,9 (u16:fld)root5
+root @9,8 (u16:fld)root5
+root @10,8 (u16:fld)root5
+root @10,7 (u16:fld)root5
+root @10,6 (u16:fld)root5
+root @10,5 (u16:fld)root5
+root @10,4 (u16:fld)root5
+root @10,3 (u16:fld)root5
+root @10,2 (u16:fld)root5
+root @10,1 (u16:fld)root5
+root @6,0 (u16:fld)root5
+root @9,1 (u16:fld)root5
+root @8,1 (u16:fld)root5
+root @6,1 (u16:fld)root5
+root @19,9 (u16:fld)root2
+root @11,11 (u16:fld)root2
+root @11,10 (u16:fld)root2
+root @11,9 (u16:fld)root2
+root @12,9 (u16:fld)root2
+root @13,9 (u16:fld)root2
+root @14,9 (u16:fld)root2
+root @15,9 (u16:fld)root2
+root @16,9 (u16:fld)root2
+root @17,9 (u16:fld)root2
+root @18,9 (u16:fld)root2

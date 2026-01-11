@@ -15,3 +15,18 @@ image image:desert
 position 2 4 1 *
 sprite @9,8 sprite:jigpiece (u32)0
 song song:blood_for_silver
+root @0,5 (u16:fld)root7
+root @9,0 (u16:fld)root7
+root @9,1 (u16:fld)root7
+root @9,2 (u16:fld)root7
+root @9,3 (u16:fld)root7
+root @9,4 (u16:fld)root7
+root @9,5 (u16:fld)root7
+root @8,5 (u16:fld)root7
+root @7,5 (u16:fld)root7
+root @6,5 (u16:fld)root7
+root @5,5 (u16:fld)root7
+root @4,5 (u16:fld)root7
+root @3,5 (u16:fld)root7
+root @2,5 (u16:fld)root7
+root @1,5 (u16:fld)root7

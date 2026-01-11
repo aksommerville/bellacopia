@@ -101,6 +101,7 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
   if (itemtile) graf_tile(&g.graf,dstx+itemdx,dsty+itemdy,itemtile,itemxform);
   
+  // Bugspray indicator.
   if (g.bugspray>0.0) {
     uint8_t bstileid=0x60+((g.framec/4)&7);
     if (g.bugspray<1.0) {
@@ -110,6 +111,12 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
     }
     graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,bstileid,0);
     graf_set_alpha(&g.graf,0xff);
+  }
+  
+  // Divining Rod indicator.
+  if ((g.equipped.itemid==NS_itemid_divining_rod)&&(g.input[0]&EGG_BTN_SOUTH)) {
+    uint8_t drtileid=SPRITE->onroot?0x69:0x68;
+    graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,drtileid,0);
   }
 }
 

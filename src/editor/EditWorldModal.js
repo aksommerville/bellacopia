@@ -101,6 +101,8 @@ export class EditWorldModal {
       this.dom.spawn(null, "OPTION", { value: "parent" }, "parent"),
     );
     
+    this.dom.spawn(topRow, "INPUT", { type: "button", value: "Printable...", "on-click": () => this.onPrintable() });
+    
     this.dom.spawn(topRow, "DIV", ["spacer"]);
     this.dom.spawn(topRow, "DIV", ["tattle"]);
     
@@ -221,21 +223,34 @@ export class EditWorldModal {
       }
     }
     let highlightValue = "";
+    let printable = false;
+    if (op.endsWith(":printable")) {
+      op = op.substring(0, op.length - 10);
+      printable = true;
+    }
     switch (op) {
       case "rsprite": highlightValue = this.reprRspriteFromMap(map); break;
       case "song": highlightValue = map.cmd.getFirstArg("song"); break;
       case "parent": highlightValue = map.cmd.getFirstArg("parent"); break;
     }
     if (highlightValue) {
-      let p = this.highlightValues.indexOf(highlightValue);
-      if (p < 0) {
-        p = this.highlightValues.length;
-        this.highlightValues.push(highlightValue);
+      if (printable) {
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(dstx+1, dsty+1, this.mapw-5, 10);
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "#000";
+        ctx.fillText(highlightValue, dstx+1, dsty+1);
+      } else {
+        let p = this.highlightValues.indexOf(highlightValue);
+        if (p < 0) {
+          p = this.highlightValues.length;
+          this.highlightValues.push(highlightValue);
+        }
+        ctx.fillStyle = "#0008"; // First 50% black, to ensure the highlight shows clearly.
+        ctx.fillRect(dstx, dsty, this.mapw, this.maph);
+        ctx.fillStyle = HIGHLIGHT_COLORS[p % HIGHLIGHT_COLORS.length];
+        ctx.fillRect(dstx, dsty, this.mapw >> 1, this.maph >> 1);
       }
-      ctx.fillStyle = "#0008"; // First 50% black, to ensure the highlight shows clearly.
-      ctx.fillRect(dstx, dsty, this.mapw, this.maph);
-      ctx.fillStyle = HIGHLIGHT_COLORS[p % HIGHLIGHT_COLORS.length];
-      ctx.fillRect(dstx, dsty, this.mapw >> 1, this.maph >> 1);
     }
   }
   
@@ -416,5 +431,37 @@ export class EditWorldModal {
       map = this.layer.v[row * this.layer.w + col]?.map;
     }
     this.setTattle(map);
+  }
+  
+  onPrintable() {
+    if (!this.tilesize || !this.layer) return;
+    const fullw = this.mapw * this.layer.w;
+    const fullh = this.maph * this.layer.h;
+    const canvas = new OffscreenCanvas(fullw, fullh);
+    const ctx = canvas.getContext("2d");
+    
+    const op = this.element.querySelector("select[name='op']")?.value + ":printable";
+    
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, fullw, fullh);
+    ctx.filter = "grayscale(100%)";
+    this.highlightValues = [];
+    for (let dsty=0, mapp=0, yi=this.layer.h; yi-->0; dsty+=this.maph) {
+      for (let dstx=0, xi=this.layer.w; xi-->0; dstx+=this.mapw, mapp++) {
+        const map = this.layer.v[mapp]?.map;
+        if (!map) continue;
+        this.renderMap(ctx, dstx, dsty, map, op);
+      }
+    }
+    
+    //XXX They're still too dark for me. Cover with partial white.
+    ctx.fillStyle = "#fff8";
+    ctx.fillRect(0, 0, fullw, fullh);
+    
+    canvas.convertToBlob().then(blob => {
+      const url = URL.createObjectURL(blob);
+      this.window.open(url, "myPrintableMap");
+      URL.revokeObjectURL(url);
+    }).catch(e => this.dom.modalError(e));
   }
 }

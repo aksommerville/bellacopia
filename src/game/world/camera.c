@@ -299,6 +299,7 @@ static void camera_spawn_sprites(const struct map *map,int mx,int my) {
         } break;
       
       // POI commands with position in first two bytes (should be all of them).
+      case CMD_map_root:
       case CMD_map_door: {
           camera_add_poi(mx*NS_sys_mapw+cmd.arg[0],my*NS_sys_maph+cmd.arg[1],cmd.opcode,cmd.arg);
         } break;

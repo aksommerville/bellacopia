@@ -17,5 +17,35 @@ song song:toil_and_trouble
 sprite @6,5 sprite:jigpiece (u32)0
 sprite @14,8 sprite:treasure (u8:itemid)divining_rod (u8:quantity)0 (u16:fld)0
 sprite @3,6 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0
-sprite @8,8 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
+sprite @5,8 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
 rsprite (u16)0 sprite:goat (u32)0
+root @19,9 (u16:fld)root7
+root @11,0 (u16:fld)root7
+root @11,1 (u16:fld)root7
+root @11,2 (u16:fld)root7
+root @11,3 (u16:fld)root7
+root @11,4 (u16:fld)root7
+root @11,5 (u16:fld)root7
+root @11,6 (u16:fld)root7
+root @11,7 (u16:fld)root7
+root @11,8 (u16:fld)root7
+root @11,9 (u16:fld)root7
+root @12,9 (u16:fld)root7
+root @13,9 (u16:fld)root7
+root @14,9 (u16:fld)root7
+root @15,9 (u16:fld)root7
+root @16,9 (u16:fld)root7
+root @17,9 (u16:fld)root7
+root @18,9 (u16:fld)root7
+root @8,11 (u16:fld)root1
+root @8,0 (u16:fld)root1
+root @8,1 (u16:fld)root1
+root @8,2 (u16:fld)root1
+root @8,3 (u16:fld)root1
+root @8,4 (u16:fld)root1
+root @8,5 (u16:fld)root1
+root @8,6 (u16:fld)root1
+root @8,7 (u16:fld)root1
+root @8,8 (u16:fld)root1
+root @8,9 (u16:fld)root1
+root @8,10 (u16:fld)root1

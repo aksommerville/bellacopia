@@ -20,12 +20,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
 - - Bothersome when you turn around and the guy you just beat is back, like always.
 - [ ] How to select handicap? See `sprite_monster.c`
-- [ ] Monsters should have configurable detect radius and chase speed.
+- [ ] Monsters should have configurable detect radius and chase speed. Also idle speed i guess.
 - [ ] Yeti and Chupacabra: They'll appear at the polar limits and must be extremely difficult. To discourage polar exploration.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
-- [ ] How to define root paths for the Divining Rod? See `hero_item.c:hero_roots_present`
+- [x] How to define root paths for the Divining Rod? See `hero_item.c:hero_roots_present` ...`CMD_map_root`
 - [ ] Chopping: Prepopulate conveyor belt.
+- [ ] After collecting treasure, poke hero (qx,qy) in case the divining rod changed.
+- [ ] Can we not trigger the divining rod's visual feedback during conversation? (eg talk to the carpenter with DR armed).
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
@@ -52,6 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Mappable planes rectangular with no gaps.
 - - [ ] Every monster sprite has a battle declared.
 - - [ ] rsprite monsters in every map that ought to.
+- - [ ] root paths
 - Beta test logging.
 - - [ ] Client-side log service. Write tersely, and store to a new storage key every session.
 - - [ ] Some cudgel in the web runtime to pull those logs when the session ends, send them to me, and then drop from localStorage.

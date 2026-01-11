@@ -13,6 +13,7 @@
 #define CMD_map_oob        0x22 /* u8:long u8:lat ; Only one map per plane needs to specify. If more, they must agree. */
 #define CMD_map_parent     0x23 /* u16:mapid ; For this whole plane, use (mapid) for the world map position, this plane doesn't get a jigsaw puzzle. Caves and such. One level redirect only! */
 #define CMD_map_position   0x40 /* s8:long s8:lat u8:plane u8:reserved */
+#define CMD_map_root       0x41 /* u16:position u16:fld */
 #define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
 #define CMD_map_rsprite    0x62 /* u16:reserved u16:spriteid u32:arg ; May spawn anywhere vacant. One per command. */
@@ -121,7 +122,14 @@
 #define NS_fld_gotstick           43 /* So we don't introduce Stick each time. It's the only item you lose repeatedly. */
 #define NS_fld_cschest1           44
 #define NS_fld_cschest2           45
-#define NS_fld_next               46
+#define NS_fld_root1              46
+#define NS_fld_root2              47
+#define NS_fld_root3              48
+#define NS_fld_root4              49
+#define NS_fld_root5              50
+#define NS_fld_root6              51
+#define NS_fld_root7              52
+#define NS_fld_next               53
 
 // NPC or similar triggerable activity.
 #define NS_activity_carpenter 1

@@ -15,3 +15,20 @@ image image:meadow
 position 1 -2 1 *
 sprite @10,5 sprite:jigpiece (u32)0
 song song:snowglobe
+root @19,3 (u16:fld)root2
+root @11,11 (u16:fld)root2
+root @11,10 (u16:fld)root2
+root @11,9 (u16:fld)root2
+root @11,8 (u16:fld)root2
+root @11,7 (u16:fld)root2
+root @11,6 (u16:fld)root2
+root @11,5 (u16:fld)root2
+root @11,4 (u16:fld)root2
+root @11,3 (u16:fld)root2
+root @12,3 (u16:fld)root2
+root @13,3 (u16:fld)root2
+root @14,3 (u16:fld)root2
+root @15,3 (u16:fld)root2
+root @16,3 (u16:fld)root2
+root @17,3 (u16:fld)root2
+root @18,3 (u16:fld)root2

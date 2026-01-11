@@ -154,6 +154,7 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
  
 static void hero_exit_cell(struct sprite *sprite,int x,int y) {
   //TODO treadles?
+  SPRITE->onroot=0;
 }
 
 /* Enter quantized cell.
@@ -167,6 +168,10 @@ static int hero_enter_cell_cb(uint8_t opcode,const uint8_t *arg,void *userdata) 
         int dstcol=arg[4];
         int dstrow=arg[5];
         camera_enter_door(mapid,dstcol,dstrow);
+      } break;
+    case CMD_map_root: {
+        int fldid=(arg[2]<<8)|arg[3];
+        if (!store_get(fldid,1)) SPRITE->onroot=fldid;
       } break;
   }
   return 0;

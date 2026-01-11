@@ -12,6 +12,7 @@ struct sprite_hero {
   int indx,indy; // Digested dpad state.
   int walking;
   int qx,qy; // Plane meters, quantized.
+  int onroot; // (NS_fld_root1..7) or zero
   double animclock;
   int animframe;
   uint8_t itemid_in_progress; // Zero if none. Not necessarily the equipped item.

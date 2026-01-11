@@ -16,6 +16,7 @@ static int _broom_begin(struct sprite *sprite) {
  */
 
 static int _divining_rod_begin(struct sprite *sprite) {
+  // We just make the sound. There's a visual indicator too, but it's handled entirely by render.
   if (hero_roots_present(sprite)) {
     bm_sound(RID_sound_affirmative,0.0);
   } else {
@@ -25,9 +26,7 @@ static int _divining_rod_begin(struct sprite *sprite) {
 }
  
 int hero_roots_present(const struct sprite *sprite) {
-  uint8_t physics=physics_at_sprite_position(sprite->x,sprite->y,sprite->z);
-  if (physics==NS_physics_safe) return 1;//TODO Decide how we're going to define the root paths. Was thinking lookalike tiles with telltale physics, but that's an ugly hack.
-  return 0;
+  return SPRITE->onroot;
 }
 
 /* Hookshot.
