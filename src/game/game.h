@@ -22,6 +22,7 @@ struct sprite;
 #define MODAL_LIMIT 8
 
 #define INVENTORY_SIZE 25 /* Must yield an agreeable rectangle for presentation. 5x5. */
+#define SPELL_LIMIT 8
 
 extern struct g {
   void *rom;
@@ -108,5 +109,11 @@ int inventory_acquire(int itemid,int quantity); // Nonzero if accepted. Does all
 void strings_for_item(int *strix_name,int *strix_desc,int itemid); // RID_strings_dialogue
 
 void bm_begin_activity(int activity,struct sprite *subject);
+
+/* Cast a spell. Probably only hero_item.c should do this, when completing a wand action.
+ * (src) is some combination of "LRUD".
+ * Returns >0 on success, or 0 if invalid. But you don't need to care; we do all the bells and whistles.
+ */
+int bm_cast_spell(const char *src,int srcc);
 
 #endif

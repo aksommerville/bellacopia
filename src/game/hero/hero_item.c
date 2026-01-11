@@ -124,13 +124,59 @@ static int _candy_begin(struct sprite *sprite) {
 /* Wand.
  */
  
+static void wand_end(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=0;
+  if (SPRITE->spellc) {
+    // Convert from our direction codes to the more portable letters: LRUD
+    uint8_t *p=SPRITE->spell;
+    int i=SPRITE->spellc;
+    for (;i-->0;p++) switch (*p) {
+      case 0x40: *p='U'; break;
+      case 0x10: *p='L'; break;
+      case 0x08: *p='R'; break;
+      case 0x02: *p='D'; break;
+      default: *p='X'; break;
+    }
+    bm_cast_spell((char*)SPRITE->spell,SPRITE->spellc);
+  }
+}
+
+static void wand_dir(struct sprite *sprite,uint8_t dir) {
+  if (dir==SPRITE->wanddir) return;
+  if (SPRITE->wanddir=dir) {
+    if (SPRITE->spellc<SPELL_LIMIT) {
+      bm_sound(RID_sound_wandstroke,0.0);
+      SPRITE->spell[SPRITE->spellc++]=dir;
+    } else {
+      bm_sound(RID_sound_reject,0.0);
+    }
+  } else {
+    bm_sound(RID_sound_wandunstroke,0.0);
+  }
+}
+ 
 static void _wand_update(struct sprite *sprite,double elapsed) {
-  //TODO
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    wand_end(sprite);
+    return;
+  }
+  switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
+    case EGG_BTN_LEFT: wand_dir(sprite,0x10); break;
+    case EGG_BTN_RIGHT: wand_dir(sprite,0x08); break;
+    case EGG_BTN_UP: wand_dir(sprite,0x40); break;
+    case EGG_BTN_DOWN: wand_dir(sprite,0x02); break;
+    default: wand_dir(sprite,0);
+  }
 }
 
 static int _wand_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  hero_end_walk(sprite);
+  SPRITE->itemid_in_progress=NS_itemid_wand;
+  SPRITE->wanddir=0;
+  SPRITE->facedx=0;
+  SPRITE->facedy=1;
+  SPRITE->spellc=0;
+  return 1;
 }
 
 /* Magnifier.

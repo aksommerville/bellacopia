@@ -28,4 +28,7 @@ int camera_for_each_poi(int x,int y,int (*cb)(uint8_t opcode,const uint8_t *arg,
 void camera_enter_door(int mapid,int col,int row);
 void camera_warp_home_soon(); // Moves hero to the starting position.
 
+// Yes yes, that's a thing cameras do!
+void camera_flash();
+
 #endif

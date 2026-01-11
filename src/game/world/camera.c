@@ -6,6 +6,9 @@
 #define DARK_SPEED 1.000 /* hz */
 #define LIGHTS_FLICKER_PERIOD 1.000 /* s */
 #define LIGHTS_FLICKER_RANGE 3.0 /* px */
+#define LIGHT_UP_SPEED   7.000 /* hz */
+#define LIGHT_DOWN_SPEED 1.000 /* hz */
+#define LIGHT_COLOR 0xffffc000 /* rgba; alpha must be zero */
 
 /* Private globals.
  */
@@ -37,6 +40,8 @@ static struct {
   int dark_mask; // texid
   uint32_t *dark_bits; // framebuffer size
   double flickerclock;
+  double lightlevel; // 0..1 = normal..bright. If (dark), it counteracts the darkness, otherwise it's a flash of light.
+  double dlightlevel; // -1,1
   
 } camera={0};
 
@@ -468,6 +473,8 @@ int camera_reset(int mapid) {
   if (was_door) camera_force_hero(herox,heroy);
   camera_update(0.0);
   camera.cut=0;
+  camera.lightlevel=0.0;
+  camera.dlightlevel=0.0;
   return 0;
 }
 
@@ -488,6 +495,17 @@ void camera_update(double elapsed) {
     if ((camera.darklevel-=DARK_SPEED*elapsed)<0.0) camera.darklevel=0.0;
   }
   if ((camera.flickerclock+=elapsed)>=LIGHTS_FLICKER_PERIOD) camera.flickerclock-=LIGHTS_FLICKER_PERIOD;
+  if (camera.dlightlevel>0.0) {
+    if ((camera.lightlevel+=LIGHT_UP_SPEED*elapsed)>1.0) {
+      camera.lightlevel=1.0;
+      camera.dlightlevel=-1.0; // Lightness starts dropping as soon as it tops out, automatically.
+    }
+  } else if (camera.dlightlevel<0.0) {
+    if ((camera.lightlevel-=LIGHT_DOWN_SPEED*elapsed)<0.0) {
+      camera.lightlevel=0.0;
+      camera.dlightlevel=0.0;
+    }
+  }
 
   // If we don't have sensible plane bounds, get out.
   if ((camera.pw<1)||(camera.ph<1)) return;
@@ -658,7 +676,7 @@ void camera_render() {
       if (dsty>=maph) continue;
       if (dsty<=-maph) continue;
       const struct map *map=camera.mapv+(my-camera.py)*camera.pw+(mx-camera.px);
-      if (map) camera_render_map(dstx,dsty,map);
+      if (map->rid) camera_render_map(dstx,dsty,map);
       else graf_fill_rect(&g.graf,dstx,dsty,NS_sys_mapw*NS_sys_tilesize,NS_sys_maph*NS_sys_tilesize,0x000000ff);
     }
   }
@@ -673,16 +691,21 @@ void camera_render() {
   sprites_render(camera.vx,camera.vy);
   if (hero) hero->defunct=0;
   
-  /* If there is darkness, apply it.
+  /* If there is darkness or lightness, apply it.
    */
   if (camera.darklevel>0.0) {
     camera_generate_dark_mask();
-    int alpha=(int)(camera.darklevel*255.0);
+    double level=camera.darklevel;
+    if (camera.lightlevel>0.0) level*=1.0-camera.lightlevel;
+    int alpha=(int)(level*255.0);
     if (alpha<0xff) graf_set_alpha(&g.graf,alpha);
     graf_set_input(&g.graf,camera.dark_mask);
     graf_decal(&g.graf,0,0,0,0,FBW,FBH);
     graf_set_alpha(&g.graf,0xff);
     if (hero) sprites_render_1(camera.vx,camera.vy,hero);
+  } else if (camera.lightlevel>0.0) {
+    int alpha=(int)(camera.lightlevel*128.0);
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,LIGHT_COLOR|alpha);
   }
 }
 
@@ -746,4 +769,8 @@ void camera_warp_home_soon() {
     }
   }
   camera_enter_door(RID_map_start,col,row);
+}
+
+void camera_flash() {
+  camera.dlightlevel=1.0;
 }

@@ -14,11 +14,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-01: Outer world works crudely. Jigsaws are done-ish. Dialogue and pause mostly there. 4 battles: fishing, chopping, boomerang, exterminating.
 - - Reassess at the end of January to confirm we're on track to finish in June. Or at least, by GDEX.
 - 2026-01-09: Finished Inversion for Uplifting Jam #6 and got right back to this. So we have scientifically established that it is possible to do game jams concurrently with Bellacopia. :)
+- 2026-01-11: With stand-in root devils, tried a leisurely run without touching any cheat things: 29:14 to complete. Feeling good about the one-hour-minimum target.
 
 ## TODO
 
 - [ ] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
 - - Bothersome when you turn around and the guy you just beat is back, like always.
+- - Maybe keep using `rsprite` commands, since they have to be recorded somewhere, but trigger in a looser fashion: "I want a sprite here, which sprite should it be?"
 - [ ] How to select handicap? See `sprite_monster.c`
 - [ ] Monsters should have configurable detect radius and chase speed. Also idle speed i guess.
 - [ ] Yeti and Chupacabra: They'll appear at the polar limits and must be extremely difficult. To discourage polar exploration.
@@ -32,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
 - - [ ] Fish Pole.
-- - [ ] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting?
+- - [x] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting? ...yep, Full Moon style.
 - [ ] Passive items.
 - - [ ] Boat. Lets you convert at docks, and travel freely over water.
 - - [ ] Fetch-quest subjects.

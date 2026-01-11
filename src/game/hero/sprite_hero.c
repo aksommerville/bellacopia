@@ -35,6 +35,55 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Render bits.
+ */
+ 
+static void hero_render_bugspray_maybe(struct sprite *sprite,int dstx,int dsty) {
+  if (g.bugspray>0.0) {
+    uint8_t bstileid=0x60+((g.framec/4)&7);
+    if (g.bugspray<1.0) {
+      int alpha=(int)(g.bugspray*255.0);
+      if (alpha<0) alpha=0; else if (alpha>0xff) alpha=0xff;
+      graf_set_alpha(&g.graf,alpha);
+    }
+    graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,bstileid,0);
+    graf_set_alpha(&g.graf,0xff);
+  }
+}
+
+static void hero_render_spell(struct sprite *sprite,int dstx,int dsty) {
+  // It always goes above your head.
+  // In theory, you might be on an edge-clamping plane right at the north end, but that really doesn't come up much.
+  dsty-=NS_sys_tilesize;
+  // 0x6a..0x6d are the arrow (L,R,T,B). Don't use xforms, because width is odd.
+  // 0x7a,0x7b,0x7c are the scroll. Width 9. One scroll unit per spell unit, but no fewer than 2.
+  int arrowsw=SPRITE->spellc*6-1; // tighest bound around the arrow'd pixels (5 per arrow plus 1 space between).
+  if (arrowsw<0) arrowsw=0;
+  
+  if (arrowsw) { // Body of the banner is raw rectangles.
+    int bannerx=dstx-(arrowsw>>1);
+    int bannery=dsty-5;
+    graf_fill_rect(&g.graf,bannerx,bannery,arrowsw,9,0x000000ff);
+    graf_fill_rect(&g.graf,bannerx,bannery+1,arrowsw,7,0xa18c75ff);
+  }
+  graf_set_image(&g.graf,RID_image_hero);
+  graf_tile(&g.graf,dstx-(arrowsw>>1)+2,dsty,0x6e,0);
+  graf_tile(&g.graf,dstx-(arrowsw>>1)+arrowsw-1,dsty,0x6f,0);
+  int x=dstx-(arrowsw>>1)+3;
+  int i=0;
+  for (;i<SPRITE->spellc;i++,x+=6) {
+    uint8_t tileid;
+    switch (SPRITE->spell[i]) {
+      case 0x40: tileid=0x6c; break;
+      case 0x10: tileid=0x6a; break;
+      case 0x08: tileid=0x6b; break;
+      case 0x02: tileid=0x6d; break;
+      default: continue;
+    }
+    graf_tile(&g.graf,x,dsty,tileid,0);
+  }
+}
+
 /* Render.
  */
  
@@ -42,6 +91,24 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   graf_set_image(&g.graf,sprite->imageid);
   uint8_t tileid=sprite->tileid;
   uint8_t xform=0;
+  
+  /* Wand in progress is its own thing.
+   */
+  if (SPRITE->itemid_in_progress==NS_itemid_wand) {
+    uint8_t tileid=0x40;
+    int extrax=0,extray=0;
+    switch (SPRITE->wanddir) {
+      case 0x40: tileid+=3; extray=-1; break;
+      case 0x10: tileid+=1; extrax=-1; break;
+      case 0x08: tileid+=2; extrax=1; break;
+      case 0x02: tileid+=4; extray=1; break;
+    }
+    graf_tile(&g.graf,dstx,dsty,tileid,0);
+    if (extrax||extray) graf_tile(&g.graf,dstx+extrax*NS_sys_tilesize,dsty+extray*NS_sys_tilesize,tileid+0x10,0);
+    hero_render_bugspray_maybe(sprite,dstx,dsty);
+    hero_render_spell(sprite,dstx,dsty);
+    return;
+  }
   
   if (SPRITE->facedx<0) tileid+=0x02;
   else if (SPRITE->facedx>0) { tileid+=0x02; xform=EGG_XFORM_XREV; }
@@ -101,17 +168,7 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
   graf_tile(&g.graf,dstx,dsty,tileid,xform);
   if (itemtile) graf_tile(&g.graf,dstx+itemdx,dsty+itemdy,itemtile,itemxform);
   
-  // Bugspray indicator.
-  if (g.bugspray>0.0) {
-    uint8_t bstileid=0x60+((g.framec/4)&7);
-    if (g.bugspray<1.0) {
-      int alpha=(int)(g.bugspray*255.0);
-      if (alpha<0) alpha=0; else if (alpha>0xff) alpha=0xff;
-      graf_set_alpha(&g.graf,alpha);
-    }
-    graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,bstileid,0);
-    graf_set_alpha(&g.graf,0xff);
-  }
+  hero_render_bugspray_maybe(sprite,dstx,dsty);
   
   // Divining Rod indicator.
   if ((g.equipped.itemid==NS_itemid_divining_rod)&&(g.input[0]&EGG_BTN_SOUTH)) {

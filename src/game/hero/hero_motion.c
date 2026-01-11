@@ -5,13 +5,18 @@
  */
  
 static int hero_can_change_direction(struct sprite *sprite) {
+  switch (SPRITE->itemid_in_progress) {
+    case NS_itemid_wand:
+      return 0;
+  }
   return 1;
 }
 
 /* End of a walk motion.
  */
  
-static void hero_end_walk(struct sprite *sprite) {
+void hero_end_walk(struct sprite *sprite) {
+  if (!SPRITE->walking) return;
   SPRITE->walking=0;
 }
 
@@ -20,6 +25,12 @@ static void hero_end_walk(struct sprite *sprite) {
  */
  
 static int hero_begin_walk(struct sprite *sprite) {
+
+  switch (SPRITE->itemid_in_progress) {
+    case NS_itemid_wand:
+      return 0;
+  }
+
   SPRITE->walking=1;
   SPRITE->animclock=0.0;
   SPRITE->animframe=0;

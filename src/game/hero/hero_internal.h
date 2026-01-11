@@ -18,6 +18,9 @@ struct sprite_hero {
   uint8_t itemid_in_progress; // Zero if none. Not necessarily the equipped item.
   int item_blackout; // If nonzero, wait for SOUTH to release.
   double matchclock;
+  uint8_t wanddir;
+  uint8_t spell[SPELL_LIMIT]; // (0x40,0x10,0x08,0x02)
+  int spellc;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)
@@ -26,5 +29,7 @@ void hero_update_item(struct sprite *sprite,double elapsed);
 void hero_update_motion(struct sprite *sprite,double elapsed);
 void hero_check_qpos(struct sprite *sprite);
 int hero_roots_present(const struct sprite *sprite);
+
+void hero_end_walk(struct sprite *sprite);
 
 #endif

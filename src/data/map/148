@@ -15,3 +15,4 @@ image image:caves
 position -2 0 2 *
 parent map:14
 sprite @2,4 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
+dark
