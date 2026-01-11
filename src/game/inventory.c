@@ -227,14 +227,45 @@ static struct inventory *inventory_add(int itemid,int quantity) {
   return inventory;
 }
 
+/* Increase some store field, treating it as inventory.
+ */
+ 
+static int inventory_acquire_store(int fldid,int size,int limit,int add,int strix) {
+  int v=store_get(fldid,size);
+  int v0=v;
+  v+=add;
+  if (v<0) v=0; else if (v>limit) v=limit;
+  if (v==v0) return 0; // Already maxed out.
+  store_set(fldid,size,v);
+  bm_sound(RID_sound_collect,0.0);
+  if (strix) {
+    struct modal *modal=modal_new_dialogue(0,0);
+    if (modal) {
+      struct text_insertion insv[]={
+        {.mode='i',.i=v-v0},
+        {.mode='r',.r={RID_strings_dialogue,strix}},
+      };
+      modal_dialogue_set_fmt(modal,RID_strings_dialogue,110,insv,2);
+    }
+  }
+  return 1;
+}
+
 /* Get item.
  */
  
 int inventory_acquire(int itemid,int quantity) {
   struct inventory *inventory=inventory_search(itemid);
   
-  // TODO There will likely be items in the future that don't go into inventory. eg keys, things you just Have forever.
-  // Those should be managed here.
+  /* Pick off (itemid) that aren't real inventory.
+   */
+  switch (itemid) {
+    case NS_itemid_gold: return inventory_acquire_store(NS_fld_gold,10,999,quantity,26);
+    case NS_itemid_blood: return inventory_acquire_store(NS_fld_hp,4,store_get(NS_fld_hpmax,4),quantity,27);
+    case NS_itemid_greenfish: return inventory_acquire_store(NS_fld_greenfish,7,99,quantity,28);
+    case NS_itemid_bluefish: return inventory_acquire_store(NS_fld_bluefish,7,99,quantity,29);
+    case NS_itemid_redfish: return inventory_acquire_store(NS_fld_redfish,7,99,quantity,30);
+  }
   
   /* Acquiring for the first time?
    * This gets some extra fanfare.
@@ -242,6 +273,14 @@ int inventory_acquire(int itemid,int quantity) {
   if (!inventory) {
     if (!(inventory=inventory_add(itemid,quantity))) return 0;
     g.inventory_dirty=1;
+    // Special consideration for stick. Only run the fanfare once.
+    if (itemid==NS_itemid_stick) {
+      if (store_get(NS_fld_gotstick,1)) {
+        bm_sound(RID_sound_collect,0.0);
+        return 1;
+      }
+      store_set(NS_fld_gotstick,1,1);
+    }
     bm_sound(RID_sound_treasure,0.0);
     int strix_name=0,strix_desc=0;
     strings_for_item(&strix_name,&strix_desc,itemid);

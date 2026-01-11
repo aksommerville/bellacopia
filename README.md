@@ -17,12 +17,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
+- - Bothersome when you turn around and the guy you just beat is back, like always.
 - [ ] How to select handicap? See `sprite_monster.c`
 - [ ] Monsters should have configurable detect radius and chase speed.
 - [ ] Yeti and Chupacabra: They'll appear at the polar limits and must be extremely difficult. To discourage polar exploration.
 - [ ] Songs per map: Crossfade and retain playhead.
 - [ ] Cache rendered maps in camera. Currently drawing from scratch each frame.
 - [ ] How to define root paths for the Divining Rod? See `hero_item.c:hero_roots_present`
+- [ ] Chopping: Prepopulate conveyor belt.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
@@ -36,7 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Gold
 - - [x] Fish
 - - [x] Blood
-- [ ] Gold from treasure chests, even tho it's not an "item".
+- [x] Gold from treasure chests, even tho it's not an "item".
 - [ ] `modal_battle.c`: Show graphic input description per battle.
 - [ ] `modal_dialogue.c`: Typewriter text. Should we? I actually don't like that effect, and it would take considerable effort.
 - - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.

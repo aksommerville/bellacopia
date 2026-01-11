@@ -67,6 +67,11 @@
 #define NS_itemid_wand            8
 #define NS_itemid_magnifier       9
 #define NS_itemid_stick          10
+#define NS_itemid_gold           11 /* Doesn't participate in inventory. */
+#define NS_itemid_blood          12 /* '' */
+#define NS_itemid_greenfish      13 /* '' */
+#define NS_itemid_bluefish       14 /* '' */
+#define NS_itemid_redfish        15 /* '' */
 
 // Sprite controllers.
 #define NS_sprtype_dummy          0 /* (u32)0 */
@@ -113,7 +118,10 @@
 #define NS_fld_greenfish          22 /* 7 bits, limit artificially to 99. */
 #define NS_fld_bluefish           29 /* 7 bits, limit artificially to 99. */
 #define NS_fld_redfish            36 /* 7 bits, limit artificially to 99. */
-#define NS_fld_next               43
+#define NS_fld_gotstick           43 /* So we don't introduce Stick each time. It's the only item you lose repeatedly. */
+#define NS_fld_cschest1           44
+#define NS_fld_cschest2           45
+#define NS_fld_next               46
 
 // NPC or similar triggerable activity.
 #define NS_activity_carpenter 1

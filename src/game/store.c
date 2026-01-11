@@ -203,8 +203,8 @@ static int store_encode(char *dst,int dsta,const uint8_t *src,int srcc) {
     for (;chunkc-->0;dst+=4,src+=3) {
       dst[0]=alphabet[src[0]>>2];
       dst[1]=alphabet[((src[0]<<4)|(src[1]>>4))&0x3f];
-      dst[2]=alphabet[((src[1]<<2)|(src[3]>>6))&0x3f];
-      dst[3]=alphabet[src[3]&0x3f];
+      dst[2]=alphabet[((src[1]<<2)|(src[2]>>6))&0x3f];
+      dst[3]=alphabet[src[2]&0x3f];
     }
   }
   return dstc;

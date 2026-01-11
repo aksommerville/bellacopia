@@ -124,6 +124,8 @@ static void *_chopping_init(
   CTX->playerv[0].animinterval=ANIMINTERVAL_MAX*(1.0-nhc)+ANIMINTERVAL_MIN*nhc;
   CTX->playerv[1].animinterval=ANIMINTERVAL_MIN*(1.0-nhc)+ANIMINTERVAL_MAX*nhc;
   
+  //TODO Prepopulate conveyor belts so there's no more than a second of lead-in time. Ensure they're spaced and counted etc as if they'd spawned naturally.
+  
   return ctx;
 }
 

@@ -14,3 +14,4 @@
 image image:cheapside_int
 door @7,6 map:16 @3,9 0x0000
 parent map:16
+sprite @10,3 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)cschest1
