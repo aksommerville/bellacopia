@@ -35,6 +35,7 @@ int hero_roots_present(const struct sprite *sprite) {
 #define HOOKSTAGE_LEAVE 1
 #define HOOKSTAGE_RETURN 2
 #define HOOKSTAGE_PULL 3
+#define HOOKSTAGE_FETCH 4 /* RETURN, but a signal that we have a pumpkin. */
 
 #define HOOKSHOT_TICK_INTERVAL 0.100 /* s; space between sounds for all stages. */
 #define HOOKSHOT_LEAVE_SPEED   12.0 /* m/s */
@@ -44,10 +45,17 @@ int hero_roots_present(const struct sprite *sprite) {
 
 static void hookshot_end(struct sprite *sprite) {
   SPRITE->itemid_in_progress=0;
+  sprite->physics|=(1<<NS_physics_water)|(1<<NS_physics_hole);
+  hero_force_safe(sprite);
+  if (SPRITE->hookstage==HOOKSTAGE_FETCH) {
+    struct sprite **otherp=0;
+    int otheri=sprites_get_all(&otherp);
+    for (;otheri-->0;otherp++) if ((*otherp)->grabbable==2) (*otherp)->grabbable=1;
+  }
 }
 
 static void hookshot_abort(struct sprite *sprite) {
-  if (SPRITE->hookstage==HOOKSTAGE_RETURN) {
+  if ((SPRITE->hookstage==HOOKSTAGE_RETURN)||(SPRITE->hookstage==HOOKSTAGE_FETCH)) {
     // Let it return on its own.
   } else if (SPRITE->hookstage==HOOKSTAGE_PULL) {
     // Pulling, abort immediately on release.
@@ -73,7 +81,37 @@ static void hookshot_check_grab(struct sprite *sprite) {
     x-=0.25;
     y+=SPRITE->hookdistance;
   }
-  fprintf(stderr,"TODO %s %f,%f\n",__func__,x,y);//TODO
+  uint8_t physics=physics_at_sprite_position(x,y,sprite->z);
+  if (physics==NS_physics_hookable) {
+    SPRITE->hookstage=HOOKSTAGE_PULL;
+    bm_sound(RID_sound_hookshot_grab,0.0);
+    sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+  } else if ((physics==NS_physics_solid)||(physics==NS_physics_cliff)) {
+    hookshot_abort(sprite);
+    bm_sound(RID_sound_hookshot_reject,0.0);
+  } else {
+    struct sprite **otherp=0;
+    int otheri=sprites_get_all(&otherp);
+    for (;otheri-->0;otherp++) {
+      struct sprite *other=*otherp;
+      if (other->defunct) continue;
+      if (!other->solid&&!other->grabbable) continue;
+      if (other==sprite) continue;
+      if (x<=other->x+other->hbl) continue;
+      if (x>=other->x+other->hbr) continue;
+      if (y<=other->y+other->hbt) continue;
+      if (y>=other->y+other->hbb) continue;
+      if (other->grabbable) {
+        SPRITE->hookstage=HOOKSTAGE_FETCH;
+        bm_sound(RID_sound_hookshot_grab,0.0);
+        other->grabbable=2; // We won't record the sprite. Instead we'll search for grabbable==2 each frame.
+      } else if (other->solid) {
+        hookshot_abort(sprite);
+        bm_sound(RID_sound_hookshot_reject,0.0);
+      }
+      break;
+    }
+  }
 }
  
 static void _hookshot_update(struct sprite *sprite,double elapsed) {
@@ -97,14 +135,47 @@ static void _hookshot_update(struct sprite *sprite,double elapsed) {
           hookshot_check_grab(sprite);
         }
       } break;
-    case HOOKSTAGE_RETURN: {
+    case HOOKSTAGE_RETURN:
+    case HOOKSTAGE_FETCH: {
         if ((SPRITE->hookdistance-=elapsed*HOOKSHOT_RETURN_SPEED)<=0.0) {
           hookshot_end(sprite);
+        } else if (SPRITE->hookstage==HOOKSTAGE_FETCH) {
+          struct sprite *pumpkin=0;
+          struct sprite **otherp=0;
+          int otheri=sprites_get_all(&otherp);
+          for (;otheri-->0;otherp++) {
+            struct sprite *other=*otherp;
+            if (other->grabbable!=2) continue;
+            if (other->defunct) continue;
+            pumpkin=other;
+            break;
+          }
+          if (pumpkin) {
+            if (!sprite_move(pumpkin,SPRITE->facedx*-HOOKSHOT_RETURN_SPEED*elapsed,SPRITE->facedy*-HOOKSHOT_RETURN_SPEED*elapsed)) {
+              pumpkin->grabbable=1;
+              SPRITE->hookstage=HOOKSTAGE_RETURN;
+            }
+          } else {
+            SPRITE->hookstage=HOOKSTAGE_RETURN;
+          }
         }
       } break;
     case HOOKSTAGE_PULL: {
-        fprintf(stderr,"%s:%d:TODO: HOOKSTAGE_PULL\n",__FILE__,__LINE__);
-        hookshot_end(sprite);
+        double x0=sprite->x,y0=sprite->y;
+        double dx=SPRITE->facedx*HOOKSHOT_PULL_SPEED*elapsed;
+        double dy=SPRITE->facedy*HOOKSHOT_PULL_SPEED*elapsed;
+        if (!sprite_move(sprite,dx,dy)) {
+          hookshot_end(sprite);
+        } else {
+          // Update distance by the actual distance travelled.
+          // It's very unlikely that we'll ever reach zero -- the hook is anchored on something solid.
+          // But do check for it, and end the activity when we cross zero.
+          double d=(sprite->x-x0)+(sprite->y-y0);
+          if (d<0.0) d=-d;
+          if ((SPRITE->hookdistance-=d)<=0.0) {
+            hookshot_end(sprite);
+          }
+        }
       } break;
   }
 }
@@ -115,6 +186,8 @@ static int _hookshot_begin(struct sprite *sprite) {
   SPRITE->hookclock=0.0;
   SPRITE->hookdistance=0.0;
   SPRITE->hookstage=HOOKSTAGE_LEAVE;
+  SPRITE->safex=sprite->x;
+  SPRITE->safey=sprite->y;
   bm_sound(RID_sound_hookshot_begin,0.0);
   return 1;
 }

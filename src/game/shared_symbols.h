@@ -18,14 +18,15 @@
 #define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
 #define CMD_map_rsprite    0x62 /* u16:reserved u16:spriteid u32:arg ; May spawn anywhere vacant. One per command. */
 
-#define CMD_sprite_solid   0x01 /* --- */
-#define CMD_sprite_image   0x20 /* u16:imageid */
-#define CMD_sprite_tile    0x21 /* u8:tileid u8:xform */
-#define CMD_sprite_type    0x23 /* u16:sprtype */
-#define CMD_sprite_layer   0x24 /* s16:layer(0=default) */
-#define CMD_sprite_battle  0x25 /* u16:battletype ; NS_sprtype_monster. Spawn point overrides. */
-#define CMD_sprite_physics 0x40 /* (b32:physics)impassables */
-#define CMD_sprite_hitbox  0x41 /* s8:left s8:right s8:top s8:bottom ; pixels ie m/16 */
+#define CMD_sprite_solid     0x01 /* --- */
+#define CMD_sprite_grabbable 0x02 /* --- */
+#define CMD_sprite_image     0x20 /* u16:imageid */
+#define CMD_sprite_tile      0x21 /* u8:tileid u8:xform */
+#define CMD_sprite_type      0x23 /* u16:sprtype */
+#define CMD_sprite_layer     0x24 /* s16:layer(0=default) */
+#define CMD_sprite_battle    0x25 /* u16:battletype ; NS_sprtype_monster. Spawn point overrides. */
+#define CMD_sprite_physics   0x40 /* (b32:physics)impassables */
+#define CMD_sprite_hitbox    0x41 /* s8:left s8:right s8:top s8:bottom ; pixels ie m/16 */
 
 #define NS_tilesheet_physics   1
 #define NS_tilesheet_family    0

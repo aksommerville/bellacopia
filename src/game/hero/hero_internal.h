@@ -24,6 +24,7 @@ struct sprite_hero {
   double hookclock; // For the tick sound only.
   double hookdistance;
   int hookstage;
+  double safex,safey; // Set before a risky operation like hookshot, for the position we can return to.
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)
@@ -34,5 +35,9 @@ void hero_check_qpos(struct sprite *sprite);
 int hero_roots_present(const struct sprite *sprite);
 
 void hero_end_walk(struct sprite *sprite);
+
+/* Fudge my position to escape minor collisions, or jump to (safex,safey) if we don't find a legal position nearby.
+ */
+void hero_force_safe(struct sprite *sprite);
 
 #endif

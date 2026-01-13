@@ -26,6 +26,7 @@ struct sprite {
   uint32_t physics; // Bitfields, (1<<NS_physics_*), for the impassable ones.
   double hbl,hbr,hbt,hbb; // Hitbox, relative to (x,y). Negative and positive 1/2 by default.
   double light_radius; // >0 if this sprite is a light source.
+  int grabbable; // Can pull with hookshot.
 };
 
 /* If you don't provide (type), you must provide (serial) to read it from, or (rid) to get that from.

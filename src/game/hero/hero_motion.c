@@ -221,3 +221,29 @@ void sprite_hero_ackpos(struct sprite *sprite) {
   SPRITE->qx=(int)sprite->x; if (sprite->x<0.0) SPRITE->qx--;
   SPRITE->qy=(int)sprite->y; if (sprite->y<0.0) SPRITE->qy--;
 }
+
+/* Force safe position.
+ */
+ 
+void hero_force_safe(struct sprite *sprite) {
+  if (sprite_test_position(sprite)) return;
+  
+  /* Rather than fussing around with "find the nearest legal position", we do something kind of dumb.
+   * Quantize my center, then check that position.
+   */
+  int qx=(int)sprite->x; if (sprite->x<0.0) qx--;
+  int qy=(int)sprite->y; if (sprite->y<0.0) qy--;
+  double x0=sprite->x;
+  double y0=sprite->y;
+  sprite->x=qx+0.5;
+  sprite->y=qy+0.5;
+  if (sprite_test_position(sprite)) return;
+  
+  /* OK, heck with it. Return to the stored "safe" position.
+   * TODO Splash effect if we're over water?
+   * TODO Fireworks to highlight the new position?
+   * TODO This needs camera support too. As is, it's a sudden and ugly cut.
+   */
+  sprite->x=SPRITE->safex;
+  sprite->y=SPRITE->safey;
+}

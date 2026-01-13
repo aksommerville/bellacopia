@@ -151,7 +151,7 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
     }
     // And then the two foreground tiles, and any decoration on top.
     graf_tile(&g.graf,dstx,dsty,tileid,xform);
-    graf_tile(&g.graf,hookx,hooky,0x27,hookxform);
+    graf_tile(&g.graf,hookx,hooky,(SPRITE->hookstage==1)?0x27:0x28,hookxform); // open jaw leaving, closed otherwise
     hero_render_bugspray_maybe(sprite,dstx,dsty);
     return;
   }

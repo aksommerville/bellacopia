@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Dialogue needs to be more in-your-face. Maybe partial blackout of the background, or move the box near the hero.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
-- - [ ] Hookshot.
+- - [x] Hookshot.
 - - [ ] Fish Pole.
 - - [x] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting? ...yep, Full Moon style.
 - [ ] Passive items.
@@ -45,7 +45,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Gold
 - - [x] Fish
 - - [x] Blood
+- [ ] Improve presentation after hookshot-into-water panic. `hero_motion.c`
+- [ ] Give Dot a push-wall face. Important for dark rooms, so you can tell when you're blocked.
 - [x] Gold from treasure chests, even tho it's not an "item".
+- [ ] Heart containers. Like items, don't place them yet. Reserve that for late in the process, so we can spread treasures out evenly. How many containers in all?
+- [ ] Item-bearing battles.
+- [ ] Buying blood and selling it should not be the same merchant, shouldn't even be the same house.
+- - Don't buy blood, buy potions to put in a bottle. "Frequent Shopper Rewards Club".
+- [ ] Merchants should allow multiple quantity purchase, and should show your existing quantity when focussed.
 - [ ] `modal_battle.c`: Show graphic input description per battle.
 - [ ] `modal_dialogue.c`: Typewriter text. Should we? I actually don't like that effect, and it would take considerable effort.
 - - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.

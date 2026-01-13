@@ -64,6 +64,7 @@ struct sprite *sprite_spawn(
     while (cmdlist_reader_next(&cmd,&reader)>0) {
       switch (cmd.opcode) {
         case CMD_sprite_solid: sprite->solid=1; break;
+        case CMD_sprite_grabbable: sprite->grabbable=1; break;
         case CMD_sprite_image: sprite->imageid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
         case CMD_sprite_tile: sprite->tileid=cmd.arg[0]; sprite->xform=cmd.arg[1]; break;
         case CMD_sprite_layer: sprite->layer=(int16_t)((cmd.arg[0]<<8)|cmd.arg[1]); break;
