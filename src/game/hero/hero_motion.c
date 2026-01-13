@@ -7,6 +7,7 @@
 static int hero_can_change_direction(struct sprite *sprite) {
   switch (SPRITE->itemid_in_progress) {
     case NS_itemid_wand:
+    case NS_itemid_hookshot:
       return 0;
   }
   return 1;
@@ -28,6 +29,7 @@ static int hero_begin_walk(struct sprite *sprite) {
 
   switch (SPRITE->itemid_in_progress) {
     case NS_itemid_wand:
+    case NS_itemid_hookshot:
       return 0;
   }
 
@@ -117,6 +119,12 @@ void hero_update_motion(struct sprite *sprite,double elapsed) {
       SPRITE->facedy=0;
     } else if (!indx&&indy&&SPRITE->facedx) {
       SPRITE->facedx=0;
+      SPRITE->facedy=indy;
+    // Or if we're facing the wrong way, oops, get it straight.
+    // This can happen if you try to start walking while an inhibitive item is in play, eg hookshot.
+    } else if (indx&&(indx==-SPRITE->facedx)) {
+      SPRITE->facedx=indx;
+    } else if (indy&&(indy==-SPRITE->facedy)) {
       SPRITE->facedy=indy;
     }
   }

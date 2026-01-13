@@ -21,6 +21,9 @@ struct sprite_hero {
   uint8_t wanddir;
   uint8_t spell[SPELL_LIMIT]; // (0x40,0x10,0x08,0x02)
   int spellc;
+  double hookclock; // For the tick sound only.
+  double hookdistance;
+  int hookstage;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

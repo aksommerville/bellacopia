@@ -32,13 +32,91 @@ int hero_roots_present(const struct sprite *sprite) {
 /* Hookshot.
  */
  
+#define HOOKSTAGE_LEAVE 1
+#define HOOKSTAGE_RETURN 2
+#define HOOKSTAGE_PULL 3
+
+#define HOOKSHOT_TICK_INTERVAL 0.100 /* s; space between sounds for all stages. */
+#define HOOKSHOT_LEAVE_SPEED   12.0 /* m/s */
+#define HOOKSHOT_RETURN_SPEED  12.0 /* m/s */
+#define HOOKSHOT_PULL_SPEED    12.0 /* m/s */
+#define HOOKSHOT_DISTANCE_MAX 8.0 /* m */
+
+static void hookshot_end(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=0;
+}
+
+static void hookshot_abort(struct sprite *sprite) {
+  if (SPRITE->hookstage==HOOKSTAGE_RETURN) {
+    // Let it return on its own.
+  } else if (SPRITE->hookstage==HOOKSTAGE_PULL) {
+    // Pulling, abort immediately on release.
+    hookshot_end(sprite);
+  } else { // Presumably LEAVE, start the return stage.
+    SPRITE->hookstage=HOOKSTAGE_RETURN;
+  }
+}
+
+// Call during LEAVE stage. If we catch something, do whatever needs done.
+static void hookshot_check_grab(struct sprite *sprite) {
+  double x=sprite->x,y=sprite->y;
+  if (SPRITE->facedx<0) {
+    x-=SPRITE->hookdistance;
+    y+=0.25;
+  } else if (SPRITE->facedx>0) {
+    x+=SPRITE->hookdistance;
+    y+=0.25;
+  } else if (SPRITE->facedy<0) {
+    x+=0.25;
+    y-=SPRITE->hookdistance;
+  } else {
+    x-=0.25;
+    y+=SPRITE->hookdistance;
+  }
+  fprintf(stderr,"TODO %s %f,%f\n",__func__,x,y);//TODO
+}
+ 
 static void _hookshot_update(struct sprite *sprite,double elapsed) {
-  //TODO
+
+  // Releasing SOUTH forces "abort" but that does not necessarily end the activity.
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    hookshot_abort(sprite);
+    if (!SPRITE->itemid_in_progress) return;
+  }
+  
+  SPRITE->hookclock+=elapsed;
+  if (SPRITE->hookclock>=HOOKSHOT_TICK_INTERVAL) {
+    SPRITE->hookclock-=HOOKSHOT_TICK_INTERVAL;
+    bm_sound((SPRITE->hookstage==HOOKSTAGE_LEAVE)?RID_sound_hookshot_tick:RID_sound_hookshot_untick,0.0);
+  }
+  switch (SPRITE->hookstage) {
+    case HOOKSTAGE_LEAVE: {
+        if ((SPRITE->hookdistance+=elapsed*HOOKSHOT_LEAVE_SPEED)>HOOKSHOT_DISTANCE_MAX) {
+          hookshot_abort(sprite);
+        } else {
+          hookshot_check_grab(sprite);
+        }
+      } break;
+    case HOOKSTAGE_RETURN: {
+        if ((SPRITE->hookdistance-=elapsed*HOOKSHOT_RETURN_SPEED)<=0.0) {
+          hookshot_end(sprite);
+        }
+      } break;
+    case HOOKSTAGE_PULL: {
+        fprintf(stderr,"%s:%d:TODO: HOOKSTAGE_PULL\n",__FILE__,__LINE__);
+        hookshot_end(sprite);
+      } break;
+  }
 }
 
 static int _hookshot_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  hero_end_walk(sprite);
+  SPRITE->itemid_in_progress=NS_itemid_hookshot;
+  SPRITE->hookclock=0.0;
+  SPRITE->hookdistance=0.0;
+  SPRITE->hookstage=HOOKSTAGE_LEAVE;
+  bm_sound(RID_sound_hookshot_begin,0.0);
+  return 1;
 }
 
 /* Fishpole.

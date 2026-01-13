@@ -90,7 +90,7 @@ void egg_client_render() {
 void bm_song(int rid,int repeat) {
   if (rid==g.song_playing) return;
   g.song_playing=rid;
-  egg_play_song(1,rid,repeat,0.5f,0.0f);
+  egg_play_song(1,rid,repeat,0.3f,0.0f);
 }
 
 void bm_sound(int rid,float pan) {

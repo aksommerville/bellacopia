@@ -29,7 +29,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] How to define root paths for the Divining Rod? See `hero_item.c:hero_roots_present` ...`CMD_map_root`
 - [ ] Chopping: Prepopulate conveyor belt.
 - [ ] After collecting treasure, poke hero (qx,qy) in case the divining rod changed.
+- [ ] Also poke initially. As is, if you start on a POI and don't touch the dpad, nothing triggers.
 - [ ] Can we not trigger the divining rod's visual feedback during conversation? (eg talk to the carpenter with DR armed).
+- [ ] Dialogue needs to be more in-your-face. Maybe partial blackout of the background, or move the box near the hero.
 - [ ] Diegetic witch toys.
 - - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [ ] Hookshot.
@@ -57,6 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Every monster sprite has a battle declared.
 - - [ ] rsprite monsters in every map that ought to.
 - - [ ] root paths
+- - [ ] Convenient tool for checking audio levels. Not BM-specific, so do it in Egg Editor.
 - Beta test logging.
 - - [ ] Client-side log service. Write tersely, and store to a new storage key every session.
 - - [ ] Some cudgel in the web runtime to pull those logs when the session ends, send them to me, and then drop from localStorage.

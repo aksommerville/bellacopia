@@ -110,6 +110,54 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
     return;
   }
   
+  /* Likewise hookshot.
+   */
+  if (SPRITE->itemid_in_progress==NS_itemid_hookshot) {
+    uint8_t hookxform; // Natural orientation of hook and chain is down.
+    int hookx=dstx+SPRITE->facedx*(int)(SPRITE->hookdistance*NS_sys_tilesize);
+    int hooky=dsty+SPRITE->facedy*(int)(SPRITE->hookdistance*NS_sys_tilesize);
+    tileid+=6;
+    if (SPRITE->facedx<0) {
+      tileid+=0x02;
+      hookxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+      hooky+=4;
+    } else if (SPRITE->facedx>0) {
+      tileid+=0x02;
+      xform=EGG_XFORM_XREV;
+      hookxform=EGG_XFORM_SWAP;
+      hooky+=4;
+    } else if (SPRITE->facedy<0) {
+      tileid+=0x01;
+      hookxform=EGG_XFORM_YREV;
+      hookx+=3;
+    } else {
+      hookxform=0;
+      hookx-=3;
+    }
+    // Chain begins right at the hook, and continues until we reach the hero.
+    const int chainspacing=7;
+    int chainx=hookx,chainy=hooky;
+    for (;;) {
+      graf_tile(&g.graf,chainx,chainy,0x26,hookxform);
+      if (SPRITE->facedx<0) {
+        if ((chainx+=chainspacing)>=dstx) break;
+      } else if (SPRITE->facedx>0) {
+        if ((chainx-=chainspacing)<=dstx) break;
+      } else if (SPRITE->facedy<0) {
+        if ((chainy+=chainspacing)>=dsty) break;
+      } else {
+        if ((chainy-=chainspacing)<=dsty) break;
+      }
+    }
+    // And then the two foreground tiles, and any decoration on top.
+    graf_tile(&g.graf,dstx,dsty,tileid,xform);
+    graf_tile(&g.graf,hookx,hooky,0x27,hookxform);
+    hero_render_bugspray_maybe(sprite,dstx,dsty);
+    return;
+  }
+  
+  /* Most situations...
+   */
   if (SPRITE->facedx<0) tileid+=0x02;
   else if (SPRITE->facedx>0) { tileid+=0x02; xform=EGG_XFORM_XREV; }
   else if (SPRITE->facedy<0) tileid+=0x01;
