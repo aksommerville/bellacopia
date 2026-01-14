@@ -138,6 +138,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Climbing. L/R and A/B, maintaining one "point of contact" at all times.
 - [ ]   Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
 - [ ]   Counting. Lots of moving things and you have to count one class of them.
+- [ ]   CPR. Down to compress chest, A to breathe, against the rhythm.
 - [ ]   Crossing. Frogger.
 - [ ]   Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
 - [ ] * Dance Off. Tiny rhythm game on the dpad.

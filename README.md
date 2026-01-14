@@ -33,7 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Can we not trigger the divining rod's visual feedback during conversation? (eg talk to the carpenter with DR armed).
 - [ ] Dialogue needs to be more in-your-face. Maybe partial blackout of the background, or move the box near the hero.
 - [ ] Diegetic witch toys.
-- - [ ] Broom. Free rotation, like Thirty Seconds Apothecary.
+- - [x] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [x] Hookshot.
 - - [ ] Fish Pole.
 - - [x] Wand. Not sure what it does, but a witch needs a wand. Maybe arbitrary spell casting? ...yep, Full Moon style.
@@ -46,6 +46,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Fish
 - - [x] Blood
 - [ ] Improve presentation after hookshot-into-water panic. `hero_motion.c`
+- [ ] Broom: Animation like in Thirty Seconds Apothecary: Flapping hat, and screechy turns.
+- [ ] Broom: Ongoing whoosh sound?
 - [ ] Give Dot a push-wall face. Important for dark rooms, so you can tell when you're blocked.
 - [x] Gold from treasure chests, even tho it's not an "item".
 - [ ] Heart containers. Like items, don't place them yet. Reserve that for late in the process, so we can spread treasures out evenly. How many containers in all?

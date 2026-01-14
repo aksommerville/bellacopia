@@ -3,13 +3,82 @@
 /* Broom.
  */
  
+#define BROOM_ROTATE_RATE    4.000 /* rad/s */
+#define BROOM_SPEED_INITIAL  0.000 /* m/s */
+#define BROOM_SPEED_MAX     18.000 /* m/s */
+#define BROOM_ACCEL         20.000 /* m/s**2 */
+#define BROOM_TURN_DECEL     2.000 /* m/s**2 */
+#define BROOM_TURN_SPEED_MIN 4.000 /* m/s; speed can be lower than this, but turning won't push below this */
+ 
 static void _broom_update(struct sprite *sprite,double elapsed) {
-  //TODO
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    uint8_t physics=physics_at_sprite_position(sprite->x,sprite->y,sprite->z);
+    if ((physics==NS_physics_water)||(physics==NS_physics_hole)) {
+      // Can't stop here, stay on the broom.
+    } else {
+      SPRITE->itemid_in_progress=0;
+      sprite->physics|=((1<<NS_physics_water)|(1<<NS_physics_hole));
+      // If we landed in a collision, quantize to my focus cell and hope for the best re sprite collisions.
+      // We know that the focus cell is passable, at least.
+      if (!sprite_test_position(sprite)) {
+        sprite->x=SPRITE->qx+0.5;
+        sprite->y=SPRITE->qy+0.5;
+      }
+      // Try to face the direction we were travelling.
+      SPRITE->facedx=SPRITE->facedy=0;
+      while (SPRITE->broomdir<0.0) SPRITE->broomdir+=M_PI*2.0;
+      while (SPRITE->broomdir>M_PI*2.0) SPRITE->broomdir-=M_PI*2.0;
+           if (SPRITE->broomdir<M_PI*0.25) SPRITE->facedy=-1;
+      else if (SPRITE->broomdir<M_PI*0.75) SPRITE->facedx=1;
+      else if (SPRITE->broomdir<M_PI*1.25) SPRITE->facedy=1;
+      else if (SPRITE->broomdir<M_PI*1.75) SPRITE->facedx=-1;
+      else SPRITE->facedy=-1;
+      return;
+    }
+  }
+  int accel=1;
+  if (SPRITE->broom_rotate_blackout) {
+    if (!(g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT))) {
+      SPRITE->broom_rotate_blackout=0;
+    }
+  } else switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+    case EGG_BTN_LEFT: accel=0; SPRITE->broomdir-=BROOM_ROTATE_RATE*elapsed; break;
+    case EGG_BTN_RIGHT: accel=0; SPRITE->broomdir+=BROOM_ROTATE_RATE*elapsed; break;
+  }
+  if (accel) {
+    if ((SPRITE->broomspeed+=BROOM_ACCEL*elapsed)>BROOM_SPEED_MAX) SPRITE->broomspeed=BROOM_SPEED_MAX;
+  } else {
+    if (SPRITE->broomspeed>BROOM_TURN_SPEED_MIN) {
+      if ((SPRITE->broomspeed-=BROOM_TURN_DECEL*elapsed)<=BROOM_TURN_SPEED_MIN) SPRITE->broomspeed=BROOM_TURN_SPEED_MIN;
+    }
+  }
+  double dx=sin(SPRITE->broomdir)*SPRITE->broomspeed*elapsed;
+  double dy=-cos(SPRITE->broomdir)*SPRITE->broomspeed*elapsed;
+  sprite_move(sprite,dx,dy);
 }
 
 static int _broom_begin(struct sprite *sprite) {
-  fprintf(stderr,"%s\n",__func__);
-  return 0;//TODO
+  int waswalking=SPRITE->walking;
+  hero_end_walk(sprite);
+  bm_sound(RID_sound_mount,0.0);
+  sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+  SPRITE->itemid_in_progress=NS_itemid_broom;
+  SPRITE->broom_rotate_blackout=1;
+  if (SPRITE->facedx<0) {
+    SPRITE->broomdir=M_PI*-0.5-0.25*M_PI*SPRITE->indy;
+  } else if (SPRITE->facedx>0) {
+    SPRITE->broomdir=M_PI*0.5+0.25*M_PI*SPRITE->indy;
+  } else if (SPRITE->facedy<0) {
+    SPRITE->broomdir=0.0+0.25*M_PI*SPRITE->indx;
+  } else {
+    SPRITE->broomdir=M_PI-0.25*M_PI*SPRITE->indx;
+  }
+  if (waswalking) {
+    SPRITE->broomspeed=BROOM_SPEED_MAX;
+  } else {
+    SPRITE->broomspeed=BROOM_SPEED_INITIAL;
+  }
+  return 1;
 }
 
 /* Divining Rod.
@@ -22,7 +91,7 @@ static int _divining_rod_begin(struct sprite *sprite) {
   } else {
     bm_sound(RID_sound_negatory,0.0);
   }
-  return 0;
+  return 1;
 }
  
 int hero_roots_present(const struct sprite *sprite) {

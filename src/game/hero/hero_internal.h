@@ -25,6 +25,9 @@ struct sprite_hero {
   double hookdistance;
   int hookstage;
   double safex,safey; // Set before a risky operation like hookshot, for the position we can return to.
+  double broomdir; // Clockwise radians from Up.
+  int broom_rotate_blackout;
+  double broomspeed;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

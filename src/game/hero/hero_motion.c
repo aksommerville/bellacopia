@@ -8,6 +8,7 @@ static int hero_can_change_direction(struct sprite *sprite) {
   switch (SPRITE->itemid_in_progress) {
     case NS_itemid_wand:
     case NS_itemid_hookshot:
+    case NS_itemid_broom:
       return 0;
   }
   return 1;
@@ -30,6 +31,7 @@ static int hero_begin_walk(struct sprite *sprite) {
   switch (SPRITE->itemid_in_progress) {
     case NS_itemid_wand:
     case NS_itemid_hookshot:
+    case NS_itemid_broom: // Broom motion is a whole different thing; managed in hero_item.c.
       return 0;
   }
 
@@ -180,6 +182,7 @@ static void hero_exit_cell(struct sprite *sprite,int x,int y) {
  */
  
 static int hero_enter_cell_cb(uint8_t opcode,const uint8_t *arg,void *userdata) {
+  //TODO Not doing anything at the moment, but one can imagine a need to check (SPRITE->itemid_in_progress==NS_itemid_broom), eg for treadles.
   struct sprite *sprite=userdata;
   switch (opcode) {
     case CMD_map_door: {

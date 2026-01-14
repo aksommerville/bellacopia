@@ -84,6 +84,24 @@ static void hero_render_spell(struct sprite *sprite,int dstx,int dsty) {
   }
 }
 
+// Rotation: 0 is natural, and positive clockwise. Dot's broom-riding faces are natural up.
+static void render_rotated_decal(int dstx,int dsty,int srcx,int srcy,int w,int h,double rotation,double scale) {
+  rotation+=M_PI*-0.25+M_PI; // Angle to the corner is more useful to us than along an axis.
+  double cost=cos(rotation);
+  double sint=sin(rotation);
+  double radius=w*scale*0.5;
+  graf_set_filter(&g.graf,1);
+  graf_triangle_strip_tex_begin(&g.graf,
+    dstx-sint*radius,dsty+cost*radius,srcx  ,srcy  ,
+    dstx-cost*radius,dsty-sint*radius,srcx+w,srcy  ,
+    dstx+cost*radius,dsty+sint*radius,srcx  ,srcy+h
+  );
+  graf_triangle_strip_tex_more(&g.graf,
+    dstx+sint*radius,dsty-cost*radius,srcx+w,srcy+h
+  );
+  graf_set_filter(&g.graf,0);
+}
+
 /* Render.
  */
  
@@ -152,6 +170,27 @@ static void _hero_render(struct sprite *sprite,int dstx,int dsty) {
     // And then the two foreground tiles, and any decoration on top.
     graf_tile(&g.graf,dstx,dsty,tileid,xform);
     graf_tile(&g.graf,hookx,hooky,(SPRITE->hookstage==1)?0x27:0x28,hookxform); // open jaw leaving, closed otherwise
+    hero_render_bugspray_maybe(sprite,dstx,dsty);
+    return;
+  }
+  
+  /* Riding the broom.
+   */
+  if (SPRITE->itemid_in_progress==NS_itemid_broom) {
+    /* Broom frames are larger than regular tiles and include 2 pixels of border. Include one of those border pixels.
+     */
+    int srcx=5*NS_sys_tilesize+1;
+    int srcy=4*NS_sys_tilesize+1;
+    int srcw=NS_sys_tilesize*2-2;
+    int srch=NS_sys_tilesize*2-2;
+    double rotation=SPRITE->broomdir;
+    double scale=1.25;
+    graf_set_tint(&g.graf,0x000000ff);
+    graf_set_alpha(&g.graf,0x80);
+    render_rotated_decal(dstx,dsty+4,srcx,srcy,srcw,srch,rotation,scale);
+    graf_set_tint(&g.graf,0);
+    graf_set_alpha(&g.graf,0xff);
+    render_rotated_decal(dstx,dsty,srcx,srcy,srcw,srch,rotation,scale);
     hero_render_bugspray_maybe(sprite,dstx,dsty);
     return;
   }

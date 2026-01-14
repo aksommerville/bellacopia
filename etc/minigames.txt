@@ -26,6 +26,7 @@
   2      Climbing          Spider             Desert
   2      Conducting        Conductor          Desert
   2      Counting          Vampire            Labyrinth
+  2      CPR               Nurse              City
   2      Crossing          Frog               Farm
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
