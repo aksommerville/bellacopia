@@ -61,6 +61,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Usually when I do typewriter, the text is a tile array. That won't fly here, it has to be font.
 - [ ] `modal_dialogue.c`: Arrive and dismiss animation, and a blinking indicator when no choices.
 - [ ] Pause: Remember inventory cursor position. But do force it as before, when changing pages. OK to remember only for the session, like pause page.
+- [ ] Is it feasible to make ornamental footprints in the snow and sand as you walk? That might look cool.
 - Extra tooling:
 - - [ ] Sprite hitbox.
 - Data validation:

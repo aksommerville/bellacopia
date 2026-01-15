@@ -44,8 +44,10 @@ static void _hello_update(struct modal *modal,double elapsed) {
  */
  
 static void _hello_render(struct modal *modal) {
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x2a1755ff);
   graf_set_image(&g.graf,RID_image_title);
-  graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+  const int titlew=256,titleh=149;
+  graf_decal(&g.graf,(FBW>>1)-(titlew>>1),(FBH>>1)-(titleh>>1),0,0,titlew,titleh);
 }
 
 /* Type definition.
