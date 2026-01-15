@@ -47,6 +47,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Blood
 - [ ] Improve presentation after hookshot-into-water panic. `hero_motion.c`
 - [ ] Broom: Animation like in Thirty Seconds Apothecary: Flapping hat, and screechy turns.
+- - But before moving on that, get the single frame right. I don't like the antialiasing as is, too much of it.
 - [ ] Broom: Ongoing whoosh sound?
 - [ ] Give Dot a push-wall face. Important for dark rooms, so you can tell when you're blocked.
 - [x] Gold from treasure chests, even tho it's not an "item".
