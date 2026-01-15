@@ -15,8 +15,36 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Reassess at the end of January to confirm we're on track to finish in June. Or at least, by GDEX.
 - 2026-01-09: Finished Inversion for Uplifting Jam #6 and got right back to this. So we have scientifically established that it is possible to do game jams concurrently with Bellacopia. :)
 - 2026-01-11: With stand-in root devils, tried a leisurely run without touching any cheat things: 29:14 to complete. Feeling good about the one-hour-minimum target.
+- 2026-01-15: I think I fucked up coordinates management, it's becoming seriously difficult. `maps.c:physics_at_sprite_position` is broken and I'm not sure how to fix it.
 
 ## TODO
+
+- 2026-01-15: I think a major overhaul of maps is in order. Looping is broken right now. Feels like I'm in a place where replace would be easier than repair.
+- - [x] Would prefer not to store the edge maps. Can we generate them on the fly? A minor point I guess.
+- - [x] Do we really need poles and looping?
+- - - Where we don't want to fill the edge with mountains, we could do wind like Full Moon.
+- - - I do love the concept, it's a silly quirk that would be fun to explain to players.
+- - - But admittedly, it doesn't play very well in the small bit of testing I've done so far.
+- - [x] Should we eliminate the continuous scrolling?
+- - - Would massively simplify pretty much everything.
+- - - Would break my heart.
+- - - Jigpieces would be more obviously tied to a map. Not sure if that's good or bad or what.
+- - - Broom would be a lot less fun.
+- - [x] Would it be a problem to use unsigned coordinates everywhere? Rounding toward zero has been a constant headache.
+- - [x] Need to more carefully manage "map position in world" vs "cell position in world" vs "cell position in map".
+- Decisions:
+- - Eliminate poles and looping. Clamp camera at the edges (the current "null" strategy), and also clamp the hero there.
+- - - Consider also using wind like Full Moon. But it would be entirely decorative; you'd also stop hard if you do reach the edge.
+- - - ^ Yes. As an aestetic concern only, try to keep them off the edge (both land and sea). But if they reach it, they'll see it's a hard artificial stop.
+- - - Actually, with these gone, I think most of our current problems just melt away.
+- - Continue using single-screen maps with "position" commands, but make the coordinates unsigned. Keep them off zero too, just to be sure.
+- - - Same idea at load time, build up a set of planes, and also loose standalone maps (z<0, as we're doing already).
+- - - Root all planes at (0,0). Better to have a bunch of dead space in memory than having that extra layer of transformation.
+- - Retain continuous scrolling. I can't bear to lose it.
+- - Let "parent" commands operate per-map, eg your position in the world map should move with you as you walk thru the tunnel.
+- [ ] I'm 10k lines deep already. And this is probably going to reach 100k. Should I clean it out and start all the way over from scratch? That's an option today; in a month or two it won't be.
+- - Would give us the opportunity to rethink sprites and store too; I'm not sure I got those right.
+- - Sleep on it. Actually, I want to explore custom synth in Raylib for Alex, so do that first and let this settle a bit.
 
 - [x] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
 - - Bothersome when you turn around and the guy you just beat is back, like always.
