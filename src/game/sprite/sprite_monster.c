@@ -39,7 +39,7 @@ struct sprite_monster {
  
 static int _monster_init(struct sprite *sprite) {
 
-  SPRITE->battleid=(sprite->arg[0]<<8)|sprite->arg[1]; // Spawn point overrides sprite def if nonzero.
+  SPRITE->battleid=(sprite->arg[2]<<8)|sprite->arg[3]; // Spawn point overrides sprite def if nonzero.
   SPRITE->x0=sprite->x;
   SPRITE->y0=sprite->y;
   SPRITE->tileid0=sprite->tileid;

@@ -30,3 +30,4 @@ root @9,8 (u16:fld)root3
 root @8,8 (u16:fld)root3
 root @8,9 (u16:fld)root3
 root @8,10 (u16:fld)root3
+rsprite (u16)0 sprite:leopard (u8)100 (u24)0

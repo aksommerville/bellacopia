@@ -13,3 +13,4 @@
 
 image image:desert
 position 5 4 1 *
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

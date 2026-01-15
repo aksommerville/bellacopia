@@ -117,13 +117,16 @@ export class EditWorldModal {
     return `${layer.z} (${layer.w}x${layer.h})`;
   }
   
+  // Multiple "NAME*WEIGHT", delimited by commas.
   reprRspriteFromMap(map) {
     if (!map) return "";
     let result = "";
     for (const cmd of map.cmd.commands) {
       if (cmd[0] !== "rsprite") continue;
-      if (result) return "MULTIPLE";
-      result = cmd[2] || "INVALID";
+      if (result) result += ",";
+      const name = (cmd[2] || "").replace("sprite:", "");
+      const weight = (cmd[3] || "").replace(/\(.*\)/, "");
+      result += name + "*" + weight;
     }
     return result;
   }
@@ -269,10 +272,11 @@ export class EditWorldModal {
             const map = res?.map;
             if (!map) continue;
             const option = this.reprRspriteFromMap(map);
-            if (!option || (option === "MULTIPLE") || (option === "INVALID")) continue;
+            if (!option || (option === "INVALID")) continue;
             if (options.indexOf(option) >= 0) continue;
             options.push(option);
           }
+          options.sort();
           return options;
         }
         
@@ -280,6 +284,7 @@ export class EditWorldModal {
           // Show all songs in the TOC. It shouldn't be too unwieldly a set.
           const options = this.data.resv.filter(r => r.type === "song").map(r => `song:${r.name || r.rid}`);
           options.splice(0, 0, "NONE");
+          options.sort();
           return options;
         }
         
@@ -295,6 +300,7 @@ export class EditWorldModal {
             if (options.indexOf(option) >= 0) continue;
             options.push(option);
           }
+          options.sort();
           return options;
         }
     }
@@ -323,12 +329,16 @@ export class EditWorldModal {
             }
             return false;
           }
-          const cmd = map.cmd.commands.find(c => c[0] === "rsprite");
-          if (cmd) {
-            if (cmd[2] === option) return false;
-            cmd[2] = option;
-          } else {
-            map.cmd.commands.push(["rsprite", "(u16)0", option, "(u32)0"]);
+          // Drop all rsprite commands.
+          for (let i=map.cmd.commands.length; i-->0; ) {
+            if (map.cmd.commands[i][0] === "rsprite") {
+              map.cmd.commands.splice(i, 1);
+            }
+          }
+          // Add a new command for each in (option).
+          for (const src of option.split(',')) {
+            const [name, weight] = src.split('*');
+            map.cmd.commands.push(["rsprite", "(u16)0", `sprite:${name}`, `(u8)${weight}`, "(u24)0"]);
           }
         } return true;
         

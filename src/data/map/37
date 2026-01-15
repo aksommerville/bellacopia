@@ -22,3 +22,4 @@ root @17,5 (u16:fld)root7
 root @16,5 (u16:fld)root7
 root @15,5 (u16:fld)root7
 sprite @13,5 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)root7
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

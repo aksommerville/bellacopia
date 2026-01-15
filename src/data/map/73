@@ -15,3 +15,4 @@ image image:desert
 position -4 4 1 *
 song song:blood_for_silver
 sprite @10,8 sprite:jigpiece (u32)0
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

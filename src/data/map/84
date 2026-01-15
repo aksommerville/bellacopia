@@ -20,3 +20,4 @@ root @8,0 (u16:fld)root3
 root @8,1 (u16:fld)root3
 root @8,2 (u16:fld)root3
 sprite @8,4 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)root3
+rsprite (u16)0 sprite:leopard (u8)100 (u24)0

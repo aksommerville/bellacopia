@@ -15,3 +15,5 @@ image image:meadow
 position 2 -1 1 *
 sprite @11,9 sprite:jigpiece (u32)0
 song song:nearer_the_sky
+rsprite (u16)0 sprite:goat (u8)200 (u24)0
+rsprite (u16)0 sprite:leopard (u8)20 (u24)0

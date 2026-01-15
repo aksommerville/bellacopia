@@ -27,3 +27,4 @@ root @9,7 (u16:fld)root7
 root @9,8 (u16:fld)root7
 root @9,9 (u16:fld)root7
 root @9,10 (u16:fld)root7
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

@@ -15,7 +15,6 @@ image image:meadow
 position 1 0 1 *
 sprite @2,8 sprite:jigpiece (u32)0
 song song:barrel_of_salt
-rsprite (u16)0 sprite:koala (u16:battletype)0 (u16)0
 sprite @4,7 sprite:stick (u32)0
 sprite @12,5 sprite:stick (u32)0
 root @19,5 (u16:fld)root6
@@ -38,3 +37,6 @@ root @15,5 (u16:fld)root6
 root @16,5 (u16:fld)root6
 root @17,5 (u16:fld)root6
 root @18,5 (u16:fld)root6
+rsprite (u16)0 sprite:goat (u8)100 (u24)0
+rsprite (u16)0 sprite:koala (u8)100 (u24)0
+rsprite (u16)0 sprite:leopard (u8)100 (u24)0

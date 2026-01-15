@@ -14,3 +14,4 @@ a1a1a1a1a1849191919191919183a1a1a1a1a1a1
 image image:desert
 position -6 3 1 *
 song song:blood_for_silver
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

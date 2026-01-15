@@ -13,6 +13,7 @@
 static void _broom_update(struct sprite *sprite,double elapsed) {
   if (!(g.input[0]&EGG_BTN_SOUTH)) {
     uint8_t physics=physics_at_sprite_position(sprite->x,sprite->y,sprite->z);
+    fprintf(stderr,"Drop broom at (%f,%f) physics=0x%02x\n",sprite->x,sprite->y,physics);
     if ((physics==NS_physics_water)||(physics==NS_physics_hole)) {
       // Can't stop here, stay on the broom.
     } else {

@@ -27,6 +27,7 @@ struct sprite {
   double hbl,hbr,hbt,hbb; // Hitbox, relative to (x,y). Negative and positive 1/2 by default.
   double light_radius; // >0 if this sprite is a light source.
   int grabbable; // Can pull with hookshot.
+  int rsprite; // Nonzero if spawned via rsprite; there's a global limit on them.
 };
 
 /* If you don't provide (type), you must provide (serial) to read it from, or (rid) to get that from.

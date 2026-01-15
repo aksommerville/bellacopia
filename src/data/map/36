@@ -30,3 +30,4 @@ root @4,5 (u16:fld)root7
 root @3,5 (u16:fld)root7
 root @2,5 (u16:fld)root7
 root @1,5 (u16:fld)root7
+rsprite (u16)0 sprite:koala (u8)100 (u24)0

@@ -15,3 +15,5 @@ image image:tundra
 position -3 -4 1 *
 song song:first_frost
 sprite @9,6 sprite:jigpiece (u32)0
+rsprite (u16)0 sprite:goat (u8)200 (u24)0
+rsprite (u16)0 sprite:leopard (u8)20 (u24)0

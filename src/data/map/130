@@ -23,3 +23,5 @@ root @8,8 (u16:fld)root2
 root @8,7 (u16:fld)root2
 root @8,6 (u16:fld)root2
 sprite @8,4 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)root2
+rsprite (u16)0 sprite:goat (u8)200 (u24)0
+rsprite (u16)0 sprite:leopard (u8)20 (u24)0

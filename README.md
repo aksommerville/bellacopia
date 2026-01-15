@@ -18,7 +18,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
+- [x] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
 - - Bothersome when you turn around and the guy you just beat is back, like always.
 - - Maybe keep using `rsprite` commands, since they have to be recorded somewhere, but trigger in a looser fashion: "I want a sprite here, which sprite should it be?"
 - [ ] How to select handicap? See `sprite_monster.c`
@@ -32,6 +32,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Also poke initially. As is, if you start on a POI and don't touch the dpad, nothing triggers.
 - [ ] Can we not trigger the divining rod's visual feedback during conversation? (eg talk to the carpenter with DR armed).
 - [ ] Dialogue needs to be more in-your-face. Maybe partial blackout of the background, or move the box near the hero.
+- [ ] Chopping contest: Box textures don't always clear, seems to happen when triggered multiple times nearby.
 - [ ] Diegetic witch toys.
 - - [x] Broom. Free rotation, like Thirty Seconds Apothecary.
 - - [x] Hookshot.
