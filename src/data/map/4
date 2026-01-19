@@ -14,3 +14,4 @@
 image image:meadow
 position 7 6 1 *
 sprite @7,5 sprite:jigpiece (u32)0
+sprite @9,5 sprite:koala (u32)0

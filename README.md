@@ -31,7 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Map
 - - [ ] Status
 - [ ] Sprites
-- - [ ] Monster
+- - [x] Monster
 - - [x] Jigpiece
 - - [x] Treasure
 - - [ ] NPC

@@ -41,10 +41,10 @@
 #define CMD_sprite_tile         0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type         0x22 /* u16:sprtype */
 #define CMD_sprite_layer        0x23 /* u16:layer ; hero at 100 */
-#define CMD_sprite_battle       0x24 /* u16:battle ; NS_sprtype_monster */
 #define CMD_sprite_physics      0x40 /* b32:physics ; which are impassable */
 #define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups       0x42 /* b32:sprgrp */
+#define CMD_sprite_monster      0x43 /* u16:battle u4.4:radius u4.4:speed ; NS_sprtype_monster */
 
 #define NS_tilesheet_physics 1
 #define NS_tilesheet_jigctab 2 /* rgb332 */
@@ -67,16 +67,17 @@
 #define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
 #define NS_plane_labyrinth1 4 /* jungle */
 
-#define NS_sprgrp_keepalive 0 /* All sprites are in this group. */
-#define NS_sprgrp_deathrow  1 /* Everything here gets killed at the end of each update. */
-#define NS_sprgrp_visible   2 /* Render order. Unusual for a sprite not to be here. */
-#define NS_sprgrp_update    3 /* Get an update each frame. */
-#define NS_sprgrp_solid     4 /* Participates in physics. */
-#define NS_sprgrp_hazard    5 /* Damages the hero on contact. */
-#define NS_sprgrp_hero      6 /* Should have exactly one member. */
-#define NS_sprgrp_grabbable 7 /* Interacts with hookshot. */
-#define NS_sprgrp_floating  8 /* Presumably solid, but doesn't interact with treadles etc. */
-#define NS_sprgrp_light     9 /* Light source in darkened rooms. */
+#define NS_sprgrp_keepalive    0 /* All sprites are in this group. */
+#define NS_sprgrp_deathrow     1 /* Everything here gets killed at the end of each update. */
+#define NS_sprgrp_visible      2 /* Render order. Unusual for a sprite not to be here. */
+#define NS_sprgrp_update       3 /* Get an update each frame. */
+#define NS_sprgrp_solid        4 /* Participates in physics. */
+#define NS_sprgrp_hazard       5 /* Damages the hero on contact. */
+#define NS_sprgrp_hero         6 /* Should have exactly one member. */
+#define NS_sprgrp_grabbable    7 /* Interacts with hookshot. */
+#define NS_sprgrp_floating     8 /* Presumably solid, but doesn't interact with treadles etc. */
+#define NS_sprgrp_light        9 /* Light source in darkened rooms. */
+#define NS_sprgrp_monsterlike 10 /* Hero, princess, candy, and anything else monsters pay attention to. */
 
 /* Everything you can pick up has an itemid.
  * So this includes gold, keys, powerups (things that don't go in inventory).
@@ -150,8 +151,14 @@
   _(firepot)
   
 #define NS_battle_fishing 1
+#define NS_battle_chopping 2
+#define NS_battle_exterminating 3
+#define NS_battle_boomerang 4
 #define FOR_EACH_battle \
-  _(fishing)
+  _(fishing) \
+  _(chopping) \
+  _(exterminating) \
+  _(boomerang)
 
 /* "fld" are single bits.
  */

@@ -20,6 +20,8 @@ int egg_client_init() {
     fprintf(stderr,"Expected %dx%d framebuffer (bellacopia.h), but got %dx%d (metadata)\n",FBW,FBH,fbw,fbh);
     return -1;
   }
+  
+  srand_auto();
 
   if (res_init()<0) return -1;
   
