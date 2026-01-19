@@ -12,6 +12,16 @@
 #define FBW 320
 #define FBH 180
 
+#define NS_dir_nw  0x80
+#define NS_dir_n   0x40
+#define NS_dir_ne  0x20
+#define NS_dir_w   0x10
+#define NS_dir_mid 0x00
+#define NS_dir_e   0x08
+#define NS_dir_sw  0x04
+#define NS_dir_s   0x02
+#define NS_dir_se  0x01
+
 #define CMD_map_dark            0x01 /* --- */
 #define CMD_map_image           0x20 /* u16:rid */
 #define CMD_map_song            0x21 /* u16:rid */

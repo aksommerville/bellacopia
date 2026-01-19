@@ -375,6 +375,9 @@ int sprite_group_add(struct sprite_group *group,struct sprite *sprite) {
     return -1;
   }
   
+  // Update magic markers.
+  if (group==GRP(solid)) sprite->solid=1;
+  
   return 1;
 }
 
@@ -394,6 +397,9 @@ int sprite_group_remove(struct sprite_group *group,struct sprite *sprite) {
   sprite_grpv_remove(sprite,grpp);
   group_sprv_remove(group,sprp);
   sprite_group_del(group);
+  
+  // Update magic markers.
+  if (group==GRP(solid)) sprite->solid=0;
   
   return 1;
 }

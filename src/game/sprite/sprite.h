@@ -25,6 +25,7 @@ struct sprite {
   uint8_t tileid,xform;
   double hbl,hbr,hbt,hbb; // Hitbox relative to (x,y). (l,t) are usually negative.
   uint32_t physics; // Bits, (1<<NS_physics_*), which ones are impassable.
+  int solid; // Hint that we are in the "solid" group. Managed magically by sprite_group.
   int rid;
   const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
   int cmdc,argc;
@@ -81,6 +82,8 @@ FOR_EACH_sprtype
 
 const struct sprite_type *sprite_type_by_id(int sprtype);
 
+void hero_injure(struct sprite *sprite,struct sprite *assailant);
+
 /* Sprite group.
  *******************************************************************/
  
@@ -121,5 +124,24 @@ struct sprites {
 #define GRP(tag) (g.sprites.grpv+NS_sprgrp_##tag)
 
 void sprites_reset();
+
+/* Physics.
+ *********************************************************************/
+ 
+struct aabb { double l,r,t,b; };
+
+/* Distance available in the given cardinal direction.
+ * <=0 if we can't.
+ * Call only if participating in physics.
+ */
+double sprite_measure_freedom(const struct sprite *sprite,double dx,double dy,struct sprite **cause);
+
+/* Nonzero if we move at all, may be less than you ask for.
+ */
+int sprite_move(struct sprite *sprite,double dx,double dy);
+
+/* Nonzero if (sprite) is clear of all collisions.
+ */
+int sprite_test_position(const struct sprite *sprite);
 
 #endif

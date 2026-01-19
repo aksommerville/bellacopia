@@ -3,3 +3,4 @@ groups (b32:sprgrp)visible,update,hero,solid
 physics (b32:physics)solid,water,hole,grabbable
 image image:hero
 tile 0x10 0
+hitbox -7 7 -5 7
