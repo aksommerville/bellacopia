@@ -1,5 +1,7 @@
 /* modal.h
- * Defines the generic modal, the set of types, and the stack framework.
+ * Defines the global modals management, and interface for specific types.
+ * Main only interacts with modals.
+ * Modals should tend to be lean. If there's heavy business work, defer it to something more business-specific.
  */
  
 #ifndef MODAL_H
@@ -7,82 +9,88 @@
 
 struct modal;
 struct modal_type;
-struct battle_type;
-struct inventory;
 
 /* Generic modal.
- ******************************************************************************/
+ *************************************************************************/
  
-struct modal {
-  const struct modal_type *type;
-  int defunct;
-  int opaque; // Modals below me don't need to render, if nonzero.
-  int interactive; // Modals below me won't update, if nonzero.
-};
-
 struct modal_type {
   const char *name;
   int objlen;
   void (*del)(struct modal *modal);
-  int (*init)(struct modal *modal);
   
-  /* The topmost interactive modal, and all above it, will get (update) each frame if implemented.
-   * Below that, down to the topmost opaque modal, will get (updatebg).
-   * Modals that don't render don't update at all.
-   * We're not sending notifications of focus and blur. TODO That might become necessary?
+  /* Return <0 or set (modal->defunct) to fail; they are equivalent.
+   * Modals may define an arg struct below. Caller provides its size for validation.
+   */
+  int (*init)(struct modal *modal,const void *arg,int argc);
+  
+  /* The highest modal with (interactive) set, and any above it, all get updated.
    */
   void (*update)(struct modal *modal,double elapsed);
-  void (*updatebg)(struct modal *modal,double elapsed); // I am visible but not interactive.
   
-  void (*render)(struct modal *modal); // REQUIRED
+  /* Called for all modals *below* the topmost (interactive).
+   * I don't expect most to need it.
+   */
+  void (*updatebg)(struct modal *modal,double elapsed);
+  
+  /* The highest modal with (opaque) set, and any above it, all get rendered.
+   * You may be asked to render without updating and vice-versa.
+   * The first render typically comes before the first update, so be sure you're ready for either after init.
+   */
+  void (*render)(struct modal *modal);
+  
+  /* Call when I gain (1) or lose (0) the principal focus, ie I'm the topmost (interactive) modal.
+   * New modals will always get a focus callback before their first update, if warranted.
+   */
+  void (*focus)(struct modal *modal,int focus);
+  
+  /* egg_client_notify, forwarded to all modals.
+   * I think the only interesting key is EGG_PREFS_LANG, but we send them all.
+   */
+  void (*notify)(struct modal *modal,int k,int v);
 };
 
-/* Only the framework should call these.
+struct modal {
+  const struct modal_type *type;
+  int defunct;
+  int opaque; // Nothing below me will render, and I promise to clear the whole framebuffer.
+  int interactive; // Nothing below me will update.
+};
+
+/* These should only be used by modal.c.
+ * To delete a modal, set its (defunct) nonzero.
+ * To create one, see modal_spawn() below.
  */
 void modal_del(struct modal *modal);
-struct modal *modal_new(const struct modal_type *type);
+struct modal *modal_new(const struct modal_type *type,const void *arg,int argc);
 
-/* Modal stack.
- * Probably only main and the framework should touch these.
- *******************************************************************************/
- 
-struct modal *modal_top_of_type(const struct modal_type *type);
-struct modal *modal_bottom_of_type(const struct modal_type *type);
-int modal_stack_search(const struct modal *modal); // => index in (g.modalv) or -1. Does not dereference (modal).
+/* Global modal stack.
+ ************************************************************************/
 
-// Transfer ownership to or from the stack, and list. Pulling does not delete.
-int modal_push(struct modal *modal);
-void modal_pull(struct modal *modal);
-
-void modal_update_all(double elapsed);
-void modal_render_all();
-void modal_drop_defunct();
-
-/* Type registry and ctors.
- *****************************************************************************/
- 
-extern const struct modal_type modal_type_hello;
-extern const struct modal_type modal_type_world; // One must exist always, during a story-mode session.
-extern const struct modal_type modal_type_battle; // A minigame, either story or arcade mode.
-extern const struct modal_type modal_type_dialogue; // Single chunk of text, with optional enumerated responses.
-
-/* Typed ctors always return WEAK; the new modal was pushed to the global stack.
+/* Returns WEAK; the new modal is automatically pushed on top of the stack.
  */
-struct modal *modal_new_hello();
-struct modal *modal_new_world();
-struct modal *modal_new_battle(const struct battle_type *type,int playerc,int handicap);
-struct modal *modal_new_pause();
-struct modal *modal_new_dialogue(int rid,int strix); // (rid,strix) as a convenience; (0,0) if you're going to configure.
+struct modal *modal_spawn(
+  const struct modal_type *type,
+  const void *arg,int argc
+);
 
-void modal_battle_set_callback(struct modal *modal,void (*cb)(void *userdata,int outcome),void *userdata);
+void modals_update(double elapsed);
+void modals_render(); // Always wipes the whole framebuffer.
+void modals_drop_defunct();
 
-// All dialogue can be cancelled; we'll hit your callback with (choiceid<0).
-int modal_dialogue_set_res(struct modal *modal,int rid,int strix); // Static text.
-int modal_dialogue_set_text(struct modal *modal,const char *src,int srcc); // You're responsible for language etc.
-int modal_dialogue_set_fmt(struct modal *modal,int rid,int strix,const struct text_insertion *insv,int insc);
-void modal_dialogue_set_callback(struct modal *modal,void (*cb)(void *userdata,int choiceid),void *userdata);
-int modal_dialogue_add_choice_res(struct modal *modal,int choiceid,int rid,int strix); // => choiceid; we make one up if <=0.
-int modal_dialogue_add_choice_text(struct modal *modal,int choiceid,const char *src,int srcc);
-int modal_dialogue_set_shop(struct modal *modal,const struct inventory *merchv,int merchc); // Prepares options for you. (choiceid) is (itemid). (merch->limit) is the price.
+int modal_is_resident(const struct modal *modal);
+
+/* Specific types.
+ *********************************************************************/
+ 
+extern const struct modal_type modal_type_hello; // Default. No args.
+extern const struct modal_type modal_type_story; // Entire session of Story Mode.
+extern const struct modal_type modal_type_arcade; // Entire session of Arcade Mode.
+extern const struct modal_type modal_type_battle; // Story or Arcade Mode.
+extern const struct modal_type modal_type_pause; // Story Mode.
+extern const struct modal_type modal_type_dialogue; // Any mode.
+
+struct modal_args_story {
+  int use_save; // If zero, we start from the beginning and erase any save.
+};
 
 #endif

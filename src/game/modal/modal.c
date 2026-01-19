@@ -1,10 +1,11 @@
-#include "game/game.h"
+#include "game/bellacopia.h"
 
 /* Delete.
  */
  
 void modal_del(struct modal *modal) {
   if (!modal) return;
+  if (modal==g.modal_focus) g.modal_focus=0;
   if (modal->type->del) modal->type->del(modal);
   free(modal);
 }
@@ -12,146 +13,130 @@ void modal_del(struct modal *modal) {
 /* New.
  */
  
-struct modal *modal_new(const struct modal_type *type) {
+struct modal *modal_new(const struct modal_type *type,const void *arg,int argc) {
   if (!type) return 0;
   struct modal *modal=calloc(1,type->objlen);
   if (!modal) return 0;
   modal->type=type;
-  if (type->init&&(type->init(modal)<0)) {
+  if (type->init&&((type->init(modal,arg,argc)<0)||modal->defunct)) {
     modal_del(modal);
     return 0;
   }
   return modal;
 }
 
-/* Search stack.
+/* Spawn.
  */
 
-struct modal *modal_top_of_type(const struct modal_type *type) {
-  int i=g.modalc;
-  struct modal **p=g.modalv+i-1;
-  for (;i-->0;p--) {
-    struct modal *modal=*p;
-    if (modal->type==type) return modal;
+struct modal *modal_spawn(
+  const struct modal_type *type,
+  const void *arg,int argc
+) {
+  if (g.modalc>=MODAL_LIMIT) return 0; // Tempting to try dropping defunct, but this might not be a safe moment for it.
+  struct modal *modal=modal_new(type,arg,argc);
+  if (!modal) return 0;
+  if (g.modalc>=MODAL_LIMIT) { // Allow that the modal's init might have inappropriately pushed another modal.
+    modal_del(modal);
+    return 0;
   }
-  return 0;
-}
-
-struct modal *modal_bottom_of_type(const struct modal_type *type) {
-  int i=g.modalc;
-  struct modal **p=g.modalv;
-  for (;i-->0;p++) {
-    struct modal *modal=*p;
-    if (modal->type==type) return modal;
-  }
-  return 0;
-}
-
-int modal_stack_search(const struct modal *modal) {
-  if (!modal) return -1;
-  int i=0;
-  struct modal **p=g.modalv;
-  for (;i<g.modalc;i++,p++) {
-    if (*p==modal) return i;
-  }
-  return -1;
-}
-
-/* Push to stack.
- */
-
-int modal_push(struct modal *modal) {
-  if (!modal) return -1;
-  if (modal->defunct) return -1; // Refuse to push a defunct modal, dump your trash somewhere else.
-  if (g.modalc>=MODAL_LIMIT) return -1;
-  if (modal_stack_search(modal)>=0) return -1;
   g.modalv[g.modalc++]=modal;
-  return 0;
+  return modal;
 }
 
-void modal_pull(struct modal *modal) {
-  int p=modal_stack_search(modal);
-  if (p<0) return;
-  g.modalc--;
-  memmove(g.modalv+p,g.modalv+p+1,sizeof(void*)*(g.modalc-p));
-}
-
-/* Update the whole stack.
- */
-
-void modal_update_all(double elapsed) {
-  int fg=1; // True until after we process an "interactive" modal.
-  int modalc0=g.modalc; // So we can detect new pushes.
-  int i=g.modalc;
-  struct modal **p=g.modalv+i-1;
-  for (;i-->0;p--) {
-    struct modal *modal=*p;
-    if (modal->defunct) continue;
-    
-    if (fg) {
-      if (modal->type->update) modal->type->update(modal,elapsed);
-      if (modal->interactive) fg=0;
-    } else {
-      if (modal->type->updatebg) modal->type->updatebg(modal,elapsed);
-    }
-    
-    // If it's opaque, stop. Invisible modals never update.
-    if (modal->opaque) break;
-  }
-  
-  /* If anything new got pushed, update them.
-   * We don't do this during the push, because the new modal might get configured after that.
-   * Modals should not be removed from the stack during the update cycle, so this should be safe.
-   * If two modals get pushed and the later one is opaque or interactive, we'll make incorrect calls here. I don't think that will happen.
-   */
-  if (g.modalc>modalc0) {
-    for (i=modalc0;i<g.modalc;i++) {
-      struct modal *modal=g.modalv[i];
-      if (modal->defunct) continue;
-      if (modal->type->update) modal->type->update(modal,elapsed);
-    }
-  }
-}
-
-/* Render the whole stack.
- * Logically we should check defunct and not render those, but you're not supposed to reach render with defunct modals stacked.
+/* Drop defunct.
  */
  
-void modal_render_all() {
+void modals_drop_defunct() {
+  int i=g.modalc;
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    if (!modal->defunct) continue;
+    g.modalc--;
+    memmove(g.modalv+i,g.modalv+i+1,sizeof(void*)*(g.modalc-i));
+    modal_del(modal);
+  }
+}
 
-  // Locate the topmost opaque modal, possibly none.
-  int opaquep=g.modalc;
-  struct modal **p=g.modalv+opaquep-1;
-  for (;opaquep-->0;p--) {
-    struct modal *modal=*p;
-    if (modal->opaque) break;
+/* Validate alive.
+ */
+ 
+int modal_is_resident(const struct modal *modal) {
+  if (!modal) return 0;
+  struct modal **p=g.modalv;
+  int i=g.modalc;
+  for (;i-->0;p++) if (*p==modal) return 1;
+  return 0;
+}
+
+/* Find the focus widget from scratch.
+ */
+ 
+static struct modal *modals_get_focus() {
+  int i=g.modalc;
+  struct modal **p=g.modalv+i-1;
+  for (;i-->0;p--) if ((*p)->interactive&&!(*p)->defunct) return *p;
+  return 0;
+}
+
+/* Update all.
+ */
+
+void modals_update(double elapsed) {
+  // Check focus.
+  struct modal *nfocus=modals_get_focus();
+  if (nfocus!=g.modal_focus) {
+    if (modal_is_resident(g.modal_focus)) {
+      if (g.modal_focus->type->focus) g.modal_focus->type->focus(g.modal_focus,0);
+    }
+    g.modal_focus=nfocus;
+    if (nfocus) {
+      if (nfocus->type->focus) nfocus->type->focus(nfocus,1);
+    }
+  }
+  // Work from the top down. After updating something with (interactive) set, we're done.
+  int i=g.modalc;
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    if (modal->defunct) continue;
+    if (modal->type->update) modal->type->update(modal,elapsed);
+    if (modal->interactive) break;
+  }
+  // Then continue iterating, for background updates.
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    if (modal->defunct) continue;
+    if (modal->type->updatebg) modal->type->updatebg(modal,elapsed);
+  }
+}
+
+/* Render all.
+ */
+ 
+void modals_render() {
+
+  // Find the topmost opaque modal.
+  int opaquep=-1;
+  int i=g.modalc;
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    if (modal->defunct) continue;
+    if (modal->opaque) {
+      opaquep=i;
+      break;
+    }
   }
   
-  // If (opaquep) landed below zero, black out the framebuffer and clamp it.
+  // If nothing is opaque, blackout.
   if (opaquep<0) {
     graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
     opaquep=0;
   }
   
-  // Walk from (opaquep) to the top, rendering each.
-  int i=g.modalc-opaquep;
-  for (p=g.modalv+opaquep;i-->0;p++) {
-    struct modal *modal=*p;
+  // Render from (opaquep) up.
+  for (i=opaquep;i<g.modalc;i++) {
+    struct modal *modal=g.modalv[i];
+    if (modal->defunct) continue;
+    if (!modal->type->render) continue; // weird not to have this...
     modal->type->render(modal);
-  }
-}
-
-/* Remove defunct modals from the stack and delete them.
- */
- 
-void modal_drop_defunct() {
-  int i=g.modalc;
-  struct modal **p=g.modalv+i-1;
-  for (;i-->0;p--) {
-    struct modal *modal=*p;
-    if (!modal->defunct) continue;
-    g.modalc--;
-    memmove(p,p+1,sizeof(void*)*(g.modalc-i));
-    modal_del(modal);
   }
 }

@@ -1,342 +1,42 @@
-/* sprite_monster.c
- * Walks about randomly, and on contact launches a minigame.
- * My tile must face right naturally, and have two frames for animation.
- */
-
-#include "game/game.h"
-#include "sprite.h"
-
-#define STAGE_IDLE   0
-#define STAGE_WALK   1
-#define STAGE_ATTACK 2
-#define STAGE_TEMPT  3
-
-#define INITIAL_IDLE_TIME 1.000
-#define ROAM_RANGE_2 25.0 /* m**2 from initial position */
-#define ATTACK_RANGE_2 16.0 /* m**2, when the hero is this close, we approach. */
-#define ATTACK_SPEED 5.0 /* m/s */
-#define WALK_SPEED 3.0 /* m/s */
-#define TEMPT_SPEED 4.0 /* m/s */
-
-static void monster_idle_begin(struct sprite *sprite);
-static void monster_walk_begin(struct sprite *sprite);
+#include "game/bellacopia.h"
 
 struct sprite_monster {
   struct sprite hdr;
-  double x0,y0; // Initial position. We'll never stray far from it.
-  uint8_t tileid0;
-  int stage;
-  double stageclock;
-  double dx,dy; // Speed, in STAGE_WALK. (m/s)
-  int battleid;
-  double animclock;
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
+
+/* Cleanup.
+ */
+ 
+static void _monster_del(struct sprite *sprite) {
+}
 
 /* Init.
  */
  
 static int _monster_init(struct sprite *sprite) {
-
-  SPRITE->battleid=(sprite->arg[2]<<8)|sprite->arg[3]; // Spawn point overrides sprite def if nonzero.
-  SPRITE->x0=sprite->x;
-  SPRITE->y0=sprite->y;
-  SPRITE->tileid0=sprite->tileid;
-  SPRITE->stage=STAGE_IDLE;
-  SPRITE->stageclock=INITIAL_IDLE_TIME;
-  
-  struct cmdlist_reader reader;
-  if (sprite_reader_init(&reader,sprite->serial,sprite->serialc)>=0) {
-    struct cmdlist_entry cmd;
-    while (cmdlist_reader_next(&cmd,&reader)>0) {
-      switch (cmd.opcode) {
-        case CMD_sprite_battle: { // Only if we didn't get from spawn point.
-            if (!SPRITE->battleid) {
-              SPRITE->battleid=(cmd.arg[0]<<8)|cmd.arg[1];
-            }
-          } break;
-      }
-    }
-  }
-  
   return 0;
-}
-
-/* Toggle "safe" from our physics mask.
- * In hot pursuit, we will cross spaces where normally we'd fear to tread.
- */
- 
-static void monster_permit_safe(struct sprite *sprite) {
-  sprite->physics&=~(1<<NS_physics_safe);
-}
-
-static void monster_forbid_safe(struct sprite *sprite) {
-  sprite->physics|=(1<<NS_physics_safe);
-  if (sprite_test_position(sprite)) {
-    // Cool, we're back to normal.
-  } else {
-    // Leave safe cells passable until we escape it incidentally. (see monster_walk_update)
-    sprite->physics&=~(1<<NS_physics_safe);
-  }
-}
-
-/* STAGE_IDLE
- */
- 
-static void monster_idle_update(struct sprite *sprite,double elapsed) {
-}
-
-static void monster_idle_begin(struct sprite *sprite) {
-  SPRITE->stage=STAGE_IDLE;
-  SPRITE->stageclock=0.250+((rand()&0xffff)*0.500)/32768.0;
-}
-
-static void monster_idle_end(struct sprite *sprite) {
-  monster_walk_begin(sprite);
-}
-
-/* STAGE_WALK
- */
- 
-static void monster_walk_update(struct sprite *sprite,double elapsed) {
-  if (!sprite_move(sprite,SPRITE->dx*elapsed,SPRITE->dy*elapsed)) {
-    // Fully blocked.
-    monster_idle_begin(sprite);
-  } else {
-    if (!(sprite->physics&(1<<NS_physics_safe))) { // Prior attack ended in a path collision. Can we start apply path collisions yet?
-      sprite->physics|=(1<<NS_physics_safe);
-      if (sprite_test_position(sprite)) {
-        // Resuming deferred path collisions.
-      } else {
-        sprite->physics&=~(1<<NS_physics_safe);
-      }
-    }
-  }
-}
-
-static void monster_walk_end(struct sprite *sprite) {
-  monster_idle_begin(sprite);
-}
-
-static void monster_walk_begin(struct sprite *sprite) {
-
-  /* Walk in a cardinal direction at a fixed speed for a random interval.
-   * Any direction with at least one meter of freedom is a candidate.
-   */
-  struct dcan { double dx,dy; } dcanv[4];
-  int dcanc=0,canxc=0,canyc=0;
-  if (sprite_measure_freedom(sprite,-2.0,0.0,0)>=1.0) { canxc++; dcanv[dcanc++]=(struct dcan){-1.0,0.0}; }
-  if (sprite_measure_freedom(sprite,2.0,0.0,0)>=1.0) { canxc++; dcanv[dcanc++]=(struct dcan){1.0,0.0}; }
-  if (sprite_measure_freedom(sprite,0.0,-2.0,0)>=1.0) { canyc++; dcanv[dcanc++]=(struct dcan){0.0,-1.0}; }
-  if (sprite_measure_freedom(sprite,0.0,2.0,0)>=1.0) { canyc++; dcanv[dcanc++]=(struct dcan){0.0,1.0}; }
-  if (dcanc<1) {
-    monster_idle_begin(sprite);
-    return;
-  }
-  
-  /* If we're outside ROAM_RANGE, prefer returning to the origin.
-   * Only eliminate a direction if we have both options on that axis.
-   */
-  double dx=sprite->x-SPRITE->x0;
-  double dy=sprite->y-SPRITE->y0;
-  double d2=dx*dx+dy*dy;
-  if (d2>ROAM_RANGE_2) {
-    #define DROPDCAN(expr) { \
-      int i=dcanc; while (i-->0) { \
-        if (dcanv[i].expr) { \
-          dcanc--; \
-          memmove(dcanv+i,dcanv+i+1,sizeof(struct dcan)*(dcanc-i)); \
-          break; \
-        } \
-      } \
-    }
-         if ((dx>0.0)&&(canxc>=2)) DROPDCAN(dx>0.0)
-    else if ((dx<0.0)&&(canxc>=2)) DROPDCAN(dx<0.0)
-         if ((dy>0.0)&&(canyc>=2)) DROPDCAN(dy>0.0)
-    else if ((dy<0.0)&&(canyc>=2)) DROPDCAN(dy<0.0)
-    #undef DROPDCAN
-  }
-  
-  int dcanp=rand()%dcanc;
-  SPRITE->dx=dcanv[dcanp].dx*WALK_SPEED;
-  SPRITE->dy=dcanv[dcanp].dy*WALK_SPEED;
-  SPRITE->stageclock=0.500+((rand()&0x7fff)*1.000)/32768.0;
-  SPRITE->stage=STAGE_WALK;
-}
-
-/* STAGE_ATTACK
- */
- 
-static void monster_attack_update(struct sprite *sprite,double elapsed,struct sprite *hero) {
-  double dx=hero->x-sprite->x;
-  double dy=hero->y-sprite->y;
-  double d2=dx*dx+dy*dy;
-  if (d2<0.250) { // Impossibly close. Maybe we're not solid?
-    return;
-  }
-  double d=sqrt(d2);
-  if (!sprite_move(sprite,(dx*ATTACK_SPEED*elapsed)/d,(dy*ATTACK_SPEED*elapsed)/d)) {
-    // Blocked, should we do something? No. Usually it's the hero that blocked us, and the battle has already triggered.
-  }
-}
-
-static void monster_attack_begin(struct sprite *sprite,struct sprite *hero) {
-  SPRITE->stage=STAGE_ATTACK;
-  SPRITE->stageclock=30.0; // STAGE_ATTACK always ends explicitly; use an unreasonably long time.
-}
-
-/* STAGE_TEMPT, basically the same thing as STAGE_ATTACK
- */
- 
-static void monster_tempt_update(struct sprite *sprite,double elapsed,struct sprite *hero) {
-  double dx=hero->x-sprite->x;
-  double dy=hero->y-sprite->y;
-  double d2=dx*dx+dy*dy;
-  if (d2<0.020) { // Impossibly close. Maybe we're not solid?
-    return;
-  }
-  double d=sqrt(d2);
-  sprite_move(sprite,(dx*TEMPT_SPEED*elapsed)/d,(dy*TEMPT_SPEED*elapsed)/d);
-}
-
-static void monster_tempt_begin(struct sprite *sprite,struct sprite *hero) {
-  SPRITE->stage=STAGE_TEMPT;
-  SPRITE->stageclock=30.0; // STAGE_TEMPT always ends explicitly; use an unreasonably long time.
-}
-
-/* Find our current target. Hero, princess, candy, maybe other things.
- * This is called every frame.
- * Return a sprite only if it is in range, etc.
- */
- 
-static struct sprite *monster_find_target(struct sprite *sprite) {
-  struct sprite *best=0;
-  double bestd2=999.999;
-  struct sprite **otherp;
-  int otherc=sprites_get_all(&otherp);
-  for (;otherc-->0;otherp++) {
-    struct sprite *other=*otherp;
-    if (other->defunct) continue;
-    
-    /* Hero or Princess are ignored if outside the attack range.
-     * Also, Candy overrides the living no matter what.
-     * I'm not sure that makes sense from the standpoint of the monsters' motivation,
-     * but as a game mechanic, Candy is expensive so it should have a simple and pronounced effect.
-     */
-    if (other->type==&sprite_type_hero) { //TODO "or princess"
-      if (best&&(best->type==&sprite_type_candy)) continue; // Prefer Candy.
-      if ((other->type==&sprite_type_hero)&&(g.bugspray>0.0)) continue; // Hero invisible while bugspray'd.
-      double dx=other->x-sprite->x;
-      double dy=other->y-sprite->y;
-      double d2=dx*dx+dy*dy;
-      if (d2>ATTACK_RANGE_2) continue; // Too far away.
-      if (!best) {
-        best=other;
-        bestd2=d2;
-      } else { // Take the nearer of (other,best)
-        if (d2<bestd2) {
-          best=other;
-          bestd2=d2;
-        }
-      }
-      continue;
-    }
-    
-    /* Candy anywhere is tempting.
-     * Track all candy and retain the closest.
-     */
-    if (other->type==&sprite_type_candy) {
-      double dx=other->x-sprite->x;
-      double dy=other->y-sprite->y;
-      double d2=dx*dx+dy*dy;
-      if (!best||(best->type!=&sprite_type_candy)) {
-        best=other;
-        bestd2=d2;
-      } else if (d2<bestd2) {
-        best=other;
-        bestd2=d2;
-      }
-      continue;
-    }
-  }
-  return best;
 }
 
 /* Update.
  */
  
 static void _monster_update(struct sprite *sprite,double elapsed) {
-
-  // Animate always, even when standing still.
-  if ((SPRITE->animclock-=elapsed)<=0.0) {
-    SPRITE->animclock+=0.200;
-    if (sprite->tileid==SPRITE->tileid0) sprite->tileid++;
-    else sprite->tileid=SPRITE->tileid0;
-  }
-  
-  // Track horizontal motion.
-  double x0=sprite->x;
-  
-  /* Decide what we're targetting.
-   */
-  struct sprite *target=monster_find_target(sprite);
-  if (!target) { // "nothing" is easy, just make sure we exit ATTACK or TEMPT, if we're there.
-    if ((SPRITE->stage==STAGE_ATTACK)||(SPRITE->stage==STAGE_TEMPT)) {
-      monster_forbid_safe(sprite);
-      monster_idle_begin(sprite);
-    }
-  } else if (target->type==&sprite_type_hero) { // Hero gets a full vigorous attack. TODO Princess will get this treatment too.
-    if (SPRITE->stage!=STAGE_ATTACK) {
-      monster_permit_safe(sprite);
-      monster_attack_begin(sprite,target);
-    }
-  } else { // All other targets, eg candy, cause a more passive draw.
-    if (SPRITE->stage!=STAGE_TEMPT) {
-      monster_forbid_safe(sprite);
-      monster_tempt_begin(sprite,target);
-    }
-  }
-
-  /* Generic update and stage transition per clock.
-   */
-  if ((SPRITE->stageclock-=elapsed)<=0.0) {
-    switch (SPRITE->stage) {
-      case STAGE_IDLE: monster_idle_end(sprite); break;
-      case STAGE_WALK: monster_walk_end(sprite); break;
-      case STAGE_ATTACK: SPRITE->stageclock+=30.0; break; // STAGE_ATTACK doesn't time out.
-      case STAGE_TEMPT: SPRITE->stageclock+=30.0; break; // '' STAGE_TEMPT
-      default: monster_idle_end(sprite);
-    }
-  } else {
-    switch (SPRITE->stage) {
-      case STAGE_IDLE: monster_idle_update(sprite,elapsed); break;
-      case STAGE_WALK: monster_walk_update(sprite,elapsed); break;
-      case STAGE_ATTACK: monster_attack_update(sprite,elapsed,target); break;
-      case STAGE_TEMPT: monster_tempt_update(sprite,elapsed,target); break;
-    }
-  }
-  
-  // If we moved horizontally, update xform accordingly. Right is natural.
-  if (sprite->x<x0) sprite->xform=EGG_XFORM_XREV;
-  else if (sprite->x>x0) sprite->xform=0;
 }
 
-/* End of battle.
+/* Render.
  */
  
-static void monster_cb_battled(void *userdata,int outcome) {
-  struct sprite *sprite=userdata;
-  sprite->defunct=1;
+static void _monster_render(struct sprite *sprite,int x,int y) {
+  graf_set_image(&g.graf,sprite->imageid);
+  graf_tile(&g.graf,x,y,sprite->tileid,sprite->xform);
 }
 
 /* Collide.
  */
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
-  if (other->type==&sprite_type_hero) {
-    bm_begin_battle_soon(SPRITE->battleid,1,0x80,monster_cb_battled,sprite);//TODO handicap
-  }
 }
 
 /* Type definition.
@@ -345,7 +45,9 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
 const struct sprite_type sprite_type_monster={
   .name="monster",
   .objlen=sizeof(struct sprite_monster),
+  .del=_monster_del,
   .init=_monster_init,
   .update=_monster_update,
+  .render=_monster_render,
   .collide=_monster_collide,
 };

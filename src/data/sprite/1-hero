@@ -1,5 +1,5 @@
-image image:hero
-tile 16 0
 type (u16:sprtype)hero
-solid
-hitbox -7 7 -6 8
+groups (b32:sprgrp)visible,update,hero,solid
+physics (b32:physics)solid,water,hole,grabbable
+image image:hero
+tile 0x10 0

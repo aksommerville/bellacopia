@@ -1,48 +1,82 @@
 /* store.h
- * Serial data dump.
- * Our data is exposed as enumerated fields.
- * Field ID is the bitwise index, and you tell us the size on each access.
- * Size is arbitrarily limited to 16 bits.
+ * Everything gets packed into one field in the save file, but they're split out in memory:
+ *  - fld: 1-bit general fields.
+ *  - fld16: 16-bit general fields.
+ *  - jigsaw: Possession, position, and rotation of each piece, as they appear in the pause modal.
+ *  - inventory: Equipped item, and the ones in your backpack.
+ *  - clock: Floating-point times. Persist as integer ms.
  */
  
 #ifndef STORE_H
 #define STORE_H
 
-/* The general store.
- *****************************************************************************/
+#define INVSTORE_SIZE 26 /* First is the equipped item, then the 25 in your backpack. */
 
-void store_reset();
+struct store {
+  
+  uint8_t *fldv; // Little-endian.
+  int fldc,flda; // Bytes (not bits!)
+  
+  uint16_t *fld16v;
+  int fld16c,fld16a; // Words (not bytes!)
+  
+  double *clockv;
+  int clockc,clocka;
+  
+  struct jigstore {
+    uint16_t mapid;
+    uint8_t x,y,xform; // (y==0xff) means it isn't got yet.
+  } *jigstorev;
+  int jigstorec,jigstorea;
+  
+  struct invstore {
+    uint8_t itemid; // If zero, the slot is vacant. (limit,quantity) undefined.
+    uint8_t limit; // If zero, it's not a counted item, and (quantity) may be used for something else.
+    uint8_t quantity;
+  } invstorev[INVSTORE_SIZE];
+  
+  int dirty; // Outsiders may set, if you change something.
+  double savedebounce;
+};
 
-int store_get(int fld,int size);
-int store_set(int fld,int size,int v); // => nonzero if changed
+int store_clear();
+int store_load(const char *k,int kc);
 
-/* You may listen on (0,0) to be notified of all changes.
- * Otherwise (fld,size) must be a valid field.
- * It's safe to unlisten during your own callback, but it is *not* safe to unlisten anyone else then.
- * All listeners get dropped at reset.
+/* main.c should spam this.
+ * Always noop if the store is clean.
+ * If (now), we encode and save it immediately.
+ * Otherwise there may be some amount of debounce.
+ * Trivial things like moving a jigpiece can cause repetitive store changes, so we prefer to space them out a bit.
  */
-int store_listen(int fld,int size,void (*cb)(int fld,int size,int v,void *userdata),void *userdata); // => listenerid>0
-void store_unlisten(int listenerid);
-void store_unlisten_all();
+void store_save_if_dirty(const char *k,int kc,int now);
 
-/* Loading resets (ie all listeners get dropped).
+int store_get_fld(int fld);
+int store_get_fld16(int fld16);
+double store_get_clock(int clock);
+struct jigstore *store_get_jigstore(int mapid);
+struct invstore *store_get_invstore(int invslot); // 0=equipped, 1..25=backpack
+struct invstore *store_get_itemid(int itemid);
+
+int store_set_fld(int fld,int value); // => nonzero if changed
+int store_set_fld16(int fld,int value); // => ''
+struct jigstore *store_add_jigstore(int mapid); // => creates if not existing yet
+struct invstore *store_add_itemid(int itemid,int quantity); // => creates if not existing yet, or bumps quantity as warranted
+
+/* Serial format, written out to "save" in the Egg store.
+ * Starts with 10 bytes for the lengths of the individual stores.
+ * Each length is 2 Base64 digits, big-endianly:
+ *  - fldc (bytes decoded, always a multiple of 3)
+ *  - fld16c (fields)
+ *  - clockc (fields)
+ *  - jigstorec (records)
+ *  - invstorec (records). Can't go above 26, but we use 2 bytes like the others, for consistency.
+ * Followed by the heaps, Base64, in the same order:
+ *  - fldv: Straight Base64, and length must align to a block.
+ *  - fld16v: Three encoded bytes each, big-endian, the 2 high bits of each must be zero.
+ *  - clockv: Five encoded bytes each, big-endian, ms. Holds about 298 hours each.
+ *  - jigstorev: Five encoded bytes each, split big-endianly: 11 mapid, 8 x, 8 y, 3 xform.
+ *  - invstorev: Four encoded bytes each: itemid,limit,quantity. ie straight base64 of the whole (invstorev).
+ * Followed by a 30-bit checksum, performed on the encoded stream.
  */
-int store_load();
-int store_save();
-int store_save_if_dirty();
-
-/* Jigsaw puzzle progress goes in a separate store, because it is bulky and highly structured.
- ****************************************************************************************/
- 
-void store_jigsaw_load();
-void store_jigsaw_save_if_dirty(int immediate); // (immediate) nonzero to skip the debounce.
-
-int store_jigsaw_get(int *x,int *y,uint8_t *xform,int mapid);
-int store_jigsaw_set(int mapid,int x,int y,uint8_t xform);
-
-/* Populate (x,y) in (0..255,143), attempting not to use any space occupied by a known piece on plane (z).
- * This is more expensive than it sounds, since we have to search the map store for all the maps on (z).
- */
-void store_jigpiece_new_position(int *x,int *y,int z);
 
 #endif

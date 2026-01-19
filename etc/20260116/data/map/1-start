@@ -1,0 +1,68 @@
+3135253135253132040301063031253535312531
+2535353531252342020301024024353535313125
+3531353131234201009503000140242531353525
+3531313123420400060305010402402425253131
+4141414142040104850000650301054041414141
+060603060202007502000006a506000300050200
+0002040501040306055052000004040606040404
+2280818182060600046062060505012021212121
+32a0a1a1a2430006556062b50000203431312531
+3200040003060502036062000320343525352531
+3206000304010000036062022034353531312531
+3321212121212122066062023025353125313531
+
+image image:meadow
+position 0 0 1 *
+song song:barrel_of_salt
+sprite @7,4 sprite:hero (u32)0
+sprite @12,4 sprite:jigpiece (u32)0
+oob (u8:mapoob)farloop (u8:mapoob)repeat
+sprite @5,7 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
+sprite @13,8 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
+sprite @7,2 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
+sprite @12,2 sprite:firepot (u32)0
+sprite @7,8 sprite:stick (u32)0
+sprite @16,5 sprite:stick (u32)0
+root @9,0 (u16:fld)root5
+root @11,0 (u16:fld)root2
+root @9,1 (u16:fld)root5
+root @9,2 (u16:fld)root5
+root @11,4 (u16:fld)root2
+root @11,3 (u16:fld)root2
+root @11,2 (u16:fld)root2
+root @11,1 (u16:fld)root2
+root @19,5 (u16:fld)root6
+root @12,5 (u16:fld)root6
+root @11,11 (u16:fld)root7
+root @14,5 (u16:fld)root6
+root @15,5 (u16:fld)root6
+root @16,5 (u16:fld)root6
+root @17,5 (u16:fld)root6
+root @18,5 (u16:fld)root6
+root @13,5 (u16:fld)root6
+root @8,11 (u16:fld)root1
+root @11,9 (u16:fld)root7
+root @11,10 (u16:fld)root7
+root @11,8 (u16:fld)root7
+root @0,6 (u16:fld)root3
+root @8,9 (u16:fld)root1
+root @8,10 (u16:fld)root1
+root @8,8 (u16:fld)root1
+root @0,5 (u16:fld)root4
+root @7,6 (u16:fld)root3
+root @6,6 (u16:fld)root3
+root @5,6 (u16:fld)root3
+root @4,6 (u16:fld)root3
+root @3,6 (u16:fld)root3
+root @2,6 (u16:fld)root3
+root @1,6 (u16:fld)root3
+root @7,5 (u16:fld)root3
+root @8,4 (u16:fld)root4
+root @7,4 (u16:fld)root4
+root @6,4 (u16:fld)root4
+root @5,4 (u16:fld)root4
+root @5,5 (u16:fld)root4
+root @4,5 (u16:fld)root4
+root @3,5 (u16:fld)root4
+root @2,5 (u16:fld)root4
+root @1,5 (u16:fld)root4

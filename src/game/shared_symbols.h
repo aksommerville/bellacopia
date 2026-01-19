@@ -1,144 +1,174 @@
 #ifndef SHARED_SYMBOLS_H
 #define SHARED_SYMBOLS_H
 
-#define EGGDEV_importUtil "stdlib,res,graf,font,text"
+#define EGGDEV_importUtil "stdlib,graf,font,res,text"
 
+/* A map is exactly the width, and slightly taller, than the framebuffer.
+ * It is important that maps not be smaller than the framebuffer: Camera will assume no more than 4 can be visible at a time.
+ */
 #define NS_sys_tilesize 16
-#define NS_sys_mapw 20 /* Maps must be at least as large as the framebuffer, not a pixel less. */
-#define NS_sys_maph 12 /* Because map renderer will assume a 2x2 set of neighbor maps is all you can ever see. */
+#define NS_sys_mapw 20
+#define NS_sys_maph 12
+#define FBW 320
+#define FBH 180
 
-#define CMD_map_dark       0x01 /* --- ; Lights out initially, matches required. */
-#define CMD_map_image      0x20 /* u16:imageid */
-#define CMD_map_song       0x21 /* u16:songid */
-#define CMD_map_oob        0x22 /* u8:long u8:lat ; Only one map per plane needs to specify. If more, they must agree. */
-#define CMD_map_parent     0x23 /* u16:mapid ; For this whole plane, use (mapid) for the world map position, this plane doesn't get a jigsaw puzzle. Caves and such. One level redirect only! */
-#define CMD_map_position   0x40 /* s8:long s8:lat u8:plane u8:reserved */
-#define CMD_map_root       0x41 /* u16:position u16:fld */
-#define CMD_map_door       0x60 /* u16:position u16:mapid u16:dstposition u16:arg */
-#define CMD_map_sprite     0x61 /* u16:position u16:spriteid u32:arg */
-#define CMD_map_rsprite    0x62 /* u16:reserved u16:spriteid u32:arg ; May spawn anywhere vacant. One per command. */
+#define CMD_map_dark            0x01 /* --- */
+#define CMD_map_image           0x20 /* u16:rid */
+#define CMD_map_song            0x21 /* u16:rid */
+#define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */
+#define CMD_map_parent          0x23 /* u16:rid ; For jigsaw purposes, I belong to this other map. One level of redirection only, please. */
+#define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
+#define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
+#define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
+#define CMD_map_stompbox        0x43 /* u16:pos u16:fld ; tileid+1 if fld set, toggles when touched */
+#define CMD_map_root            0x44 /* u16:pos u16:fld */
+#define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
+#define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:handicap u32:arg */
+#define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
+#define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
-#define CMD_sprite_solid     0x01 /* --- */
-#define CMD_sprite_grabbable 0x02 /* --- */
-#define CMD_sprite_image     0x20 /* u16:imageid */
-#define CMD_sprite_tile      0x21 /* u8:tileid u8:xform */
-#define CMD_sprite_type      0x23 /* u16:sprtype */
-#define CMD_sprite_layer     0x24 /* s16:layer(0=default) */
-#define CMD_sprite_battle    0x25 /* u16:battletype ; NS_sprtype_monster. Spawn point overrides. */
-#define CMD_sprite_physics   0x40 /* (b32:physics)impassables */
-#define CMD_sprite_hitbox    0x41 /* s8:left s8:right s8:top s8:bottom ; pixels ie m/16 */
+#define CMD_sprite_image        0x20 /* u16:rid */
+#define CMD_sprite_tile         0x21 /* u8:tileid u8:xform */
+#define CMD_sprite_type         0x22 /* u16:sprtype */
+#define CMD_sprite_layer        0x23 /* u16:layer ; hero at 100 */
+#define CMD_sprite_battle       0x24 /* u16:battle ; NS_sprtype_monster */
+#define CMD_sprite_physics      0x40 /* b32:physics ; which are impassable */
+#define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
+#define CMD_sprite_groups       0x42 /* b32:sprgrp */
 
-#define NS_tilesheet_physics   1
-#define NS_tilesheet_family    0
+#define NS_tilesheet_physics 1
+#define NS_tilesheet_jigctab 2 /* rgb332 */
+#define NS_tilesheet_family 0
 #define NS_tilesheet_neighbors 0
-#define NS_tilesheet_weight    0
-#define NS_tilesheet_jigctab   2 /* RGB332 */
+#define NS_tilesheet_weight 0
 
-#define NS_physics_vacant     0
-#define NS_physics_solid      1
-#define NS_physics_water      2
-#define NS_physics_hole       3 /* Like water, but no fishing etc. */
-#define NS_physics_cliff      4 /* Jump over from the top, no return. */
-#define NS_physics_hookable   5 /* Solid but can hookshot. */
-#define NS_physics_safe       6 /* Vacant but monsters will never tread. */
+#define NS_physics_vacant 0
+#define NS_physics_solid 1
+#define NS_physics_water 2
+#define NS_physics_grabbable 3 /* solid, but hookshot can grab */
+#define NS_physics_safe 4 /* vacant, but monsters won't go unless chasing */
+#define NS_physics_hole 5 /* water, but no splash */
 
-// mapoob: How to handle requests for maps that don't exist on this plane.
-#define NS_mapoob_null      1 /* (default) Unknown positions in this plane are invalid. */
-#define NS_mapoob_loop      2 /* Loop around this axis. */
-#define NS_mapoob_repeat    3 /* Clamp to the edge. ie repeat the last map forever. */
-#define NS_mapoob_farloop   4 /* Repeat the last map for the size of the plane, then loop. So looping around is never the shortest path. */
+/* Map planes. I doubt we'll actually use these symbols, they're just for manual documentation.
+ */
+#define NS_plane_singletons 0
+#define NS_plane_outerworld 1
+#define NS_plane_tunnel1 2 /* cheapside<~>botire */
+#define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
+#define NS_plane_labyrinth1 4 /* jungle */
 
-#define NS_dir_nw   0x80
-#define NS_dir_n    0x40
-#define NS_dir_ne   0x20
-#define NS_dir_w    0x10
-#define NS_dir_mid  0x00
-#define NS_dir_e    0x08
-#define NS_dir_sw   0x04
-#define NS_dir_s    0x02
-#define NS_dir_se   0x01
+#define NS_sprgrp_keepalive 0 /* All sprites are in this group. */
+#define NS_sprgrp_deathrow  1 /* Everything here gets killed at the end of each update. */
+#define NS_sprgrp_visible   2 /* Render order. Unusual for a sprite not to be here. */
+#define NS_sprgrp_update    3 /* Get an update each frame. */
+#define NS_sprgrp_solid     4 /* Participates in physics. */
+#define NS_sprgrp_hazard    5 /* Damages the hero on contact. */
+#define NS_sprgrp_hero      6 /* Should have exactly one member. */
+#define NS_sprgrp_grabbable 7 /* Interacts with hookshot. */
+#define NS_sprgrp_floating  8 /* Presumably solid, but doesn't interact with treadles etc. */
+#define NS_sprgrp_light     9 /* Light source in darkened rooms. */
 
-// Inventory items.
-#define NS_itemid_broom           1
-#define NS_itemid_divining_rod    2
-#define NS_itemid_hookshot        3
-#define NS_itemid_fishpole        4
-#define NS_itemid_match           5
-#define NS_itemid_bugspray        6
-#define NS_itemid_candy           7
-#define NS_itemid_wand            8
-#define NS_itemid_magnifier       9
-#define NS_itemid_stick          10
-#define NS_itemid_gold           11 /* Doesn't participate in inventory. */
-#define NS_itemid_blood          12 /* '' */
-#define NS_itemid_greenfish      13 /* '' */
-#define NS_itemid_bluefish       14 /* '' */
-#define NS_itemid_redfish        15 /* '' */
+/* Everything you can pick up has an itemid.
+ * So this includes gold, keys, powerups (things that don't go in inventory).
+ */
+#define NS_itemid_stick 1
+#define NS_itemid_broom 2
+#define NS_itemid_divining 3
+#define NS_itemid_match 4
+#define NS_itemid_wand 5
+#define NS_itemid_fishpole 6
+#define NS_itemid_bugspray 7
+#define NS_itemid_potion 8
+#define NS_itemid_hookshot 9
+#define NS_itemid_candy 10
+#define NS_itemid_magnifier 11
+#define NS_itemid_vanishing 12
+#define NS_itemid_compass 13
+#define NS_itemid_gold 14
+#define NS_itemid_greenfish 15
+#define NS_itemid_bluefish 16
+#define NS_itemid_redfish 17
+#define NS_itemid_heart 18
+#define NS_itemid_jigpiece 19
+#define FOR_EACH_itemid \
+  _(stick) \
+  _(broom) \
+  _(divining) \
+  _(match) \
+  _(wand) \
+  _(fishpole) \
+  _(bugspray) \
+  _(potion) \
+  _(hookshot) \
+  _(candy) \
+  _(magnifier) \
+  _(vanishing) \
+  _(compass) \
+  _(gold) \
+  _(greenfish) \
+  _(bluefish) \
+  _(redfish) \
+  _(heart) \
+  _(jigpiece)
 
-// Sprite controllers.
-#define NS_sprtype_dummy          0 /* (u32)0 */
-#define NS_sprtype_hero           1 /* (u32)0 */
-#define NS_sprtype_monster        2 /* (u8:rspr)0 (u8)0 (u16:battletype)0 */
-#define NS_sprtype_polefairy      3 /* (u24)0 (u8)0_left_1_right */
-#define NS_sprtype_jigpiece       4 /* (u32)0 */
-#define NS_sprtype_treasure       5 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
-#define NS_sprtype_candy          6 /* (u32)0 */
-#define NS_sprtype_firepot        7 /* (u32)0 */
-#define NS_sprtype_stick          8 /* (u32)0 */
-#define NS_sprtype_npc            9 /* (u16:activity)0 (u16)0 */
-#define FOR_EACH_SPRTYPE \
+/* NPC activities are hard-coded. Select one from this list.
+ */
+#define NS_activity_dialogue 1 /* (u16)strix ; strings:dialogue. Simple box of constant text. */
+#define NS_activity_carpenter 2
+#define NS_activity_brewer 3
+#define NS_activity_bloodbank 4
+#define NS_activity_fishwife 5
+
+#define NS_sprtype_dummy        0 /* (u32)0 */
+#define NS_sprtype_hero         1 /* (u32)0 */
+#define NS_sprtype_monster      2 /* (u32)0 */
+#define NS_sprtype_treasure     3 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
+#define NS_sprtype_stick        4 /* (u32)0 */
+#define NS_sprtype_npc          5 /* (u16:activity)0 (u16)0 */
+#define NS_sprtype_jigpiece     6 /* (u32)0 */
+#define NS_sprtype_candy        7 /* (u32)0 */
+#define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */
+#define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
   _(monster) \
-  _(polefairy) \
-  _(jigpiece) \
   _(treasure) \
-  _(candy) \
-  _(firepot) \
   _(stick) \
-  _(npc)
+  _(npc) \
+  _(jigpiece) \
+  _(candy) \
+  _(firepot)
   
-// Battle controllers.
-#define NS_battletype_fishing             1
-#define NS_battletype_boomerang           2
-#define NS_battletype_chopping            3
-#define NS_battletype_exterminating       4
-#define FOR_EACH_BATTLETYPE \
-  _(fishing) \
-  _(boomerang) \
-  _(chopping) \
-  _(exterminating)
-  
-// Store fields.
-#define NS_fld_zero                0 /* Read-only, always zero. */
-#define NS_fld_one                 1 /* Read-only, always one. */
-#define NS_fld_always              2 /* Special to sprite_treasure. Value not used. */
-#define NS_fld_if_depleted         3 /* '' */
-#define NS_fld_hp                  4 /* 4 bits */
-#define NS_fld_hpmax               8 /* 4 bits */
-#define NS_fld_gold               12 /* 10 bits, limit artificially to 999. */
-#define NS_fld_greenfish          22 /* 7 bits, limit artificially to 99. */
-#define NS_fld_bluefish           29 /* 7 bits, limit artificially to 99. */
-#define NS_fld_redfish            36 /* 7 bits, limit artificially to 99. */
-#define NS_fld_gotstick           43 /* So we don't introduce Stick each time. It's the only item you lose repeatedly. */
-#define NS_fld_cschest1           44
-#define NS_fld_cschest2           45
-#define NS_fld_root1              46
-#define NS_fld_root2              47
-#define NS_fld_root3              48
-#define NS_fld_root4              49
-#define NS_fld_root5              50
-#define NS_fld_root6              51
-#define NS_fld_root7              52
-#define NS_fld_next               53
+#define NS_battle_fishing 1
+#define FOR_EACH_battle \
+  _(fishing)
 
-// NPC or similar triggerable activity.
-#define NS_activity_carpenter 1
-#define NS_activity_cheapside_clinic 2
-
-/* Registry of map planes, since they aren't conveniently listed anywhere else.
- * 1 Outer world.
- * 2 Cheapside-Botire tunnel.
+/* "fld" are single bits.
  */
+#define NS_fld_zero 0 /* readonly ; generally treated as a default, not necessarily literal zero */
+#define NS_fld_one 1 /* readonly */
+#define NS_fld_alsozero 2 /* readonly ; value is always zero, but key is nonzero in case that matters */
+#define NS_fld_root1 3
+#define NS_fld_root2 4
+#define NS_fld_root3 5
+#define NS_fld_root4 6
+#define NS_fld_root5 7
+#define NS_fld_root6 8
+#define NS_fld_root7 9
+
+/* "fld16" are 16 unsigned bits each.
+ */
+#define NS_fld16_zero 0 /* readonly */
+#define NS_fld16_hp 1
+#define NS_fld16_hpmax 2
+#define NS_fld16_gold 3
+#define NS_fld16_goldmax 4
+#define NS_fld16_greenfish 5
+#define NS_fld16_bluefish 6
+#define NS_fld16_redfish 7
+
+/* "clock" are floating-point seconds, and persist as integer ms.
+ */
+#define NS_clock_playtime 0
   
 #endif

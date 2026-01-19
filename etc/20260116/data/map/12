@@ -1,0 +1,61 @@
+9192030102060130253135253131353531253525
+9192060502000330253135353531313531352525
+9192030205020340412425352531353125252535
+9192014404050402044041242535313135312535
+9192020200020606000102404141414141414141
+9192010402450303060202000302010000040300
+9192050606040003050602020605040504060500
+9192050604040106000604202121212121212121
+9192020301000003022021343525352525353535
+9192060306020220213435313531252531252531
+9192000402062034352535252535253525352525
+9192060503203431252531352525352535353531
+
+image image:meadow
+position -1 0 1 *
+song song:barrel_of_salt
+sprite @6,6 sprite:jigpiece (u32)0
+root @0,6 (u16:fld)root3
+root @4,0 (u16:fld)root4
+root @19,6 (u16:fld)root3
+root @18,6 (u16:fld)root3
+root @17,6 (u16:fld)root3
+root @16,6 (u16:fld)root3
+root @15,6 (u16:fld)root3
+root @14,6 (u16:fld)root3
+root @13,6 (u16:fld)root3
+root @12,6 (u16:fld)root3
+root @11,6 (u16:fld)root3
+root @10,6 (u16:fld)root3
+root @9,6 (u16:fld)root3
+root @8,6 (u16:fld)root3
+root @7,6 (u16:fld)root3
+root @6,6 (u16:fld)root3
+root @5,6 (u16:fld)root3
+root @4,6 (u16:fld)root3
+root @3,6 (u16:fld)root3
+root @2,6 (u16:fld)root3
+root @1,6 (u16:fld)root3
+root @19,5 (u16:fld)root4
+root @18,5 (u16:fld)root4
+root @17,5 (u16:fld)root4
+root @16,5 (u16:fld)root4
+root @15,5 (u16:fld)root4
+root @14,5 (u16:fld)root4
+root @13,5 (u16:fld)root4
+root @12,5 (u16:fld)root4
+root @11,5 (u16:fld)root4
+root @10,5 (u16:fld)root4
+root @9,5 (u16:fld)root4
+root @8,5 (u16:fld)root4
+root @8,4 (u16:fld)root4
+root @8,3 (u16:fld)root4
+root @7,3 (u16:fld)root4
+root @6,3 (u16:fld)root4
+root @5,3 (u16:fld)root4
+root @4,3 (u16:fld)root4
+root @4,2 (u16:fld)root4
+root @4,1 (u16:fld)root4
+rsprite (u16)0 sprite:goat (u8)100 (u24)0
+rsprite (u16)0 sprite:koala (u8)100 (u24)0
+rsprite (u16)0 sprite:leopard (u8)100 (u24)0

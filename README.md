@@ -37,14 +37,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - Consider also using wind like Full Moon. But it would be entirely decorative; you'd also stop hard if you do reach the edge.
 - - - ^ Yes. As an aestetic concern only, try to keep them off the edge (both land and sea). But if they reach it, they'll see it's a hard artificial stop.
 - - - Actually, with these gone, I think most of our current problems just melt away.
-- - Continue using single-screen maps with "position" commands, but make the coordinates unsigned. Keep them off zero too, just to be sure.
-- - - Same idea at load time, build up a set of planes, and also loose standalone maps (z<0, as we're doing already).
+- - Continue using single-screen maps with "position" commands, but make the coordinates unsigned.
+- - - Similar idea at load time, build up a set of planes.
+- - - Singleton maps aren't special at the loader. Plane zero, they occupy space just like a regular plane. Camera will treat plane zero special, locking to the one map.
 - - - Root all planes at (0,0). Better to have a bunch of dead space in memory than having that extra layer of transformation.
 - - Retain continuous scrolling. I can't bear to lose it.
 - - Let "parent" commands operate per-map, eg your position in the world map should move with you as you walk thru the tunnel.
-- [ ] I'm 10k lines deep already. And this is probably going to reach 100k. Should I clean it out and start all the way over from scratch? That's an option today; in a month or two it won't be.
+- - Use sprite groups, all the bells and whistles of abstraction.
+- [x] I'm 10k lines deep already. And this is probably going to reach 100k. Should I clean it out and start all the way over from scratch? That's an option today; in a month or two it won't be.
 - - Would give us the opportunity to rethink sprites and store too; I'm not sure I got those right.
 - - Sleep on it. Actually, I want to explore custom synth in Raylib for Alex, so do that first and let this settle a bit.
+- - YES rewrite it.
 
 - [x] I don't like `rsprite` for spawning random encounters. Move to something more continuous, more random.
 - - Bothersome when you turn around and the guy you just beat is back, like always.

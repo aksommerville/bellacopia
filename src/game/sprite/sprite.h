@@ -4,70 +4,66 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
+struct sprites;
 struct sprite;
 struct sprite_type;
+struct sprite_group;
 
-/* Sprite instance.
- ****************************************************************************/
+/* Generic sprite.
+ ********************************************************************/
  
 struct sprite {
   const struct sprite_type *type;
-  int defunct;
-  int rid;
-  const void *serial;
-  int serialc;
-  const uint8_t *arg; // 4 bytes, always present (canned zeroes if not available). Can use as identity for map-spawned sprites.
-  double x,y; // Position in plane meters.
-  int z; // Plane ID.
+  struct sprite_group **grpv;
+  int grpc,grpa;
+  int refc;
+  int defunct; // Suppresses most activity; presumably we are in deathrow already.
+  double x,y; // Plane meters.
+  uint8_t z; // Which plane. Sprites will only exist on the camera's current plane, repeated here to be certain.
+  int layer; // Lower renders first. Hero at 100.
   int imageid;
   uint8_t tileid,xform;
-  int layer;
-  int solid; // Participates in physics.
-  uint32_t physics; // Bitfields, (1<<NS_physics_*), for the impassable ones.
-  double hbl,hbr,hbt,hbb; // Hitbox, relative to (x,y). Negative and positive 1/2 by default.
-  double light_radius; // >0 if this sprite is a light source.
-  int grabbable; // Can pull with hookshot.
-  int rsprite; // Nonzero if spawned via rsprite; there's a global limit on them.
+  double hbl,hbr,hbt,hbb; // Hitbox relative to (x,y). (l,t) are usually negative.
+  uint32_t physics; // Bits, (1<<NS_physics_*), which ones are impassable.
+  int rid;
+  const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
+  int cmdc,argc;
 };
 
-/* If you don't provide (type), you must provide (serial) to read it from, or (rid) to get that from.
- * When maps spawn a sprite, they are expected to provide just (x,y,rid,arg).
- * Returns WEAK on success. To delete it, set (defunct).
+/* Try not to use del/new/ref, they should only be used internally.
+ * To delete a sprite, assign it to the "deathrow" group.
+ * To create one, use sprite_spawn().
+ * sprite_new does add to the global groups, but also returns a STRONG reference.
+ */
+void sprite_del(struct sprite *sprite);
+struct sprite *sprite_new(
+  double x,double y,
+  int rid,
+  const void *arg,int argc,
+  const struct sprite_type *type,
+  const void *cmd,int cmdc
+);
+int sprite_ref(struct sprite *sprite);
+
+/* Spawn a sprite and return a WEAK reference.
+ * If you supply (rid), we can find (type,cmd,cmdc).
+ * Null (arg) is legal, we'll replace with 4 zeroes.
+ * (arg) shorter than 4 is illegal.
  */
 struct sprite *sprite_spawn(
   double x,double y,
   int rid,
-  const uint8_t *arg, // 4 bytes or null
+  const void *arg,int argc,
   const struct sprite_type *type,
-  const void *serial,int serialc
+  const void *cmd,int cmdc
 );
 
-/* Carefully confirms the sprite exists, without dereferencing it.
+/* A convenience to set (defunct) and add to (deathrow).
  */
-int sprite_is_resident(const struct sprite *sprite);
-
-/* Hooks for the world to call in, for the set of current sprites.
- * Updating drops defunct sprites before returning.
- */
-void sprites_update(double elapsed);
-void sprites_render(int scrollx,int scrolly);
-void sprites_render_1(int scrollx,int scrolly,struct sprite *sprite); // Camera needs this when it temporarily defuncts hero during darkness.
-
-// Deletes all immediately. Be careful not to call during iteration.
-void sprites_clear();
-void sprites_clear_except_hero();
-
-// We track the hero sprite via magic.
-struct sprite *sprites_get_hero();
-
-struct sprite *sprite_by_arg(const void *arg);
-struct sprite *sprite_by_type(const struct sprite_type *type);
-
-// Get the actual list. Please be careful.
-int sprites_get_all(struct sprite ***dstpp);
+void sprite_kill_soon(struct sprite *sprite);
 
 /* Sprite type.
- ***************************************************************************/
+ ***********************************************************************/
  
 struct sprite_type {
   const char *name;
@@ -75,49 +71,55 @@ struct sprite_type {
   void (*del)(struct sprite *sprite);
   int (*init)(struct sprite *sprite);
   void (*update)(struct sprite *sprite,double elapsed);
-  
-  /* If you don't implement, we use (imageid,tileid,xform).
-   * (dstx,dsty) are (sprite->x,y) transformed to framebuffer space.
-   */
-  void (*render)(struct sprite *sprite,int dstx,int dsty);
-  
-  /* Called when a motion is completely nixed due to collision between two sprites.
-   * Not called for collisions against the map.
-   */
+  void (*render)(struct sprite *sprite,int x,int y);
   void (*collide)(struct sprite *sprite,struct sprite *other);
 };
 
 #define _(tag) extern const struct sprite_type sprite_type_##tag;
-FOR_EACH_SPRTYPE
+FOR_EACH_sprtype
 #undef _
 
 const struct sprite_type *sprite_type_by_id(int sprtype);
-const struct sprite_type *sprite_type_from_serial(const void *src,int srcc);
 
-void sprite_hero_ackpos(struct sprite *sprite);
-
-void sprite_polefairy_set_target(struct sprite *sprite,double x,double y);
-
-/* Physics.
- ***********************************************************************/
+/* Sprite group.
+ *******************************************************************/
  
-struct aabb { double l,r,t,b; };
+#define SPRITE_GROUP_MODE_ADDR     0 /* Sort by address. Fastest lookups. */
+#define SPRITE_GROUP_MODE_EXPLICIT 1 /* Most recent addition at the end. Re-adding shuffles to the end. */
+#define SPRITE_GROUP_MODE_SINGLE   2 /* Zero or one member. Adding a second evicts the first. */
+#define SPRITE_GROUP_MODE_RENDER   3 /* Tries to preserve render order. Does allow slippage. */
+ 
+struct sprite_group {
+  struct sprite **sprv;
+  int sprc,spra;
+  int mode;
+  int refc; // Zero if immortal (all the global groups are).
+};
 
-/* If this sprite participates in physics, first confirm the move is legal.
- * Returns 1 if moved at all (possibly less than you asked for), or 0 if completely blocked.
- */
-int sprite_move(struct sprite *sprite,double dx,double dy);
+void sprite_group_del(struct sprite_group *group);
+struct sprite_group *sprite_group_new();
+int sprite_group_ref(struct sprite_group *group);
 
-/* (d) must be cardinal and (sprite) must be solid.
- * Returns the distance we can travel in that direction before a collision.
- * If <0, we're already in a collision state.
- * Clamps fairly close. Currently 6 meters.
- * If we return <=0.0 and the collision is due to another sprite, we populate (*cause).
- */
-double sprite_measure_freedom(const struct sprite *sprite,double dx,double dy,struct sprite **cause);
+int sprite_group_has(const struct sprite_group *group,const struct sprite *sprite);
+int sprite_group_add(struct sprite_group *group,struct sprite *sprite);
+int sprite_group_remove(struct sprite_group *group,struct sprite *sprite);
 
-/* Nonzero if the current position is legal.
- */
-int sprite_test_position(const struct sprite *sprite);
+void sprite_group_clear(struct sprite_group *group);
+void sprite_kill(struct sprite *sprite); // Remove all groups, even deathrow and keepalive. Typically deletes the sprite.
+void sprite_group_kill_all(struct sprite_group *group);
+
+void sprite_group_sort_partial(struct sprite_group *group);
+
+/* Global context.
+ * There's just one of these, (g.sprites).
+ *********************************************************************/
+ 
+struct sprites {
+  struct sprite_group grpv[32];
+};
+
+#define GRP(tag) (g.sprites.grpv+NS_sprgrp_##tag)
+
+void sprites_reset();
 
 #endif
