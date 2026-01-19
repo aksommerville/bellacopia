@@ -1,17 +1,37 @@
 2121212121212113313131313131313114212121
 2121211331313132040406030505000230142121
-2121212208040200030602e306e405e500301421
-1331313202020202010307340233073406013014
-2200070004010602070401070303070501040720
-2200e604e701e800e902ea06eb04ec07ed020620
-2204330334013302340733073306330434040320
-2202010206070206050606020200030202050220
-220602ee00ef05f006f103f206f305f401030120
-2203043405340633043300330034063301001024
-2312070203060004000402020607000204102421
+2121212208040200030607e301e406e506301421
+1331313202020202010304030104010701013014
+2200070004010602070403070404050101040720
+2200e607e706e802e907ea05eb04ec00ed020620
+2203000103020401020506000601000604020320
+2201030202020203040001010600060304020220
+220607ee07ef02f000f105f205f304f400030120
+2203060201000705010507060407020106001024
+2312020507070406050007060002020003102421
 2123111111111111111111111111111111242121
 
 image image:caves
 door @4,2 map:start @4,2 0x0000
 position 0 0 0 0
 debugmsg "cave\u0020of\u0020cheating"
+sprite @11,3 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
+sprite @13,3 sprite:treasure (u8:itemid)divining (u8:quantity)0 (u16:fld)0
+sprite @15,3 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
+sprite @2,6 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
+sprite @4,6 sprite:treasure (u8:itemid)match (u8:quantity)10 (u16:fld)0
+sprite @6,6 sprite:treasure (u8:itemid)bugspray (u8:quantity)10 (u16:fld)0
+sprite @8,6 sprite:treasure (u8:itemid)candy (u8:quantity)10 (u16:fld)0
+sprite @10,6 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
+sprite @12,6 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0
+sprite @14,6 sprite:treasure (u8:itemid)stick (u8:quantity)0 (u16:fld)0
+sprite @16,6 sprite:treasure (u8:itemid)compass (u8:quantity)0 (u16:fld)0
+sprite @3,9 sprite:treasure (u8:itemid)vanishing (u8:quantity)10 (u16:fld)0
+sprite @5,9 sprite:treasure (u8:itemid)potion (u8:quantity)1 (u16:fld)0
+sprite @7,9 sprite:treasure (u8:itemid)heart (u8:quantity)1 (u16:fld)0
+sprite @9,9 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)0
+sprite @11,9 sprite:treasure (u8:itemid)greenfish (u8:quantity)1 (u16:fld)0
+sprite @13,9 sprite:treasure (u8:itemid)bluefish (u8:quantity)1 (u16:fld)0
+sprite @15,9 sprite:treasure (u8:itemid)redfish (u8:quantity)1 (u16:fld)0
+parent map:start
+sprite @8,1 sprite:jigpiece (u32)0

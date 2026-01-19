@@ -14,6 +14,21 @@ void sprites_reset() {
   g.sprites.grpv[NS_sprgrp_visible].mode=SPRITE_GROUP_MODE_RENDER;
 }
 
+/* Find sprite by arg.
+ */
+ 
+struct sprite *find_sprite_by_arg(const void *arg) {
+  struct sprite **p=GRP(keepalive)->sprv;
+  int i=GRP(keepalive)->sprc;
+  for (;i-->0;p++) {
+    if ((*p)->arg==arg) {
+      if ((*p)->defunct) continue;
+      return *p;
+    }
+  }
+  return 0;
+}
+
 /* Delete sprite.
  */
  

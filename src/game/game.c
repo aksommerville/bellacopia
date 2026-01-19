@@ -1,10 +1,34 @@
 #include "game/bellacopia.h"
 
+#define SPRITE_CULL_DISTANCE (NS_sys_mapw*2)
+#define SPRITE_CULL_DISTANCE2 (SPRITE_CULL_DISTANCE*SPRITE_CULL_DISTANCE)
+
 /* Map becomes visible.
  */
  
 int game_welcome_map(struct map *map) {
   if (!map) return -1;
+  
+  /* It's not relevant to welcoming the new map, really, but take this occasion to cull far-offscreen sprites.
+   */
+  struct sprite **p=GRP(keepalive)->sprv;
+  int i=GRP(keepalive)->sprc;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->defunct) continue;
+    if (sprite->type==&sprite_type_hero) continue; // never her
+    if (sprite->z!=g.camera.z) {
+      sprite_kill_soon(sprite);
+      continue;
+    }
+    double dx=sprite->x-g.camera.fx;
+    double dy=sprite->y-g.camera.fy;
+    double d2=dx*dx+dy*dy;
+    if (d2<SPRITE_CULL_DISTANCE2) continue;
+    sprite_kill_soon(sprite);
+  }
+  
+  // And on with the show...
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
@@ -18,9 +42,14 @@ int game_welcome_map(struct map *map) {
           if (rid==RID_sprite_hero) { // Hero is special. If we already have one, skip it.
             if (GRP(hero)->sprc) break;
           }
+          if (find_sprite_by_arg(arg)) {
+            //fprintf(stderr,"map:%d decline to spawn sprite:%d due to already exists\n",map->rid,rid);
+            break;
+          }
           struct sprite *sprite=sprite_spawn(x,y,rid,arg,4,0,0,0);
           if (!sprite) {
-            fprintf(stderr,"map:%d failed to spawn sprite:%d at %f,%f\n",map->rid,rid,x,y);
+            //fprintf(stderr,"map:%d failed to spawn sprite:%d at %f,%f\n",map->rid,rid,x,y);
+            break;
           }
         } break;
     }
@@ -33,7 +62,6 @@ int game_welcome_map(struct map *map) {
 
 int game_focus_map(struct map *map) {
   if (!map) return -1;
-  int jigsaw_mapid=map->rid;
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
@@ -41,11 +69,127 @@ int game_focus_map(struct map *map) {
       case CMD_map_dark: break;//TODO weather
       case CMD_map_song: bm_song_gently((cmd.arg[0]<<8)|cmd.arg[1]); break;
       case CMD_map_wind: break;//TODO weather
-      case CMD_map_parent: jigsaw_mapid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
-      case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
+      //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
     }
   }
-  //TODO Should (jigsaw_mapid) get tracked somewhere? Or maybe modal_pause should poll for that on its own.
+  return 0;
+}
+
+/* Get item reporting.
+TODO dialogue modals
+ */
+ 
+static void game_report_item_quantity_add(int itemid,int quantity) {
+  fprintf(stderr,"%s(%d,%d)\n",__func__,itemid,quantity);
+}
+ 
+static void game_report_item_acquire(int itemid,int quantity) {
+  // (quantity) will be zero for singletons.
+  fprintf(stderr,"%s(%d,%d)\n",__func__,itemid,quantity);
+}
+
+static void game_report_item_full(int itemid) {
+  // We call this both for counted slot at limit, and for new item but no slots available.
+  fprintf(stderr,"%s(%d)\n",__func__,itemid);
+}
+
+/* Get item.
+ */
+ 
+int game_get_item(int itemid,int quantity) {
+  if ((itemid<1)||(itemid>0xff)) return 0; // Valid itemid are 8 bits and not zero.
+  
+  /* If we already have it in inventory, either add quantity or do nothing.
+   */
+  struct invstore *invstore=store_get_itemid(itemid);
+  if (invstore) {
+    if (!invstore->limit) return 0; // Singleton item and we already have it. Try to avoid this situation in design.
+    if (invstore->quantity>=invstore->limit) { // We're already full.
+      game_report_item_full(itemid);
+      return 0;
+    }
+    if (quantity<1) return 0; // Counted item but caller didn't supply a quantity.
+    int nq=invstore->quantity+quantity;
+    if (nq>invstore->limit) nq=invstore->limit; // Taking fewer than supplied due to inventory limit. Do report the attempted count tho.
+    invstore->quantity=nq;
+    g.store.dirty=1;
+    bm_sound(RID_sound_collect);
+    game_report_item_quantity_add(itemid,quantity);
+    return 1;
+  }
+  
+  /* We don't have this item in inventory.
+   * Get its details.
+   */
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail) { // Undefined item. Must be an error somewhere.
+    fprintf(stderr,"%s:%d:ERROR: itemid %d not defined in item_detailv\n",__FILE__,__LINE__,itemid);
+    return 0;
+  }
+  
+  /* If it's inventoriable, store it in a fresh inventory slot.
+   */
+  if (detail->inventoriable) {
+    if (detail->initial_limit>1) {
+      if (quantity<1) {
+        fprintf(stderr,"%s:%d:ERROR: itemid %d expects a quantity but none was provided.\n",__FILE__,__LINE__,itemid);
+        return 0;
+      }
+    } else {
+      if (quantity) {
+        fprintf(stderr,"%s:%d:ERROR: Quantity %d unnecessarily provided for singleton itemid %d.\n",__FILE__,__LINE__,quantity,itemid);
+        return 0;
+      }
+    }
+    if (!(invstore=store_add_itemid(itemid,quantity))) { // Presumably inventory full.
+      game_report_item_full(itemid);
+      return 0;
+    }
+    if (detail->initial_limit>0) invstore->limit=detail->initial_limit;
+    bm_sound(RID_sound_treasure);
+    game_report_item_acquire(itemid,quantity);
+    return 1;
+  }
+  
+  /* If it's backed by fld16, we can update generically.
+   */
+  if (detail->fld16) {
+    if (quantity<1) {
+      fprintf(stderr,"%s:%d:ERROR: itemid %d expects a quantity but none was provided.\n",__FILE__,__LINE__,itemid);
+      return 0;
+    }
+    int have=store_get_fld16(detail->fld16);
+    int limit=0xffff;
+    if (detail->initial_limit<0) {
+      limit=store_get_fld16(-detail->initial_limit);
+      if (!limit) fprintf(stderr,"%s:%d:WARNING: Initial limit for itemid %d expected in fld16 %d, but got zero.\n",__FILE__,__LINE__,itemid,-detail->initial_limit);
+    }
+    if (have>=limit) { // Already full.
+      game_report_item_full(itemid);
+      return 0;
+    }
+    int nq=have+quantity;
+    if (nq>limit) nq=limit;
+    store_set_fld16(detail->fld16,nq);
+    bm_sound(RID_sound_collect);
+    game_report_item_quantity_add(itemid,quantity);
+    return 1;
+  }
+  
+  /* Jigpiece kind of does its own thing.
+   */
+  if (itemid==NS_itemid_jigpiece) {
+    if (!quantity) {
+      fprintf(stderr,"%s:%d:ERROR: Getting jigpiece but quantity (ie mapid) zero.\n",__FILE__,__LINE__);
+      return 0;
+    }
+    if (store_get_jigstore(quantity)) return 0; // Already have it.
+    if (!store_add_jigstore(quantity)) return 0; // Shouldn't fail.
+    bm_sound(RID_sound_collect);
+    return 1;
+  }
+  
+  fprintf(stderr,"%s: Unknown itemid %d\n",__func__,itemid);
   return 0;
 }
 

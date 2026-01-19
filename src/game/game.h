@@ -15,6 +15,12 @@ int game_welcome_map(struct map *map);
  */
 int game_focus_map(struct map *map);
 
+/* Does all the bells and whistles.
+ * Returns nonzero if anything collected.
+ * If (itemid==NS_itemid_jigpiece), (quantity) must be the mapid.
+ */
+int game_get_item(int itemid,int quantity);
+
 /* Static metadata per itemid.
  */
 struct item_detail {

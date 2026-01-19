@@ -26,3 +26,4 @@ debugmsg "start"
 door @4,2 map:101 @4,2 0x0000
 treadle @14,3 (u16:fld)root5
 stompbox @14,8 (u16:fld)root6
+sprite @5,8 sprite:jigpiece (u32)0

@@ -1,0 +1,4 @@
+image image:hero
+tile 128 0
+type (u16:sprtype)jigpiece
+groups (b32:sprgrp)visible,solid,grabbable

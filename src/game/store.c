@@ -12,6 +12,12 @@ int store_clear() {
   g.store.clockc=0;
   g.store.jigstorec=0;
   memset(g.store.invstorev,0,sizeof(g.store.invstorev));
+  
+  // Those fld16 that hold initial limits must get populated.
+  store_set_fld16(NS_fld16_hpmax,3);
+  store_set_fld16(NS_fld16_hp,3);
+  store_set_fld16(NS_fld16_goldmax,99);
+  
   g.store.dirty=0;
   return 0;
 }
@@ -148,6 +154,7 @@ static int store_decode_base64(uint8_t *dst,int dsta,const uint8_t *src,int srcc
     int b=store_decode_base64_digit(src[srcp+1]);
     int c=store_decode_base64_digit(src[srcp+2]);
     int d=store_decode_base64_digit(src[srcp+3]);
+    srcp+=4;
     if ((a<0)||(b<0)||(c<0)||(d<0)) return -1;
     if (dstc>dsta-3) {
       dstc+=3;
@@ -260,7 +267,7 @@ int store_load(const char *k,int kc) {
     jigstore->mapid=v>>19;
     jigstore->x=v>>11;
     jigstore->y=v>>3;
-    jigstore->xform=v&3;
+    jigstore->xform=v&7;
   }
   g.store.jigstorec=jigstorec;
   

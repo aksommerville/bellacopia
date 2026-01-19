@@ -1,0 +1,4 @@
+image image:hero
+tile 129 0
+type (u16:sprtype)treasure
+groups (b32:sprgrp)visible,solid,grabbable

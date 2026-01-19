@@ -21,6 +21,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - Mark 2 Parity Checklist
+- [x] Drop sprites when far away, and prevent spawning ones already afield.
 - [ ] Hero
 - - [x] Generic item actuation
 - - [x] Quantized position triggers
@@ -31,8 +32,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Status
 - [ ] Sprites
 - - [ ] Monster
-- - [ ] Jigpiece
-- - [ ] Treasure
+- - [x] Jigpiece
+- - [x] Treasure
 - - [ ] NPC
 - [ ] Items. Don't clear until all the associated stuff is ready too.
 - - [ ] broom
@@ -52,6 +53,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] chopping
 - - [ ] exterminating
 - - [ ] boomerang
+- [ ] Dialogue
+- - [ ] game.c, item messaging
 
 - Bugs, future, ...
 - [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?

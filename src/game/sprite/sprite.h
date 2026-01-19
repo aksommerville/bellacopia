@@ -126,6 +126,11 @@ struct sprites {
 
 void sprites_reset();
 
+/* (arg) can be a default, which could match many sprites.
+ * But ones spawned via CMD_map_sprite or CMD_map_rsprite all have a unique (arg) that we can identify by address.
+ */
+struct sprite *find_sprite_by_arg(const void *arg);
+
 /* Physics.
  *********************************************************************/
  
