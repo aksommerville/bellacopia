@@ -19,3 +19,40 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-19: Fully committed to a rewrite. Expect mark 2 to be at parity with mark 1 before end of January.
 
 ## TODO
+
+- Mark 2 Parity Checklist
+- [ ] Hero
+- - [x] Generic item actuation
+- - [x] Quantized position triggers
+- - [ ] Damage
+- [ ] Pause
+- - [ ] Inventory
+- - [ ] Map
+- - [ ] Status
+- [ ] Sprites
+- - [ ] Monster
+- - [ ] Jigpiece
+- - [ ] Treasure
+- - [ ] NPC
+- [ ] Items. Don't clear until all the associated stuff is ready too.
+- - [ ] broom
+- - [ ] divining
+- - [ ] match
+- - [ ] wand
+- - [ ] fishpole
+- - [ ] bugspray
+- - [ ] potion
+- - [ ] hookshot
+- - [ ] candy
+- - [ ] vanishing
+- - [ ] compass
+- [ ] Battle
+- - [ ] Generic framework
+- - [ ] fishing
+- - [ ] chopping
+- - [ ] exterminating
+- - [ ] boomerang
+
+- Bugs, future, ...
+- [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
+- [ ] Door transitions. Fade to black? Spotlight?

@@ -26,7 +26,6 @@ static void _story_del(struct modal *modal) {
  
 static void story_cb_map_exposure(struct map *map,int focus,void *userdata) {
   struct modal *modal=userdata;
-  fprintf(stderr,"%s %p(%d) focus=%d\n",__func__,map,map?map->rid:0,focus);
   switch (focus) {
     // If we need them: -1 is losing focus, and 0 is going out of view.
     case 1: game_welcome_map(map); break;
@@ -36,7 +35,8 @@ static void story_cb_map_exposure(struct map *map,int focus,void *userdata) {
 
 static void story_cb_cell_exposure(int x,int y,int w,int h,void *userdata) {
   struct modal *modal=userdata;
-  fprintf(stderr,"%s %d,%d,%d,%d\n",__func__,x,y,w,h);
+  //fprintf(stderr,"%s %d,%d,%d,%d\n",__func__,x,y,w,h);
+  //TODO Call out for possible rsprite.
 }
 
 /* Init.
@@ -60,6 +60,7 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
   
   sprites_reset();
   camera_reset();
+  feet_reset();
   
   if ((MODAL->map_listener=camera_listen_map(story_cb_map_exposure,modal))<0) return -1;
   if ((MODAL->cell_listener=camera_listen_cell(story_cb_cell_exposure,modal))<0) return -1;
@@ -91,6 +92,8 @@ static void _story_update(struct modal *modal,double elapsed) {
   }
   sprite_group_kill_all(GRP(deathrow));
   
+  // Other updatey things.
+  feet_update();
   camera_update(elapsed);
 }
 

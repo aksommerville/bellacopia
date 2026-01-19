@@ -83,7 +83,7 @@ struct sprite *sprite_new(
   const struct sprite_type *type,
   const void *cmd,int cmdc
 ) {
-  fprintf(stderr,"%s(%f,%f,rid=%d,argc=%d,type=%s,cmdc=%d)\n",__func__,x,y,rid,argc,type?type->name:"NULL",cmdc);
+  //fprintf(stderr,"%s(%f,%f,rid=%d,argc=%d,type=%s,cmdc=%d)\n",__func__,x,y,rid,argc,type?type->name:"NULL",cmdc);
   if (!arg||!argc) {
     arg=default_sprite_arg;
     argc=4;
@@ -377,6 +377,7 @@ int sprite_group_add(struct sprite_group *group,struct sprite *sprite) {
   
   // Update magic markers.
   if (group==GRP(solid)) sprite->solid=1;
+  else if (group==GRP(floating)) sprite->floating=1;
   
   return 1;
 }
@@ -400,6 +401,7 @@ int sprite_group_remove(struct sprite_group *group,struct sprite *sprite) {
   
   // Update magic markers.
   if (group==GRP(solid)) sprite->solid=0;
+  else if (group==GRP(floating)) sprite->floating=0;
   
   return 1;
 }

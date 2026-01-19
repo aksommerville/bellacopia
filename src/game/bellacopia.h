@@ -15,6 +15,7 @@
 #include "sprite/sprite.h"
 #include "camera.h"
 #include "game.h"
+#include "feet.h"
 
 #define SOUND_BLACKOUT_LIMIT 16
 #define MODAL_LIMIT 8 /* Could do the stack dynamically, but a static stack also serves as a sanity check on its depth. */
@@ -55,6 +56,7 @@ extern struct g {
   struct store store;
   struct sprites sprites;
   struct camera camera;
+  struct feet feet;
 } g;
 
 /* Misc global API.

@@ -25,7 +25,7 @@ struct sprite {
   uint8_t tileid,xform;
   double hbl,hbr,hbt,hbb; // Hitbox relative to (x,y). (l,t) are usually negative.
   uint32_t physics; // Bits, (1<<NS_physics_*), which ones are impassable.
-  int solid; // Hint that we are in the "solid" group. Managed magically by sprite_group.
+  int solid,floating; // Group hints. These are managed magically when adding and removing groups. For things we poll frequently.
   int rid;
   const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
   int cmdc,argc;
@@ -74,6 +74,7 @@ struct sprite_type {
   void (*update)(struct sprite *sprite,double elapsed);
   void (*render)(struct sprite *sprite,int x,int y);
   void (*collide)(struct sprite *sprite,struct sprite *other);
+  void (*tread_poi)(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int argc);
 };
 
 #define _(tag) extern const struct sprite_type sprite_type_##tag;

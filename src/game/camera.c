@@ -124,25 +124,12 @@ static void camera_render_scope(struct scope *scope,int loading) {
     while (cmdlist_reader_next(&cmd,&reader)>0) {
       switch (cmd.opcode) {
         case CMD_map_switchable:
-        case CMD_map_stompbox: {
-            int x=cmd.arg[0],y=cmd.arg[1];
-            if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
-              int p=y*NS_sys_mapw+x;
-              if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
-                scope->map->v[p]=scope->map->rov[p]+1;
-              } else {
-                scope->map->v[p]=scope->map->rov[p];
-              }
-            }
-          } break;
+        case CMD_map_stompbox:
         case CMD_map_treadle: {
             int x=cmd.arg[0],y=cmd.arg[1];
             if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
               int p=y*NS_sys_mapw+x;
-              if (loading) {
-                store_set_fld((cmd.arg[2]<<8)|cmd.arg[3],0);
-                scope->map->v[p]=scope->map->rov[p];
-              } else if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
+              if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
                 scope->map->v[p]=scope->map->rov[p]+1;
               } else {
                 scope->map->v[p]=scope->map->rov[p];
@@ -318,12 +305,67 @@ static void camera_check_exposures(int ox,int oy) {
   }
 }
 
+/* Move to a map on the singleton plane zero.
+ * Replaces (fx,fy,scopev,map).
+ */
+ 
+static void camera_singleton_map(struct map *map) {
+  if (!map) return;
+  g.camera.fx=NS_sys_mapw*(map->lng+0.5);
+  g.camera.fy=NS_sys_maph*(map->lat+0.5);
+  
+  // Drop everything from (scopev).
+  struct scope *scope=g.camera.scopev;
+  int i=CAMERA_SCOPE_LIMIT;
+  for (;i-->0;scope++) {
+    if (!scope->map) continue;
+    if (scope->map==g.camera.map) {
+      g.camera.map=0;
+      camera_broadcast_map(scope->map,-1);
+    }
+    struct map *outgoing=scope->map;
+    scope->map=0;
+    camera_broadcast_map(outgoing,0);
+  }
+  
+  // If we still have a focus, drop it.
+  if (g.camera.map) {
+    struct map *outgoing=g.camera.map;
+    g.camera.map=0;
+    camera_broadcast_map(outgoing,-1);
+  }
+  
+  // Add incoming map to (scopev), then principal.
+  g.camera.z=map->z;
+  g.camera.scopev[0].map=map;
+  camera_broadcast_map(map,1);
+  g.camera.map=map;
+  camera_broadcast_map(map,2);
+  g.camera.mapsdirty=1;
+}
+
 /* Update.
  */
 
 void camera_update(double elapsed) {
 
   //TODO Tick transition.
+  
+  /* If a door transition was scheduled, effect it.
+   * TODO This should be on a timer, with a visual transition.
+   */
+  if (g.camera.door_map) {
+    if (g.camera.door_map->z) {
+      g.camera.fx=g.camera.door_x+0.5;
+      g.camera.fy=g.camera.door_y+0.5;
+      g.camera.z=g.camera.door_map->z;
+    } else {
+      camera_singleton_map(g.camera.door_map);
+    }
+    g.camera.cut=1;
+    g.camera.lock=0;
+    g.camera.door_map=0;
+  }
   
   /* Find the ideal unclamped position.
    * This is generally the hero.
@@ -383,6 +425,8 @@ void camera_update(double elapsed) {
     if (map) {
       rx=map->lng*NS_sys_mapw*NS_sys_tilesize;
       ry=map->lat*NS_sys_maph*NS_sys_tilesize;
+      rx+=((NS_sys_mapw*NS_sys_tilesize)>>1)-(FBW>>1);
+      ry+=((NS_sys_maph*NS_sys_tilesize)>>1)-(FBH>>1);
     } else {
       rx=g.camera.rx;
       ry=g.camera.ry;
@@ -466,13 +510,12 @@ void camera_render() {
  */
 
 void camera_cut(int mapid,int subcol,int subrow) {
-  fprintf(stderr,"%s(%d,%d,%d)\n",__func__,mapid,subcol,subrow);
   struct map *map=map_by_id(mapid);
   if (!map) return;
-  //TODO Schedule transition.
-  g.camera.z=map->z;
+  g.camera.door_map=map;
+  g.camera.door_x=map->lng*NS_sys_mapw+subcol;
+  g.camera.door_y=map->lat*NS_sys_maph+subrow;
   g.camera.cut=1;
   g.camera.lock=0;
-  g.camera.fx=map->lng*NS_sys_mapw+subcol+0.5;
-  g.camera.fy=map->lat*NS_sys_maph+subrow+0.5;
+  //TODO Transition.
 }

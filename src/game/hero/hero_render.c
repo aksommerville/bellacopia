@@ -4,7 +4,8 @@
  */
  
 static void hero_render_errata(struct sprite *sprite,int x,int y) {
-  //TODO Bugspray indicator if warranted.
+  //TODO Bugspray.
+  //TODO Compass.
 }
 
 /* Riding broom, complete replacement.

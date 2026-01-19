@@ -12,6 +12,12 @@ struct sprite_hero {
   int walking;
   double walkanimclock;
   int walkanimframe;
+  
+  // For door transitions.
+  int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.
+  double door_clock; // If this reaches zero, assume the transition failed and abort.
+  double doorx,doory; // Warp me here when the transition takes effect.
+  int ignoreqx,ignoreqy; // My quantized position *in just one map* immediately after a door transition. Ignore any POI that arrive here, until we've moved some.
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

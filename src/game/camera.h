@@ -30,6 +30,9 @@ struct camera {
   int lock; // Private signal that we are locked on the focus and shouldn't pan.
   int mapsdirty; // Rerender all maps at the next render. Required if any cells change (and yes, we have to rerender everything just to replace one cell).
   
+  struct map *door_map;
+  int door_x,door_y;
+  
   //TODO transitions
   //TODO weather
   

@@ -191,6 +191,11 @@ static int store_checksum(const char *src,int srcc) {
 
 /* Load.
  */
+ 
+static int store_load_fail() {
+  fprintf(stderr,"Failed to decode saved game.\n");
+  return store_clear();
+}
 
 int store_load(const char *k,int kc) {
   if (!k) kc=0; else if (kc<0) { kc=0; while (k[kc]) kc++; }
@@ -202,87 +207,79 @@ int store_load(const char *k,int kc) {
     fprintf(stderr,"Reject saved game '%.*s' due to length %d.\n",kc,k,srcc);
     return store_clear();
   }
-  fprintf(stderr,"%s: Got '%.*s', %d bytes.\n",__func__,kc,k,srcc);
   
   // The first 10 encoded bytes are lengths of the subsequent heaps.
   int srcp=0,fldc,fld16c,clockc,jigstorec,invstorec;
-  if ((fldc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_clear(); srcp+=2;
-  if ((fld16c=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_clear(); srcp+=2;
-  if ((clockc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_clear(); srcp+=2;
-  if ((jigstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_clear(); srcp+=2;
-  if ((invstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_clear(); srcp+=2;
-  fprintf(stderr,"%s: TOC reads ok. fldc=%d fld16c=%d clockc=%d jigstorec=%d invstorec=%d\n",__func__,fldc,fld16c,clockc,jigstorec,invstorec);
+  if ((fldc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
+  if ((fld16c=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
+  if ((clockc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
+  if ((jigstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
+  if ((invstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
   
   // 1-bit fields. The length we've read is the decoded length in bytes. Must be a multiple of 3.
-  if (fldc%3) return store_clear();
+  if (fldc%3) return store_load_fail();
   int srcexpect=(fldc*4)/3;
-  if (srcp>srcc-srcexpect) return store_clear();
-  if (store_require_fldv(fldc)<0) return store_clear();
-  if ((g.store.fldc=store_decode_base64(g.store.fldv,g.store.flda,src+srcp,srcexpect))!=fldc) return store_clear();
+  if (srcp>srcc-srcexpect) return store_load_fail();
+  if (store_require_fldv(fldc)<0) return store_load_fail();
+  if ((g.store.fldc=store_decode_base64(g.store.fldv,g.store.flda,src+srcp,srcexpect))!=fldc) return store_load_fail();
   srcp+=srcexpect;
-  fprintf(stderr,"%s: fldv ok, %d bytes decoded\n",__func__,fldc);
   
   // 16-bit fields. Each encodes as three bytes of base64.
   srcexpect=fld16c*3;
-  if (srcp>srcc-srcexpect) return store_clear();
-  if (store_require_fld16v(fld16c)<0) return -store_clear();
+  if (srcp>srcc-srcexpect) return store_load_fail();
+  if (store_require_fld16v(fld16c)<0) return store_load_fail();
   uint16_t *dst16=g.store.fld16v;
   int i=fld16c;
   for (;i-->0;dst16++,srcp+=3) {
     int v=store_decode_18bit(src+srcp,srcc-srcp);
-    if ((v<0)||(v&~0xffff)) return store_clear();
+    if ((v<0)||(v&~0xffff)) return store_load_fail();
     *dst16=v;
   }
   g.store.fld16c=fld16c;
-  fprintf(stderr,"%s: fld16v ok\n",__func__);
   
   // Clocks. Each is 5 bytes encoded, ie 30 bits.
   srcexpect=clockc*5;
-  if (srcp>srcc-srcexpect) return store_clear();
-  if (store_require_clockv(clockc)<0) return store_clear();
+  if (srcp>srcc-srcexpect) return store_load_fail();
+  if (store_require_clockv(clockc)<0) return store_load_fail();
   double *dstd=g.store.clockv;
   for (i=clockc;i-->0;dstd++,srcp+=5) {
     int v=store_decode_30bit(src+srcp,srcc-srcp);
-    if (v<0) return store_clear();
+    if (v<0) return store_load_fail();
     *dstd=(double)v/1000.0;
   }
   g.store.clockc=clockc;
-  fprintf(stderr,"%s: clock ok\n",__func__);
   
   // Jigstore. Five bytes each, packed bitwise.
   srcexpect=jigstorec*5;
-  if (srcp>srcc-srcexpect) return store_clear();
-  if (store_require_jigstorev(jigstorec)<0) return store_clear();
+  if (srcp>srcc-srcexpect) return store_load_fail();
+  if (store_require_jigstorev(jigstorec)<0) return store_load_fail();
   struct jigstore *jigstore=g.store.jigstorev;
   for (i=jigstorec;i-->0;jigstore++,srcp+=5) {
     int v=store_decode_30bit(src+srcp,srcc-srcp);
-    if (v<0) return store_clear();
+    if (v<0) return store_load_fail();
     jigstore->mapid=v>>19;
     jigstore->x=v>>11;
     jigstore->y=v>>3;
     jigstore->xform=v&3;
   }
   g.store.jigstorec=jigstorec;
-  fprintf(stderr,"%s: jigstore ok\n",__func__);
   
   // Invstore. Straight base64.
-  if (invstorec>INVSTORE_SIZE) return store_clear();
+  if (invstorec>INVSTORE_SIZE) return store_load_fail();
   srcexpect=invstorec*4;
-  if (srcp>srcc-srcexpect) return store_clear();
-  if (store_decode_base64((uint8_t*)g.store.invstorev,sizeof(g.store.invstorev),src+srcp,srcexpect)!=invstorec*3) return store_clear();
+  if (srcp>srcc-srcexpect) return store_load_fail();
+  if (store_decode_base64((uint8_t*)g.store.invstorev,sizeof(g.store.invstorev),src+srcp,srcexpect)!=invstorec*3) return store_load_fail();
   memset(g.store.invstorev+invstorec,0,sizeof(struct invstore)*(INVSTORE_SIZE-invstorec));
   srcp+=srcexpect;
-  fprintf(stderr,"%s: invstore ok\n",__func__);
   
   // Checksum.
-  if (srcp!=srcc-5) return store_clear();
+  if (srcp!=srcc-5) return store_load_fail();
   int expect=store_decode_30bit(src+srcp,srcc-srcp);
   int actual=store_checksum((char*)src,srcp);
   srcp+=5;
-  if (expect!=actual) return store_clear();
-  fprintf(stderr,"%s: checksum ok 0x%08x\n",__func__,actual);
+  if (expect!=actual) return store_load_fail();
   
-  fprintf(stderr,"%s: Decoded all ok.\n",__func__);
+  fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
   g.store.dirty=0;
   return 0;
 }
@@ -405,7 +402,7 @@ int store_get_fld(int fld) {
     case NS_fld_alsozero: return 0;
   }
   if (fld<0) return 0;
-  int p=fld>>7;
+  int p=fld>>3;
   if (p>=g.store.fldc) return 0;
   uint8_t mask=1<<(fld&7);
   return (g.store.fldv[p]&mask)?1:0;
