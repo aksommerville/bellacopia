@@ -93,4 +93,6 @@ struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
 };
 
+void modal_pause_click_tabs(struct modal *modal,int x,int y);
+
 #endif

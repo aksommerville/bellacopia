@@ -281,9 +281,10 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
 /* New.
  */
  
-struct vellum *vellum_new_inventory() {
+struct vellum *vellum_new_inventory(struct modal *parent) {
   struct vellum *vellum=calloc(1,sizeof(struct vellum_inventory));
   if (!vellum) return 0;
+  vellum->parent=parent;
   vellum->lblstrix=13;
   vellum->del=_inventory_del;
   vellum->focus=_inventory_focus;

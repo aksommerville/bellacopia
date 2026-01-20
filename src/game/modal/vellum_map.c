@@ -81,7 +81,7 @@ static int map_check_outer_click(struct vellum *vellum) {
       }
     }
   } else { // In the tabs.
-    fprintf(stderr,"TABS @%d,%d\n",x,y);//TODO tell my boss
+    modal_pause_click_tabs(vellum->parent,x,y);
   }
   return 1;
 }
@@ -172,9 +172,10 @@ static void _map_render(struct vellum *vellum,int x,int y,int w,int h) {
 /* New.
  */
  
-struct vellum *vellum_new_map() {
+struct vellum *vellum_new_map(struct modal *parent) {
   struct vellum *vellum=calloc(1,sizeof(struct vellum_map));
   if (!vellum) return 0;
+  vellum->parent=parent;
   vellum->lblstrix=14;
   vellum->del=_map_del;
   vellum->focus=_map_focus;

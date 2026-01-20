@@ -47,9 +47,10 @@ static void _stats_render(struct vellum *vellum,int x,int y,int w,int h) {
 /* New.
  */
  
-struct vellum *vellum_new_stats() {
+struct vellum *vellum_new_stats(struct modal *parent) {
   struct vellum *vellum=calloc(1,sizeof(struct vellum_stats));
   if (!vellum) return 0;
+  vellum->parent=parent;
   vellum->lblstrix=15;
   vellum->del=_stats_del;
   vellum->focus=_stats_focus;

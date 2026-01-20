@@ -6,9 +6,10 @@
 #define VELLUM_H
 
 struct vellum {
+  struct modal *parent; // WEAK; always modal_pause.
 
   // modal_pause preps these. We clean them up.
-  int lblstrix,lbltexid,lblw,lblh;
+  int lblstrix,lbltexid,lblw,lblh,lblx,clickw;
 
   /* Clean up any controller-specific content.
    * Do not free (vellum) itself, or any of the generic content in (struct vellum).
@@ -39,9 +40,9 @@ struct vellum {
 
 void vellum_del(struct vellum *vellum);
 
-struct vellum *vellum_new_inventory();
-struct vellum *vellum_new_map();
-struct vellum *vellum_new_stats();
-struct vellum *vellum_new_system();
+struct vellum *vellum_new_inventory(struct modal *parent);
+struct vellum *vellum_new_map(struct modal *parent);
+struct vellum *vellum_new_stats(struct modal *parent);
+struct vellum *vellum_new_system(struct modal *parent);
 
 #endif

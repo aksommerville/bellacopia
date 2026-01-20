@@ -21,6 +21,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - Mark 2 Parity Checklist
+- [ ] Sometimes I step on the treadle and it toggles back and forth a few times.
 - [x] Drop sprites when far away, and prevent spawning ones already afield.
 - [ ] Hero
 - - [x] Generic item actuation

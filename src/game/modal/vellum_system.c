@@ -47,9 +47,10 @@ static void _system_render(struct vellum *vellum,int x,int y,int w,int h) {
 /* New.
  */
  
-struct vellum *vellum_new_system() {
+struct vellum *vellum_new_system(struct modal *parent) {
   struct vellum *vellum=calloc(1,sizeof(struct vellum_system));
   if (!vellum) return 0;
+  vellum->parent=parent;
   vellum->lblstrix=16;
   vellum->del=_system_del;
   vellum->focus=_system_focus;

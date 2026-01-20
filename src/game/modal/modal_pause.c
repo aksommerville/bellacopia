@@ -89,7 +89,7 @@ static void pause_draw_label(struct modal *modal,struct vellum *vellum) {
 /* Add vellum.
  */
  
-static struct vellum *pause_add_vellum(struct modal *modal,struct vellum *(*ctor)()) {
+static struct vellum *pause_add_vellum(struct modal *modal,struct vellum *(*ctor)(struct modal *parent)) {
   if (MODAL->vellumc>=MODAL->velluma) {
     int na=MODAL->velluma+4;
     if (na>INT_MAX/sizeof(void*)) return 0;
@@ -98,7 +98,7 @@ static struct vellum *pause_add_vellum(struct modal *modal,struct vellum *(*ctor
     MODAL->vellumv=nv;
     MODAL->velluma=na;
   }
-  struct vellum *vellum=ctor();
+  struct vellum *vellum=ctor(modal);
   if (!vellum) return 0;
   MODAL->vellumv[MODAL->vellumc++]=vellum;
   pause_draw_label(modal,vellum);
@@ -240,6 +240,8 @@ static void _pause_render(struct modal *modal) {
     int tabcolc=(vellum->lblw+8+NS_sys_tilesize-1)/NS_sys_tilesize;
     if (tabcolc<2) tabcolc=2;
     int tx=tabx+(NS_sys_tilesize>>1);
+    vellum->lblx=tabx;
+    vellum->clickw=tabcolc*NS_sys_tilesize;
     graf_set_image(&g.graf,RID_image_pause);
     graf_tile(&g.graf,tx,taby,tabtileid,0);
     int ti=1; tx+=NS_sys_tilesize;
@@ -273,3 +275,24 @@ const struct modal_type modal_type_pause={
   .update=_pause_update,
   .render=_pause_render,
 };
+
+/* Mouse click, from child.
+ */
+
+void modal_pause_click_tabs(struct modal *modal,int x,int y) {
+  if (!modal||(modal->type!=&modal_type_pause)) return;
+  struct vellum **vellum=MODAL->vellumv;
+  int i=0,np=-1;
+  for (;i<MODAL->vellumc;i++,vellum++) {
+    if (x<(*vellum)->lblx) continue;
+    if (x>=(*vellum)->lblx+(*vellum)->clickw) continue;
+    np=i;
+    break;
+  }
+  if ((np<0)||(np>=MODAL->vellumc)) return;
+  if (np==vellump) return;
+  bm_sound(RID_sound_uipage);
+  pause_focus_vellum(modal,0);
+  vellump=np;
+  pause_focus_vellum(modal,1);
+}
