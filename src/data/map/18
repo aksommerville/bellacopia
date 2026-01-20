@@ -13,3 +13,4 @@
 
 image image:meadow
 position 3 0 1 *
+sprite @9,6 sprite:jigpiece (u32)0

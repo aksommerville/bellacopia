@@ -27,10 +27,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Generic item actuation
 - - [x] Quantized position triggers
 - - [ ] Damage
-- [ ] Pause
+- [x] Pause
 - - [x] Inventory
 - - [x] Map
-- - [ ] Status
+- - xxx Status and System -- Put these off a while, until we have a better sense what belongs there.
 - [ ] Sprites
 - - [x] Monster
 - - [x] Jigpiece
@@ -60,3 +60,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Bugs, future, ...
 - [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
 - [ ] Door transitions. Fade to black? Spotlight?
+- [ ] Stats vellum.
+- [ ] System vellum.
