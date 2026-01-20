@@ -199,7 +199,9 @@ static int feet_tmpv_insert(int p,int x,int y,struct sprite *sprite) {
     g.feet.tmpv=nv;
     g.feet.tmpa=na;
   }
-  struct foot *foot=g.feet.tmpv+g.feet.tmpc++;
+  struct foot *foot=g.feet.tmpv+p;
+  memmove(foot+1,foot,sizeof(struct foot)*(g.feet.tmpc-p));
+  g.feet.tmpc++;
   foot->x=x;
   foot->y=y;
   foot->sprite=sprite;
