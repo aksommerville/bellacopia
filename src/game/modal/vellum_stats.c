@@ -17,11 +17,6 @@ static void _stats_del(struct vellum *vellum) {
  */
  
 static void _stats_focus(struct vellum *vellum,int focus) {
-  switch (focus) {
-    case VELLUM_FOCUS_BEFORE: break;
-    case VELLUM_FOCUS_READY: break;
-    case VELLUM_FOCUS_END: break;
-  }
 }
 
 /* Update animation only.

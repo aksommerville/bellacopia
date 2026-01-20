@@ -18,6 +18,7 @@ struct map {
   const uint8_t *rov; // Points into resource. NS_sys_mapw*NS_sys_maph.
   uint8_t v[NS_sys_mapw*NS_sys_maph]; // Real cells. If they differ from (rov), the difference is auditable somehow, eg CMD_map_switchable.
   const uint8_t *physics; // Owned by res store.
+  const uint8_t *jigctab; // ''
   int imageid,songid;
   int parent; // Zero or map rid.
   uint8_t dark,wind;

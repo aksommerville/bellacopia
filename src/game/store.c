@@ -486,12 +486,78 @@ int store_set_fld16(int fld,int value) {
   return 1;
 }
 
+/* Choose position and xform for new jigstore.
+ * It's random but controlled in complicated ways.
+ */
+
 static void store_choose_jigstore_position(struct jigstore *jigstore) {
-  //TODO Examine the rest of the store and find a spot with some breathing room, if possible.
-  jigstore->x=rand()%256;
-  jigstore->y=rand()%144;
-  jigstore->xform=rand()&7;
+  
+  /* (xform) may only be those of even chirality, zero or two bits set.
+   * ie those you can rotate to from natural.
+   */
+  switch (rand()&3) {
+    case 0: jigstore->xform=0; break;
+    case 1: jigstore->xform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
+    case 2: jigstore->xform=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
+    case 3: jigstore->xform=EGG_XFORM_XREV|EGG_XFORM_SWAP; break;
+  }
+  
+  /* If we have to bail out, eg for the first piece of a puzzle, it goes in the middle.
+   */
+  jigstore->x=JIGSAW_FLDW>>1;
+  jigstore->y=JIGSAW_FLDH>>1;
+  
+  /* Get the map in question, so we can compare (z).
+   */
+  const struct map *map=map_by_id(jigstore->mapid);
+  if (!map) return;
+  
+  /* Collect all jigstores on this plane.
+   * We only store mapid per jigpiece, so there's a lot of looking-up.
+   * Best to front load that effort.
+   * No others is perfectly possible, eg the first jigpiece you pick up. In that case, we're already ready.
+   */
+  const struct jigstore *otherv[100]; // Largest plane is 10x10, we'll keep it that way.
+  int otherc=0;
+  const struct jigstore *q=g.store.jigstorev;
+  int i=g.store.jigstorec;
+  for (;i-->0;q++) {
+    const struct map *qmap=map_by_id(q->mapid);
+    if (!qmap) continue;
+    if (qmap->z!=map->z) continue;
+    otherv[otherc++]=q;
+    if (otherc>=100) break;
+  }
+  if (!otherc) return;
+  
+  /* Take a few random guesses at position, and keep whichever yields the most breathing room.
+   * I'm not crazy about this algorithm. It tends to favor the edges.
+   */
+  int repc=20;
+  double bestscore=999999.999;
+  while (repc-->0) {
+    int x=rand()%JIGSAW_FLDW;
+    int y=rand()%JIGSAW_FLDH;
+    double score=0.0;
+    const struct jigstore **otherp=otherv;
+    int i=otherc;
+    for (;i-->0;otherp++) {
+      const struct jigstore *other=*otherp;
+      int dx=other->x-x;
+      int dy=other->y-y;
+      if (!dx&&!dy) score+=1.0;
+      else score+=1.0/(double)(dx*dx+dy*dy);
+    }
+    if (score<bestscore) {
+      bestscore=score;
+      jigstore->x=x;
+      jigstore->y=y;
+    }
+  }
 }
+
+/* Add jigstore.
+ */
 
 struct jigstore *store_add_jigstore(int mapid) {
   if (mapid&~0x07ff) return 0;
@@ -508,6 +574,9 @@ struct jigstore *store_add_jigstore(int mapid) {
   g.store.dirty=1;
   return jigstore;
 }
+
+/* Add item.
+ */
 
 struct invstore *store_add_itemid(int itemid,int quantity) {
   if (itemid&~0xff) return 0;

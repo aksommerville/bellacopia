@@ -28,7 +28,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Damage
 - [ ] Pause
 - - [x] Inventory
-- - [ ] Map
+- - [x] Map
 - - [ ] Status
 - [ ] Sprites
 - - [x] Monster

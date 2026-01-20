@@ -102,11 +102,6 @@ static void inventory_rebuild_labels(struct vellum *vellum) {
  */
  
 static void _inventory_focus(struct vellum *vellum,int focus) {
-  switch (focus) {
-    case VELLUM_FOCUS_BEFORE: break;
-    case VELLUM_FOCUS_READY: break;
-    case VELLUM_FOCUS_END: break;
-  }
 }
 
 /* Update animation only.

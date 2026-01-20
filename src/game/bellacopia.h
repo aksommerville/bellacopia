@@ -20,6 +20,12 @@
 #define SOUND_BLACKOUT_LIMIT 16
 #define MODAL_LIMIT 8 /* Could do the stack dynamically, but a static stack also serves as a sanity check on its depth. */
 
+/* Can't be more than 256, or the inner vellum size at modal_pause.c:_pause_render(). (288x153)
+ * The largest assembled puzzle is 10x10 screens, so 200x120 pixels.
+ */
+#define JIGSAW_FLDW 236
+#define JIGSAW_FLDH 153
+
 /* Globals.
  ****************************************************************/
 

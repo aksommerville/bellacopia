@@ -5,11 +5,6 @@
 #ifndef VELLUM_H
 #define VELLUM_H
 
-//#define VELLUM_FOCUS_GONE   0 /* Transition complete, you are no longer in view. */ XXX This is harder than it sounds, for pause to know.
-#define VELLUM_FOCUS_BEFORE 1 /* You are about to slide in. */
-#define VELLUM_FOCUS_READY  2 /* You are stable in focus. */
-#define VELLUM_FOCUS_END    3 /* About to lose focus. */
-
 struct vellum {
 
   // modal_pause preps these. We clean them up.

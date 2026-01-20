@@ -82,6 +82,7 @@ static int map_decode(struct map *dst,const void *src,int srcc) {
   }
   
   dst->physics=tilesheet_get_physics(dst->imageid);
+  dst->jigctab=tilesheet_get_jigctab(dst->imageid);
   
   return 0;
 }
@@ -149,6 +150,7 @@ int mapstore_link() {
         map->z=plane->z;
         if (!map->rov) map->rov=map_default_cells;
         if (!map->physics) map->physics=tilesheet_get_physics(map->imageid);
+        if (!map->jigctab) map->jigctab=tilesheet_get_jigctab(map->imageid);
       }
     }
   }

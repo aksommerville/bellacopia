@@ -17,13 +17,17 @@ struct modal_pause {
   struct modal hdr;
   struct vellum **vellumv;
   int vellumc,velluma;
-  int vellump;
   double rise; // 0..1, 1 when we're at the proper elevation.
   double drise; // -1,1 during hello and goodbye animation
   int bgtexid,bgw,bgh; // Image of the full vellum sheet.
 };
 
 #define MODAL ((struct modal_pause*)modal)
+
+/* Store the position statically so it persists across pauses.
+ * It won't persist across launches of course, and I don't think there's any need to.
+ */
+static int vellump=0;
 
 /* Cleanup.
  */
@@ -105,8 +109,8 @@ static struct vellum *pause_add_vellum(struct modal *modal,struct vellum *(*ctor
  */
  
 static void pause_focus_vellum(struct modal *modal,int focus) {
-  if ((MODAL->vellump<0)||(MODAL->vellump>=MODAL->vellumc)) return;
-  struct vellum *vellum=MODAL->vellumv[MODAL->vellump];
+  if ((vellump<0)||(vellump>=MODAL->vellumc)) return;
+  struct vellum *vellum=MODAL->vellumv[vellump];
   if (vellum->focus) vellum->focus(vellum,focus);
 }
 
@@ -125,7 +129,7 @@ static int _pause_init(struct modal *modal,const void *arg,int argc) {
   if (!pause_add_vellum(modal,vellum_new_stats)) return -1;
   if (!pause_add_vellum(modal,vellum_new_system)) return -1;
   
-  pause_focus_vellum(modal,VELLUM_FOCUS_BEFORE);
+  pause_focus_vellum(modal,1);
   
   return 0;
 }
@@ -156,11 +160,11 @@ static void _pause_notify(struct modal *modal,int k,int v) {
  
 static void pause_change_page(struct modal *modal,int d) {
   if (MODAL->vellumc<2) return;
-  pause_focus_vellum(modal,VELLUM_FOCUS_END);
-  MODAL->vellump+=d;
-  if (MODAL->vellump<0) MODAL->vellump=MODAL->vellumc-1;
-  else if (MODAL->vellump>=MODAL->vellumc) MODAL->vellump=0;
-  pause_focus_vellum(modal,VELLUM_FOCUS_BEFORE);
+  pause_focus_vellum(modal,0);
+  vellump+=d;
+  if (vellump<0) vellump=MODAL->vellumc-1;
+  else if (vellump>=MODAL->vellumc) vellump=0;
+  pause_focus_vellum(modal,1);
   bm_sound(RID_sound_uipage);
 }
 
@@ -179,30 +183,30 @@ static void _pause_update(struct modal *modal,double elapsed) {
     if ((MODAL->rise+=RISE_UP_SPEED*elapsed)>=1.0) {
       MODAL->drise=0.0;
       MODAL->rise=1.0;
-      pause_focus_vellum(modal,VELLUM_FOCUS_READY);
     }
   }
 
   // AUX1 to exit.
-  if ((g.input[0]&EGG_BTN_AUX1)&&!(g.pvinput[0]&EGG_BTN_AUX1)) {
+  // Important to use input[1] and not input[0], since we might be in mouse mode.
+  if ((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1)) {
     if (MODAL->drise>=0.0) {
       MODAL->drise=-1.0;
-      pause_focus_vellum(modal,VELLUM_FOCUS_END);
+      pause_focus_vellum(modal,0);
       bm_sound(RID_sound_uicancel);
     }
   }
   
   // L1 and R1 to change pages. What the heck, let's allow L2 and R2 as well.
-  if ((g.input[0]&EGG_BTN_L1)&&!(g.pvinput[0]&EGG_BTN_L1)) pause_change_page(modal,-1);
-  if ((g.input[0]&EGG_BTN_R1)&&!(g.pvinput[0]&EGG_BTN_R1)) pause_change_page(modal,1);
-  if ((g.input[0]&EGG_BTN_L2)&&!(g.pvinput[0]&EGG_BTN_L2)) pause_change_page(modal,-1);
-  if ((g.input[0]&EGG_BTN_R2)&&!(g.pvinput[0]&EGG_BTN_R2)) pause_change_page(modal,1);
+  if ((g.input[1]&EGG_BTN_L1)&&!(g.pvinput[1]&EGG_BTN_L1)) pause_change_page(modal,-1);
+  if ((g.input[1]&EGG_BTN_R1)&&!(g.pvinput[1]&EGG_BTN_R1)) pause_change_page(modal,1);
+  if ((g.input[1]&EGG_BTN_L2)&&!(g.pvinput[1]&EGG_BTN_L2)) pause_change_page(modal,-1);
+  if ((g.input[1]&EGG_BTN_R2)&&!(g.pvinput[1]&EGG_BTN_R2)) pause_change_page(modal,1);
   
   // Update vella.
   int i=MODAL->vellumc;
   while (i-->0) {
     struct vellum *vellum=MODAL->vellumv[i];
-    if (i==MODAL->vellump) {
+    if (i==vellump) {
       if (vellum->update) vellum->update(vellum,elapsed);
     } else {
       if (vellum->updatebg) vellum->updatebg(vellum,elapsed);
@@ -232,7 +236,7 @@ static void _pause_render(struct modal *modal) {
   for (;i<MODAL->vellumc;i++,p++) {
     struct vellum *vellum=*p;
     uint8_t tabtileid=0x06;
-    if (i==MODAL->vellump) tabtileid=0x03;
+    if (i==vellump) tabtileid=0x03;
     int tabcolc=(vellum->lblw+8+NS_sys_tilesize-1)/NS_sys_tilesize;
     if (tabcolc<2) tabcolc=2;
     int tx=tabx+(NS_sys_tilesize>>1);
@@ -244,12 +248,12 @@ static void _pause_render(struct modal *modal) {
     }
     graf_tile(&g.graf,tx,taby,tabtileid+2,0);
     graf_set_input(&g.graf,vellum->lbltexid);
-    graf_decal(&g.graf,tabx+4,taby-((i==MODAL->vellump)?3:5),0,0,vellum->lblw,vellum->lblh);
+    graf_decal(&g.graf,tabx+4,taby-((i==vellump)?3:5),0,0,vellum->lblw,vellum->lblh);
     tabx+=tabcolc*NS_sys_tilesize;
   }
   
-  if ((MODAL->vellump>=0)&&(MODAL->vellump<MODAL->vellumc)) {
-    struct vellum *vellum=MODAL->vellumv[MODAL->vellump];
+  if ((vellump>=0)&&(vellump<MODAL->vellumc)) {
+    struct vellum *vellum=MODAL->vellumv[vellump];
     int innerw=288;
     int innerh=153;
     if (vellum->render) vellum->render(vellum,bgx+8,bgy+17,innerw,innerh);

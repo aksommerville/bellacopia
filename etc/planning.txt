@@ -98,6 +98,7 @@ We'll group minigames by Zone.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
 - xxx Circumnavigate the globe. Since it's possible, there ought to be some fanfare the first time you do it.
 - - 2026-01-19: That's not possible anymore.
+- [ ] Inventory Judge. First he tells you to come back with 25 items in the backpack. Then he tells you to put them in alphabetical order.
 
 ## Main Quests
 
