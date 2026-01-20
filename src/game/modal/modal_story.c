@@ -82,6 +82,12 @@ static void _story_focus(struct modal *modal,int focus) {
  */
  
 static void _story_update(struct modal *modal,double elapsed) {
+
+  // AUX1 to pause.
+  if ((g.input[0]&EGG_BTN_AUX1)&&!(g.pvinput[0]&EGG_BTN_AUX1)) {
+    modal_spawn(&modal_type_pause,0,0);
+    return;
+  }
   
   // Update sprites, then kill those that have run out of funk.
   int i=GRP(update)->sprc;

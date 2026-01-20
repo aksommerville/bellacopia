@@ -27,7 +27,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Quantized position triggers
 - - [ ] Damage
 - [ ] Pause
-- - [ ] Inventory
+- - [x] Inventory
 - - [ ] Map
 - - [ ] Status
 - [ ] Sprites
