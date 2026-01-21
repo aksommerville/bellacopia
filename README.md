@@ -31,11 +31,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Inventory
 - - [x] Map
 - - xxx Status and System -- Put these off a while, until we have a better sense what belongs there.
-- [ ] Sprites
+- [x] Sprites
 - - [x] Monster
 - - [x] Jigpiece
 - - [x] Treasure
-- - [ ] NPC
+- - [x] NPC
+- [ ] NPC activities
+- - [x] General dialogue
+- - [x] Shop
+- - [ ] Blood Bank
+- - [ ] Brewer
+- - [ ] Fishwife
 - [ ] Items. Don't clear until all the associated stuff is ready too.
 - - [ ] broom
 - - [ ] divining
@@ -62,3 +68,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Stats vellum.
 - [ ] System vellum.
+- [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)

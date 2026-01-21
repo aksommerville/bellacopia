@@ -35,4 +35,13 @@ struct item_detail {
 const struct item_detail *item_detail_for_itemid(int itemid);
 const struct item_detail *item_detail_for_equipped();
 
+/* Handles all the odd things. Singleton items, non-inventory items, all of it.
+ * Also optionally returns the limit, since we're already in there.
+ */
+int possessed_quantity_for_itemid(int itemid,int *limit);
+
+/* (initiator) is optional. Typically an npc.
+ */
+void game_begin_activity(int activity,int arg,struct sprite *initiator);
+
 #endif

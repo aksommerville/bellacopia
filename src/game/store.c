@@ -600,7 +600,9 @@ struct invstore *store_add_itemid(int itemid,int quantity) {
   blank->itemid=itemid;
   if (quantity) {
     blank->quantity=quantity;
-    blank->limit=quantity;//TODO initial limit per itemid
+    const struct item_detail *detail=item_detail_for_itemid(itemid);
+    if (detail&&(detail->initial_limit>0)) blank->limit=detail->initial_limit;
+    else blank->limit=quantity;
   }
   g.store.dirty=1;
   return blank;

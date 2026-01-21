@@ -137,7 +137,7 @@
 #define NS_sprtype_monster      2 /* (u32)0 */
 #define NS_sprtype_treasure     3 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
 #define NS_sprtype_stick        4 /* (u32)0 */
-#define NS_sprtype_npc          5 /* (u16:activity)0 (u16)0 */
+#define NS_sprtype_npc          5 /* (u16:activity)0 (u16:activity_arg)0 */
 #define NS_sprtype_jigpiece     6 /* (u32)0 */
 #define NS_sprtype_candy        7 /* (u32)0 */
 #define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */

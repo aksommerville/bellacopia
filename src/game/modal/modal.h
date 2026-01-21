@@ -88,11 +88,46 @@ extern const struct modal_type modal_type_arcade; // Entire session of Arcade Mo
 extern const struct modal_type modal_type_battle; // Story or Arcade Mode.
 extern const struct modal_type modal_type_pause; // Story Mode.
 extern const struct modal_type modal_type_dialogue; // Any mode.
+extern const struct modal_type modal_type_shop; // Story Mode. Basically dialogue, with shopping-specific extras.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
 };
 
+struct modal_args_dialogue {
+  const char *text;
+  int textc;
+  int rid,strix; // Only used if (text) null.
+  const struct text_insertion *insv;
+  int insc;
+  struct sprite *speaker;
+  int speakerx,speakery; // Framebuffer pixels; only used if (speaker) null.
+  int (*cb)(int optionid,void *userdata); // Return >0 to acknowledge, suppresses sound effects. We dismiss either way. (optionid) zero if cancelled.
+  void *userdata;
+};
+
+struct modal_args_shop {
+  const char *text;
+  int textc;
+  int rid,strix; // Only used if (text) null.
+  const struct text_insertion *insv;
+  int insc;
+  struct sprite *speaker;
+  int speakerx,speakery; // Framebuffer pixels; only used if (speaker) null.
+  int (*cb)(int itemid,int quantity,void *userdata); // Return >0 to acknowledge, suppresses ordinary purchasing reaction. (itemid) zero if cancelled.
+  int (*cb_validated)(int itemid,int quantity,int price,void *userdata); // Do the quantity and price validation, and call just before committing. Nonzero to abort purchase. Quantity and price are the real final values.
+  void *userdata;
+};
+
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
+
+int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
+
+/* Fails on invalid itemid.
+ * (quantity) zero to permit any quantity, in which case (price) is per-unit.
+ * With a nonzero (quantity), you can only buy that quantity, and (price) is for the set.
+ * eg the carpenter makes a fixed quantity of matches, or if you're selling heart containers, obviously you're selling just one.
+ */
+int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity);
 
 #endif

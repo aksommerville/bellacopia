@@ -316,7 +316,7 @@ static const struct item_detail item_detailv[]={
     .fld16=0,
   },
   [NS_itemid_gold]={
-    .tileid=0,
+    .tileid=0x29,
     .hand_tileid=0,
     .strix_name=27,
     .strix_help=0,
@@ -325,7 +325,7 @@ static const struct item_detail item_detailv[]={
     .fld16=NS_fld16_gold,
   },
   [NS_itemid_greenfish]={
-    .tileid=0,
+    .tileid=0x2a,
     .hand_tileid=0,
     .strix_name=28,
     .strix_help=0,
@@ -334,7 +334,7 @@ static const struct item_detail item_detailv[]={
     .fld16=NS_fld16_greenfish,
   },
   [NS_itemid_bluefish]={
-    .tileid=0,
+    .tileid=0x2b,
     .hand_tileid=0,
     .strix_name=29,
     .strix_help=0,
@@ -343,7 +343,7 @@ static const struct item_detail item_detailv[]={
     .fld16=NS_fld16_bluefish,
   },
   [NS_itemid_redfish]={
-    .tileid=0,
+    .tileid=0x2c,
     .hand_tileid=0,
     .strix_name=30,
     .strix_help=0,
@@ -352,7 +352,7 @@ static const struct item_detail item_detailv[]={
     .fld16=NS_fld16_redfish,
   },
   [NS_itemid_heart]={
-    .tileid=0,
+    .tileid=0x28,
     .hand_tileid=0,
     .strix_name=31,
     .strix_help=0,
@@ -361,7 +361,7 @@ static const struct item_detail item_detailv[]={
     .fld16=NS_fld16_hp,
   },
   [NS_itemid_jigpiece]={
-    .tileid=0,
+    .tileid=0x2e,
     .hand_tileid=0,
     .strix_name=32,
     .strix_help=33,
@@ -389,4 +389,48 @@ const struct item_detail *item_detail_for_itemid(int itemid) {
 
 const struct item_detail *item_detail_for_equipped() {
   return item_detail_for_itemid(g.store.invstorev[0].itemid);
+}
+
+/* Quantity in store of item or item-like thing.
+ */
+
+int possessed_quantity_for_itemid(int itemid,int *limit) {
+  if (limit) *limit=0;
+  
+  // Jigpiece is a little special.
+  if (itemid==NS_itemid_jigpiece) {
+    if (limit) *limit=INT_MAX;//TODO Can we get a correct count of possible jigpieces? It's complicated.
+    return g.store.jigstorec;
+  }
+  
+  // Everything else should be generic.
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail) return 0;
+  
+  // The easy usual case, use inventory.
+  if (detail->inventoriable) {
+    const struct invstore *invstore=store_get_itemid(itemid);
+    if (!invstore) {
+      if (limit) *limit=detail->initial_limit?detail->initial_limit:1;
+      return 0;
+    }
+    if (invstore->limit) {
+      if (limit) *limit=invstore->limit;
+      return invstore->quantity;
+    }
+    if (limit) *limit=1;
+    return 1; // Singleton in inventory, quantity is one.
+  }
+  
+  // If (fld16) is set, that's the quantity.
+  if (detail->fld16) {
+    if (limit) {
+      if (detail->initial_limit<0) *limit=store_get_fld16(-detail->initial_limit);
+      else *limit=0xffff;
+    }
+    return store_get_fld16(detail->fld16);
+  }
+  
+  // There will probably be plain (fld) items in the future. Maybe? Well there aren't yet.
+  return 0;
 }

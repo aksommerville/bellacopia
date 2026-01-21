@@ -116,3 +116,11 @@ const struct sprite_type sprite_type_hero={
   .collide=_hero_collide,
   .tread_poi=_hero_tread_poi,
 };
+
+/* Drop animation. Presumably we're about to enter a freeze-frame.
+ */
+
+void sprite_hero_unanimate(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  SPRITE->walkanimframe=0;
+}

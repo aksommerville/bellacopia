@@ -1,21 +1,22 @@
 #include "game/bellacopia.h"
 
+#define COOLDOWN 0.500
+
 struct sprite_npc {
   struct sprite hdr;
+  int activity;
+  int activity_arg;
+  double cooldown;
 };
 
 #define SPRITE ((struct sprite_npc*)sprite)
-
-/* Cleanup.
- */
- 
-static void _npc_del(struct sprite *sprite) {
-}
 
 /* Init.
  */
  
 static int _npc_init(struct sprite *sprite) {
+  SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
+  SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
   return 0;
 }
 
@@ -23,20 +24,21 @@ static int _npc_init(struct sprite *sprite) {
  */
  
 static void _npc_update(struct sprite *sprite,double elapsed) {
-}
-
-/* Render.
- */
- 
-static void _npc_render(struct sprite *sprite,int x,int y) {
-  graf_set_image(&g.graf,sprite->imageid);
-  graf_tile(&g.graf,x,y,sprite->tileid,sprite->xform);
+  if (SPRITE->cooldown>0.0) {
+    SPRITE->cooldown-=elapsed;
+  }
 }
 
 /* Collide.
  */
  
 static void _npc_collide(struct sprite *sprite,struct sprite *other) {
+  if (SPRITE->cooldown>0.0) return;
+  if (other->type==&sprite_type_hero) {
+    game_begin_activity(SPRITE->activity,SPRITE->activity_arg,sprite);
+    SPRITE->cooldown=COOLDOWN;
+    sprite_hero_unanimate(other);
+  }
 }
 
 /* Type definition.
@@ -45,9 +47,7 @@ static void _npc_collide(struct sprite *sprite,struct sprite *other) {
 const struct sprite_type sprite_type_npc={
   .name="npc",
   .objlen=sizeof(struct sprite_npc),
-  .del=_npc_del,
   .init=_npc_init,
   .update=_npc_update,
-  .render=_npc_render,
   .collide=_npc_collide,
 };
