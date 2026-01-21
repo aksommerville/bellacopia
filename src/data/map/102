@@ -16,3 +16,4 @@ door @4,5 map:6 @4,5 0x0000
 position 0 0 2 0
 debugmsg "Tunnel"
 sprite @10,4 sprite:jigpiece (u32)0
+song song:bone_soup

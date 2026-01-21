@@ -101,6 +101,7 @@
 #define NS_itemid_redfish 17
 #define NS_itemid_heart 18
 #define NS_itemid_jigpiece 19
+#define NS_itemid_bell 20
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -120,7 +121,8 @@
   _(bluefish) \
   _(redfish) \
   _(heart) \
-  _(jigpiece)
+  _(jigpiece) \
+  _(bell)
 
 /* NPC activities are hard-coded. Select one from this list.
  */

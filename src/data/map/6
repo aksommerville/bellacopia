@@ -15,3 +15,4 @@ image image:meadow
 position 6 7 1 *
 sprite @10,6 sprite:jigpiece (u32)0
 door @4,5 map:102 @4,5 0x0000
+song song:barrel_of_salt

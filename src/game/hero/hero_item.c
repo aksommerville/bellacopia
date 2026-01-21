@@ -129,6 +129,16 @@ static int vanishing_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Bell.
+ */
+ 
+static int bell_begin(struct sprite *sprite) {
+  bm_sound(RID_sound_bell);
+  //TODO Visual feedback.
+  //TODO Some kind of global alert. Monsters should notice, maybe other things happen.
+  return 1;
+}
+
 /* Update items, main entry point.
  */
  
@@ -167,6 +177,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_hookshot: result=hookshot_begin(sprite); break;
       case NS_itemid_candy: result=candy_begin(sprite); break;
       case NS_itemid_vanishing: result=vanishing_begin(sprite); break;
+      case NS_itemid_bell: result=bell_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

@@ -369,6 +369,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0,
   },
+  [NS_itemid_bell]={
+    .tileid=0x3d,
+    .hand_tileid=0x7d,
+    .strix_name=34,
+    .strix_help=35,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {
