@@ -49,7 +49,51 @@ static void hero_render_broom(struct sprite *sprite,int x,int y) {
  */
  
 static void hero_render_wand(struct sprite *sprite,int x,int y) {
-  //TODO
+
+  // Dot with the wand, possibly an extension wand tile.
+  uint8_t tileid=0x40;
+  uint8_t wtileid=0;
+  int wdx=0,wdy=0;
+  switch (SPRITE->wanddir) {
+    case 'U': tileid+=3; wtileid=tileid+0x10; wdy=-NS_sys_tilesize; break;
+    case 'L': tileid+=1; wtileid=tileid+0x10; wdx=-NS_sys_tilesize; break;
+    case 'R': tileid+=2; wtileid=tileid+0x10; wdx=NS_sys_tilesize; break;
+    case 'D': tileid+=4; wtileid=tileid+0x10; wdy=NS_sys_tilesize; break;
+  }
+  graf_tile(&g.graf,x,y,tileid,0);
+  if (wtileid) graf_tile(&g.graf,x+wdx,y+wdy,wtileid,0);
+  
+  // Scroll showing the input so far.
+  int dsty=y-NS_sys_tilesize;
+  // 0x6a..0x6d are the arrow (L,R,T,B). Don't use xforms, because width is odd.
+  // 0x7a,0x7b,0x7c are the scroll. Width 9. One scroll unit per spell unit, but no fewer than 2.
+  int arrowsw=SPRITE->spellc*6-1; // tighest bound around the arrow'd pixels (5 per arrow plus 1 space between).
+  if (arrowsw<0) arrowsw=0;
+  if (arrowsw) { // Body of the banner is raw rectangles.
+    int bannerx=x-(arrowsw>>1);
+    int bannery=dsty-5;
+    graf_fill_rect(&g.graf,bannerx,bannery,arrowsw,9,0x000000ff);
+    graf_fill_rect(&g.graf,bannerx,bannery+1,arrowsw,7,0xa18c75ff);
+  }
+  graf_set_image(&g.graf,RID_image_hero);
+  graf_tile(&g.graf,x-(arrowsw>>1)+2,dsty,0x6e,0);
+  graf_tile(&g.graf,x-(arrowsw>>1)+arrowsw-1,dsty,0x6f,0);
+  int dstx=x-(arrowsw>>1)+3;
+  int i=0;
+  for (;i<SPRITE->spellc;i++,dstx+=6) {
+    uint8_t tileid;
+    switch (SPRITE->spell[i]) {
+      case 'U': tileid=0x6c; break;
+      case 'L': tileid=0x6a; break;
+      case 'R': tileid=0x6b; break;
+      case 'D': tileid=0x6d; break;
+      case '.': tileid=0x7e; break;
+      default: continue;
+    }
+    graf_tile(&g.graf,dstx,dsty,tileid,0);
+  }
+  
+  hero_render_errata(sprite,x,y);
 }
 
 /* Fishing, complete replacement.

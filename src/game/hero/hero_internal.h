@@ -19,6 +19,9 @@ struct sprite_hero {
     uint8_t tileid;
   } divining_alertv[9];
   double divining_alert_clock;
+  char wanddir; // 0,'LRUD'
+  char spell[SPELL_LIMIT]; // 'LRUD.'
+  int spellc;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

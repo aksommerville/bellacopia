@@ -9,6 +9,7 @@
 #define ROAM_RANGE_2 25.0 /* m**2 from initial position */
 #define WALK_SPEED 3.0 /* m/s */
 #define TEMPT_SPEED 4.0 /* m/s */
+#define DAZE_TIME 2.0 /* Plus FLASH_TIME. */
 
 static void monster_idle_begin(struct sprite *sprite);
 static void monster_walk_begin(struct sprite *sprite);
@@ -24,6 +25,7 @@ struct sprite_monster {
   double radius,radius2;
   double speed;
   double animclock;
+  double dazeclock;
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
@@ -265,6 +267,13 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
  */
  
 static void _monster_update(struct sprite *sprite,double elapsed) {
+
+  // If dazed, nothing else happens, even animation.
+  if (g.flash>0.0) { SPRITE->dazeclock=DAZE_TIME; return; }
+  else if (SPRITE->dazeclock>0.0) {
+    SPRITE->dazeclock-=elapsed;
+    return;
+  }
 
   // Animate always, even when standing still.
   if ((SPRITE->animclock-=elapsed)<=0.0) {

@@ -118,12 +118,17 @@ static int match_begin(struct sprite *sprite) {
  
 static int wand_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_wand;
+  SPRITE->spellc=0;
+  SPRITE->wanddir='.';
   return 1;
 }
 
 static void wand_end(struct sprite *sprite) {
   SPRITE->itemid_in_progress=0;
-  //TODO Cast spell.
+  if (game_cast_spell(SPRITE->spell,SPRITE->spellc)) {
+  } else {
+    bm_sound(RID_sound_reject);
+  }
 }
 
 static void wand_update(struct sprite *sprite,double elapsed) {
@@ -131,7 +136,26 @@ static void wand_update(struct sprite *sprite,double elapsed) {
     wand_end(sprite);
     return;
   }
-  //TODO Check for new strokes.
+  uint8_t ndir=0;
+  switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
+    case EGG_BTN_LEFT: ndir='L'; break;
+    case EGG_BTN_RIGHT: ndir='R'; break;
+    case EGG_BTN_UP: ndir='U'; break;
+    case EGG_BTN_DOWN: ndir='D'; break;
+  }
+  if (ndir==SPRITE->wanddir) return;
+  if (SPRITE->wanddir=ndir) {
+    if (SPRITE->spellc>=SPELL_LIMIT) {
+      memmove(SPRITE->spell,SPRITE->spell+1,SPELL_LIMIT-1);
+      SPRITE->spell[0]='.';
+      SPRITE->spell[SPELL_LIMIT-1]=ndir;
+    } else {
+      SPRITE->spell[SPRITE->spellc++]=ndir;
+    }
+    bm_sound(RID_sound_wandstroke);
+  } else {
+    bm_sound(RID_sound_wandunstroke);
+  }
 }
 
 /* Fishpole.

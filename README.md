@@ -77,3 +77,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
+- [ ] More spells. Not sure what...
+- [ ] Invalid spell, should we do a head-shake like in Full Moon?

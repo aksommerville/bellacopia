@@ -502,6 +502,13 @@ void camera_render() {
     }
   }
   
+  /* Flashing in the light.
+   */
+  if (g.flash>0.0) {
+    int alpha=(int)((g.flash*128.0)/FLASH_TIME);
+    if (alpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xfff08000|alpha);
+  }
+  
   //TODO Weather.
   //TODO Transitions.
 }

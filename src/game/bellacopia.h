@@ -26,6 +26,9 @@
 #define JIGSAW_FLDW 236
 #define JIGSAW_FLDH 153
 
+#define SPELL_LIMIT 8
+#define FLASH_TIME 1.000
+
 /* Globals.
  ****************************************************************/
 
@@ -66,6 +69,7 @@ extern struct g {
   struct feet feet;
   double bugspray; // Counts down, not persisted.
   double vanishing; // ''
+  double flash; // ''
 } g;
 
 /* Misc global API.

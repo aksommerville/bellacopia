@@ -15,6 +15,9 @@ void game_update(double elapsed) {
   if (g.vanishing>0.0) {
     g.vanishing-=elapsed;
   }
+  if (g.flash>0.0) {
+    g.flash-=elapsed;
+  }
 }
 
 /* Map becomes visible.

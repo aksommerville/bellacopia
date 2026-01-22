@@ -61,6 +61,9 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
   sprites_reset();
   camera_reset();
   feet_reset();
+  g.bugspray=0.0;
+  g.vanishing=0.0;
+  g.flash=0.0;
   
   if ((MODAL->map_listener=camera_listen_map(story_cb_map_exposure,modal))<0) return -1;
   if ((MODAL->cell_listener=camera_listen_cell(story_cb_cell_exposure,modal))<0) return -1;

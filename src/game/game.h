@@ -50,4 +50,8 @@ int possessed_quantity_for_itemid(int itemid,int *limit);
  */
 void game_begin_activity(int activity,int arg,struct sprite *initiator);
 
+/* [LRUD]. Returns nonzero if valid, zero if invalid.
+ */
+int game_cast_spell(const char *src,int srcc);
+
 #endif
