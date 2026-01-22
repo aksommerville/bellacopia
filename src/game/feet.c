@@ -51,7 +51,7 @@ static int poi_interesting_opcode(uint8_t opcode) {
     //case CMD_map_switchable: // Probably don't need to track switchable, they're output-only.
     case CMD_map_treadle:
     case CMD_map_stompbox:
-    case CMD_map_root:
+    //case CMD_map_root: // Since there aren't release events, this is unwieldly. Have the hero poll for it.
     case CMD_map_door:
       return 1;
   }

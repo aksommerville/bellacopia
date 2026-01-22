@@ -376,7 +376,7 @@ static int store_save_now(const char *k,int kc) {
     fprintf(stderr,"%s: Failed to save store, encoded to %d bytes\n",__func__,serialc);
     return -1;
   } else {
-    fprintf(stderr,"%s: Saved store as '%.*s', %d bytes\n",__func__,kc,k,serialc);
+    //fprintf(stderr,"%s: Saved store as '%.*s', %d bytes\n",__func__,kc,k,serialc);
   }
   return 0;
 }

@@ -16,3 +16,32 @@ position 6 7 1 *
 sprite @10,6 sprite:jigpiece (u32)0
 door @4,5 map:102 @4,5 0x0000
 song song:barrel_of_salt
+root @8,1 (u16:fld)root6
+root @0,4 (u16:fld)root6
+root @8,2 (u16:fld)root1
+root @8,3 (u16:fld)root1
+root @8,4 (u16:fld)root1
+root @8,5 (u16:fld)root1
+root @8,6 (u16:fld)root1
+root @8,7 (u16:fld)root1
+root @8,8 (u16:fld)root1
+root @8,9 (u16:fld)root1
+root @8,10 (u16:fld)root1
+root @8,11 (u16:fld)root1
+root @8,0 (u16:fld)root1
+root @12,0 (u16:fld)root6
+root @12,1 (u16:fld)root6
+root @11,1 (u16:fld)root6
+root @10,1 (u16:fld)root6
+root @9,1 (u16:fld)root6
+root @8,1 (u16:fld)root1
+root @7,1 (u16:fld)root6
+root @6,1 (u16:fld)root6
+root @6,2 (u16:fld)root6
+root @6,3 (u16:fld)root6
+root @6,4 (u16:fld)root6
+root @5,4 (u16:fld)root6
+root @4,4 (u16:fld)root6
+root @3,4 (u16:fld)root6
+root @2,4 (u16:fld)root6
+root @1,4 (u16:fld)root6

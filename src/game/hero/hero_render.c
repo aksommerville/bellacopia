@@ -19,6 +19,23 @@ static void hero_render_errata(struct sprite *sprite,int x,int y) {
   }
   
   //TODO Compass.
+  
+  /* Divining Rod alerts.
+   */
+  if (SPRITE->divining_alert_clock>0.0) {
+    const double fadetime=0.250;
+    if (SPRITE->divining_alert_clock<fadetime) {
+      int alpha=(int)((SPRITE->divining_alert_clock*255.0)/fadetime);
+      if (alpha<0xff) graf_set_alpha(&g.graf,alpha);
+    }
+    const struct divining_alert *alert=SPRITE->divining_alertv;
+    int i=9;
+    for (;i-->0;alert++) {
+      if (!alert->tileid) continue;
+      graf_tile(&g.graf,alert->x-g.camera.rx,alert->y-g.camera.ry,alert->tileid,0);
+    }
+    graf_set_alpha(&g.graf,0xff);
+  }
 }
 
 /* Riding broom, complete replacement.
@@ -155,7 +172,18 @@ void hero_render(struct sprite *sprite,int x,int y) {
   /* A few items make exceptions to tileid or xform.
    * Doesn't affect the broader layout.
    */
-  if (itemtileid==0x71) { //TODO Divining Rod: If a root is detected, animate spinning. 0x86..0x89 pingponging
+  if (itemtileid==0x71) { // Divining Rod. If (root), 0x86..0x89 pingponging.
+    if (SPRITE->root) {
+      int frame=(g.framec/5)%6;
+      switch (frame) {
+        case 0: itemtileid=0x86; break;
+        case 1: itemtileid=0x87; break;
+        case 2: itemtileid=0x88; break;
+        case 3: itemtileid=0x89; break;
+        case 4: itemtileid=0x88; break;
+        case 5: itemtileid=0x87; break;
+      }
+    }
   } else if (itemtileid==0x74) { //TODO Match: If lit, animate 0x84,0x85
   } else if ((itemtileid==0x73)&&SPRITE->facedx) { // Fishpole: Natural orientation horizontally conflicts with Dot's face. Turn it around.
     itemxform^=EGG_XFORM_XREV;

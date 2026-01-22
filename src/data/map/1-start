@@ -27,3 +27,12 @@ door @4,2 map:101 @4,2 0x0000
 treadle @14,3 (u16:fld)root5
 stompbox @14,8 (u16:fld)root6
 sprite @5,8 sprite:jigpiece (u32)0
+root @8,11 (u16:fld)root1
+root @8,8 (u16:fld)root1
+root @12,11 (u16:fld)root6
+root @8,10 (u16:fld)root1
+root @8,9 (u16:fld)root1
+root @12,7 (u16:fld)root6
+root @12,8 (u16:fld)root6
+root @12,9 (u16:fld)root6
+root @12,10 (u16:fld)root6

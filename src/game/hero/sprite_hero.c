@@ -13,6 +13,8 @@ static void _hero_del(struct sprite *sprite) {
 static int _hero_init(struct sprite *sprite) {
   SPRITE->facedy=1;
   SPRITE->item_blackout=1;
+  SPRITE->qx=-1;
+  SPRITE->qy=-1;
   return 0;
 }
 
@@ -29,6 +31,11 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
     } else {
       return;
     }
+  }
+  
+  if (SPRITE->divining_alert_clock>0.0) {
+    if (g.store.invstorev[0].itemid==NS_itemid_divining) SPRITE->divining_alert_clock-=elapsed;
+    else SPRITE->divining_alert_clock=0.0;
   }
 
   hero_item_update(sprite,elapsed);

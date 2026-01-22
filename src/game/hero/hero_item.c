@@ -21,11 +21,87 @@ static void broom_update(struct sprite *sprite,double elapsed) {
 }
 
 /* Divining Rod.
+ * Unlike most updating items, our update is called passively, doesn't need to be "in use", just equipped.
  */
  
 static int divining_begin(struct sprite *sprite) {
-  //TODO Extra feedback for current state. (just report the same thing we do at render, but more forcefully).
+  SPRITE->divining_alert_clock=0.500;
+  int soundid=RID_sound_negatory;
+
+  /* Prepare the alerts with quantized positions and the negative tile.
+   */
+  struct divining_alert *alert=SPRITE->divining_alertv;
+  int dy=-1; for (;dy<=1;dy++) {
+    int dx=-1; for (;dx<=1;dx++,alert++) {
+      alert->tileid=0x68;
+      alert->x=(SPRITE->qx+dx)*NS_sys_tilesize+(NS_sys_tilesize>>1);
+      alert->y=(SPRITE->qy+dy)*NS_sys_tilesize+(NS_sys_tilesize>>1);
+    }
+  }
+  
+  /* Check for roots in cells adjacent to the quantized cell and flip positive where we find one.
+   * It's a pain in the butt because we need neighbor cells, which might be on neighbor *maps*.
+   */
+  int mxa=(SPRITE->qx-1)/NS_sys_mapw;
+  int mxz=(SPRITE->qx+1)/NS_sys_mapw;
+  int mya=(SPRITE->qy-1)/NS_sys_maph;
+  int myz=(SPRITE->qy+1)/NS_sys_maph;
+  int my=mya; for (;my<=myz;my++) {
+    int mx=mxa; for (;mx<=mxz;mx++) {
+      const struct map *map=map_by_position(mx,my,sprite->z);
+      if (!map) continue;
+      int x0=map->lng*NS_sys_mapw;
+      int y0=map->lat*NS_sys_maph;
+      struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+      struct cmdlist_entry cmd;
+      while (cmdlist_reader_next(&cmd,&reader)) {
+        if (cmd.opcode==CMD_map_root) {
+          int rx=cmd.arg[0]+x0;
+          int ry=cmd.arg[1]+y0;
+          if (rx<SPRITE->qx-1) continue;
+          if (rx>SPRITE->qx+1) continue;
+          if (ry<SPRITE->qy-1) continue;
+          if (ry>SPRITE->qy+1) continue;
+          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (!store_get_fld(fld)) {
+            SPRITE->divining_alertv[
+              (ry-SPRITE->qy+1)*3+(rx-SPRITE->qx+1)
+            ].tileid=0x69;
+            soundid=RID_sound_affirmative;
+          }
+        }
+      }
+    }
+  }
+  bm_sound(soundid);
   return 1;
+}
+
+static void divining_update(struct sprite *sprite,double elapsed) {
+  int qx=(int)sprite->x;
+  int qy=(int)sprite->y;
+  if ((qx==SPRITE->qx)&&(qy==SPRITE->qy)) return;
+  SPRITE->qx=qx;
+  SPRITE->qy=qy;
+  SPRITE->root=0;
+  const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (map) {
+    qx-=map->lng*NS_sys_mapw;
+    qy-=map->lat*NS_sys_maph;
+    struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)) {
+      if (cmd.opcode==CMD_map_root) {
+        if (cmd.arg[0]!=qx) continue;
+        if (cmd.arg[1]!=qy) continue;
+        int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+        if (!store_get_fld(fld)) {
+          SPRITE->root=1;
+          return;
+        }
+      }
+    }
+  }
 }
 
 /* Match.
@@ -141,7 +217,17 @@ static void hookshot_update(struct sprite *sprite,double elapsed) {
  */
  
 static int candy_begin(struct sprite *sprite) {
-  //TODO Inventory, validate position, sound effect, create sprite.
+  if (g.store.invstorev[0].quantity<1) return 0;
+  double x=sprite->x,y=sprite->y;
+  if (SPRITE->facedx<0) x-=1.0;
+  else if (SPRITE->facedx>0) x+=1.0;
+  else if (SPRITE->facedy<0) y-=1.0;
+  else y+=1.0;
+  struct sprite *candy=sprite_spawn(x,y,RID_sprite_candy,0,0,0,0,0);
+  if (!candy) return 0;
+  g.store.invstorev[0].quantity--;
+  g.store.dirty=1;
+  bm_sound(RID_sound_deploy);
   return 1;
 }
 
@@ -167,6 +253,19 @@ static int bell_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Compass.
+ * We get passive updates like Divining Rod.
+ */
+ 
+static int compass_begin(struct sprite *sprite) {
+  //TODO More forceful momentary feedback?
+  return 0;
+}
+
+static void compass_update(struct sprite *sprite,double elapsed) {
+  //TODO
+}
+
 /* Update items, main entry point.
  */
  
@@ -184,6 +283,13 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
+  }
+  
+  /* Divining Rod and Compass get updated passively just by virtue of being equipped.
+   */
+  switch (g.store.invstorev[0].itemid) {
+    case NS_itemid_divining: divining_update(sprite,elapsed); break;
+    case NS_itemid_compass: compass_update(sprite,elapsed); break;
   }
   
   /* Poll input.

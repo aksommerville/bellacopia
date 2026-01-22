@@ -13,6 +13,12 @@ struct sprite_hero {
   double walkanimclock;
   int walkanimframe;
   double potionclock; // Animating potion.
+  int qx,qy,root; // Stays fresh passively while divining rod armed. Otherwise (-1,-1,0). Most POI interactions use feet.
+  struct divining_alert {
+    int x,y; // plane pixels, to the center of the cell.
+    uint8_t tileid;
+  } divining_alertv[9];
+  double divining_alert_clock;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.
