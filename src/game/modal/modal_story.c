@@ -103,12 +103,40 @@ static void _story_update(struct modal *modal,double elapsed) {
   camera_update(elapsed);
 }
 
+/* Overlay with HP and gold.
+ */
+ 
+static void story_render_overlay(struct modal *modal) {
+  int hp=store_get_fld16(NS_fld16_hp);
+  int hpmax=store_get_fld16(NS_fld16_hpmax);
+  int gold=store_get_fld16(NS_fld16_gold);
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  graf_set_image(&g.graf,RID_image_pause);
+  
+  int x=6,y=5;
+  int i=0;
+  for (;i<hp;i++,x+=8) graf_tile(&g.graf,x,y,0x28,0);
+  for (;i<hpmax;i++,x+=8) graf_tile(&g.graf,x,y,0x27,0);
+  
+  uint32_t color;
+  if (gold<=0) color=0xb0b0b0ff;
+  else if (gold>=goldmax) color=0x00ff00ff;
+  else color=0xf08040ff;
+  int digitc=(gold>=10000)?5:(gold>=1000)?4:(gold>=100)?3:(gold>=10)?2:1;
+  x=5;
+  y=14;
+  graf_tile(&g.graf,x,y,0x29,0);
+  y=13;
+  x+=7+4*(digitc-1);
+  for (i=digitc;i-->0;x-=4,gold/=10) graf_fancy(&g.graf,x,y,0x40+gold%10,0,0,NS_sys_tilesize,0,color);
+}
+
 /* Render.
  */
  
 static void _story_render(struct modal *modal) {
   camera_render();
-  //TODO Overlay. That's not camera's problem, it's ours.
+  story_render_overlay(modal);
 }
 
 /* Type definition.

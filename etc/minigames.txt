@@ -3,6 +3,7 @@
 # D = Done.
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
 #RC____D NAME              OPPONENT           ZONE
+  2      Apples            Boblin             Cave
   2      ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
   2      BodySlam          Yak                Taiga
@@ -24,10 +25,12 @@
   1      Cinematography    Filmmaker          Woodland
   2      ClamBaking        Dragon             Sea
   2      Climbing          Spider             Desert
+  2      Cobbling          Coblin             Cave
   2      Conducting        Conductor          Desert
   2      Counting          Vampire            Labyrinth
   2      CPR               Nurse              City
   2      Crossing          Frog               Farm
+  2      Crying            Soblin             Cave
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
   2      Dissection        Doctor             City
@@ -35,6 +38,7 @@
   2      Diving            Penguin            Taiga
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
+  2      Erudition         Snoblin            Cave
   2____D Exterminating     Solider            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
@@ -51,6 +55,7 @@
   2      Gobbling          Goblin             Cave
   2      Golf              Unicorn            Labyrinth
   2      Harvesting        Picker             Farm
+  2      Hiring            Joblin             Cave
   2      HomeRunDerby      Bat                Cave
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
@@ -84,6 +89,7 @@
   2      Pouring           Dowager            City
   2      Protecting        Goose              Farm
   2      Pushing           Golem              Labyrinth
+  2      Racketeering      Moblin             Cave
   2      Ramming           Orca               Sea
   2      RatRace           Rat                Cave
   2      Rebounding        Hoplite            Battlefield
@@ -113,6 +119,7 @@
   2      Sparing           Beetle             Desert
   2      Stacking          Waiter             City
   1      Staring           Deer               Woodland
+  2      Stealing          Roblin             Cave
   2      Steering          Buck               Farm
   2      Stenography       Secretary          City
  R2      Stirring          Mouse              Woodland
@@ -123,6 +130,7 @@
   2      Swinging          Kid                City
   2      Telekinesis       Psychic            Labyrinth
   2      Tempting          Siren              Sea
+  2      Throwing          Loblin             Cave
   2      TicTacToe         Raccoon            Woodland
   2      Topping           HotDogVendor       City
  R2      Traffic           Cop                City

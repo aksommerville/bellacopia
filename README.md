@@ -42,6 +42,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Blood Bank
 - - [x] Brewer
 - - [x] Fishwife
+- [x] Show hp and gold in an overlay.
+- [ ] Show hp, gold, and fish in pause menu. Inventory or Stats?
 - [ ] Items. Don't clear until all the associated stuff is ready too.
 - - [ ] broom
 - - [ ] divining
@@ -69,3 +71,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Stats vellum.
 - [ ] System vellum.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
+- [ ] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
