@@ -238,7 +238,16 @@ static void inventory_render_backpack(struct vellum *vellum,int outerx,int outer
       if (!invstore->itemid) continue;
       const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
       if (!detail) continue;
-      graf_tile(&g.graf,dstx,dsty,detail->tileid,0);
+      uint8_t tileid=detail->tileid;
+      switch (invstore->itemid) {
+        case NS_itemid_potion: switch (invstore->quantity) {
+            case 0: tileid=0x4a; break;
+            // 1 is the default
+            case 2: tileid=0x4b; break;
+            case 3: tileid=0x4c; break;
+          } break;
+      }
+      graf_tile(&g.graf,dstx,dsty,tileid,0);
     }
   }
   
@@ -267,7 +276,16 @@ static void inventory_render_hand(struct vellum *vellum,int x,int y) {
   if (invstore->itemid) {
     const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
     if (detail) {
-      graf_tile(&g.graf,x+NS_sys_tilesize,y+NS_sys_tilesize,detail->tileid,0);
+      uint8_t tileid=detail->tileid;
+      switch (invstore->itemid) {
+        case NS_itemid_potion: switch (invstore->quantity) {
+            case 0: tileid=0x4a; break;
+            // 1 is the default
+            case 2: tileid=0x4b; break;
+            case 3: tileid=0x4c; break;
+          } break;
+      }
+      graf_tile(&g.graf,x+NS_sys_tilesize,y+NS_sys_tilesize,tileid,0);
       if (invstore->limit) {
         inventory_render_quantity(vellum,x+NS_sys_tilesize,y+NS_sys_tilesize,invstore->quantity,invstore->limit);
       }

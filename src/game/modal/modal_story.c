@@ -104,6 +104,7 @@ static void _story_update(struct modal *modal,double elapsed) {
 }
 
 /* Overlay with HP and gold.
+ * TODO It's a fair bit of work to render and won't change often. Cache this into a temporary texture and redraw that on changes.
  */
  
 static void story_render_overlay(struct modal *modal) {
@@ -113,7 +114,26 @@ static void story_render_overlay(struct modal *modal) {
   int goldmax=store_get_fld16(NS_fld16_goldmax);
   graf_set_image(&g.graf,RID_image_pause);
   
-  int x=6,y=5;
+  graf_tile(&g.graf,9,9,0x17,0);
+  const struct invstore *invstore=g.store.invstorev;
+  int itemid=invstore->itemid;
+  if (itemid) {
+    const struct item_detail *detail=item_detail_for_itemid(itemid);
+    if (detail) {
+      uint8_t tileid=detail->tileid;
+      switch (itemid) {
+        case NS_itemid_potion: switch (invstore->quantity) {
+            case 0: tileid=0x4a; break;
+            // 1 is the default
+            case 2: tileid=0x4b; break;
+            case 3: tileid=0x4c; break;
+          } break;
+      }
+      if (tileid) graf_tile(&g.graf,9,9,tileid,0);
+    }
+  }
+  
+  int x=23,y=5;
   int i=0;
   for (;i<hp;i++,x+=8) graf_tile(&g.graf,x,y,0x28,0);
   for (;i<hpmax;i++,x+=8) graf_tile(&g.graf,x,y,0x27,0);
@@ -123,12 +143,25 @@ static void story_render_overlay(struct modal *modal) {
   else if (gold>=goldmax) color=0x00ff00ff;
   else color=0xf08040ff;
   int digitc=(gold>=10000)?5:(gold>=1000)?4:(gold>=100)?3:(gold>=10)?2:1;
-  x=5;
+  x=22;
   y=14;
   graf_tile(&g.graf,x,y,0x29,0);
   y=13;
   x+=7+4*(digitc-1);
   for (i=digitc;i-->0;x-=4,gold/=10) graf_fancy(&g.graf,x,y,0x40+gold%10,0,0,NS_sys_tilesize,0,color);
+  
+  // Equipped item quantity goes last, so it can share a batch with the gold count.
+  if (itemid&&invstore->limit) {
+    int v=invstore->quantity;
+    uint32_t color;
+    if (v<=0) color=0xb0b0b0ff;
+    else if (v>=invstore->limit) color=0x00ff00ff;
+    else color=0xf08040ff;
+    int digitc=(v>=100)?3:(v>=10)?2:1;
+    x=14;
+    y=21;
+    for (i=digitc;i-->0;x-=4,v/=10) graf_fancy(&g.graf,x,y,0x40+v%10,0,0,NS_sys_tilesize,0,color);
+  }
 }
 
 /* Render.

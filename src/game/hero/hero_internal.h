@@ -12,6 +12,7 @@ struct sprite_hero {
   int walking;
   double walkanimclock;
   int walkanimframe;
+  double potionclock; // Animating potion.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

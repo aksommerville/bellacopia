@@ -93,8 +93,30 @@ static int bugspray_begin(struct sprite *sprite) {
  */
  
 static int potion_begin(struct sprite *sprite) {
-  //TODO Inventory, sound effect, state change.
+  if (g.store.invstorev[0].quantity<1) return 0;
+  // Forbid quaffture if HP full, it must be an accident.
+  if (store_get_fld16(NS_fld16_hp)>=store_get_fld16(NS_fld16_hpmax)) return 0;
+  SPRITE->itemid_in_progress=NS_itemid_potion;
+  SPRITE->potionclock=1.000;
+  bm_sound(RID_sound_glug);
   return 1;
+}
+
+static void potion_update(struct sprite *sprite,double elapsed) {
+  double pvclock=SPRITE->potionclock;
+  if ((SPRITE->potionclock-=elapsed)<=0.0) {
+    SPRITE->itemid_in_progress=0;
+  } else if ((SPRITE->potionclock<0.500)&&(pvclock>=0.500)) {
+    bm_sound(RID_sound_glug2);
+    // Don't assume that potion is still armed; the user could have paused while animating.
+    struct invstore *invstore=store_get_itemid(NS_itemid_potion);
+    if (invstore&&(invstore->quantity>0)) {
+      invstore->quantity--;
+      g.store.dirty=1;
+    }
+    // If the item disappeared or zeroed out, heal anyway i guess? We made the sound.
+    store_set_fld16(NS_fld16_hp,store_get_fld16(NS_fld16_hpmax));
+  }
 }
 
 /* Hookshot.
@@ -152,6 +174,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_wand: wand_update(sprite,elapsed); break;
       case NS_itemid_fishpole: fishpole_update(sprite,elapsed); break;
       case NS_itemid_hookshot: hookshot_update(sprite,elapsed); break;
+      case NS_itemid_potion: potion_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;

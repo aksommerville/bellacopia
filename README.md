@@ -51,7 +51,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] wand
 - - [ ] fishpole
 - - [ ] bugspray
-- - [ ] potion
+- - [x] potion
 - - [ ] hookshot
 - - [ ] candy
 - - [ ] vanishing
@@ -71,5 +71,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Stats vellum.
 - [ ] System vellum.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
-- [ ] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
+- [x] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
+- [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
