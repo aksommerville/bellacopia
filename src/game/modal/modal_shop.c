@@ -303,6 +303,19 @@ static void shop_move(struct modal *modal,int d) {
   bm_sound(RID_sound_uimotion);
 }
 
+/* In background, proceed with dismissal.
+ * eg a new dialogue modal was summoned just as we exit.
+ */
+ 
+static void _shop_updatebg(struct modal *modal,double elapsed) {
+  if (MODAL->stage==STAGE_FAREWELL) {
+    if ((MODAL->presence-=DISMISS_SPEED*elapsed)<=0.0) {
+      MODAL->presence=0.0;
+      modal->defunct=1;
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -487,6 +500,7 @@ const struct modal_type modal_type_shop={
   .del=_shop_del,
   .init=_shop_init,
   .update=_shop_update,
+  .updatebg=_shop_updatebg,
   .render=_shop_render,
   // Not doing notify, even though we definitely show text.
   // Trying to retrieve the original text would be complicated.

@@ -36,12 +36,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Jigpiece
 - - [x] Treasure
 - - [x] NPC
-- [ ] NPC activities
+- [x] NPC activities
 - - [x] General dialogue
 - - [x] Shop
-- - [ ] Blood Bank
-- - [ ] Brewer
-- - [ ] Fishwife
+- - [x] Blood Bank
+- - [x] Brewer
+- - [x] Fishwife
 - [ ] Items. Don't clear until all the associated stuff is ready too.
 - - [ ] broom
 - - [ ] divining

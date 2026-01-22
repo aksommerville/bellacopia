@@ -14,6 +14,7 @@
 image image:meadow
 position 6 5 1 *
 sprite @3,1 sprite:jigpiece (u32)0
-sprite @9,4 sprite:leopard (u32)0
+sprite @9,4 sprite:fishwife (u16:activity)fishwife (u16)0
 sprite @7,4 sprite:carpenter (u16:activity)carpenter (u16)0
-sprite @11,4 sprite:nurse (u16:activity)bloodbank (u16)0
+sprite @11,4 sprite:nurse (u16:activity)bloodbank (u16:price_per_heart)3
+sprite @13,4 sprite:brewer (u16:activity)brewer (u16:activity_arg)0

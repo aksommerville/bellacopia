@@ -129,7 +129,7 @@
 #define NS_activity_dialogue 1 /* (u16)strix ; strings:dialogue. Simple box of constant text. */
 #define NS_activity_carpenter 2
 #define NS_activity_brewer 3
-#define NS_activity_bloodbank 4
+#define NS_activity_bloodbank 4 /* (u16)price_per_heart */
 #define NS_activity_fishwife 5
 
 #define NS_sprtype_dummy        0 /* (u32)0 */

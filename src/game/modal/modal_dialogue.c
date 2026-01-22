@@ -206,6 +206,19 @@ static void dialogue_move(struct modal *modal,int d) {
   bm_sound(RID_sound_uimotion);
 }
 
+/* In background, proceed with dismissal.
+ * eg a new dialogue modal was summoned just as we exit.
+ */
+ 
+static void _dialogue_updatebg(struct modal *modal,double elapsed) {
+  if (MODAL->stage==STAGE_FAREWELL) {
+    if ((MODAL->presence-=DISMISS_SPEED*elapsed)<=0.0) {
+      MODAL->presence=0.0;
+      modal->defunct=1;
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -289,6 +302,7 @@ const struct modal_type modal_type_dialogue={
   .del=_dialogue_del,
   .init=_dialogue_init,
   .update=_dialogue_update,
+  .updatebg=_dialogue_updatebg,
   .render=_dialogue_render,
   // Not doing notify, even though we definitely show text.
   // Trying to retrieve the original text would be complicated.
@@ -333,4 +347,11 @@ int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,i
   egg_texture_get_size(&option->w,&option->h,option->texid);
   MODAL->boxdirty=1;
   return optionid;
+}
+
+int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix) {
+  if (strix<1) return -1;
+  const char *src=0;
+  int srcc=text_get_string(&src,rid,strix);
+  return modal_dialogue_add_option(modal,strix,src,srcc);
 }

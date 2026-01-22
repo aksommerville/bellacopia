@@ -122,6 +122,7 @@ struct modal_args_shop {
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
 
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
+int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.
 
 /* Fails on invalid itemid.
  * (quantity) zero to permit any quantity, in which case (price) is per-unit.
