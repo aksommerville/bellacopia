@@ -4,7 +4,20 @@
  */
  
 static void hero_render_errata(struct sprite *sprite,int x,int y) {
-  //TODO Bugspray.
+
+  /* Bugspray indicator.
+   */
+  if (g.bugspray>0.0) {
+    int frame=((int)(g.bugspray*6.0))&7;
+    const double fadetime=1.000;
+    if (g.bugspray<fadetime) {
+      int alpha=(int)((g.bugspray*255.0)/fadetime);
+      if (alpha<0xff) graf_set_alpha(&g.graf,alpha);
+    }
+    graf_tile(&g.graf,x,y-NS_sys_tilesize,0x60+frame,0);
+    graf_set_alpha(&g.graf,0xff);
+  }
+  
   //TODO Compass.
 }
 
@@ -90,6 +103,13 @@ static void hero_render_potion(struct sprite *sprite,int x,int y) {
  */
  
 void hero_render(struct sprite *sprite,int x,int y) {
+
+  /* When creamed to vanishment, we strobe 1/2.
+   */
+  if (g.vanishing>0.0) {
+    if (g.framec&1) return;
+  }
+
   graf_set_image(&g.graf,sprite->imageid);
   
   /* Some items are a completely separate thing when engaged.

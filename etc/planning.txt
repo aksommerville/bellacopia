@@ -98,6 +98,7 @@ We'll group minigames by Zone.
 - - - Knoblin: Something about doorknobs?
 - - - Roblin: Stealing
 - - - Soblin: Crying
+- - - Sloblin: Laziness
 - - - Snoblin: Erudition
 - [ ] Various and sundry one-off fetch quests. Find my hat, etc.
 - [ ] After completing a dungeon, a side quest to go back and clean up after yourself, like we did in Spelling Bee, it's hilarious.
@@ -195,6 +196,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ] * Jumprope.
 - [ ] * Karate Chop. Tap A until time expires.
 - [ ]   Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
+- [ ]   Laziness. Dodge falling eggs, points for least motion.
 - [ ]   Lawnmowing. Visit as much of a grid as possible without retracing any steps.
 - [ ] * Levitation. Keep an indicator balanced.
 - [ ]   Licking. Hold A when the giant moving ice cream cone is in range.

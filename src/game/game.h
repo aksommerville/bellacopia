@@ -5,6 +5,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+/* Does not update the entire game state.
+ * Just the disorganized globals.
+ * See modal_story.c
+ */
+void game_update(double elapsed);
+
 /* modal_story should call when a map becomes visible.
  * Spawns static sprites. Maybe other things. Indexing poi?
  */

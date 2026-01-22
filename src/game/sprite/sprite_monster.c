@@ -222,8 +222,8 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
     if (other->type==&sprite_type_hero) { //TODO "or princess"
       if (best&&(best->type==&sprite_type_candy)) continue; // Prefer Candy.
       if (other->type==&sprite_type_hero) {
-        //TODO Ignore if bugspray'd
-        //TODO Ignore if vanished
+        if (g.bugspray>0.0) continue;
+        if (g.vanishing>0.0) continue;
       }
       double dx=other->x-sprite->x;
       double dy=other->y-sprite->y;
@@ -325,6 +325,10 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (other->type==&sprite_type_hero) {
+    // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
+    if (g.vanishing>0.0) {
+      return;
+    }
     fprintf(stderr,"TODO begin battle %d per sprite:%d\n",SPRITE->battle,sprite->rid);
     sprite_kill_soon(sprite);
   }

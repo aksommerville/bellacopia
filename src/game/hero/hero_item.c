@@ -83,9 +83,11 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
  */
  
 static int bugspray_begin(struct sprite *sprite) {
-  //TODO check inventory
-  //TODO Increment the clock or whatever it is.
-  //TODO Sound effect.
+  if (g.store.invstorev[0].quantity<1) return 0;
+  g.store.invstorev[0].quantity--;
+  g.store.dirty=1;
+  g.bugspray+=5.000;
+  bm_sound(RID_sound_bugspray);
   return 1;
 }
 
@@ -147,7 +149,11 @@ static int candy_begin(struct sprite *sprite) {
  */
  
 static int vanishing_begin(struct sprite *sprite) {
-  //TODO Check inventory, sound effect, apply state.
+  if (g.store.invstorev[0].quantity<1) return 0;
+  g.store.invstorev[0].quantity--;
+  g.store.dirty=1;
+  g.vanishing+=5.000;
+  bm_sound(RID_sound_vanishing);
   return 1;
 }
 

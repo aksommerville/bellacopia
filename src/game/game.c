@@ -3,6 +3,20 @@
 #define SPRITE_CULL_DISTANCE (NS_sys_mapw*2)
 #define SPRITE_CULL_DISTANCE2 (SPRITE_CULL_DISTANCE*SPRITE_CULL_DISTANCE)
 
+/* Generate update.
+ */
+ 
+void game_update(double elapsed) {
+  
+  // Minor nonpersistent clocks.
+  if (g.bugspray>0.0) {
+    g.bugspray-=elapsed;
+  }
+  if (g.vanishing>0.0) {
+    g.vanishing-=elapsed;
+  }
+}
+
 /* Map becomes visible.
  */
  

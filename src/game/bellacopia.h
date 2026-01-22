@@ -54,6 +54,7 @@ extern struct g {
   
   struct graf graf;
   struct font *font;
+  int framec;
   
   struct modal *modalv[MODAL_LIMIT];
   int modalc;
@@ -63,6 +64,8 @@ extern struct g {
   struct sprites sprites;
   struct camera camera;
   struct feet feet;
+  double bugspray; // Counts down, not persisted.
+  double vanishing; // ''
 } g;
 
 /* Misc global API.

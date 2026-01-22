@@ -45,17 +45,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Show hp and gold in an overlay.
 - [x] Show hp, gold, and fish in pause menu. Inventory or Stats?
 - [ ] Items. Don't clear until all the associated stuff is ready too.
-- - [ ] broom
-- - [ ] divining
-- - [ ] match
-- - [ ] wand
-- - [ ] fishpole
-- - [ ] bugspray
 - - [x] potion
-- - [ ] hookshot
+- - [x] bugspray
+- - [x] vanishing
 - - [ ] candy
-- - [ ] vanishing
+- - [ ] divining
+- - [ ] wand
+- - [ ] match
 - - [ ] compass
+- - [ ] hookshot
+- - [ ] broom
+- - [ ] fishpole
 - [ ] Battle
 - - [ ] Generic framework
 - - [ ] fishing
@@ -64,6 +64,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] boomerang
 - [ ] Dialogue
 - - [ ] game.c, item messaging
+- [ ] Global persistent clocks: playtime, pausetime, battletime.
 
 - Bugs, future, ...
 - [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
@@ -71,6 +72,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Stats vellum.
 - [ ] System vellum.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
+- - While in there, pause also needs a blotter.
 - [x] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
+- [ ] Friendly UI for editing saved games. (non-public, obviously)
