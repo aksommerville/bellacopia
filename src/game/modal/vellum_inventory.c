@@ -9,10 +9,11 @@
 #define BPROWC 5
 #define BPSPACING 10
 
-#define LABEL_LIMIT 3
+#define LABEL_LIMIT 4
 #define LBLID_EQUIPPED_NAME 1
-#define LBLID_FOCUS_NAME 2
-#define LBLID_FOCUS_DESC 3
+#define LBLID_EQUIPPED_DESC 2
+#define LBLID_FOCUS_NAME 3
+#define LBLID_FOCUS_DESC 4
 
 struct vellum_inventory {
   struct vellum hdr;
@@ -24,6 +25,7 @@ struct vellum_inventory {
     int lblid;
   } labelv[LABEL_LIMIT];
   int labelc;
+  int extraid,extraw,extrah; // Gold, fish, etc.
 };
 
 /* We'll cheat a little and store the backpack cursor position statically.
@@ -44,23 +46,33 @@ static void _inventory_del(struct vellum *vellum) {
   for (;i-->0;label++) {
     egg_texture_del(label->texid);
   }
+  egg_texture_del(VELLUM->extraid);
 }
 
 /* Look up text.
  */
  
-static int inventory_strix_for_lblid(int lblid) {
+static int inventory_strix_for_lblid(int lblid,int *hlimit) {
+  if (hlimit) *hlimit=FBH;
   switch (lblid) {
     case LBLID_EQUIPPED_NAME: {
         const struct item_detail *detail=item_detail_for_itemid(g.store.invstorev[0].itemid);
         if (!detail) return 0;
+        if (hlimit) *hlimit=font_get_line_height(g.font);
         return detail->strix_name;
+      }
+    case LBLID_EQUIPPED_DESC: {
+        const struct item_detail *detail=item_detail_for_itemid(g.store.invstorev[0].itemid);
+        if (!detail) return 0;
+        if (hlimit) *hlimit=font_get_line_height(g.font);
+        return detail->strix_help;
       }
     case LBLID_FOCUS_NAME: {
         if ((invcolp<0)||(invrowp<0)||(invcolp>=BPCOLC)||(invrowp>=BPROWC)) return 0;
         const struct invstore *invstore=g.store.invstorev+1+invrowp*BPCOLC+invcolp;
         const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
         if (!detail) return 0;
+        if (hlimit) *hlimit=font_get_line_height(g.font);
         return detail->strix_name;
       }
     case LBLID_FOCUS_DESC: {
@@ -68,6 +80,7 @@ static int inventory_strix_for_lblid(int lblid) {
         const struct invstore *invstore=g.store.invstorev+1+invrowp*BPCOLC+invcolp;
         const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
         if (!detail) return 0;
+        if (hlimit) *hlimit=font_get_line_height(g.font)*3;
         return detail->strix_help;
       }
   }
@@ -86,15 +99,30 @@ static struct label *inventory_add_label(struct vellum *vellum,int lblid) {
 }
 
 static void inventory_rebuild_labels(struct vellum *vellum) {
+
+  // Rewrite all labels, and capture the two that can move.
+  struct label *fname=0,*fdesc=0;
   struct label *label=VELLUM->labelv;
   int i=VELLUM->labelc;
   for (;i-->0;label++) {
-    int strix=inventory_strix_for_lblid(label->lblid);
+    int hlimit=0;
+    int strix=inventory_strix_for_lblid(label->lblid,&hlimit);
     const char *src=0;
     int srcc=text_get_string(&src,RID_strings_item,strix);
     egg_texture_del(label->texid);
-    label->texid=font_render_to_texture(0,g.font,src,srcc,120,FBH,0x000000ff);
+    label->texid=font_render_to_texture(0,g.font,src,srcc,120,hlimit,0x000000ff);
     egg_texture_get_size(&label->w,&label->h,label->texid);
+    switch (label->lblid) {
+      case LBLID_FOCUS_NAME: fname=label; break;
+      case LBLID_FOCUS_DESC: fdesc=label; break;
+    }
+  }
+  
+  // Equipped labels stay where they started.
+  // Focus labels move up and down according to description's height. Sometimes it's one line and sometimes two.
+  if (fname&&fdesc) {
+    fdesc->y=148-fdesc->h;
+    fname->y=fdesc->y-fname->h-2;
   }
 }
 
@@ -266,6 +294,12 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
    */
   inventory_render_hand(vellum,bpx+bpw+10,bpy);
   
+  /* Gold, fish, and badges are static; they can't change while paused.
+   * So we rendered them at the start and it's ready to copy dumbly, right below the equipped item.
+   */
+  graf_set_input(&g.graf,VELLUM->extraid);
+  graf_decal(&g.graf,bpx+bpw+10,bpy+50,0,0,VELLUM->extraw,VELLUM->extrah);
+  
   /* Name and description of focussed item, in the lower right.
    */
   struct label *label=VELLUM->labelv;
@@ -274,8 +308,51 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
     graf_set_input(&g.graf,label->texid);
     graf_decal(&g.graf,x+label->x,y+label->y,0,0,label->w,label->h);
   }
+}
+
+/* Generate the "extra" texture, some counters that can't change while we're open.
+ */
+ 
+static int inventory_extra_decuint(int x,int y,int v) {
+  if (v<0) v=0;
+  int digitc=(v>=10000)?5:(v>=1000)?4:(v>=100)?3:(v>=10)?2:1; // They're all sourced from fld16, can't be more than 5 digits.
+  x+=(digitc-1)*4;
+  int i=digitc;
+  for (;i-->0;x-=4,v/=10) graf_tile(&g.graf,x,y,0x90+v%10,0);
+  return digitc*4;
+}
+ 
+static void inventory_extra_counter(int x,int y,uint8_t tileid,int fld16c,int fld16a) {
+  graf_tile(&g.graf,x,y,tileid,0);
+  x+=8;
+  int c=store_get_fld16(fld16c);
+  x+=inventory_extra_decuint(x,y,c);
+  if (fld16a) {
+    graf_tile(&g.graf,x,y,0x9a,0); x+=4; // slash
+    int a=store_get_fld16(fld16a);
+    inventory_extra_decuint(x,y,a);
+  }
+}
+ 
+static void inventory_rebuild_extra(struct vellum *vellum) {
+  if (VELLUM->extraid<1) VELLUM->extraid=egg_texture_new();
+  int fullw=120,fullh=48; // We have exactly 64 pixels vertically, if no margin. Use less.
+  if (egg_texture_load_raw(VELLUM->extraid,fullw,fullh,fullw<<2,0,0)<0) {
+    VELLUM->extraw=VELLUM->extrah=0;
+    return;
+  }
+  egg_texture_get_size(&VELLUM->extraw,&VELLUM->extrah,VELLUM->extraid);
+  egg_texture_clear(VELLUM->extraid);
+  graf_set_output(&g.graf,VELLUM->extraid);
+  graf_set_image(&g.graf,RID_image_pause);
   
-  //TODO If there's space, we could also show the non-inventory things. Gold, fish...
+  int y=5;
+  inventory_extra_counter(5,y,0x29,NS_fld16_gold,NS_fld16_goldmax); y+=8;
+  inventory_extra_counter(5,y,0x2a,NS_fld16_greenfish,0); y+=8;
+  inventory_extra_counter(5,y,0x2b,NS_fld16_bluefish,0); y+=8;
+  inventory_extra_counter(5,y,0x2c,NS_fld16_redfish,0); y+=8;
+  
+  graf_set_output(&g.graf,1);
 }
 
 /* New.
@@ -298,15 +375,21 @@ struct vellum *vellum_new_inventory(struct modal *parent) {
     label->x=196;
     label->y=18;
   }
+  if (label=inventory_add_label(vellum,LBLID_EQUIPPED_DESC)) {
+    label->x=150;
+    label->y=37;
+  }
   if (label=inventory_add_label(vellum,LBLID_FOCUS_NAME)) {
     label->x=150;
-    label->y=102;
+    label->y=102; // will be overwritten immediately
   }
   if (label=inventory_add_label(vellum,LBLID_FOCUS_DESC)) {
     label->x=150;
-    label->y=117;
+    label->y=117; // will be overwritten immediately
   }
   inventory_rebuild_labels(vellum);
+  
+  inventory_rebuild_extra(vellum);
   
   return vellum;
 }
