@@ -451,3 +451,39 @@ int possessed_quantity_for_itemid(int itemid,int *limit) {
   // There will probably be plain (fld) items in the future. Maybe? Well there aren't yet.
   return 0;
 }
+
+/* Warp.
+ */
+ 
+int game_warp(int mapid) {
+  if (g.warp_listener) return -1;
+
+  // Confirm (mapid) exists and has a hero spawn point.
+  const struct map *map=map_by_id(mapid);
+  if (!map) return -1;
+  int col=-1,row=-1;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_sprite) {
+      int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+      if (rid==RID_sprite_hero) {
+        col=cmd.arg[0];
+        row=cmd.arg[1];
+        break;
+      }
+    }
+  }
+  if (col<0) return -1;
+  
+  camera_cut(mapid,col,row);
+  
+  // Move hero immediately.
+  if (GRP(hero)->sprc>=1) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    hero->z=map->z;
+    hero->x=map->lng*NS_sys_mapw+col+0.5;
+    hero->y=map->lat*NS_sys_maph+row+0.5;
+  }
+  return 0;
+}

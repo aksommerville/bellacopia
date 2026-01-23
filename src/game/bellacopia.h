@@ -70,6 +70,7 @@ extern struct g {
   double bugspray; // Counts down, not persisted.
   double vanishing; // ''
   double flash; // ''
+  int warp_listener;
 } g;
 
 /* Misc global API.

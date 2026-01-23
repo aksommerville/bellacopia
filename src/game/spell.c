@@ -12,7 +12,7 @@ void spell_flash() {
  */
  
 void spell_home() {
-  fprintf(stderr,"%s\n",__func__);//TODO
+  game_warp(RID_map_start);
 }
 
 /* Cast spell, main entry point.

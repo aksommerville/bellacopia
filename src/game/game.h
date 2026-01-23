@@ -54,4 +54,9 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator);
  */
 int game_cast_spell(const char *src,int srcc);
 
+/* (mapid) must contain a hero spawn point, we fail immediately if not.
+ * Does not move immediately. We negatiate a transition with camera, and move the hero when it takes effect.
+ */
+int game_warp(int mapid);
+
 #endif
