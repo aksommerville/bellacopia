@@ -11,7 +11,7 @@
 9191919191919191919191919191919191919191
 9191919191919191919191919191919191919191
 
-image image:meadow
+image image:tundra
 position 1 1 1 *
 debugmsg "1,1"
 sprite @11,4 sprite:jigpiece (u32)0

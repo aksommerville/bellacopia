@@ -15,5 +15,4 @@ image image:caves
 position 1 0 2 *
 sprite @9,6 sprite:jigpiece (u32)0
 dark
-door @6,6 map:5 @6,6 0x0000
 song song:bone_soup
