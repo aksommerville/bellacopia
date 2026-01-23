@@ -59,4 +59,23 @@ int game_cast_spell(const char *src,int srcc);
  */
 int game_warp(int mapid);
 
+/* Generate a list of things the compass can target.
+ * Never more than (dsta).
+ * Returned values are strix in strings:item, hopefully a short name for the target.
+ */
+int game_list_targets(int *dstv,int dsta);
+
+/* Get the position in plane meters for the given compass target on the given plane.
+ * All targets are positionable on all planes. We'll point to a door if the real thing is somewhere else.
+ * >=0 on success. Failure is possible if (strix) is unknown or if the map set is defective and we can't find a path.
+ * Expensive, please don't spam.
+ * (px,py) are the position on plane (z) that you're searching from. Only relevant for plane zero.
+ */
+int game_get_target_position(int *lng,int *lat,int px,int py,int z,int strix);
+
+/* Main must call just once, after initializing the maps store.
+ * Scans all maps and indexes compass targets.
+ */
+int game_init_targets();
+
 #endif

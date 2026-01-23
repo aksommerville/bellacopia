@@ -15,6 +15,8 @@ static int _hero_init(struct sprite *sprite) {
   SPRITE->item_blackout=1;
   SPRITE->qx=-1;
   SPRITE->qy=-1;
+  SPRITE->compassx=SPRITE->compassy=-1.0;
+  SPRITE->compassz=-1;
   return 0;
 }
 

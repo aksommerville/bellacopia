@@ -52,7 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] divining
 - - [x] wand
 - - [x] match
-- - [ ] compass
+- - [x] compass
 - - [ ] hookshot
 - - [ ] broom
 - - [ ] fishpole
@@ -81,3 +81,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Invalid spell, should we do a head-shake like in Full Moon?
 - [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
+- [ ] Poke compass after you get the thing. Tricky...

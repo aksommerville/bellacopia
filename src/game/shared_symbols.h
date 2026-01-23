@@ -35,6 +35,7 @@
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:handicap u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
+#define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
 #define CMD_sprite_image        0x20 /* u16:rid */
@@ -79,6 +80,15 @@
 #define NS_sprgrp_light        9 /* Light source in darkened rooms. */
 #define NS_sprgrp_monsterlike 10 /* Hero, princess, candy, and anything else monsters pay attention to. */
 
+// Compass target classes. Value is strix in strings:item for the target's display name.
+#define NS_compass_home 40
+#define NS_compass_north 42
+#define NS_compass_rootdevil 38
+#define NS_compass_sidequest 39
+#define NS_compass_heartcontainer 36
+#define NS_compass_gold 27
+#define NS_compass_auto 41
+
 /* Everything you can pick up has an itemid.
  * So this includes gold, keys, powerups (things that don't go in inventory).
  */
@@ -102,6 +112,7 @@
 #define NS_itemid_heart 18
 #define NS_itemid_jigpiece 19
 #define NS_itemid_bell 20
+#define NS_itemid_heartcontainer 21
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -122,7 +133,8 @@
   _(redfish) \
   _(heart) \
   _(jigpiece) \
-  _(bell)
+  _(bell) \
+  _(heartcontainer)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -141,6 +153,7 @@
 #define NS_sprtype_jigpiece     6 /* (u32)0 */
 #define NS_sprtype_candy        7 /* (u32)0 */
 #define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */
+#define NS_sprtype_rootdevil    9 /* (u16:fld)root0 (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -150,7 +163,8 @@
   _(npc) \
   _(jigpiece) \
   _(candy) \
-  _(firepot)
+  _(firepot) \
+  _(rootdevil)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -174,6 +188,7 @@
 #define NS_fld_root5 7
 #define NS_fld_root6 8
 #define NS_fld_root7 9
+#define NS_fld_hc1 10 /* heart container, in the cave of cheating (TEMP) */
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -185,6 +200,7 @@
 #define NS_fld16_greenfish 5
 #define NS_fld16_bluefish 6
 #define NS_fld16_redfish 7
+#define NS_fld16_compassoption 8
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

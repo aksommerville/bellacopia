@@ -355,3 +355,18 @@ int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix) {
   int srcc=text_get_string(&src,rid,strix);
   return modal_dialogue_add_option(modal,strix,src,srcc);
 }
+
+/* Set default option.
+ */
+
+void modal_dialogue_set_default(struct modal *modal,int optionid) {
+  if (!modal||(modal->type!=&modal_type_dialogue)) return;
+  struct option *option=MODAL->optionv;
+  int i=0;
+  for (;i<MODAL->optionc;i++,option++) {
+    if (option->optionid==optionid) {
+      MODAL->optionp=i;
+      return;
+    }
+  }
+}

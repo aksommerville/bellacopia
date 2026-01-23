@@ -23,6 +23,9 @@ struct sprite_hero {
   char spell[SPELL_LIMIT]; // 'LRUD.'
   int spellc;
   double matchclock; // Add to GRP(light) when increasing. Removal is automatic.
+  int compassz; // <0 to refresh lazily
+  double compassx,compassy; // <0 if not found.
+  double compasst; // Angle for the visual indicator. Only relevant if (x,y,z)>=0.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

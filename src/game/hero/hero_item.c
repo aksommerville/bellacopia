@@ -284,13 +284,60 @@ static int bell_begin(struct sprite *sprite) {
  * We get passive updates like Divining Rod.
  */
  
+static int cb_compass(int optionid,void *userdata) {
+  if (optionid<1) return 0;
+  struct sprite *sprite=userdata;
+  store_set_fld16(NS_fld16_compassoption,optionid);
+  const char *name=0; int namec=text_get_string(&name,RID_strings_item,optionid);
+  SPRITE->compassz=-1; // Refresh lazily at next update.
+  return 1;
+}
+ 
 static int compass_begin(struct sprite *sprite) {
-  //TODO More forceful momentary feedback?
-  return 0;
+  struct modal_args_dialogue args={
+    .rid=RID_strings_item,
+    .strix=43,
+    .speaker=sprite,
+    .cb=cb_compass,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return 0;
+  int strixv[10];
+  int strixc=game_list_targets(strixv,sizeof(strixv)/sizeof(int));
+  int i=0; for (;i<strixc;i++) {
+    modal_dialogue_add_option_string(modal,RID_strings_item,strixv[i]);
+  }
+  modal_dialogue_set_default(modal,store_get_fld16(NS_fld16_compassoption));
+  return 1;
 }
 
 static void compass_update(struct sprite *sprite,double elapsed) {
-  //TODO
+  
+  /* Do we need to refresh?
+   */
+  if (SPRITE->compassz!=sprite->z) {
+    SPRITE->compassz=sprite->z;
+    int srcx=(int)sprite->x,srcy=(int)sprite->y,dstx=-1,dsty=-1;
+    int compass=store_get_fld16(NS_fld16_compassoption);
+    if (!compass) compass=NS_compass_auto;
+    if (game_get_target_position(&dstx,&dsty,srcx,srcy,sprite->z,compass)<0) {
+      SPRITE->compassx=SPRITE->compassy=-1.0;
+      return;
+    }
+    SPRITE->compassx=dstx+0.5;
+    SPRITE->compassy=dsty+0.5;
+  }
+  if (SPRITE->compassx<0.0) return;
+  
+  /* Update angle.
+   */
+  double dx=SPRITE->compassx-sprite->x;
+  double dy=SPRITE->compassy-sprite->y;
+  SPRITE->compasst=atan2(dx,dy);
+  // At first I was thinking of spinning and slowing down near the target, a la Full Moon and Arrautza.
+  // But I kind of like this simplistic locked-on approach.
+  // Anyhoo, we can change minds at any time in the future. (compasst) should be the after-animation position, where it should render.
 }
 
 /* Update items, main entry point.
@@ -339,6 +386,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_hookshot: result=hookshot_begin(sprite); break;
       case NS_itemid_candy: result=candy_begin(sprite); break;
       case NS_itemid_vanishing: result=vanishing_begin(sprite); break;
+      case NS_itemid_compass: result=compass_begin(sprite); break;
       case NS_itemid_bell: result=bell_begin(sprite); break;
     }
     if (!result) {

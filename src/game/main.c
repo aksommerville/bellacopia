@@ -24,6 +24,7 @@ int egg_client_init() {
   srand_auto();
 
   if (res_init()<0) return -1;
+  if (game_init_targets()<0) return -1;
   
   if (!(g.font=font_new())) return -1;
   if (font_add_image(g.font,RID_image_font9_0020,0x0020)) return -1;

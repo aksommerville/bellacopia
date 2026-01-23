@@ -18,7 +18,17 @@ static void hero_render_errata(struct sprite *sprite,int x,int y) {
     graf_set_alpha(&g.graf,0xff);
   }
   
-  //TODO Compass.
+  /* Compass.
+   */
+  if (g.store.invstorev[0].itemid==NS_itemid_compass) {
+    if (g.framec%30<22) {
+      if (SPRITE->compassx>=0.0) {
+        int cx=x+(int)(sin(SPRITE->compasst)*NS_sys_tilesize);
+        int cy=y+(int)(cos(SPRITE->compasst)*NS_sys_tilesize);
+        graf_tile(&g.graf,cx,cy,0x7f,0);
+      }
+    }
+  }
   
   /* Divining Rod alerts.
    */

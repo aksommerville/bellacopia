@@ -189,6 +189,9 @@ int game_get_item(int itemid,int quantity) {
     if (nq>limit) nq=limit;
     store_set_fld16(detail->fld16,nq);
     bm_sound(RID_sound_collect);
+    if (itemid==NS_itemid_heartcontainer) { // New heart containers are full, ie increment HP.
+      store_set_fld16(NS_fld16_hp,store_get_fld16(NS_fld16_hp)+1);
+    }
     game_report_item_quantity_add(itemid,quantity);
     return 1;
   }
@@ -394,6 +397,15 @@ static const struct item_detail item_detailv[]={
     .initial_limit=0,
     .inventoriable=1,
     .fld16=0,
+  },
+  [NS_itemid_heartcontainer]={
+    .tileid=0x2f,
+    .hand_tileid=0,
+    .strix_name=36,
+    .strix_help=37,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=NS_fld16_hpmax,
   },
 };
  
