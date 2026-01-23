@@ -22,6 +22,7 @@ struct sprite_hero {
   char wanddir; // 0,'LRUD'
   char spell[SPELL_LIMIT]; // 'LRUD.'
   int spellc;
+  double matchclock; // Add to GRP(light) when increasing. Removal is automatic.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

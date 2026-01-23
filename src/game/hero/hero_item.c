@@ -108,8 +108,11 @@ static void divining_update(struct sprite *sprite,double elapsed) {
  */
  
 static int match_begin(struct sprite *sprite) {
-  //TODO verify inventory
-  //TODO Sound effect, and do whatever we're doing to track the lit state.
+  if (g.store.invstorev[0].quantity<1) return 0;
+  g.store.invstorev[0].quantity--;
+  bm_sound(RID_sound_match);
+  SPRITE->matchclock+=5.000;
+  sprite_group_add(GRP(light),sprite);
   return 1;
 }
 

@@ -1,0 +1,4 @@
+image image:meadow_sprites
+tile 19 0
+type (u16:sprtype)firepot
+groups (b32:sprgrp)visible,solid,light,update

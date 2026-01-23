@@ -1,5 +1,8 @@
 #include "game/bellacopia.h"
 
+#define DARK_UP_SPEED   2.000
+#define DARK_DOWN_SPEED 5.000
+
 /* Hard reset.
  */
  
@@ -19,6 +22,7 @@ void camera_reset() {
   g.camera.cut=1;
   g.camera.lock=0;
   g.camera.listenlock=0;
+  g.camera.darkness=0.0;
 }
 
 /* Listeners.
@@ -390,6 +394,7 @@ void camera_update(double elapsed) {
    * If we're within a pixel of it, just snap. (bear in mind this is running always).
    * Ditto in cut and lock cases.
    */
+  int wascut=g.camera.cut;
   if (g.camera.cut) {
     g.camera.cut=0;
     g.camera.fx=idealx;
@@ -451,6 +456,86 @@ void camera_update(double elapsed) {
   g.camera.rx=rx;
   g.camera.ry=ry;
   camera_check_exposures(ox,oy);
+  
+  /* Update darkness.
+   */
+  if (g.camera.map) {
+    if (g.camera.map->dark) {
+      if (wascut) g.camera.darkness=1.0;
+      else if ((g.camera.darkness+=DARK_UP_SPEED*elapsed)>1.0) g.camera.darkness=1.0;
+    } else {
+      if (wascut) g.camera.darkness=0.0;
+      else if ((g.camera.darkness-=DARK_DOWN_SPEED*elapsed)<0.0) g.camera.darkness=0.0;
+    }
+  }
+}
+
+/* Darkness and light.
+ */
+ 
+static void camera_render_darkness() {
+  if (g.camera.darkness>0.0) {
+    double darkness=g.camera.darkness;
+    if (g.flash>0.0) {
+      if ((darkness-=g.flash)<0.0) darkness=0.0;
+    }
+    double nlightness=0.0;
+    if (GRP(light)->sprc&&(darkness>0.0)) {
+      // g.camera.fx,fy is unclamped; we want a clamped version:
+      double fx=(double)(g.camera.rx+(FBW>>1))/(double)NS_sys_tilesize;
+      double fy=(double)(g.camera.ry+(FBH>>1))/(double)NS_sys_tilesize;
+      double d2max=NS_sys_mapw*0.5;
+      d2max*=d2max;
+      struct sprite **p=GRP(light)->sprv;
+      int i=GRP(light)->sprc;
+      for (;i-->0;p++) {
+        struct sprite *sprite=*p;
+        double dx=sprite->x-fx;
+        double dy=sprite->y-fy;
+        double d2=dx*dx+dy*dy;
+        double r=1.0-d2/d2max;
+        r*=0.5; // Tone it down a bit. Manmade light sources never get even close to sunlight.
+        if (r<=0.0) continue;
+        nlightness+=r;
+      }
+      // A little periodic up and down too.
+      if (nlightness>0.0) {
+        nlightness+=sin(((g.framec%50)*M_PI)/50.0)*0.050;
+      }
+      if (nlightness>1.0) nlightness=1.0;
+      else if (nlightness<0.0) nlightness=0.0;
+    }
+    const double syncspeed=0.050;
+    if (g.camera.lightness<nlightness) {
+      if ((g.camera.lightness+=syncspeed)>nlightness) g.camera.lightness=nlightness;
+    } else if (g.camera.lightness>nlightness) {
+      if ((g.camera.lightness-=syncspeed)<nlightness) g.camera.lightness=nlightness;
+    }
+    if ((darkness-=g.camera.lightness)<0.0) darkness=0.0;
+    int alpha=(int)(darkness*255.0);
+    if (alpha>0) {
+      if (alpha>0xff) alpha=0xff;
+      graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
+    }
+    // Hero renders on top of the darkness.
+    if (GRP(hero)->sprc>=1) {
+      struct sprite *sprite=GRP(hero)->sprv[0];
+      int dstx=(int)(sprite->x*NS_sys_tilesize)-g.camera.rx;
+      int dsty=(int)(sprite->y*NS_sys_tilesize)-g.camera.ry;
+      if (sprite->type->render) {
+        sprite->type->render(sprite,dstx,dsty);
+      } else {
+        graf_set_image(&g.graf,sprite->imageid);
+        graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+      }
+    }
+  
+  /* Flashing in the light.
+   */
+  } else if (g.flash>0.0) {
+    int alpha=(int)((g.flash*128.0)/FLASH_TIME);
+    if (alpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xfff08000|alpha);
+  }
 }
 
 /* Render.
@@ -491,6 +576,9 @@ void camera_render() {
   for (i=GRP(visible)->sprc;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->defunct) continue; // Defuncts should have been killed by this point, but let's be safe.
+    // We'll draw the hero special on top of the darkness.
+    // Note that this will also put her on top of anything with a higher layer. Hoping that layering won't get used much.
+    if ((sprite->type==&sprite_type_hero)&&(g.camera.darkness>0.0)) continue;
     int dstx=(int)(sprite->x*NS_sys_tilesize)-g.camera.rx;
     int dsty=(int)(sprite->y*NS_sys_tilesize)-g.camera.ry;
     // Could cull offscreen sprites here but I'm not sure it's worth the risk. We don't have the entire planeful or anything.
@@ -502,11 +590,10 @@ void camera_render() {
     }
   }
   
-  /* Flashing in the light.
+  /* Darkness and flash.
    */
-  if (g.flash>0.0) {
-    int alpha=(int)((g.flash*128.0)/FLASH_TIME);
-    if (alpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xfff08000|alpha);
+  if ((g.camera.darkness>0.0)||(g.flash>0.0)) {
+    camera_render_darkness();
   }
   
   //TODO Weather.

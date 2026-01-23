@@ -14,3 +14,5 @@
 image image:caves
 position 1 1 2 *
 sprite @11,5 sprite:jigpiece (u32)0
+dark
+sprite @14,2 sprite:firepot (u8:radius_m)3 (u24)0

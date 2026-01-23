@@ -94,6 +94,7 @@
   2      Ramming           Orca               Sea
   2      RatRace           Rat                Cave
   2      Rebounding        Hoplite            Battlefield
+  2      Regex             Globlin            Cave
   2      Remembering       Elephant           Jungle
   2      Robohorse         Cavalier           Battlefield
   2      Rodeo             Cowpoke            Desert

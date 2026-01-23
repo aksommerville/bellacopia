@@ -33,6 +33,9 @@ struct camera {
   struct map *door_map;
   int door_x,door_y;
   
+  double darkness; // 0..1 = light..dark
+  double lightness;
+  
   //TODO transitions
   //TODO weather
   

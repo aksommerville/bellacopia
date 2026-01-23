@@ -228,7 +228,8 @@ void hero_render(struct sprite *sprite,int x,int y) {
         case 5: itemtileid=0x87; break;
       }
     }
-  } else if (itemtileid==0x74) { //TODO Match: If lit, animate 0x84,0x85
+  } else if (itemtileid==0x74) { // Match
+    if (SPRITE->matchclock>0.0) itemtileid=(g.framec&8)?0x85:0x84;
   } else if ((itemtileid==0x73)&&SPRITE->facedx) { // Fishpole: Natural orientation horizontally conflicts with Dot's face. Turn it around.
     itemxform^=EGG_XFORM_XREV;
   } else if (itemtileid==0x7a) { // Potion: 4 tiles indicating quantity.

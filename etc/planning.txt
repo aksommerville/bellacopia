@@ -91,6 +91,7 @@ We'll group minigames by Zone.
 - - - Boblin: Apples
 - - - Coblin: Cobbling
 - - - Foblin: Something to do with a key fob?
+- - - Globlin: Regex
 - - - Hoblin: Hobbling, whatever that means.
 - - - Joblin: Hiring
 - - - Loblin: Throwing
@@ -223,6 +224,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
 - [ ]   Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
 - [ ]   Rebounding. Pong. First miss loses.
+- [ ]   Regex. No idea how it should work and will probably be super painful for users, we can have a "Globlin"!
 - [ ]   Remembering. Shown 9 cards, then they flip and you have to pick a given one.
 - [ ]   Robohorse. L/R control the horse's two legs. QWOP-ish.
 - [ ]   Rodeo. L/R to balance on the bull or hold A to brace.

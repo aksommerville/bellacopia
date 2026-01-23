@@ -51,7 +51,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] candy
 - - [x] divining
 - - [x] wand
-- - [ ] match
+- - [x] match
 - - [ ] compass
 - - [ ] hookshot
 - - [ ] broom
@@ -79,3 +79,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
 - [ ] More spells. Not sure what...
 - [ ] Invalid spell, should we do a head-shake like in Full Moon?
+- [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
+- [ ] Should firepot be switchable?

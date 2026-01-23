@@ -37,6 +37,11 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
     if (g.store.invstorev[0].itemid==NS_itemid_divining) SPRITE->divining_alert_clock-=elapsed;
     else SPRITE->divining_alert_clock=0.0;
   }
+  if (SPRITE->matchclock>0.0) {
+    if ((SPRITE->matchclock-=elapsed)<=0.0) {
+      sprite_group_remove(GRP(light),sprite);
+    }
+  }
 
   hero_item_update(sprite,elapsed);
   hero_motion_update(sprite,elapsed);
