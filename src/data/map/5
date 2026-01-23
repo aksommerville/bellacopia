@@ -13,7 +13,6 @@
 
 image image:cheapside
 position 7 7 1 *
-sprite @15,5 sprite:jigpiece (u32)0
 door @2,3 map:109 @7,9 0x0000
 door @9,3 map:110 @8,9 0x0000
 door @15,3 map:111 @7,8 0x0000

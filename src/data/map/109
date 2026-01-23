@@ -16,3 +16,4 @@ door @7,9 map:5 @2,3 0x0000
 position 0 1 0 0
 sprite @7,4 sprite:brewer (u16:activity)brewer (u16:activity_arg)0
 debugmsg "TODO\u0020Single\u0020servings"
+parent map:5

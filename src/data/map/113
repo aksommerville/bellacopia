@@ -15,3 +15,4 @@ image image:cheapside_int
 door @4,10 map:5 @12,9 0x0000
 position 4 1 0 0
 sprite @4,4 sprite:fishwife (u16:activity)fishwife (u16:activity_arg)0
+parent map:5

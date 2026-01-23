@@ -15,3 +15,4 @@ image image:cheapside_int
 door @8,9 map:5 @9,3 0x0000
 position 1 1 0 0
 sprite @8,4 sprite:nurse (u16:activity)bloodbank (u16:activity_arg)2
+parent map:5

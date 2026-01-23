@@ -13,5 +13,5 @@
 
 image image:botire
 position 2 5 1 *
-sprite @8,6 sprite:jigpiece (u32)0
 debugmsg "botire_sw"
+door @14,4 map:116 @9,9 0x0000
