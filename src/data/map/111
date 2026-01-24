@@ -17,3 +17,4 @@ position 2 1 0 0
 debugmsg "unknown"
 parent map:5
 sprite @13,5 sprite:jigpiece (u32)0
+song song:feet_to_the_fire
