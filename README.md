@@ -56,6 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] hookshot
 - - [x] broom
 - - [x] fishpole
+- [ ] Spawn via rsprite.
 - [ ] Battle
 - - [ ] Generic framework
 - - [ ] fishing
@@ -83,3 +84,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`
+- [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
