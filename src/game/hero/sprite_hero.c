@@ -16,6 +16,7 @@ static void _hero_del(struct sprite *sprite) {
  
 static int _hero_init(struct sprite *sprite) {
   SPRITE->facedy=1;
+  SPRITE->broomdx=1;
   SPRITE->item_blackout=1;
   SPRITE->qx=-1;
   SPRITE->qy=-1;

@@ -5,7 +5,7 @@
  
 static int item_prevents_motion(uint8_t itemid) {
   switch (itemid) {
-    case NS_itemid_broom: // Broom motion is a whole different thing.
+    //case NS_itemid_broom: // Broom motion is a whole different thing.
     case NS_itemid_wand:
     case NS_itemid_fishpole:
     case NS_itemid_hookshot:
@@ -83,6 +83,7 @@ static void hero_motion_update_input(struct sprite *sprite) {
   } else if (nindy&&(nindy==-SPRITE->facedy)) {
     SPRITE->facedy=nindy;
   }
+  if (SPRITE->facedx) SPRITE->broomdx=SPRITE->facedx;
   
   /* Commit the new state, and begin walking if we aren't yet.
    */
@@ -142,6 +143,9 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
   }
   
   double speed=6.0*elapsed;
+  if (SPRITE->itemid_in_progress==NS_itemid_broom) {
+    speed=12.0*elapsed;
+  }
   if (!sprite_move(sprite,SPRITE->indx*speed,SPRITE->indy*speed)) {
     // If she's trying to move cardinally, perform an off-axis correction.
     if (SPRITE->indx&&!SPRITE->indy) hero_fudge_vert(sprite,elapsed);

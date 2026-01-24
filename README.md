@@ -54,7 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] match
 - - [x] compass
 - - [x] hookshot
-- - [ ] broom
+- - [x] broom
 - - [ ] fishpole
 - [ ] Battle
 - - [ ] Generic framework

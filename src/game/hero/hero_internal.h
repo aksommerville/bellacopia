@@ -32,6 +32,7 @@ struct sprite_hero {
   double safex,safey; // If we hookshot into the water or something, reappear here.
   struct sprite_group *pumpkin; // Null until the first time we need it.
   uint32_t pumpkin_physics;
+  int broomdx; // Like (facedx) but never zero.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

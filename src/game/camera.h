@@ -12,7 +12,7 @@
 #define CAMERA_SCOPE_LIMIT 4
 
 #define CAMERA_PAN_SPEED 10.0
-#define CAMERA_LOCK_DISTANCE 0.250
+#define CAMERA_LOCK_DISTANCE 0.450
 
 // Global singleton (g.camera).
 struct camera {

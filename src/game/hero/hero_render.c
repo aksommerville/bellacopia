@@ -52,7 +52,17 @@ static void hero_render_errata(struct sprite *sprite,int x,int y) {
  */
  
 static void hero_render_broom(struct sprite *sprite,int x,int y) {
-  //TODO
+  int elevation=(g.framec&16)?-1:0;
+  graf_tile(&g.graf,x+SPRITE->broomdx,y+8,0x0b+elevation,0); // shadow
+  uint8_t tileid=0x0c;
+  if (SPRITE->indx) tileid=(g.framec&8)?0x1c:0x2c;
+  if (SPRITE->broomdx>0) {
+    graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y+elevation,tileid+1,EGG_XFORM_XREV);
+    graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y+elevation,tileid,EGG_XFORM_XREV);
+  } else {
+    graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y+elevation,tileid,0);
+    graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y+elevation,tileid+1,0);
+  }
 }
 
 /* Encoding on wand, complete replacement.

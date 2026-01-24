@@ -5,11 +5,27 @@
  
 static int broom_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_broom;
+  sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+  sprite_group_add(GRP(floating),sprite);
   return 1;
 }
 
 static void broom_end(struct sprite *sprite) {
+  sprite->physics|=((1<<NS_physics_water)|(1<<NS_physics_hole));
+  if (!sprite_test_position(sprite)) {
+    // Try quantizing to the cell. If it's still a collision, restore and prevent the unbrooming.
+    double x0=sprite->x,y0=sprite->y;
+    sprite->x=(int)sprite->x+0.5;
+    sprite->y=(int)sprite->y+0.5;
+    if (!sprite_test_position(sprite)) {
+      sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+      sprite->x=x0;
+      sprite->y=y0;
+      return;
+    }
+  }
   SPRITE->itemid_in_progress=0;
+  sprite_group_remove(GRP(floating),sprite);
 }
 
 static void broom_update(struct sprite *sprite,double elapsed) {
@@ -17,7 +33,10 @@ static void broom_update(struct sprite *sprite,double elapsed) {
     broom_end(sprite);
     return;
   }
-  //TODO broom
+  // Was thinking of doing the Thirty-Seconds-Apothecary-style relative steering, but now having second thoughts.
+  // The simpler Full Moon and Dead Weight style broom is much easier to do, and also easier for the user to understand.
+  // We did the relative broom here in Mark 1. It was awkward switching between relative and absolute control.
+  // So for now, hero_item.c only manages toggling the broom state on and off. Motion is just like walking, in hero_motion.c.
 }
 
 /* Divining Rod.
