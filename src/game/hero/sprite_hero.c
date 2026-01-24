@@ -5,6 +5,10 @@
  
 static void _hero_del(struct sprite *sprite) {
   camera_unlisten(SPRITE->door_listener);
+  if (SPRITE->pumpkin) {
+    sprite_group_clear(SPRITE->pumpkin);
+    sprite_group_del(SPRITE->pumpkin);
+  }
 }
 
 /* Init.

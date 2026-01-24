@@ -412,11 +412,19 @@ void camera_update(double elapsed) {
       g.camera.fy=idealy;
       g.camera.lock=1;
     } else {
+      g.camera.lock=0;
       double speed=CAMERA_PAN_SPEED*elapsed;
       double d=sqrt(d2);
-      g.camera.fx+=(dx*speed)/d;
-      g.camera.fy+=(dy*speed)/d;
-      g.camera.lock=0;
+      if (dx<0.0) {
+        if ((g.camera.fx+=(dx*speed)/d)<idealx) g.camera.fx=idealx;
+      } else if (dx>0.0) {
+        if ((g.camera.fx+=(dx*speed)/d)>idealx) g.camera.fx=idealx;
+      }
+      if (dy<0.0) {
+        if ((g.camera.fy+=(dy*speed)/d)<idealy) g.camera.fy=idealy;
+      } else if (dy>0.0) {
+        if ((g.camera.fy+=(dy*speed)/d)>idealy) g.camera.fy=idealy;
+      }
     }
   }
   

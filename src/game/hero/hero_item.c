@@ -227,16 +227,185 @@ static void potion_update(struct sprite *sprite,double elapsed) {
 /* Hookshot.
  */
  
+#define HOOKSTAGE_GO     1
+#define HOOKSTAGE_RETURN 2
+#define HOOKSTAGE_PULL   3
+
+#define HOOK_SPEED_GO     10.0
+#define HOOK_SPEED_RETURN 10.0
+#define HOOK_SPEED_PULL   10.0
+
+#define HOOK_DISTANCE_MAX 7.0
+
+#define HOOK_TICK_TIME 0.100
+ 
 static int hookshot_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_hookshot;
   bm_sound(RID_sound_hookshot_begin);
+  SPRITE->hookstage=HOOKSTAGE_GO;
+  SPRITE->hookdistance=0.5;
+  SPRITE->hookclock=HOOK_TICK_TIME; // not zero; we just played hookshot_begin
+  SPRITE->safex=sprite->x;
+  SPRITE->safey=sprite->y;
   return 1;
 }
 
+static void hookshot_end_pull(struct sprite *sprite) {
+  sprite->physics|=((1<<NS_physics_water)|(1<<NS_physics_hole));
+  SPRITE->itemid_in_progress=0;
+  // If after restoring hole collisions, we're still good then we're still good. Done.
+  if (sprite_test_position(sprite)) return;
+  // Try forcing to the center of my cell.
+  sprite->x=(int)sprite->x+0.5;
+  sprite->y=(int)sprite->y+0.5;
+  if (sprite_test_position(sprite)) return;
+  // Emergency. Return to where we first hooked from.
+  // TODO Could be trouble if a solid sprite moved into that space during the flight. Should we account for that?
+  sprite->x=SPRITE->safex;
+  sprite->y=SPRITE->safey;
+}
+
+static void hookshot_check_grabbage(struct sprite *sprite) {
+
+  // Position is a little tweaky based on face direction.
+  double hx=sprite->x+SPRITE->hookdistance*SPRITE->facedx;
+  double hy=sprite->y+SPRITE->hookdistance*SPRITE->facedy;
+  if (SPRITE->facedx) hy+=0.25;
+  else if (SPRITE->facedy<0) hx+=0.25;
+  else hx-=0.25;
+
+  // If there's a grabbable sprite, grab it and return.
+  struct sprite **otherp=GRP(grabbable)->sprv;
+  int i=GRP(grabbable)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    if (other==sprite) continue; // is the hero grabbable? she shouldn't be
+    if (hx>=other->x+other->hbr) continue;
+    if (hx<=other->x+other->hbl) continue;
+    if (hy>=other->y+other->hbb) continue;
+    if (hy<=other->y+other->hbt) continue;
+    if (!SPRITE->pumpkin) {
+      if (!(SPRITE->pumpkin=sprite_group_new())) return;
+      SPRITE->pumpkin->mode=SPRITE_GROUP_MODE_SINGLE;
+    }
+    if (sprite_group_add(SPRITE->pumpkin,other)<0) return;
+    SPRITE->pumpkin_physics=other->physics;
+    other->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+    bm_sound(RID_sound_hookshot_grab);
+    SPRITE->hookstage=HOOKSTAGE_RETURN;
+    return;
+  }
+  
+  // Check the single cell. If grabbable, enter PULL or if solid enter RETURN.
+  // Shouldn't mean a thing, just noting: the hook and the hero might not be on the same map.
+  int ihx=(int)hx;
+  int ihy=(int)hy;
+  if ((ihx>=0)&&(ihy>=0)) {
+    struct map *map=map_by_sprite_position(hx,hy,sprite->z);
+    if (map) {
+      int col=ihx%NS_sys_mapw;
+      int row=ihy%NS_sys_maph;
+      uint8_t physics=map->physics[map->v[row*NS_sys_mapw+col]];
+      if (physics==NS_physics_grabbable) {
+        bm_sound(RID_sound_hookshot_grab);
+        SPRITE->hookstage=HOOKSTAGE_PULL;
+        sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+        return;
+      } else if (physics==NS_physics_solid) {
+        bm_sound(RID_sound_hookshot_reject);
+        SPRITE->hookstage=HOOKSTAGE_RETURN;
+        return;
+      }
+    }
+  }
+  
+  // Reject if we touch a solid sprite.
+  // This comes after the map check, because we want to check all grabbables first.
+  for (otherp=GRP(solid)->sprv,i=GRP(solid)->sprc;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    if (other==sprite) continue;
+    if (hx>=other->x+other->hbr) continue;
+    if (hx<=other->x+other->hbl) continue;
+    if (hy>=other->y+other->hbb) continue;
+    if (hy<=other->y+other->hbt) continue;
+    bm_sound(RID_sound_hookshot_reject);
+    SPRITE->hookstage=HOOKSTAGE_RETURN;
+    return;
+  }
+}
+
 static void hookshot_update(struct sprite *sprite,double elapsed) {
-  //TODO Multiple stages, pretty complicated. For now, just exit the state when button released.
-  if (!(g.input[0]&EGG_BTN_SOUTH)) {
-    SPRITE->itemid_in_progress=0;
+  switch (SPRITE->hookstage) {
+  
+    case HOOKSTAGE_GO: {
+        if ((SPRITE->hookclock-=elapsed)<=0.0) {
+          SPRITE->hookclock+=HOOK_TICK_TIME;
+          bm_sound(RID_sound_hookshot_tick);
+        }
+        // Releasing SOUTH puts us in RETURN stage.
+        if (!(g.input[0]&EGG_BTN_SOUTH)) {
+          SPRITE->hookstage=HOOKSTAGE_RETURN;
+          break;
+        }
+        // Throw the hook a bit further, and if it breaches the limit, enter RETURN.
+        SPRITE->hookdistance+=HOOK_SPEED_GO*elapsed;
+        if (SPRITE->hookdistance>HOOK_DISTANCE_MAX) {
+          SPRITE->hookstage=HOOKSTAGE_RETURN;
+          break;
+        }
+        hookshot_check_grabbage(sprite);
+      } break;
+      
+    case HOOKSTAGE_RETURN: {
+        if ((SPRITE->hookclock-=elapsed)<=0.0) {
+          SPRITE->hookclock+=HOOK_TICK_TIME;
+          bm_sound(RID_sound_hookshot_untick);
+        }
+        if (SPRITE->pumpkin&&SPRITE->pumpkin->sprc) {
+          struct sprite *pumpkin=SPRITE->pumpkin->sprv[0];
+          if (!sprite_move(pumpkin,-SPRITE->facedx*HOOK_SPEED_RETURN*elapsed,-SPRITE->facedy*HOOK_SPEED_RETURN*elapsed)) {
+            // oops it hit a wall or something.
+            pumpkin->physics=SPRITE->pumpkin_physics;
+            sprite_group_clear(SPRITE->pumpkin);
+            //TODO We probably need to check for dropping into water etc, as we do at the end of PULL.
+          }
+        }
+        if ((SPRITE->hookdistance-=HOOK_SPEED_RETURN*elapsed)<=0.0) {
+          if (SPRITE->pumpkin&&SPRITE->pumpkin->sprc) {
+            struct sprite *pumpkin=SPRITE->pumpkin->sprv[0];
+            pumpkin->physics=SPRITE->pumpkin_physics;
+            sprite_group_clear(SPRITE->pumpkin);
+          }
+          SPRITE->itemid_in_progress=0;
+        }
+      } break;
+      
+    case HOOKSTAGE_PULL: {
+        if ((SPRITE->hookclock-=elapsed)<=0.0) {
+          SPRITE->hookclock+=HOOK_TICK_TIME;
+          bm_sound(RID_sound_hookshot_untick);
+        }
+        // OK to abort along the way.
+        if (!(g.input[0]&EGG_BTN_SOUTH)) {
+          hookshot_end_pull(sprite);
+          return;
+        }
+        // Move the hero toward the hookshot, then drop actual movement from (hookdistance).
+        // If she stops altogether, abort the activity.
+        double x0=sprite->x,y0=sprite->y;
+        if (sprite_move(sprite,SPRITE->facedx*HOOK_SPEED_PULL*elapsed,SPRITE->facedy*HOOK_SPEED_PULL*elapsed)) {
+          double actual=(sprite->x-x0)+(sprite->y-y0);
+          if (actual>0.0) actual=-actual;
+          if ((SPRITE->hookdistance+=actual)<=0.0) {
+            hookshot_end_pull(sprite);
+          }
+        } else {
+          hookshot_end_pull(sprite);
+        }
+      } break;
+      
   }
 }
 

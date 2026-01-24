@@ -116,8 +116,54 @@ static void hero_render_fishpole(struct sprite *sprite,int x,int y) {
 /* Using hookshot, complete replacement.
  */
  
+static void hero_render_hookshot_hardware(struct sprite *sprite,int x,int y) {
+  const int spacing=8;
+  int hx=x+(int)(SPRITE->hookdistance*NS_sys_tilesize*SPRITE->facedx);
+  int hy=y+(int)(SPRITE->hookdistance*NS_sys_tilesize*SPRITE->facedy);
+  
+  if (SPRITE->facedx) hy+=4;
+  else if (SPRITE->facedy<0) hx+=3;
+  else hx-=3;
+  
+  uint8_t tileid,xform;
+  if (SPRITE->facedx<0) xform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+  else if (SPRITE->facedx>0) xform=EGG_XFORM_SWAP;
+  else if (SPRITE->facedy<0) xform=EGG_XFORM_YREV;
+  else xform=0;
+  if (SPRITE->hookstage>1) tileid=0x28; // Closed if returning or pulling.
+  else tileid=0x27;
+  graf_tile(&g.graf,hx,hy,tileid,xform);
+  
+  x+=SPRITE->facedx*8;
+  y+=SPRITE->facedy*8;
+  for (;;) {
+    hx-=SPRITE->facedx*spacing;
+    hy-=SPRITE->facedy*spacing;
+    if (SPRITE->facedx<0) { if (hx>=x) break; }
+    else if (SPRITE->facedx>0) { if (hx<=x) break; }
+    else if (SPRITE->facedy<0) { if (hy>=y) break; }
+    else { if (hy<=y) break; }
+    graf_tile(&g.graf,hx,hy,0x26,0);
+  }
+}
+ 
 static void hero_render_hookshot(struct sprite *sprite,int x,int y) {
-  //TODO
+
+  // Facing north, render the hardware first.
+  if (SPRITE->facedy<0) hero_render_hookshot_hardware(sprite,x,y);
+
+  uint8_t tileid,xform=0;
+  if (SPRITE->facedx<0) tileid=0x18; 
+  else if (SPRITE->facedx>0) { tileid=0x18; xform=EGG_XFORM_XREV; }
+  else if (SPRITE->facedy<0) tileid=0x17;
+  else tileid=0x16;
+  
+  graf_tile(&g.graf,x,y,tileid,xform);
+  
+  // Facing south or horizontal, render the hardware second.
+  if (SPRITE->facedy>=0) hero_render_hookshot_hardware(sprite,x,y);
+  
+  hero_render_errata(sprite,x,y);
 }
 
 /* Quaffing a potion, complete replacement.

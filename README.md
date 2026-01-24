@@ -53,7 +53,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] wand
 - - [x] match
 - - [x] compass
-- - [ ] hookshot
+- - [x] hookshot
 - - [ ] broom
 - - [ ] fishpole
 - [ ] Battle

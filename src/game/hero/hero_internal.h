@@ -26,6 +26,12 @@ struct sprite_hero {
   int compassz; // <0 to refresh lazily
   double compassx,compassy; // <0 if not found.
   double compasst; // Angle for the visual indicator. Only relevant if (x,y,z)>=0.
+  int hookstage;
+  double hookdistance;
+  double hookclock; // For the ticking sound effect.
+  double safex,safey; // If we hookshot into the water or something, reappear here.
+  struct sprite_group *pumpkin; // Null until the first time we need it.
+  uint32_t pumpkin_physics;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

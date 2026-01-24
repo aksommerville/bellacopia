@@ -15,3 +15,4 @@ image image:botire_int
 position 1 2 0 0
 door @9,9 map:46 @4,8 0x0000
 sprite @6,7 sprite:jigpiece (u32)0
+parent map:46
