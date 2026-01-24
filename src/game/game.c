@@ -499,3 +499,18 @@ int game_warp(int mapid) {
   }
   return 0;
 }
+
+/* Choose a fish to catch.
+ */
+ 
+int game_choose_fish(int x,int y,int z) {
+  //TODO Vary geographically.
+  //TODO Can we do some logic where fish get rarer as you catch more, and you have to wait a while to build them back up?
+  switch (rand()%10) {
+    case 0: case 1: case 2: return 0;
+    case 3: case 4: case 5: case 6: return NS_itemid_greenfish;
+    case 7: case 8: return NS_itemid_bluefish;
+    case 9: return NS_itemid_redfish;
+  }
+  return 0;
+}

@@ -78,4 +78,8 @@ int game_get_target_position(int *lng,int *lat,int px,int py,int z,int strix);
  */
 int game_init_targets();
 
+/* Return zero or itemid, something you caught around the given cell.
+ */
+int game_choose_fish(int x,int y,int z);
+
 #endif

@@ -3,6 +3,8 @@
 
 #include "game/bellacopia.h"
 
+#define FISH_FLY_TIME 0.400
+
 struct sprite_hero {
   struct sprite hdr;
   int facedx,facedy; // Always a cardinal unit vector.
@@ -33,6 +35,8 @@ struct sprite_hero {
   struct sprite_group *pumpkin; // Null until the first time we need it.
   uint32_t pumpkin_physics;
   int broomdx; // Like (facedx) but never zero.
+  int fish; // Nonzero if fishing and the fish has popped out. Can be any itemid, typically greenfish, bluefish, or redfish.
+  double fishclock;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

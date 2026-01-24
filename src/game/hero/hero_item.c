@@ -183,9 +183,28 @@ static void wand_update(struct sprite *sprite,double elapsed) {
 /* Fishpole.
  */
  
+#define FISH_TIME_MIN 1.000
+#define FISH_TIME_MAX 10.000
+ 
 static int fishpole_begin(struct sprite *sprite) {
-  //TODO verify position
+  double qx=sprite->x+SPRITE->facedx*0.75;
+  double qy=sprite->y+SPRITE->facedy*0.75;
+  struct map *map=map_by_sprite_position(qx,qy,sprite->z);
+  if (!map) return 0;
+  int col=((int)qx)%NS_sys_mapw;
+  int row=((int)qy)%NS_sys_maph;
+  if ((col<0)||(row<0)) return 0;
+  uint8_t physics=map->physics[map->v[row*NS_sys_mapw+col]];
+  if (physics!=NS_physics_water) return 0;
+  bm_sound(RID_sound_fishpole_begin);
   SPRITE->itemid_in_progress=NS_itemid_fishpole;
+  SPRITE->fish=0;
+  
+  const double timerange=FISH_TIME_MAX-FISH_TIME_MIN;
+  double norm=(rand()&0x7fff)/32768.0;
+  norm=norm*norm*norm; // Raise balanced random to the 3rd power, makes short times way likelier than long.
+  SPRITE->fishclock=FISH_TIME_MIN+norm*timerange;
+  
   return 1;
 }
 
@@ -194,10 +213,29 @@ static void fishpole_end(struct sprite *sprite) {
 }
 
 static void fishpole_update(struct sprite *sprite,double elapsed) {
-  //TODO Releasing SOUTH doesn't end the mode, it's on a clock. Fudged out for now.
-  if (!(g.input[0]&EGG_BTN_SOUTH)) {
-    fishpole_end(sprite);
-    return;
+
+  // Before the fish appears, you can drop SOUTH to cancel.
+  if (!SPRITE->fish) {
+    if (!(g.input[0]&EGG_BTN_SOUTH)) {
+      fishpole_end(sprite);
+      return;
+    }
+  }
+  
+  if ((SPRITE->fishclock-=elapsed)<=0.0) {
+    if (SPRITE->fish) {
+      fprintf(stderr,"%s:%d:TODO: Begin contest for fish %d\n",__FILE__,__LINE__,SPRITE->fish);//TODO
+      game_get_item(SPRITE->fish,1); // For now, just give her the fish.
+      SPRITE->itemid_in_progress=0;
+    } else {
+      if (SPRITE->fish=game_choose_fish(sprite->x,sprite->y,sprite->z)) {
+        bm_sound(RID_sound_fishpole_catch);
+        SPRITE->fishclock=FISH_FLY_TIME;
+      } else {
+        bm_sound(RID_sound_fishpole_wompwomp);
+        SPRITE->itemid_in_progress=0;
+      }
+    }
   }
 }
 

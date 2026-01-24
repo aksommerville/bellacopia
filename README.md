@@ -44,7 +44,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Fishwife
 - [x] Show hp and gold in an overlay.
 - [x] Show hp, gold, and fish in pause menu. Inventory or Stats?
-- [ ] Items. Don't clear until all the associated stuff is ready too.
+- [x] Items. Don't clear until all the associated stuff is ready too.
 - - [x] potion
 - - [x] bugspray
 - - [x] vanishing
@@ -55,7 +55,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] compass
 - - [x] hookshot
 - - [x] broom
-- - [ ] fishpole
+- - [x] fishpole
 - [ ] Battle
 - - [ ] Generic framework
 - - [ ] fishing
@@ -82,3 +82,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
+- [ ] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`

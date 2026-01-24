@@ -120,7 +120,46 @@ static void hero_render_wand(struct sprite *sprite,int x,int y) {
  */
  
 static void hero_render_fishpole(struct sprite *sprite,int x,int y) {
-  //TODO
+  int frame=(g.framec&32)?1:0;
+  uint8_t dottileid,poletileid,xform=0;
+  int fishx0=x+SPRITE->facedx*NS_sys_tilesize;
+  int fishy0=y+SPRITE->facedy*NS_sys_tilesize;
+  if (SPRITE->facedx<0) {
+    dottileid=0x3d;
+    poletileid=0x3c;
+    if (SPRITE->fish) { dottileid+=0x20; poletileid+=0x20; }
+    else if (frame) { dottileid+=0x10; poletileid+=0x10; }
+  } else if (SPRITE->facedx>0) {
+    dottileid=0x3d;
+    poletileid=0x3c;
+    if (SPRITE->fish) { dottileid+=0x20; poletileid+=0x20; }
+    else if (frame) { dottileid+=0x10; poletileid+=0x10; }
+    xform=EGG_XFORM_XREV;
+  } else if (SPRITE->facedy<0) {
+    dottileid=0x49;
+    poletileid=0x39;
+    if (SPRITE->fish) { dottileid+=2; poletileid+=2; }
+    else if (frame) { dottileid+=1; poletileid+=1; }
+  } else {
+    dottileid=0x36;
+    poletileid=0x46;
+    // small orientation shift when facing down and caught
+    if (SPRITE->fish) { dottileid=0x38; poletileid=0x48; y-=NS_sys_tilesize; }
+    else if (frame) { dottileid+=1; poletileid+=1; }
+  }
+  graf_tile(&g.graf,x,y,dottileid,xform);
+  graf_tile(&g.graf,x+SPRITE->facedx*NS_sys_tilesize,y+SPRITE->facedy*NS_sys_tilesize,poletileid,xform);
+  hero_render_errata(sprite,x,y);
+  
+  if (SPRITE->fish) {
+    const struct item_detail *detail=item_detail_for_itemid(SPRITE->fish);
+    if (detail&&detail->tileid) {
+      const double range=-30.0; // px
+      int fishy=fishy0+(int)(((FISH_FLY_TIME-SPRITE->fishclock)*range)/FISH_FLY_TIME);
+      graf_set_image(&g.graf,RID_image_pause);
+      graf_tile(&g.graf,fishx0,fishy,detail->tileid,0);
+    }
+  }
 }
 
 /* Using hookshot, complete replacement.
