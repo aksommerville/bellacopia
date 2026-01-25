@@ -33,6 +33,10 @@ static void broom_update(struct sprite *sprite,double elapsed) {
     broom_end(sprite);
     return;
   }
+  if (SPRITE->hurt>0.0) {
+    broom_end(sprite);
+    return;
+  }
   // Was thinking of doing the Thirty-Seconds-Apothecary-style relative steering, but now having second thoughts.
   // The simpler Full Moon and Dead Weight style broom is much easier to do, and also easier for the user to understand.
   // We did the relative broom here in Mark 1. It was awkward switching between relative and absolute control.
@@ -158,6 +162,11 @@ static void wand_update(struct sprite *sprite,double elapsed) {
     wand_end(sprite);
     return;
   }
+  // Injury cancels the activity.
+  if (SPRITE->hurt>0.0) {
+    SPRITE->itemid_in_progress=0;
+    return;
+  }
   uint8_t ndir=0;
   switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
     case EGG_BTN_LEFT: ndir='L'; break;
@@ -220,6 +229,13 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
       fishpole_end(sprite);
       return;
     }
+  }
+  
+  // Injury aborts the activity, even if the fish is in flight.
+  // What happens to that fish will remain one of life's mysteries.
+  if (SPRITE->hurt>0.0) {
+    SPRITE->itemid_in_progress=0;
+    return;
   }
   
   if ((SPRITE->fishclock-=elapsed)<=0.0) {
@@ -394,6 +410,17 @@ static void hookshot_check_grabbage(struct sprite *sprite) {
 }
 
 static void hookshot_update(struct sprite *sprite,double elapsed) {
+
+  // If injured while hookshotting, generally we just stop.
+  // Use hookshot_end_pull from HOOKSTAGE_PULL because we do want its position corrections.
+  // If you get corrected to the launch site, and it no longer collides with the assailant, you still get injured.
+  if (SPRITE->hurt>0.0) {
+    if (SPRITE->pumpkin) sprite_group_clear(SPRITE->pumpkin);
+    if (SPRITE->hookstage==HOOKSTAGE_PULL) hookshot_end_pull(sprite);
+    else SPRITE->itemid_in_progress=0;
+    return;
+  }
+
   switch (SPRITE->hookstage) {
   
     case HOOKSTAGE_GO: {
@@ -591,6 +618,9 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     case NS_itemid_divining: divining_update(sprite,elapsed); break;
     case NS_itemid_compass: compass_update(sprite,elapsed); break;
   }
+  
+  // No starting items if injured.
+  if (SPRITE->hurt>0.0) return;
   
   /* Poll input.
    * Call out when SOUTH is pressed. Handler may set itemid_in_progress.

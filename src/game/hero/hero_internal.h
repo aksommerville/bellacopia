@@ -4,6 +4,7 @@
 #include "game/bellacopia.h"
 
 #define FISH_FLY_TIME 0.400
+#define HERO_HURT_TIME 0.300
 
 struct sprite_hero {
   struct sprite hdr;
@@ -37,6 +38,8 @@ struct sprite_hero {
   int broomdx; // Like (facedx) but never zero.
   int fish; // Nonzero if fishing and the fish has popped out. Can be any itemid, typically greenfish, bluefish, or redfish.
   double fishclock;
+  double hurt; // Counts down.
+  double hurtdx,hurtdy; // Normal or 0,0.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

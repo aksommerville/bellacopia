@@ -154,6 +154,7 @@
 #define NS_sprtype_candy        7 /* (u32)0 */
 #define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */
 #define NS_sprtype_rootdevil    9 /* (u16:fld)root0 (u16)0 */
+#define NS_sprtype_bonfire     10 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -164,7 +165,8 @@
   _(jigpiece) \
   _(candy) \
   _(firepot) \
-  _(rootdevil)
+  _(rootdevil) \
+  _(bonfire)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

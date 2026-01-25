@@ -92,6 +92,10 @@ static void _story_update(struct modal *modal,double elapsed) {
   game_update(elapsed);
   feet_update();
   camera_update(elapsed);
+  
+  if (g.gameover) {
+    modal->defunct=1;
+  }
 }
 
 /* Overlay with HP and gold.

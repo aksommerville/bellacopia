@@ -23,10 +23,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Mark 2 Parity Checklist
 - [x] Sometimes I step on the treadle and it toggles back and forth a few times.
 - [x] Drop sprites when far away, and prevent spawning ones already afield.
-- [ ] Hero
+- [x] Hero
 - - [x] Generic item actuation
 - - [x] Quantized position triggers
-- - [ ] Damage
+- - [x] Damage
 - [x] Pause
 - - [x] Inventory
 - - [x] Map
@@ -86,3 +86,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] When doing the jigsaws, it's hard to avoid clicking in the tab bar or closet sometimes. Maybe avoid that by keeping new pieces a bit more inside?
+- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`

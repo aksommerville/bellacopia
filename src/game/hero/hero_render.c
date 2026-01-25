@@ -265,6 +265,19 @@ static void hero_render_potion(struct sprite *sprite,int x,int y) {
   hero_render_errata(sprite,x,y);
 }
 
+/* Hurt.
+ */
+ 
+static void hero_render_hurt(struct sprite *sprite,int x,int y) {
+  uint32_t primary=0xff0000ff;
+  if (g.framec&8) primary=0xffff00ff;
+  const int dylo=-6,dyhi=-12;
+  double norm=SPRITE->hurt/HERO_HURT_TIME;
+  int hatdy=(int)(dylo*(1.0-norm)+dyhi*norm);
+  graf_fancy(&g.graf,x,y,0x1e,0,0,NS_sys_tilesize,0,primary);
+  graf_fancy(&g.graf,x,y+hatdy,0x0e,0,0,NS_sys_tilesize,0,primary);
+}
+
 /* Render, main entry point.
  */
  
@@ -277,6 +290,13 @@ void hero_render(struct sprite *sprite,int x,int y) {
   }
 
   graf_set_image(&g.graf,sprite->imageid);
+  
+  /* Hurt is a different thing.
+   */
+  if (SPRITE->hurt>0.0) {
+    hero_render_hurt(sprite,x,y);
+    return;
+  }
   
   /* Some items are a completely separate thing when engaged.
    */

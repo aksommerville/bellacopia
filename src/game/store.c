@@ -3,6 +3,29 @@
 #define STORE_SAVE_DEBOUNCE 2.000
 #define STORE_MAX_ENCODED_SIZE 2048
 
+/* Sanitize a fresh store, after clear or load.
+ * Sets a few defaults, forces valid HP, any other non-negotiable state.
+ */
+ 
+static int store_sanitize() {
+
+  // (hp,hpmax) can't be less than 3, and (hp) can't exceed (hpmax).
+  int hp=store_get_fld16(NS_fld16_hp);
+  int hpmax=store_get_fld16(NS_fld16_hpmax);
+  if (hpmax<3) store_set_fld16(NS_fld16_hpmax,hpmax=3);
+  if (hp<3) store_set_fld16(NS_fld16_hp,hp=3);
+  else if (hp>hpmax) store_set_fld16(NS_fld16_hp,hp=hpmax);
+  
+  // (goldmax) can't be less than 99, and (gold) can't exceed (goldmax).
+  int gold=store_get_fld16(NS_fld16_gold);
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  if (goldmax<99) store_set_fld16(NS_fld16_goldmax,goldmax=99);
+  if (gold>goldmax) store_set_fld16(NS_fld16_gold,gold=goldmax);
+
+  g.store.dirty=0;
+  return 0;
+}
+
 /* Clear.
  */
  
@@ -18,8 +41,7 @@ int store_clear() {
   store_set_fld16(NS_fld16_hp,3);
   store_set_fld16(NS_fld16_goldmax,99);
   
-  g.store.dirty=0;
-  return 0;
+  return store_sanitize();
 }
 
 /* Grow sections.
@@ -286,9 +308,10 @@ int store_load(const char *k,int kc) {
   srcp+=5;
   if (expect!=actual) return store_load_fail();
   
+  //TODO Maybe some more invasive consistency checks, like (hp<=maxhp)?
+  
   fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
-  g.store.dirty=0;
-  return 0;
+  return store_sanitize();
 }
 
 /* Encode store.

@@ -73,6 +73,7 @@ extern struct g {
   double vanishing; // ''
   double flash; // ''
   int warp_listener;
+  int gameover; // Set nonzero to end story-mode play.
 } g;
 
 /* Misc global API.

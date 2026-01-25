@@ -19,3 +19,5 @@ rsprite sprite:stick 30 2 (u32)0
 rsprite sprite:koala 10 1 (u32)0
 rsprite sprite:goat 10 1 (u32)0
 rsprite sprite:soldier 1 1 (u32)0
+sprite @12,6 sprite:bonfire (u32)0
+sprite @15,5 sprite:bonfire (u32)0

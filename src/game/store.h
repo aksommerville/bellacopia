@@ -39,6 +39,11 @@ struct store {
   double savedebounce;
 };
 
+/* These are both fallible, but missing or invalid data is not an error.
+ * The only real error is allocation failure, and should be treated as an emergency.
+ * If we report success, the store is initialized and valid.
+ * Possibly to the default state, even if you requested a load.
+ */
 int store_clear();
 int store_load(const char *k,int kc);
 

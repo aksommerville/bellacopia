@@ -25,6 +25,78 @@ static int _hero_init(struct sprite *sprite) {
   return 0;
 }
 
+/* Deal damage to the hero.
+ * Return nonzero to acknowledge or zero to ignore.
+ */
+ 
+static int hero_hurt(struct sprite *sprite,struct sprite *assailant) {
+  int hp=store_get_fld16(NS_fld16_hp);
+  if (--hp<0) hp=0;
+  store_set_fld16(NS_fld16_hp,hp);
+  if (!hp) {
+    fprintf(stderr,"TODO End game.\n");//TODO Soulballs, sound effect, a little cooldown time.
+    g.gameover=1;
+    return 1;
+  }
+  bm_sound(RID_sound_ouch);
+  SPRITE->hurt=HERO_HURT_TIME;
+  if (assailant) {
+    double dx=sprite->x-assailant->x;
+    double dy=sprite->y-assailant->y;
+    double d2=dx*dx+dy*dy;
+    if (d2<0.001) { // Impossibly close.
+      SPRITE->hurtdx=0.0;
+      SPRITE->hurtdy=0.0;
+    } else {
+      double distance=sqrt(d2);
+      SPRITE->hurtdx=dx/distance;
+      SPRITE->hurtdy=dy/distance;
+    }
+  } else {
+    SPRITE->hurtdx=0.0;
+    SPRITE->hurtdy=0.0;
+  }
+  return 1;
+}
+
+/* Update hazards, damage counter, etc.
+ */
+ 
+static void hero_hazards_update(struct sprite *sprite,double elapsed) {
+
+  // Currently hurt? Rocket away from the collision site.
+  if (SPRITE->hurt>0.0) {
+    SPRITE->hurt-=elapsed;
+    const double speedmin=8.0;
+    const double speedmax=24.0;
+    double norm=SPRITE->hurt/HERO_HURT_TIME;
+    double speed=speedmin*(1.0-norm)+speedmax*norm;
+    sprite_move(sprite,SPRITE->hurtdx*speed*elapsed,SPRITE->hurtdy*speed*elapsed);
+    
+  // If you're in the middle of quaffing a potion, wait until it's done.
+  // This might dodge the collision entirely. Once we get missiles happening, review.
+  } else if (SPRITE->itemid_in_progress==NS_itemid_potion) {
+  
+  // Check for new injuries.
+  } else {
+    double l=sprite->x+sprite->hbl;
+    double r=sprite->x+sprite->hbr;
+    double t=sprite->y+sprite->hbt;
+    double b=sprite->y+sprite->hbb;
+    struct sprite **otherp=GRP(hazard)->sprv;
+    int i=GRP(hazard)->sprc;
+    for (;i-->0;otherp++) {
+      struct sprite *other=*otherp;
+      if (other->defunct) continue;
+      if (other->x+other->hbl>=r) continue;
+      if (other->x+other->hbr<=l) continue;
+      if (other->y+other->hbt>=b) continue;
+      if (other->y+other->hbb<=t) continue;
+      if (hero_hurt(sprite,other)) return;
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -52,6 +124,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
 
   hero_item_update(sprite,elapsed);
   hero_motion_update(sprite,elapsed);
+  hero_hazards_update(sprite,elapsed);
 }
 
 /* Injure. Public.

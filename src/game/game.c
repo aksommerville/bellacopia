@@ -20,6 +20,7 @@ int game_reset(int use_save) {
   g.vanishing=0.0;
   g.flash=0.0;
   g.warp_listener=0;
+  g.gameover=0;
   return 0;
 }
 
