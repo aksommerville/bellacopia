@@ -15,3 +15,13 @@ image image:botire
 position 3 4 1 *
 debugmsg "botire\u0020ne"
 door @4,8 map:115 @9,9 0x0000
+root @0,9 (u16:fld)root4
+root @7,11 (u16:fld)root4
+root @7,10 (u16:fld)root4
+root @7,9 (u16:fld)root4
+root @6,9 (u16:fld)root4
+root @5,9 (u16:fld)root4
+root @4,9 (u16:fld)root4
+root @3,9 (u16:fld)root4
+root @2,9 (u16:fld)root4
+root @1,9 (u16:fld)root4

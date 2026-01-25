@@ -15,3 +15,7 @@ image image:tundra
 position 4 0 1 *
 sprite @9,10 sprite:jigpiece (u32)0
 door @5,6 map:108 @5,6 0x0000
+root @10,9 (u16:fld)root5
+root @10,11 (u16:fld)root5
+root @10,10 (u16:fld)root5
+sprite @10,9 sprite:rootdevil (u16:fld)root5 (u16)0

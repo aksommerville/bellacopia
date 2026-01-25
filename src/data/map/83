@@ -14,3 +14,16 @@ a1a2020006040501051210101012111012131012
 image image:desert
 position 8 8 1 *
 sprite @9,5 sprite:jigpiece (u32)0
+root @12,5 (u16:fld)root7
+root @19,9 (u16:fld)root7
+root @18,9 (u16:fld)root7
+root @17,9 (u16:fld)root7
+root @16,9 (u16:fld)root7
+root @15,9 (u16:fld)root7
+root @14,9 (u16:fld)root7
+root @13,9 (u16:fld)root7
+root @12,9 (u16:fld)root7
+root @12,8 (u16:fld)root7
+root @12,7 (u16:fld)root7
+root @12,6 (u16:fld)root7
+sprite @12,5 sprite:rootdevil (u16:fld)root7 (u16)0

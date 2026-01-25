@@ -14,3 +14,19 @@
 image image:tundra
 position 4 1 1 *
 sprite @6,4 sprite:jigpiece (u32)0
+root @10,0 (u16:fld)root5
+root @6,11 (u16:fld)root5
+root @6,10 (u16:fld)root5
+root @6,9 (u16:fld)root5
+root @6,8 (u16:fld)root5
+root @6,7 (u16:fld)root5
+root @7,7 (u16:fld)root5
+root @8,7 (u16:fld)root5
+root @9,7 (u16:fld)root5
+root @10,7 (u16:fld)root5
+root @10,6 (u16:fld)root5
+root @10,5 (u16:fld)root5
+root @10,4 (u16:fld)root5
+root @10,3 (u16:fld)root5
+root @10,2 (u16:fld)root5
+root @10,1 (u16:fld)root5

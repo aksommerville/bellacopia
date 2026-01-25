@@ -14,3 +14,15 @@
 image image:meadow
 position 9 7 1 *
 sprite @5,7 sprite:jigpiece (u32)0
+root @6,11 (u16:fld)root7
+root @0,6 (u16:fld)root7
+root @1,6 (u16:fld)root7
+root @2,6 (u16:fld)root7
+root @3,6 (u16:fld)root7
+root @4,6 (u16:fld)root7
+root @5,6 (u16:fld)root7
+root @6,6 (u16:fld)root7
+root @6,7 (u16:fld)root7
+root @6,8 (u16:fld)root7
+root @6,9 (u16:fld)root7
+root @6,10 (u16:fld)root7
