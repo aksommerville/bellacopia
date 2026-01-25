@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "game.h"
 #include "feet.h"
+#include "spawner.h"
 
 #define SOUND_BLACKOUT_LIMIT 16
 #define MODAL_LIMIT 8 /* Could do the stack dynamically, but a static stack also serves as a sanity check on its depth. */
@@ -67,6 +68,7 @@ extern struct g {
   struct sprites sprites;
   struct camera camera;
   struct feet feet;
+  struct spawner spawner;
   double bugspray; // Counts down, not persisted.
   double vanishing; // ''
   double flash; // ''

@@ -33,7 +33,7 @@
 #define CMD_map_stompbox        0x43 /* u16:pos u16:fld ; tileid+1 if fld set, toggles when touched */
 #define CMD_map_root            0x44 /* u16:pos u16:fld */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
-#define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:handicap u32:arg */
+#define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */

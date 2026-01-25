@@ -35,8 +35,7 @@ static void story_cb_map_exposure(struct map *map,int focus,void *userdata) {
 
 static void story_cb_cell_exposure(int x,int y,int w,int h,void *userdata) {
   struct modal *modal=userdata;
-  //fprintf(stderr,"%s %d,%d,%d,%d\n",__func__,x,y,w,h);
-  //TODO Call out for possible rsprite.
+  spawner_expose(x,y,w,h);
 }
 
 /* Init.
@@ -51,20 +50,7 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
     const struct modal_args_story *ARG=arg;
     use_save=ARG->use_save;
   }
-  
-  if (use_save) {
-    if (store_load("save",4)<0) return -1;
-  } else {
-    if (store_clear()<0) return -1;
-  }
-  
-  sprites_reset();
-  camera_reset();
-  feet_reset();
-  g.bugspray=0.0;
-  g.vanishing=0.0;
-  g.flash=0.0;
-  g.warp_listener=0;
+  if (game_reset(use_save)<0) return -1;
   
   if ((MODAL->map_listener=camera_listen_map(story_cb_map_exposure,modal))<0) return -1;
   if ((MODAL->cell_listener=camera_listen_cell(story_cb_cell_exposure,modal))<0) return -1;

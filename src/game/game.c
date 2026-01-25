@@ -3,6 +3,26 @@
 #define SPRITE_CULL_DISTANCE (NS_sys_mapw*2)
 #define SPRITE_CULL_DISTANCE2 (SPRITE_CULL_DISTANCE*SPRITE_CULL_DISTANCE)
 
+/* Reset entire game.
+ */
+ 
+int game_reset(int use_save) {
+  if (use_save) {
+    if (store_load("save",4)<0) return -1;
+  } else {
+    if (store_clear()<0) return -1;
+  }
+  sprites_reset();
+  camera_reset();
+  feet_reset();
+  spawner_reset();
+  g.bugspray=0.0;
+  g.vanishing=0.0;
+  g.flash=0.0;
+  g.warp_listener=0;
+  return 0;
+}
+
 /* Generate update.
  */
  

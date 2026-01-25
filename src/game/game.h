@@ -5,6 +5,11 @@
 #ifndef GAME_H
 #define GAME_H
 
+/* Resets all the loose globals.
+ * Store, camera, etc.
+ */
+int game_reset(int use_save);
+
 /* Does not update the entire game state.
  * Just the disorganized globals.
  * See modal_story.c

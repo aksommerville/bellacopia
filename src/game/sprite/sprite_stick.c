@@ -6,16 +6,11 @@ struct sprite_stick {
 
 #define SPRITE ((struct sprite_stick*)sprite)
 
-/* Cleanup.
- */
- 
-static void _stick_del(struct sprite *sprite) {
-}
-
 /* Init.
  */
  
 static int _stick_init(struct sprite *sprite) {
+  sprite->xform=rand()&7;
   return 0;
 }
 
@@ -23,20 +18,19 @@ static int _stick_init(struct sprite *sprite) {
  */
  
 static void _stick_update(struct sprite *sprite,double elapsed) {
-}
-
-/* Render.
- */
- 
-static void _stick_render(struct sprite *sprite,int x,int y) {
-  graf_set_image(&g.graf,sprite->imageid);
-  graf_tile(&g.graf,x,y,sprite->tileid,sprite->xform);
-}
-
-/* Collide.
- */
- 
-static void _stick_collide(struct sprite *sprite,struct sprite *other) {
+  if (GRP(hero)->sprc>0) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    const double radius=0.750;
+    double dx=hero->x-sprite->x;
+    if ((dx>-radius)&&(dx<radius)) {
+      double dy=hero->y-sprite->y;
+      if ((dy>-radius)&&(dy<radius)) {
+        if (game_get_item(NS_itemid_stick,0)) {
+          sprite_kill_soon(sprite);
+        }
+      }
+    }
+  }
 }
 
 /* Type definition.
@@ -45,9 +39,6 @@ static void _stick_collide(struct sprite *sprite,struct sprite *other) {
 const struct sprite_type sprite_type_stick={
   .name="stick",
   .objlen=sizeof(struct sprite_stick),
-  .del=_stick_del,
   .init=_stick_init,
   .update=_stick_update,
-  .render=_stick_render,
-  .collide=_stick_collide,
 };

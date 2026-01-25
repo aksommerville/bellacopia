@@ -1,0 +1,5 @@
+image image:pause
+tile 57 0
+type (u16:sprtype)stick
+layer (u16)90
+groups (b32:sprgrp)update,visible
