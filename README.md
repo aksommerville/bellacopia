@@ -92,5 +92,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When doing the jigsaws, it's hard to avoid clicking in the tab bar or closet sometimes. Maybe avoid that by keeping new pieces a bit more inside?
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
-- [ ] Pause modal: Seeing graphics corruption in the top bar.
+- [x] Pause modal: Seeing graphics corruption in the top bar.
 - [ ] Handicap for monster and fishpole.

@@ -51,6 +51,7 @@ static void pause_draw_bg(struct modal *modal) {
   int fullh=rowc*NS_sys_tilesize;
   MODAL->bgtexid=egg_texture_new();
   if (egg_texture_load_raw(MODAL->bgtexid,fullw,fullh,fullw<<2,0,0)<0) return;
+  egg_texture_clear(MODAL->bgtexid);
   graf_set_output(&g.graf,MODAL->bgtexid);
   graf_set_image(&g.graf,RID_image_pause);
   #define CELL(x,y) (x)*NS_sys_tilesize+(NS_sys_tilesize>>1),(y)*NS_sys_tilesize+(NS_sys_tilesize>>1)
