@@ -143,6 +143,7 @@
 #define NS_activity_brewer 3
 #define NS_activity_bloodbank 4 /* (u16)price_per_heart */
 #define NS_activity_fishwife 5
+#define NS_activity_tolltroll 6 /* (u16:activity)appearance */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -155,6 +156,7 @@
 #define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */
 #define NS_sprtype_rootdevil    9 /* (u16:fld)root0 (u16)0 */
 #define NS_sprtype_bonfire     10 /* (u32)0 */
+#define NS_sprtype_tolltroll   11 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -166,7 +168,8 @@
   _(candy) \
   _(firepot) \
   _(rootdevil) \
-  _(bonfire)
+  _(bonfire) \
+  _(tolltroll)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -191,6 +194,10 @@
 #define NS_fld_root6 8
 #define NS_fld_root7 9
 #define NS_fld_hc1 10 /* heart container, in the cave of cheating (TEMP) */
+#define NS_fld_toll_stick_requested 11
+#define NS_fld_toll_compass_requested 12
+#define NS_fld_toll_candy_requested 13
+#define NS_fld_toll_paid 14
 
 /* "fld16" are 16 unsigned bits each.
  */

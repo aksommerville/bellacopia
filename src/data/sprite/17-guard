@@ -1,4 +1,4 @@
 image image:meadow_sprites
-tile 39 0
+tile 8 0
 type (u16:sprtype)npc
 groups (b32:sprgrp)visible,update,solid,grabbable

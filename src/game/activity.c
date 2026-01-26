@@ -206,6 +206,110 @@ static void begin_fishwife(struct sprite *sprite) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
 
+/* Toll Troll.
+ */
+ 
+int tolltroll_get_appearance() {
+
+  // Already paid?
+  if (store_get_fld(NS_fld_toll_paid)) return 0;
+  
+  // We want the thing they don't have. Check all three.
+  if (!store_get_itemid(NS_itemid_stick)) return NS_itemid_stick;
+  if (!store_get_itemid(NS_itemid_compass)) return NS_itemid_compass;
+  if (!store_get_itemid(NS_itemid_candy)) return NS_itemid_candy;
+  
+  // If they have all three things, prefer one that we've asked for already.
+  if (store_get_fld(NS_fld_toll_stick_requested)) return NS_itemid_stick;
+  if (store_get_fld(NS_fld_toll_compass_requested)) return NS_itemid_compass;
+  if (store_get_fld(NS_fld_toll_candy_requested)) return NS_itemid_candy;
+  
+  // All three things are equally available and desirable, so ask for my very favorite: the stick.
+  return NS_itemid_stick;
+}
+
+static void begin_tolltroll(struct sprite *sprite,int appearance) {
+  if (!appearance) return;
+
+  // Have the item I'm looking for? Great, we're done.
+  struct invstore *invstore=store_get_itemid(appearance);
+  if (invstore&&(invstore->quantity||!invstore->limit)) {
+    const struct item_detail *detail=item_detail_for_itemid(appearance);
+    if (!detail) return;
+    if (invstore->limit) {
+      invstore->quantity--;
+    } else {
+      invstore->itemid=invstore->limit=invstore->quantity=0;
+    }
+    struct text_insertion ins={.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=21,
+      .speaker=sprite,
+      .insv=&ins,
+      .insc=1,
+    };
+    modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    store_set_fld(NS_fld_toll_paid,1);
+    return;
+  }
+  
+  /* If one of the "requested" flags is set, and we have that item, it's a different message.
+   * But it's the same message every time, we just insert the two items' names.
+   * Good to check compass before stick. The usual order is Stick, Compass, Candy. When you get the Candy message, he should mention Compass.
+   */
+  int offered=0;
+  if (store_get_fld(NS_fld_toll_candy_requested)&&possessed_quantity_for_itemid(NS_itemid_candy,0)) {
+    offered=NS_itemid_candy;
+  } else if (store_get_fld(NS_fld_toll_compass_requested)&&store_get_itemid(NS_itemid_compass)) {
+    offered=NS_itemid_compass;
+  } else if (store_get_fld(NS_fld_toll_stick_requested)&&store_get_itemid(NS_itemid_stick)) {
+    offered=NS_itemid_stick;
+  }
+  if (offered) {
+    const struct item_detail *detail_offered=item_detail_for_itemid(offered);
+    const struct item_detail *detail_wanted=item_detail_for_itemid(appearance);
+    if (!detail_offered||!detail_wanted) return;
+    struct text_insertion insv[]={
+      {.mode='r',.r={.rid=RID_strings_item,.strix=detail_offered->strix_name}},
+      {.mode='r',.r={.rid=RID_strings_item,.strix=detail_wanted->strix_name}},
+    };
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=22,
+      .speaker=sprite,
+      .insv=insv,
+      .insc=2,
+    };
+    modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    switch (appearance) {
+      case NS_itemid_stick: store_set_fld(NS_fld_toll_stick_requested,1); break;
+      case NS_itemid_compass: store_set_fld(NS_fld_toll_compass_requested,1); break;
+      case NS_itemid_candy: store_set_fld(NS_fld_toll_candy_requested,1); break;
+    }
+    return;
+  }
+  
+  /* First time or fallback, use the more generic message 23.
+   */
+  const struct item_detail *detail=item_detail_for_itemid(appearance);
+  if (!detail) return;
+  struct text_insertion ins={.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=23,
+    .speaker=sprite,
+    .insv=&ins,
+    .insc=1,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  switch (appearance) {
+    case NS_itemid_stick: store_set_fld(NS_fld_toll_stick_requested,1); break;
+    case NS_itemid_compass: store_set_fld(NS_fld_toll_compass_requested,1); break;
+    case NS_itemid_candy: store_set_fld(NS_fld_toll_candy_requested,1); break;
+  }
+}
+
 /* Begin activity.
  */
  
@@ -216,6 +320,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_brewer: begin_brewer(initiator); break;
     case NS_activity_bloodbank: begin_bloodbank(initiator,arg); break;
     case NS_activity_fishwife: begin_fishwife(initiator); break;
+    case NS_activity_tolltroll: begin_tolltroll(initiator,arg); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

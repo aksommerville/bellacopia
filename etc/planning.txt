@@ -80,6 +80,7 @@ We'll group minigames by Zone.
 - [ ] Lead monsters to the scientist so he can catch 'em all. Using only their natural chase instinct.
 - [ ] Gyms a la Pokemon with much harder minigames, but entirely optional.
 - [ ] A town where everyone is sick and you need to raise money for medicine. Just money. Incrementally heal them, but the last few will be outrageously expensive.
+- - There are going to be purse upgrades. Make the final healing only affordable with the final purse.
 - [ ] Get a Broom for flying. Require a few main quests first, not sure how to gate that.
 - [ ] Races across the world, once you have a Broom.
 - [ ] In the goblins' cave, a substitution cipher a la Mysteries of the Crypt.
@@ -109,6 +110,7 @@ We'll group minigames by Zone.
 - - A special minigame to catch each fish, like Secret of Seven Sauces.
 - - Fishing too much in one area, the odds of a catch decrease.
 - - Can we do a complex animation for the water, with subtle hints toward the fish density there? Something hard to explain but easy to detect once you've learned how.
+- - [ ] Catch a mythical sea monster in the labyrinth.
 - [ ] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
 - [ ] Talking trees that are bored and want you to tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
@@ -122,11 +124,30 @@ Ought to have seven distinct narrative quests, one guarding each Root Devil.
 
 - [ ] 1. FARM. Unguarded. Just some random encounters. So you get your bearings first.
 - [ ] 2. FRACTIA. Run for mayor.
-- [ ] 3. JUNGLE. Troll at the bridge sends you on a fetch quest. When you get back, his shift is done and the new troll sends you on a different fetch quest.
-- [ ] 4. JUNGLE. Hire a guide to lead you through the deadly labyrinth -- Generate a new labyrinth for each campaign.
+- [ ] 3. JUNGLE S. Troll at the bridge sends you on a fetch quest. When you get back, his shift is done and the new troll sends you on a different fetch quest.
+- - Basically: There's three items you need. Any that you don't have, that troll will be on duty. Stick, Compass, Candy.
+- [ ] 4. JUNGLE N. Hire a guide to lead you through the deadly labyrinth -- Generate a new labyrinth for each campaign.
+- - Labyrinth will have dark rooms. Ensure you can't get in without a wand.
 - [ ] 5. BATTLEFIELD. Two armies at war and you can't get past. Volunteer as messenger, and take the kings' letters to Cyrano first to rewrite, so they make peace.
 - [ ] 6. MOUNTAINS. Get kidnapped by goblins and escape from their cave.
+- - Dark rooms, require wand.
 - [ ] 7. DESERT. Toad promises to remove a boulder if you transform him into an elephant but once transformed, he renegs and goes on a rampage. Catch the elephant, turn him back into a toad, and hire a contractor instead.
+
+## Gating.
+
+- Root devils 1 and 5 are available immediately. 1 has no further prereqs, just take it. 5 gives you the hookshot. Most places right off the center require a hookshot to cross.
+- Broom: Require 100 gold (initial purse is 99). Can be multiple ways to grow the purse. They all should be pretty heavily-guarded, and none mandatory.
+- - Rescue princess. King says "that purse isn't big enough for the reward I want to give you" :)
+- - Hat the barrels. Requires travel all over the world, not trivial (esp without a broom!)
+- - Labyrinth sea monster. You'd have to reach the labyrinth to get it.
+
+1 open
+2 hookshot, voting contest
+3 hookshot, trolls' fetch quest
+4 hookshot or war, labyrinth, wand
+5 war
+6 hookshot or war, goblins, wand
+7 hookshot or war, wand
 
 ## Minigames
 

@@ -1,0 +1,4 @@
+image image:meadow_sprites
+tile 39 0
+type (u16:sprtype)tolltroll
+groups (b32:sprgrp)visible,update,solid
