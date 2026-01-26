@@ -93,4 +93,6 @@ int game_init_targets();
  */
 int game_choose_fish(int x,int y,int z);
 
+void game_hurt_hero();
+
 #endif

@@ -94,6 +94,17 @@ struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
 };
 
+struct modal_args_battle {
+  int battle; // NS_battle_*
+  int players; // NS_players_*
+  uint8_t handicap; // 0..128..255 = easy..balanced..hard ("easy" for the left player)
+  void (*cb)(struct modal *modal,int outcome,void *userdata); // -1,0,1 = right wins,tie,left wins. Report consequences back to the modal during this callback.
+  void *userdata;
+  int left_name; // NS_strings_battle. Omit names to suppress the "Player Wins!" message at the end.
+  int right_name; // NS_strings_battle
+  int skip_prompt;
+};
+
 struct modal_args_dialogue {
   const char *text;
   int textc;
@@ -118,6 +129,12 @@ struct modal_args_shop {
   int (*cb_validated)(int itemid,int quantity,int price,void *userdata); // Do the quantity and price validation, and call just before committing. Nonzero to abort purchase. Quantity and price are the real final values.
   void *userdata;
 };
+
+/* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
+ * If you win a no-quantity item from battle (are we doing that?), use (d==0).
+ * This does not effect any changes, it only talks about them.
+ */
+void modal_battle_add_consequence(struct modal *modal,int itemid,int d);
 
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
 

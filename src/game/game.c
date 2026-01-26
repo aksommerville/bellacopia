@@ -535,3 +535,17 @@ int game_choose_fish(int x,int y,int z) {
   }
   return 0;
 }
+
+/* Hurt the hero.
+ */
+ 
+void game_hurt_hero() {
+  int hp=store_get_fld16(NS_fld16_hp);
+  if (--hp<=0) {
+    store_set_fld16(NS_fld16_hp,0);
+    g.gameover=1;
+  } else {
+    store_set_fld16(NS_fld16_hp,hp);
+    bm_sound(RID_sound_ouch);
+  }
+}

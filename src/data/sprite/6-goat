@@ -3,4 +3,4 @@ tile 4 0
 type (u16:sprtype)monster
 groups (b32:sprgrp)visible,update,solid,grabbable
 physics (b32:physics)solid,water,hole,grabbable,safe
-monster (u16:battle)chopping (u8:radius)0x40 (u8:speed)0x50
+monster (u16:battle)chopping (u8:radius)0x40 (u8:speed)0x50 (u16)14 (u16)0

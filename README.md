@@ -58,11 +58,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] fishpole
 - [x] Spawn via rsprite.
 - [ ] Battle
-- - [ ] Generic framework
+- - [x] Generic framework
 - - [ ] fishing
 - - [ ] chopping
 - - [ ] exterminating
 - - [ ] boomerang
+- - [ ] greenfish
+- - [ ] bluefish
+- - [ ] redfish
+- - [ ] strangling
 - [ ] Dialogue
 - - [ ] game.c, item messaging
 - [ ] Global persistent clocks: playtime, pausetime, battletime.
@@ -89,3 +93,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Pause modal: Seeing graphics corruption in the top bar.
+- [ ] Handicap for monster and fishpole.

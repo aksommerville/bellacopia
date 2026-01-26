@@ -26,6 +26,8 @@ struct sprite_monster {
   double speed;
   double animclock;
   double dazeclock;
+  int spent;
+  int name_strix; // RID_strings_battle
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
@@ -51,6 +53,7 @@ static int _monster_init(struct sprite *sprite) {
             SPRITE->battle=(cmd.arg[0]<<8)|cmd.arg[1];
             SPRITE->radius=cmd.arg[2]/16.0;
             SPRITE->speed=cmd.arg[3]/16.0;
+            SPRITE->name_strix=(cmd.arg[4]<<8)|cmd.arg[5];
           } break;
       }
     }
@@ -329,17 +332,45 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
   else if (sprite->x>x0) sprite->xform=0;
 }
 
+/* Battle callback.
+ */
+ 
+static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
+  struct sprite *sprite=userdata;
+  sprite_kill_soon(sprite);
+  if (outcome>0) {
+    //TODO Other prizes.
+    game_get_item(NS_itemid_gold,1);
+    modal_battle_add_consequence(modal,NS_itemid_gold,1);
+  } else if (outcome<0) {
+    game_hurt_hero();
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
 /* Collide.
  */
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
+  if (SPRITE->spent) return;
   if (other->type==&sprite_type_hero) {
     // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
     if (g.vanishing>0.0) {
       return;
     }
-    fprintf(stderr,"TODO begin battle %d per sprite:%d\n",SPRITE->battle,sprite->rid);
-    sprite_kill_soon(sprite);
+    int battle=SPRITE->battle;
+    struct modal_args_battle args={
+      .battle=battle,
+      .players=NS_players_man_cpu,
+      .handicap=0x80,//TODO how to decide?
+      .cb=monster_cb_battle,
+      .userdata=sprite,
+      .left_name=4, // "Dot"
+      .right_name=SPRITE->name_strix,
+    };
+    struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+    if (!modal) return;
+    SPRITE->spent=1;
   }
 }
 

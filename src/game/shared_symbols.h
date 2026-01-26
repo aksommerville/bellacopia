@@ -45,7 +45,7 @@
 #define CMD_sprite_physics      0x40 /* b32:physics ; which are impassable */
 #define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups       0x42 /* b32:sprgrp */
-#define CMD_sprite_monster      0x43 /* u16:battle u4.4:radius u4.4:speed ; NS_sprtype_monster */
+#define CMD_sprite_monster      0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
 
 #define NS_tilesheet_physics 1
 #define NS_tilesheet_jigctab 2 /* rgb332 */
@@ -67,6 +67,11 @@
 #define NS_plane_tunnel1 2 /* cheapside<~>botire */
 #define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
 #define NS_plane_labyrinth1 4 /* jungle */
+
+#define NS_players_cpu_cpu 0 /* Princess vs monster. */
+#define NS_players_cpu_man 1 /* I doubt we'll use this. */
+#define NS_players_man_cpu 2 /* Dot vs monster, the usual case. */
+#define NS_players_man_man 3 /* Two-player mode. */
 
 #define NS_sprgrp_keepalive    0 /* All sprites are in this group. */
 #define NS_sprgrp_deathrow     1 /* Everything here gets killed at the end of each update. */
@@ -175,11 +180,19 @@
 #define NS_battle_chopping 2
 #define NS_battle_exterminating 3
 #define NS_battle_boomerang 4
+#define NS_battle_strangling 5
+#define NS_battle_greenfish 6
+#define NS_battle_bluefish 7
+#define NS_battle_redfish 8
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
   _(exterminating) \
-  _(boomerang)
+  _(boomerang) \
+  _(strangling) \
+  _(greenfish) \
+  _(bluefish) \
+  _(redfish)
 
 /* "fld" are single bits.
  */

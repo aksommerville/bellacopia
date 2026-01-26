@@ -221,6 +221,15 @@ static void fishpole_end(struct sprite *sprite) {
   SPRITE->itemid_in_progress=0;
 }
 
+static void fishpole_cb_battle(struct modal *modal,int outcome,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (outcome>0) {
+    game_get_item(SPRITE->fish,1);
+    modal_battle_add_consequence(modal,SPRITE->fish,1);
+  }
+  // No consequences for losing, just you don't catch the fish.
+}
+
 static void fishpole_update(struct sprite *sprite,double elapsed) {
 
   // Before the fish appears, you can drop SOUTH to cancel.
@@ -239,9 +248,23 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
   }
   
   if ((SPRITE->fishclock-=elapsed)<=0.0) {
-    if (SPRITE->fish) {
-      fprintf(stderr,"%s:%d:TODO: Begin contest for fish %d\n",__FILE__,__LINE__,SPRITE->fish);//TODO
-      game_get_item(SPRITE->fish,1); // For now, just give her the fish.
+    int battle=0;
+    switch (SPRITE->fish) {
+      case NS_itemid_greenfish: battle=NS_battle_greenfish; break;
+      case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
+      case NS_itemid_redfish: battle=NS_battle_redfish; break;
+    }
+    if (battle) {
+      struct modal_args_battle args={
+        .battle=battle,
+        .players=NS_players_man_cpu,
+        .handicap=0x80,//TODO how to decide?
+        .cb=fishpole_cb_battle,
+        .userdata=sprite,
+        .skip_prompt=1,
+      };
+      struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+      if (!modal) return;
       SPRITE->itemid_in_progress=0;
     } else {
       if (SPRITE->fish=game_choose_fish(sprite->x,sprite->y,sprite->z)) {
