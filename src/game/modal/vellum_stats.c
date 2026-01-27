@@ -35,6 +35,7 @@ static void stats_write_progress(struct vellum *vellum,char *dst) {
   struct text_insertion insv[]={
     {.mode='i',.i=pct},
   };
+  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,17,insv,sizeof(insv)/sizeof(insv[0]));
 }
 
@@ -101,6 +102,7 @@ static void stats_write_sidequests(struct vellum *vellum,char *dst) {
     {.mode='i',.i=completec},
     {.mode='i',.i=totalc},
   };
+  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,20,insv,sizeof(insv)/sizeof(insv[0]));
 }
 
@@ -129,6 +131,7 @@ static void stats_write_maps(struct vellum *vellum,char *dst) {
     {.mode='i',.i=completec},
     {.mode='i',.i=totalc},
   };
+  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,22,insv,sizeof(insv)/sizeof(insv[0]));
 }
   

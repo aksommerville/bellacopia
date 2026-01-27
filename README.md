@@ -96,3 +96,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Handicap for monster and fishpole.
 - [ ] Progress, side quests, and maps for vellum_stats.
 - [ ] Dynamically center vellum_stats, to accomodate multiple languages.
+- [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
