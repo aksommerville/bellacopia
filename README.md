@@ -67,15 +67,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] bluefish
 - - [ ] redfish
 - - [ ] strangling
-- [ ] Dialogue
-- - [ ] game.c, item messaging
+- [x] Dialogue
+- - [x] game.c, item messaging
 - [x] Global persistent clocks: playtime, pausetime, battletime.
 
 - Bugs, future, ...
-- [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
+- [x] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
 - [ ] Door transitions. Fade to black? Spotlight?
-- [ ] Stats vellum.
-- [ ] System vellum.
+- [x] Stats vellum.
+- [x] System vellum.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
 - [x] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
@@ -87,9 +87,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
-- [ ] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`
+- [x] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
-- [ ] When doing the jigsaws, it's hard to avoid clicking in the tab bar or closet sometimes. Maybe avoid that by keeping new pieces a bit more inside?
+- [x] When doing the jigsaws, it's hard to avoid clicking in the tab bar or closet sometimes. Maybe avoid that by keeping new pieces a bit more inside?
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [x] Pause modal: Seeing graphics corruption in the top bar.
@@ -97,3 +97,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Progress, side quests, and maps for vellum_stats.
 - [ ] Dynamically center vellum_stats, to accomodate multiple languages.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
+- [ ] Carpenter: Don't show singleton items if possessed. Do show matches even if at the limit.
+- [ ] Have monsters consume the candy; it only lasts so long.
+- [ ] Need either 3, 7, or 12 new items. (if not 12, reduce the inventory size).
+- - Battlefield letter will be inventoriable but doesn't count -- its slot gets filled by hookshot after the quest.
+- - Portable Bus Stop
+- - Bomb
+- - Stopwatch
+- - Pepper: Creates a bonfire. Long-lasting light source, but fixed position.
+- - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
+- - Shovel?

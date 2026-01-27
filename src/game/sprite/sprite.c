@@ -107,8 +107,12 @@ struct sprite *sprite_new(
   }
   
   if (!cmdc) {
-    if (!rid) return 0;
-    cmdc=res_get(&cmd,EGG_TID_sprite,rid);
+    if (rid) {
+      cmdc=res_get(&cmd,EGG_TID_sprite,rid);
+    } else {
+      cmd=0;
+      cmdc=0;
+    }
   }
   if (!type) {
     int sprtype=sprtype_from_res(cmd,cmdc);

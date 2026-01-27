@@ -163,6 +163,7 @@
 #define NS_sprtype_rootdevil    9 /* (u16:fld)root0 (u16)0 */
 #define NS_sprtype_bonfire     10 /* (u32)0 */
 #define NS_sprtype_tolltroll   11 /* (u32)0 */
+#define NS_sprtype_toast       12 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -175,7 +176,8 @@
   _(firepot) \
   _(rootdevil) \
   _(bonfire) \
-  _(tolltroll)
+  _(tolltroll) \
+  _(toast)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -214,6 +216,7 @@
 #define NS_fld_toll_paid 14
 #define NS_fld_mayor 15
 #define NS_fld_war_over 16
+#define NS_fld_had_stick 17 /* For suppressing "got a stick" */
 
 /* "fld16" are 16 unsigned bits each.
  */

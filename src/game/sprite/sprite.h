@@ -86,6 +86,9 @@ const struct sprite_type *sprite_type_by_id(int sprtype);
 void hero_injure(struct sprite *sprite,struct sprite *assailant);
 void sprite_hero_unanimate(struct sprite *sprite); // eg when launching a modal, force Dot to a neutral face.
 
+int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
+struct sprite *sprite_toast_get_any();
+
 /* Sprite group.
  *******************************************************************/
  

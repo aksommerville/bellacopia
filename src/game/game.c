@@ -114,21 +114,92 @@ int game_focus_map(struct map *map) {
 }
 
 /* Get item reporting.
-TODO dialogue modals
  */
  
-static void game_report_item_quantity_add(int itemid,int quantity) {
-  fprintf(stderr,"%s(%d,%d)\n",__func__,itemid,quantity);
+// Caller must sprite_toast_set_text() after.
+static struct sprite *game_start_toast() {
+  if (sprite_toast_get_any()) return 0;
+  double x,y;
+  if (GRP(hero)->sprc>0) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    x=hero->x;
+    y=hero->y-0.5;
+  } else {
+    x=(double)(g.camera.rx+(FBW>>1))/(double)NS_sys_tilesize;
+    y=(double)(g.camera.ry+(FBH>>1))/(double)NS_sys_tilesize;
+  }
+  return sprite_spawn(x,y,0,0,0,&sprite_type_toast,0,0);
 }
  
-static void game_report_item_acquire(int itemid,int quantity) {
-  // (quantity) will be zero for singletons.
-  fprintf(stderr,"%s(%d,%d)\n",__func__,itemid,quantity);
+static void game_report_item_quantity_add(int itemid,int quantity) {
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail||!detail->strix_name) return;
+  struct sprite *sprite=game_start_toast();
+  if (!sprite) return;
+  struct text_insertion insv[]={
+    {.mode='i',.i=quantity},
+    {.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}},
+  };
+  char text[64];
+  int textc=text_format_res(text,sizeof(text),RID_strings_item,48,insv,sizeof(insv)/sizeof(insv[0]));
+  if ((textc<0)||(textc>sizeof(text))) return;
+  sprite_toast_set_text(sprite,text,textc);
 }
 
 static void game_report_item_full(int itemid) {
   // We call this both for counted slot at limit, and for new item but no slots available.
-  fprintf(stderr,"%s(%d)\n",__func__,itemid);
+  // It's static text "Pack full!", but we could insert the item's name if we want in the future.
+  struct sprite *sprite=game_start_toast();
+  if (!sprite) return;
+  const char *text=0;
+  int textc=text_get_string(&text,RID_strings_item,49);
+  sprite_toast_set_text(sprite,text,textc);
+}
+ 
+static void game_report_item_acquire(int itemid,int quantity) {
+  // (quantity) will be zero for singletons.
+  
+  /* Most items will never leave your inventory.
+   * Those that do, eg giving your compass to a toll troll, it's fine to repeat the fanfare when you get another.
+   * But stick is different: It enters and leaves your inventory frequently.
+   * So we dedicate a field to indicate whether stick has been got before, and only show this dialogue the first time.
+   * After the first time, getting another stick will be passive like getting gold or hearts.
+   */
+  if (itemid==NS_itemid_stick) {
+    if (store_get_fld(NS_fld_had_stick)) {
+      game_report_item_quantity_add(NS_itemid_stick,1);
+      return;
+    }
+    store_set_fld(NS_fld_had_stick,1);
+  }
+  
+  // If the item doesn't exist or has no name, noop.
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail) return;
+  if (!detail->strix_name) return;
+  
+  // Message begins "You found Thing!". No quantity even if relevant.
+  char msg[256];
+  struct text_insertion ins={.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+  int msgc=text_format_res(msg,sizeof(msg),RID_strings_item,47,&ins,1);
+  if ((msgc<0)||(msgc>sizeof(msg))) msgc=0;
+  
+  // If help text is available, append a newline then that. It's static text.
+  if (detail->strix_help) {
+    const char *help=0;
+    int helpc=text_get_string(&help,RID_strings_item,detail->strix_help);
+    if ((helpc>0)&&(msgc+1+helpc<=sizeof(msg))) {
+      msg[msgc++]='\n';
+      memcpy(msg+msgc,help,helpc);
+      msgc+=helpc;
+    }
+  }
+  
+  struct modal_args_dialogue args={
+    .text=msg,
+    .textc=msgc,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
 
 /* Get item.

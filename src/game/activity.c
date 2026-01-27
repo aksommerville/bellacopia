@@ -37,11 +37,13 @@ static void begin_carpenter(struct sprite *sprite) {
   };
   struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
   if (!modal) return;
+  // Matches are always available, even if you can't hold any more.
   modal_shop_add_item(modal,NS_itemid_match,1,5);
-  modal_shop_add_item(modal,NS_itemid_divining,3,0);
-  modal_shop_add_item(modal,NS_itemid_wand,10,0);
-  modal_shop_add_item(modal,NS_itemid_fishpole,20,0);
-  modal_shop_add_item(modal,NS_itemid_broom,100,0);
+  // The other things are singletons. Only show if we don't have it yet.
+  if (!store_get_itemid(NS_itemid_divining)) modal_shop_add_item(modal,NS_itemid_divining,3,0);
+  if (!store_get_itemid(NS_itemid_wand)) modal_shop_add_item(modal,NS_itemid_wand,10,0);
+  if (!store_get_itemid(NS_itemid_fishpole)) modal_shop_add_item(modal,NS_itemid_fishpole,20,0);
+  if (!store_get_itemid(NS_itemid_broom)) modal_shop_add_item(modal,NS_itemid_broom,100,0);
 }
 
 /* Brewer.

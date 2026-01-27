@@ -218,6 +218,27 @@ static int store_checksum(const char *src,int srcc) {
   return sum&0x3fffffff;
 }
 
+/* After a successful load, but before general sanitization, scan all maps for POI.
+ * Anything driven by a treadle must be forced off.
+ * Player could end their session standing on a treadle, and without intervention it would stick on next time.
+ */
+ 
+static void store_force_agreement_with_poi() {
+  struct map **mapp=g.mapstore.byidv;
+  int i=g.mapstore.byidc;
+  for (;i-->0;mapp++) {
+    struct map *map=*mapp;
+    if (!map) continue;
+    struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)>0) {
+      switch (cmd.opcode) {
+        case CMD_map_treadle: store_set_fld((cmd.arg[2]<<8)|cmd.arg[3],0); break;
+      }
+    }
+  }
+}
+
 /* Load.
  */
  
@@ -308,9 +329,10 @@ int store_load(const char *k,int kc) {
   srcp+=5;
   if (expect!=actual) return store_load_fail();
   
-  //TODO Maybe some more invasive consistency checks, like (hp<=maxhp)?
+  // Scan for treadles and such.
+  store_force_agreement_with_poi();
   
-  fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
+  //fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
   return store_sanitize();
 }
 
@@ -556,11 +578,12 @@ static void store_choose_jigstore_position(struct jigstore *jigstore) {
   /* Take a few random guesses at position, and keep whichever yields the most breathing room.
    * I'm not crazy about this algorithm. It tends to favor the edges.
    */
+  #define MARGIN 8 /* Try to keep them off the very edge initially. They can overlap the tab bar in awkward ways. */
   int repc=20;
   double bestscore=999999.999;
   while (repc-->0) {
-    int x=rand()%JIGSAW_FLDW;
-    int y=rand()%JIGSAW_FLDH;
+    int x=MARGIN+rand()%(JIGSAW_FLDW-(MARGIN<<1));
+    int y=MARGIN+rand()%(JIGSAW_FLDH-(MARGIN<<1));
     double score=0.0;
     const struct jigstore **otherp=otherv;
     int i=otherc;
@@ -577,6 +600,7 @@ static void store_choose_jigstore_position(struct jigstore *jigstore) {
       jigstore->y=y;
     }
   }
+  #undef MARGIN
 }
 
 /* Add jigstore.
