@@ -321,8 +321,19 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_bloodbank: begin_bloodbank(initiator,arg); break;
     case NS_activity_fishwife: begin_fishwife(initiator); break;
     case NS_activity_tolltroll: begin_tolltroll(initiator,arg); break;
+    case NS_activity_wargate: begin_dialogue(19,initiator); break; // It's just dialogue. But the activity causes sprite to abort at spawn.
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }
   }
+}
+
+/* Abort sprite?
+ */
+ 
+int game_activity_sprite_should_abort(int activity,const struct sprite_type *type) {
+  switch (activity) {
+    case NS_activity_wargate: if (store_get_fld(NS_fld_war_over)) return 1; return 0;
+  }
+  return 0;
 }

@@ -55,6 +55,8 @@ int possessed_quantity_for_itemid(int itemid,int *limit);
  */
 void game_begin_activity(int activity,int arg,struct sprite *initiator);
 
+int game_activity_sprite_should_abort(int activity,const struct sprite_type *type);
+
 /* Partner to NS_activity_tolltroll, so the sprite can set its appearance.
  * Returns itemid, or zero if the troll has already been paid off.
  * Pass this appearance back as (arg) to game_begin_activity(NS_activity_tolltroll).

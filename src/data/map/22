@@ -13,8 +13,8 @@
 
 image image:battlefield
 position 4 2 1 *
-sprite @9,5 sprite:guard (u16:activity)dialogue (u16:activity_arg)19
-sprite @3,8 sprite:guard (u16:activity)dialogue (u16:activity_arg)19
+sprite @9,5 sprite:guard (u16:activity)wargate (u16)0
+sprite @3,8 sprite:guard (u16:activity)wargate (u16)0
 door @6,7 map:119 @9,8 0x0000
 root @4,3 (u16:fld)root5
 root @4,11 (u16:fld)root5

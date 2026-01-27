@@ -149,6 +149,7 @@
 #define NS_activity_bloodbank 4 /* (u16)price_per_heart */
 #define NS_activity_fishwife 5
 #define NS_activity_tolltroll 6 /* (u16:activity)appearance */
+#define NS_activity_wargate 7 /* (u16)0 ; The guards outside the north tent preventing you from leaving until the war is over. */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -211,6 +212,8 @@
 #define NS_fld_toll_compass_requested 12
 #define NS_fld_toll_candy_requested 13
 #define NS_fld_toll_paid 14
+#define NS_fld_mayor 15
+#define NS_fld_war_over 16
 
 /* "fld16" are 16 unsigned bits each.
  */

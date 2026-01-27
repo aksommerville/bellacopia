@@ -17,6 +17,7 @@ struct sprite_npc {
 static int _npc_init(struct sprite *sprite) {
   SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
+  if (game_activity_sprite_should_abort(SPRITE->activity,sprite->type)) return -1;
   return 0;
 }
 
