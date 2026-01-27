@@ -12,3 +12,11 @@
 14 Map
 15 Stats
 16 System
+
+# Stats vellum. Align colons.
+17 "   Progress: %0%%"
+18 "       Time: %0"
+19 "    Flowers: %0/7"
+20 "Side Quests: %0/%1"
+21 "      Items: %0/%1"
+22 "       Maps: %0/%1"

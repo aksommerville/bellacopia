@@ -230,5 +230,7 @@
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
 #define NS_clock_playtime 0
+#define NS_clock_pausetime 1
+#define NS_clock_battletime 2
   
 #endif

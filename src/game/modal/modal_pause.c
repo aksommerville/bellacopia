@@ -174,6 +174,10 @@ static void pause_change_page(struct modal *modal,int d) {
  
 static void _pause_update(struct modal *modal,double elapsed) {
 
+  // Tick pausetime.
+  double *pausetime=store_require_clock(NS_clock_pausetime);
+  if (pausetime) (*pausetime)+=elapsed;
+
   // Rising?
   if (MODAL->drise<0.0) {
     if ((MODAL->rise-=RISE_DOWN_SPEED*elapsed)<=0.0) {

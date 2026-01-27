@@ -630,3 +630,23 @@ struct invstore *store_add_itemid(int itemid,int quantity) {
   g.store.dirty=1;
   return blank;
 }
+
+/* Get clock, growing store as needed.
+ */
+ 
+double *store_require_clock(int clock) {
+  if (clock<0) return 0;
+  if (clock>256) return 0; // Sanity limit.
+  if (clock>=g.store.clocka) {
+    int na=(clock+16)&~15;
+    void *nv=realloc(g.store.clockv,sizeof(double)*na);
+    if (!nv) return 0;
+    g.store.clockv=nv;
+    g.store.clocka=na;
+  }
+  if (clock>=g.store.clockc) {
+    g.store.dirty=1;
+    while (clock>=g.store.clockc) g.store.clockv[g.store.clockc++]=0.0;
+  }
+  return g.store.clockv+clock;
+}

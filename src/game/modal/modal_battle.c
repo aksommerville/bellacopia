@@ -377,6 +377,11 @@ static void battle_update_report(struct modal *modal,double elapsed) {
  */
  
 static void _battle_update(struct modal *modal,double elapsed) {
+
+  // Tick (battletime).
+  double *battletime=store_require_clock(NS_clock_battletime);
+  if (battletime) (*battletime)+=elapsed;
+
   switch (MODAL->stage) {
     case STAGE_PROMPT: battle_update_prompt(modal,elapsed); break;
     case STAGE_PLAY: battle_update_play(modal,elapsed); break;

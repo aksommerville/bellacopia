@@ -69,7 +69,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] strangling
 - [ ] Dialogue
 - - [ ] game.c, item messaging
-- [ ] Global persistent clocks: playtime, pausetime, battletime.
+- [x] Global persistent clocks: playtime, pausetime, battletime.
 
 - Bugs, future, ...
 - [ ] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
@@ -94,3 +94,5 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [x] Pause modal: Seeing graphics corruption in the top bar.
 - [ ] Handicap for monster and fishpole.
+- [ ] Progress, side quests, and maps for vellum_stats.
+- [ ] Dynamically center vellum_stats, to accomodate multiple languages.

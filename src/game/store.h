@@ -67,6 +67,13 @@ int store_set_fld16(int fld,int value); // => ''
 struct jigstore *store_add_jigstore(int mapid); // => creates if not existing yet
 struct invstore *store_add_itemid(int itemid,int quantity); // => creates if not existing yet, or bumps quantity as warranted
 
+/* In general, ticking a clock shouldn't dirty the store.
+ * Call this to get the clock, then you tick it directly.
+ * It gets saved the next time something else goes dirty.
+ * The first access of a clock that didn't exist yet does dirty the store.
+ */
+double *store_require_clock(int clock);
+
 /* Serial format, written out to "save" in the Egg store.
  * Starts with 10 bytes for the lengths of the individual stores.
  * Each length is 2 Base64 digits, big-endianly:

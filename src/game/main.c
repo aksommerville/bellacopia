@@ -6,6 +6,7 @@ struct g g={0};
  */
 
 void egg_client_quit(int status) {
+  g.store.dirty=1; // Since the clocks don't dirty on ticks, dirty it now.
   store_save_if_dirty("save",4,1);
 }
 

@@ -79,6 +79,10 @@ static void _story_update(struct modal *modal,double elapsed) {
     return;
   }
   
+  // Tick playtime.
+  double *playtime=store_require_clock(NS_clock_playtime);
+  if (playtime) (*playtime)+=elapsed;
+  
   // Update sprites, then kill those that have run out of funk.
   int i=GRP(update)->sprc;
   while (i-->0) {
