@@ -187,6 +187,7 @@
 #define NS_battle_greenfish 6
 #define NS_battle_bluefish 7
 #define NS_battle_redfish 8
+#define NS_battle_placeholder 9 /* Do not use in production! */
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -195,7 +196,8 @@
   _(strangling) \
   _(greenfish) \
   _(bluefish) \
-  _(redfish)
+  _(redfish) \
+  _(placeholder)
 
 /* "fld" are single bits.
  */

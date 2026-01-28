@@ -17,15 +17,23 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-11: With stand-in root devils, tried a leisurely run without touching any cheat things: 29:14 to complete. Feeling good about the one-hour-minimum target.
 - 2026-01-15: I think I fucked up coordinates management, it's becoming seriously difficult. `maps.c:physics_at_sprite_position` is broken and I'm not sure how to fix it.
 - 2026-01-19: Fully committed to a rewrite. Expect mark 2 to be at parity with mark 1 before end of January.
-- 2026-01-27: Last features of mark 1 implemented in mark2, and a bunch of other stuff. Looking good.
+- 2026-01-27: Last features of mark 1 implemented in mark 2, and a bunch of other stuff. Looking good.
 
 ## TODO
 
-- [ ] Battle
-- - [x] greenfish
-- - [x] bluefish
-- - [x] redfish
-- - [ ] strangling
+- [ ] Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
+- - [ ] Pins, buttons, stickers.
+- - [ ] Homemade stuffed witches, if I can work that out.
+- - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
+- - - ^ prefer bearsforhumanity.com
+- - - ...but I really would prefer "Made in Flytown"
+- - - Whatever we're doing, figure it out by the end of April.
+- - [ ] Witch hats. Same idea as the dolls.
+- - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly.
+- - [ ] Mini comic?
+- - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
+- - [ ] Book of sheet music.
+- - [ ] Videos.
 
 - Bugs, future, ...
 - [ ] Door transitions. Fade to black? Spotlight?
@@ -58,3 +66,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Telescope: Pan the camera in a cardinal direction, to its limit.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
 - - Shovel?
+- [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.

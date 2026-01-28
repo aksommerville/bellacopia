@@ -1,4 +1,4 @@
 image image:hero
 tile 144 0
 type (u16:sprtype)rootdevil
-groups (b32:sprgrp)solid,visible,update,grabbable
+groups (b32:sprgrp)solid,visible,update

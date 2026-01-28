@@ -2,13 +2,17 @@
 
 struct sprite_rootdevil {
   struct sprite hdr;
+  uint8_t tileid0;
   int fld;
   double cooldown;
+  double animclock;
+  int animframe;
 };
 
 #define SPRITE ((struct sprite_rootdevil*)sprite)
 
 static int _rootdevil_init(struct sprite *sprite) {
+  SPRITE->tileid0=sprite->tileid;
   SPRITE->fld=(sprite->arg[0]<<8)|sprite->arg[1];
   if (store_get_fld(SPRITE->fld)) return -1;
   return 0;
@@ -17,6 +21,11 @@ static int _rootdevil_init(struct sprite *sprite) {
 static void _rootdevil_update(struct sprite *sprite,double elapsed) {
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
+  }
+  if ((SPRITE->animclock-=elapsed)<=0.0) {
+    SPRITE->animclock+=0.250;
+    if (++(SPRITE->animframe)>=2) SPRITE->animframe=0;
+    sprite->tileid=SPRITE->tileid0+SPRITE->animframe;
   }
 }
 

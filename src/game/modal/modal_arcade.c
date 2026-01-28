@@ -12,6 +12,7 @@
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
 #define KEY_REPEAT_ONGOING 0.080
+#define INPUT_BLACKOUT 0.333 /* Ignore South and West for so long after returning from a game, they might keep tapping. */
 
 #define LABEL_LIMIT 25
 #define LABELID_PLAYERS 1
@@ -30,6 +31,7 @@ struct modal_arcade {
   double horzclock,vertclock;
   int horzpv,vertpv;
   int horzc; // handicap adjustment gets wider as it runs
+  double input_blackout;
   
   struct label {
     int labelid;
@@ -207,6 +209,7 @@ static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userda
   MODAL->outcome=outcome;
   struct label *label=arcade_label_by_id(modal,LABELID_OUTCOME);
   if (label) arcade_rewrite_label_outcome(modal,label);
+  MODAL->input_blackout=INPUT_BLACKOUT;
 }
  
 static void arcade_begin_game(struct modal *modal) {
@@ -306,17 +309,23 @@ static void _arcade_update(struct modal *modal,double elapsed) {
   if ((g.input[0]&EGG_BTN_L1)&&!(g.pvinput[0]&EGG_BTN_L1)) arcade_adjust_players(modal,-1);
   if ((g.input[0]&EGG_BTN_R1)&&!(g.pvinput[0]&EGG_BTN_R1)) arcade_adjust_players(modal,1);
   
-  // SOUTH to begin play.
-  if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    arcade_begin_game(modal);
-    return;
-  }
+  // Play and cancel only if not blacked out.
+  if (MODAL->input_blackout>0.0) {
+    MODAL->input_blackout-=elapsed;
+  } else {
+  
+    // SOUTH to begin play.
+    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+      arcade_begin_game(modal);
+      return;
+    }
 
-  // WEST to cancel.
-  if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) {
-    bm_sound(RID_sound_uicancel);
-    modal->defunct=1;
-    return;
+    // WEST to cancel.
+    if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) {
+      bm_sound(RID_sound_uicancel);
+      modal->defunct=1;
+      return;
+    }
   }
 }
 
