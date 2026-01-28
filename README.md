@@ -59,10 +59,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Spawn via rsprite.
 - [ ] Battle
 - - [x] Generic framework
-- - [ ] fishing
-- - [ ] chopping
-- - [ ] exterminating
-- - [ ] boomerang
+- - [x] fishing
+- - [x] chopping
+- - [x] exterminating
+- - [x] boomerang
 - - [ ] greenfish
 - - [ ] bluefish
 - - [ ] redfish
@@ -105,5 +105,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Bomb
 - - Stopwatch
 - - Pepper: Creates a bonfire. Long-lasting light source, but fixed position.
+- - Telescope: Pan the camera in a cardinal direction, to its limit.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
 - - Shovel?

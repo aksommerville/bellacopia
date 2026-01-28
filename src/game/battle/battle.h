@@ -9,7 +9,7 @@
 /* Anyone running a battle should assume it is broken if it runs so long.
  * TODO Length guidance. I'm thinking about 10 seconds would be ideal, but play it out some first.
  */
-#define BATTLE_UNIVERSAL_TIMEOUT 10.0
+#define BATTLE_UNIVERSAL_TIMEOUT 60.0
 
 struct battle_type {
   const char *name; // For internal diagnostics only.

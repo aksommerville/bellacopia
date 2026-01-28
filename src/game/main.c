@@ -90,7 +90,30 @@ void bm_song_gently(int rid) {
   bm_song_force(rid);//TODO gentle song change
 }
 
-void bm_sound(int rid) {
-  //TODO sound_blackout
-  egg_play_sound(rid,1.0,0.0);
+void bm_sound_pan(int rid,double pan) {
+  const double BLACKOUT_INTERVAL=0.050;
+  double now=egg_time_real();
+  struct sound_blackout *oldest=0;
+  struct sound_blackout *blackout=g.sound_blackoutv;
+  int i=g.sound_blackoutc;
+  for (;i-->0;blackout++) {
+    if (blackout->rid==rid) {
+      if (now-blackout->when<BLACKOUT_INTERVAL) return;
+      blackout->when=now;
+      egg_play_sound(rid,1.0,pan);
+      return;
+    }
+    if (!oldest||(blackout->when<oldest->when)) oldest=blackout;
+  }
+  if (oldest&&(now-oldest->when>BLACKOUT_INTERVAL)) {
+    oldest->rid=rid;
+    oldest->when=now;
+    egg_play_sound(rid,1.0,pan);
+    return;
+  }
+  if (g.sound_blackoutc>=SOUND_BLACKOUT_LIMIT) return;
+  blackout=g.sound_blackoutv+g.sound_blackoutc++;
+  blackout->rid=rid;
+  blackout->when=now;
+  egg_play_sound(rid,1.0,pan);
 }
