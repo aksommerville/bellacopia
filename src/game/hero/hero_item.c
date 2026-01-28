@@ -616,6 +616,48 @@ static void compass_update(struct sprite *sprite,double elapsed) {
   // Anyhoo, we can change minds at any time in the future. (compasst) should be the after-animation position, where it should render.
 }
 
+/* Barrel Hat.
+ */
+ 
+static int barrelhat_begin(struct sprite *sprite) {
+  
+  // First find the map and confirm the cell is grabbable; all barrels are.
+  const struct map *map=map_by_sprite_position(sprite->x+SPRITE->facedx,sprite->y+SPRITE->facedy,sprite->z);
+  if (!map||!map->rid) return 0;
+  int col=(int)sprite->x+SPRITE->facedx-map->lng*NS_sys_mapw;
+  int row=(int)sprite->y+SPRITE->facedy-map->lat*NS_sys_maph;
+  if ((col<0)||(row<0)||(col>=NS_sys_mapw)||(row>=NS_sys_maph)) return 0;
+  if (map->physics[map->v[row*NS_sys_mapw+col]]!=NS_physics_grabbable) return 0;
+  
+  // There must be both 'switchable' and 'barrelhat' commands at that cell.
+  int isbarrelhat=0,fld=0;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_barrelhat: {
+          if ((cmd.arg[0]==col)&&(cmd.arg[1]==row)) isbarrelhat=1;
+        } break;
+      case CMD_map_switchable: {
+          if ((cmd.arg[0]==col)&&(cmd.arg[1]==row)) {
+            fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          }
+        } break;
+    }
+  }
+  if (!isbarrelhat||!fld) return 0;
+  
+  // Is it hatted already?
+  if (store_get_fld(fld)) return 0;
+  
+  // Remove from inventory, set the fld, and play a sound.
+  g.store.invstorev[0].itemid=0;
+  store_set_fld(fld,1);
+  g.camera.mapsdirty=1;
+  bm_sound(RID_sound_presto);
+  return 1;
+}
+
 /* Update items, main entry point.
  */
  
@@ -667,6 +709,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_vanishing: result=vanishing_begin(sprite); break;
       case NS_itemid_compass: result=compass_begin(sprite); break;
       case NS_itemid_bell: result=bell_begin(sprite); break;
+      case NS_itemid_barrelhat: result=barrelhat_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

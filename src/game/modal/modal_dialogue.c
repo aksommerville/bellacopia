@@ -370,3 +370,12 @@ void modal_dialogue_set_default(struct modal *modal,int optionid) {
     }
   }
 }
+
+/* Set callback.
+ */
+ 
+void modal_dialogue_set_callback(struct modal *modal,int (*cb)(int optionid,void *userdata),void *userdata) {
+  if (!modal||(modal->type!=&modal_type_dialogue)) return;
+  MODAL->cb=cb;
+  MODAL->userdata=userdata;
+}

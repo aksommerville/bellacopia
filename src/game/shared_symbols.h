@@ -27,6 +27,7 @@
 #define CMD_map_song            0x21 /* u16:rid */
 #define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */
 #define CMD_map_parent          0x23 /* u16:rid ; For jigsaw purposes, I belong to this other map. One level of redirection only, please. */
+#define CMD_map_barrelhat       0x24 /* u16:pos ; Must also be switchable */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -118,6 +119,7 @@
 #define NS_itemid_jigpiece 19
 #define NS_itemid_bell 20
 #define NS_itemid_heartcontainer 21
+#define NS_itemid_barrelhat 22
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -139,7 +141,8 @@
   _(heart) \
   _(jigpiece) \
   _(bell) \
-  _(heartcontainer)
+  _(heartcontainer) \
+  _(barrelhat)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -150,6 +153,7 @@
 #define NS_activity_fishwife 5
 #define NS_activity_tolltroll 6 /* (u16:activity)appearance */
 #define NS_activity_wargate 7 /* (u16)0 ; The guards outside the north tent preventing you from leaving until the war is over. */
+#define NS_activity_knitter 8
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -219,6 +223,15 @@
 #define NS_fld_mayor 15
 #define NS_fld_war_over 16
 #define NS_fld_had_stick 17 /* For suppressing "got a stick" */
+#define NS_fld_barrelhat1 18
+#define NS_fld_barrelhat2 19
+#define NS_fld_barrelhat3 20
+#define NS_fld_barrelhat4 21
+#define NS_fld_barrelhat5 22
+#define NS_fld_barrelhat6 23
+#define NS_fld_barrelhat7 24
+#define NS_fld_barrelhat8 25
+#define NS_fld_barrelhat9 26
 
 /* "fld16" are 16 unsigned bits each.
  */

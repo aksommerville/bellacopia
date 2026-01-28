@@ -141,6 +141,7 @@ void modal_pause_click_tabs(struct modal *modal,int x,int y);
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.
 void modal_dialogue_set_default(struct modal *modal,int optionid); // Must add the option first.
+void modal_dialogue_set_callback(struct modal *modal,int (*cb)(int optionid,void *userdata),void *userdata);
 
 /* Fails on invalid itemid.
  * (quantity) zero to permit any quantity, in which case (price) is per-unit.

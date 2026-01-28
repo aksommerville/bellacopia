@@ -499,6 +499,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=NS_fld16_hpmax,
   },
+  [NS_itemid_barrelhat]={
+    .tileid=0x3e,
+    .hand_tileid=0x8d,
+    .strix_name=50,
+    .strix_help=51,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {

@@ -3,14 +3,13 @@
 /* Generic read-only dialogue.
  */
  
-static void begin_dialogue(int strix,struct sprite *speaker) {
+static struct modal *begin_dialogue(int strix,struct sprite *speaker) {
   struct modal_args_dialogue args={
     .rid=RID_strings_dialogue,
     .strix=strix,
     .speaker=speaker,
   };
-  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
-  if (!modal) return;
+  return modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
 
 /* Carpenter.
@@ -312,6 +311,39 @@ static void begin_tolltroll(struct sprite *sprite,int appearance) {
   }
 }
 
+/* Knitter: Give you a barrel hat if you don't have one.
+ */
+ 
+static int all_barrels_hatted() {
+  if (!store_get_fld(NS_fld_barrelhat1)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat2)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat3)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat4)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat5)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat6)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat7)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat8)) return 0;
+  if (!store_get_fld(NS_fld_barrelhat9)) return 0;
+  return 1;
+}
+ 
+static int knitter_cb(int optionid,void *userdata) {
+  game_get_item(NS_itemid_barrelhat,0);
+  return 1;
+}
+ 
+static void begin_knitter(struct sprite *sprite) {
+  if (store_get_itemid(NS_itemid_barrelhat)) {
+    begin_dialogue(25,sprite);
+  } else if (all_barrels_hatted()) {
+    begin_dialogue(26,sprite);//TODO There should be a prize for this. It should be an item, since the quest occupied an inventory slot.
+  } else {
+    struct modal *dialogue=begin_dialogue(24,sprite);
+    if (!dialogue) return;
+    modal_dialogue_set_callback(dialogue,knitter_cb,0);
+  }
+}
+
 /* Begin activity.
  */
  
@@ -324,6 +356,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_fishwife: begin_fishwife(initiator); break;
     case NS_activity_tolltroll: begin_tolltroll(initiator,arg); break;
     case NS_activity_wargate: begin_dialogue(19,initiator); break; // It's just dialogue. But the activity causes sprite to abort at spawn.
+    case NS_activity_knitter: begin_knitter(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

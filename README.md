@@ -21,6 +21,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Beta test. Aim to have this underway before GDEX.
+- - [ ] Automated system in-app to gather a log.
+- - [ ] Modify the Egg runtime to send collected logs to me.
+- - [ ] Stand a service on AWS to receive them.
+- - [ ] Probably use the same service for detecting and reporting carnival winners. I'm thinking "win five battles in a row"...
+- - [ ] Host on itch or aksommerville.com. Invite friends.
+- - [ ] Mail out rewards? Like, first ten people to beat the main quests get a stuffed witch?
+- - [ ] Tools to digest logs on my end.
+
 - [ ] Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - - [ ] Pins, buttons, stickers.
 - - [ ] Homemade stuffed witches, if I can work that out.
@@ -67,3 +76,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
 - - Shovel?
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
+- [ ] Knitter prize.
