@@ -17,68 +17,20 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-11: With stand-in root devils, tried a leisurely run without touching any cheat things: 29:14 to complete. Feeling good about the one-hour-minimum target.
 - 2026-01-15: I think I fucked up coordinates management, it's becoming seriously difficult. `maps.c:physics_at_sprite_position` is broken and I'm not sure how to fix it.
 - 2026-01-19: Fully committed to a rewrite. Expect mark 2 to be at parity with mark 1 before end of January.
+- 2026-01-27: Last features of mark 1 implemented in mark2, and a bunch of other stuff. Looking good.
 
 ## TODO
 
-- Mark 2 Parity Checklist
-- [x] Sometimes I step on the treadle and it toggles back and forth a few times.
-- [x] Drop sprites when far away, and prevent spawning ones already afield.
-- [x] Hero
-- - [x] Generic item actuation
-- - [x] Quantized position triggers
-- - [x] Damage
-- [x] Pause
-- - [x] Inventory
-- - [x] Map
-- - xxx Status and System -- Put these off a while, until we have a better sense what belongs there.
-- [x] Sprites
-- - [x] Monster
-- - [x] Jigpiece
-- - [x] Treasure
-- - [x] NPC
-- [x] NPC activities
-- - [x] General dialogue
-- - [x] Shop
-- - [x] Blood Bank
-- - [x] Brewer
-- - [x] Fishwife
-- [x] Show hp and gold in an overlay.
-- [x] Show hp, gold, and fish in pause menu. Inventory or Stats?
-- [x] Items. Don't clear until all the associated stuff is ready too.
-- - [x] potion
-- - [x] bugspray
-- - [x] vanishing
-- - [x] candy
-- - [x] divining
-- - [x] wand
-- - [x] match
-- - [x] compass
-- - [x] hookshot
-- - [x] broom
-- - [x] fishpole
-- [x] Spawn via rsprite.
 - [ ] Battle
-- - [x] Generic framework
-- - [x] fishing
-- - [x] chopping
-- - [x] exterminating
-- - [x] boomerang
-- - [ ] greenfish
-- - [ ] bluefish
-- - [ ] redfish
+- - [x] greenfish
+- - [x] bluefish
+- - [x] redfish
 - - [ ] strangling
-- [x] Dialogue
-- - [x] game.c, item messaging
-- [x] Global persistent clocks: playtime, pausetime, battletime.
 
 - Bugs, future, ...
-- [x] If you quit while standing on a treadle, it will stick on. Do we need to scan for treadles during load?
 - [ ] Door transitions. Fade to black? Spotlight?
-- [x] Stats vellum.
-- [x] System vellum.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
-- [x] Make the bottle graphically show its fullness. Both the pause-screen tile and the hand tile.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
@@ -87,12 +39,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
-- [x] Trigger battles via fishpole. See `hero_item.c:fishpole_update()`
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
-- [x] When doing the jigsaws, it's hard to avoid clicking in the tab bar or closet sometimes. Maybe avoid that by keeping new pieces a bit more inside?
+- [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
-- [x] Pause modal: Seeing graphics corruption in the top bar.
 - [ ] Handicap for monster and fishpole.
 - [ ] Progress, side quests, and maps for vellum_stats.
 - [ ] Dynamically center vellum_stats, to accomodate multiple languages.

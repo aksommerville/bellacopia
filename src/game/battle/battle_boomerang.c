@@ -511,13 +511,13 @@ static void _boomerang_render(void *ctx) {
     if (!rang->dead) rang++; // If it's not the first, must be the second.
     int hitx=(rang->side<0)?((FBW>>1)-24-(int)rang->x):((FBW>>1)+24+(int)rang->x);
     int hity=(rang->row<0)?(GROUND_LEVEL-40):(GROUND_LEVEL-9);
-    graf_set_image(&g.graf,RID_image_battle_fishing);
+    graf_set_image(&g.graf,RID_image_battle_early);
     graf_decal(&g.graf,hitx-24,hity-24,80,112,48,48);
   }
   graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
   graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
   
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_set_image(&g.graf,RID_image_battle_early);
   player_render(CTX->playerv+0);
   player_render(CTX->playerv+1);
   

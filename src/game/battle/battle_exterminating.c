@@ -357,7 +357,7 @@ static void player_render(void *ctx,struct player *player,int midx) {
  
 static void _exterminating_render(void *ctx) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_set_image(&g.graf,RID_image_battle_early);
   player_render(ctx,CTX->playerv+0,(FBW*1)/3);
   player_render(ctx,CTX->playerv+1,(FBW*2)/3);
 }

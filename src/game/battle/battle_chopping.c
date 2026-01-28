@@ -181,7 +181,7 @@ static void veg_finish(void *ctx,struct player *player,struct veg *veg) {
   int dsty_min=16-(player->score/3);
   int dsty=dsty_min+rand()%(dsty_max-dsty_min);
   graf_set_output(&g.graf,player->texid_output);
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_set_image(&g.graf,RID_image_battle_early);
   graf_decal(&g.graf,dstx,dsty,veg->srcx,veg->srcy,veg->w,veg->h);
   graf_set_output(&g.graf,1);
 }
@@ -356,7 +356,7 @@ static void _chopping_update(void *ctx,double elapsed) {
 static void player_render(void *ctx,struct player *player) {
   
   // Start with the belt.
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_set_image(&g.graf,RID_image_battle_early);
   int x=XEND-8;
   int y=player->y;
   for (;x>-8;x-=16) {
@@ -371,7 +371,7 @@ static void player_render(void *ctx,struct player *player) {
   graf_decal(&g.graf,XEND,y-24,0,0,16,32);
   
   // Box foreground. To ensure that bits don't occlude the front face.
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_set_image(&g.graf,RID_image_battle_early);
   graf_tile(&g.graf,XEND+8,y,0xa9,0);
   
   // Vegetables on the belt.
