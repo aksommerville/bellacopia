@@ -680,6 +680,146 @@ static void telescope_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Shovel. Update is passive.
+ */
+ 
+static void shovel_update(struct sprite *sprite,double elapsed) {
+  SPRITE->qx=(int)(sprite->x+SPRITE->facedx*0.750);
+  SPRITE->qy=(int)(sprite->y+SPRITE->facedy*0.750);
+}
+ 
+static int shovel_begin(struct sprite *sprite) {
+
+  // Confirm map cell is vacant or safe.
+  struct map *map=map_by_sprite_position(SPRITE->qx,SPRITE->qy,sprite->z);
+  if (!map) return 0;
+  int col=SPRITE->qx%NS_sys_mapw;
+  int row=SPRITE->qy%NS_sys_maph;
+  uint8_t physics=map->physics[map->v[row*NS_sys_mapw+col]];
+  switch (physics) {
+    case NS_physics_vacant:
+    case NS_physics_safe:
+      break;
+    default: return 0;
+  }
+  
+  // Check whether there's already a hole there.
+  double x=SPRITE->qx+0.5;
+  double y=SPRITE->qy+0.5;
+  struct sprite **otherp=GRP(visible)->sprv;
+  int i=GRP(visible)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    if (other->rid!=RID_sprite_hole) continue;
+    if (other->x<x-0.1) continue;
+    if (other->x>x+0.1) continue;
+    if (other->y<y-0.1) continue;
+    if (other->y>y+0.1) continue;
+    return 0; // Already dug.
+  }
+  
+  // Do it.
+  struct sprite *hole=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
+  if (!hole) return 0;
+  //TODO digging animation
+  
+  // Scan map's commands for anything buried here.
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_buriedtreasure: {
+          if (cmd.arg[0]!=col) continue;
+          if (cmd.arg[1]!=row) continue;
+          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (store_get_fld(fld)) continue;
+          store_set_fld(fld,1);
+          int itemid=(cmd.arg[4]<<8)|cmd.arg[5];
+          int quantity=cmd.arg[6];
+          game_get_item(itemid,quantity);
+          return 1;
+        }
+    }
+  }
+  
+  // Nothing buried here, so just make the dig sound and we're done.
+  bm_sound(RID_sound_dig);
+  return 1;
+}
+
+/* Magnifier. Updates passively.
+ * Copies most of Divining Rod's logic, and borrows some of the same plumbing.
+ */
+ 
+static void magnifier_update(struct sprite *sprite,double elapsed) {
+  int qx=(int)sprite->x;
+  int qy=(int)sprite->y;
+  if ((qx==SPRITE->qx)&&(qy==SPRITE->qy)) return;
+  SPRITE->qx=qx;
+  SPRITE->qy=qy;
+}
+
+static double nearest_secret_distance2(const struct secret *v,int c,double x,double y) {
+  double bestd2=999.999;
+  for (;c-->0;v++) {
+    double dx=v->x-x;
+    double dy=v->y-y;
+    double d2=dx*dx+dy*dy;
+    if (d2<bestd2) bestd2=d2;
+  }
+  return bestd2;
+}
+ 
+static int magnifier_begin(struct sprite *sprite) {
+  SPRITE->divining_alert_clock=0.500;
+  int soundid=RID_sound_negatory;
+
+  /* Prepare the alerts with quantized positions and the negative tile.
+   */
+  struct divining_alert *alert=SPRITE->divining_alertv;
+  int dy=-1; for (;dy<=1;dy++) {
+    int dx=-1; for (;dx<=1;dx++,alert++) {
+      alert->tileid=0x68;
+      alert->x=(SPRITE->qx+dx)*NS_sys_tilesize+(NS_sys_tilesize>>1);
+      alert->y=(SPRITE->qy+dy)*NS_sys_tilesize+(NS_sys_tilesize>>1);
+    }
+  }
+  
+  /* Ask map store to list nearby secrets.
+   * If there's none, we can wrap up.
+   */
+  #define SECRETS_LIMIT 8
+  struct secret secretv[SECRETS_LIMIT];
+  int secretc=game_find_secrets(secretv,SECRETS_LIMIT,sprite->x,sprite->y,sprite->z,8.0);
+  #undef SECRETS_LIMIT
+  if (secretc<1) {
+    bm_sound(RID_sound_negatory);
+    return 1;
+  }
+  
+  /* For each cell in (divining_alertv), find the distance to the nearest secret,
+   * and that determines the tile we'll display.
+   * If we show anything other than the default 0x68, we'll play the affirmative sound.
+   */
+  for (alert=SPRITE->divining_alertv,dy=-1;dy<=1;dy++) {
+    int dx=-1; for (;dx<=1;dx++,alert++) {
+      double alertx=SPRITE->qx+dx+0.5;
+      double alerty=SPRITE->qy+dy+0.5;
+      double distance=nearest_secret_distance2(secretv,secretc,alertx,alerty);
+           if (distance<0.5*0.5) { soundid=RID_sound_affirmative; alert->tileid=0x01; }
+      else if (distance<1.5*1.5) { soundid=RID_sound_affirmative; alert->tileid=0x02; }
+      else if (distance<2.5*2.5) { soundid=RID_sound_affirmative; alert->tileid=0x03; }
+      else if (distance<3.5*3.5) { soundid=RID_sound_affirmative; alert->tileid=0x04; }
+      else if (distance<4.5*4.5) { soundid=RID_sound_affirmative; alert->tileid=0x05; }
+      else if (distance<5.5*5.5) { soundid=RID_sound_affirmative; alert->tileid=0x06; }
+      else if (distance<6.5*6.5) { soundid=RID_sound_affirmative; alert->tileid=0x07; }
+    }
+  }
+  bm_sound(soundid);
+  return 1;
+}
+
 /* Update items, main entry point.
  */
  
@@ -700,11 +840,13 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     return;
   }
   
-  /* Divining Rod and Compass get updated passively just by virtue of being equipped.
+  /* Some items get updated passively just by virtue of being equipped.
    */
   switch (g.store.invstorev[0].itemid) {
     case NS_itemid_divining: divining_update(sprite,elapsed); break;
     case NS_itemid_compass: compass_update(sprite,elapsed); break;
+    case NS_itemid_shovel: shovel_update(sprite,elapsed); break;
+    case NS_itemid_magnifier: magnifier_update(sprite,elapsed); break;
   }
   
   // No starting items if injured.
@@ -734,6 +876,8 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_bell: result=bell_begin(sprite); break;
       case NS_itemid_barrelhat: result=barrelhat_begin(sprite); break;
       case NS_itemid_telescope: result=telescope_begin(sprite); break;
+      case NS_itemid_shovel: result=shovel_begin(sprite); break;
+      case NS_itemid_magnifier: result=magnifier_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

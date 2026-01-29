@@ -39,3 +39,4 @@ root @15,6 (u16:fld)root6
 root @16,6 (u16:fld)root6
 root @17,6 (u16:fld)root6
 root @18,6 (u16:fld)root6
+buriedtreasure @16,5 (u16:fld)bt2 (u16:itemid)gold 11 0

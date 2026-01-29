@@ -37,6 +37,7 @@
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
+#define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
 #define CMD_sprite_image        0x20 /* u16:rid */
@@ -121,6 +122,7 @@
 #define NS_itemid_heartcontainer 21
 #define NS_itemid_barrelhat 22
 #define NS_itemid_telescope 23
+#define NS_itemid_shovel 24
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -144,7 +146,8 @@
   _(bell) \
   _(heartcontainer) \
   _(barrelhat) \
-  _(telescope)
+  _(telescope) \
+  _(shovel)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -242,6 +245,10 @@
 #define NS_fld_target_sidequest 29
 #define NS_fld_target_gold 30
 #define NS_fld_rescued_princess 31
+#define NS_fld_bt1 32
+#define NS_fld_bt2 33
+#define NS_fld_bt3 34
+#define NS_fld_bt4 35
 
 /* "fld16" are 16 unsigned bits each.
  */

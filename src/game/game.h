@@ -106,4 +106,16 @@ int game_choose_fish(int x,int y,int z);
 
 void game_hurt_hero();
 
+/* Generate a list of select POI within a given radius of a point on one plane.
+ * Never returns more than (dsta). Stops searching when full, so it doesn't necessarily return the closest.
+ * Will not return secrets already got.
+ */
+struct secret {
+  struct map *map;
+  struct cmdlist_entry cmd;
+  double x,y; // Plane meters to center of tile (ie n.5)
+  double d2; // (sqrt(d2)) if you need the real distance, I figure we don't always need it.
+};
+int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius);
+
 #endif

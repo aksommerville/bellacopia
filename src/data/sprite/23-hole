@@ -1,0 +1,5 @@
+image image:hero
+tile 146 0
+type (u16:sprtype)dummy
+groups (b32:sprgrp)visible
+layer (u16)1

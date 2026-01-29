@@ -333,6 +333,20 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_telescope: hero_render_telescope(sprite,x,y); return;
   }
   
+  /* When the shovel is armed, draw a preview square.
+   */
+  if (g.store.invstorev[0].itemid==NS_itemid_shovel) {
+    int shx=SPRITE->qx*NS_sys_tilesize-g.camera.rx+(NS_sys_tilesize>>1);
+    int shy=SPRITE->qy*NS_sys_tilesize-g.camera.ry+(NS_sys_tilesize>>1);
+    uint8_t xform=0;
+    switch ((g.framec/10)&3) {
+      case 1: xform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
+      case 2: xform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
+      case 3: xform=EGG_XFORM_SWAP|EGG_XFORM_YREV; break;
+    }
+    graf_tile(&g.graf,shx,shy,0x00,xform);
+  }
+  
   uint8_t itemtileid=0;
   const struct item_detail *detail=item_detail_for_equipped();
   if (detail) {

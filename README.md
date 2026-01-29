@@ -25,8 +25,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Telescope.
 - [x] Magnetic North.
 - [x] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
-- [ ] Shovel, for buried treasure.
-- [ ] Magnifier: Operate about like Divining Rod, but hint at distance to buried treasure.
+- [x] Shovel, for buried treasure.
+- [x] Magnifier: Operate about like Divining Rod, but hint at distance to buried treasure.
 - [ ] Fishsmith: Trade fish for goods.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
@@ -60,6 +60,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
+- [ ] Animate digging with shovel.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

@@ -23,7 +23,7 @@ switchable @6,5 (u16:fld)root4
 switchable @8,4 (u16:fld)root5
 switchable @12,7 (u16:fld)root6
 debugmsg "start"
-door @4,2 map:101 @4,2 0x0000
+door @4,2 map:101 @1,2 0x0000
 stompbox @14,8 (u16:fld)root6
 sprite @5,8 sprite:jigpiece (u32)0
 root @8,11 (u16:fld)root1

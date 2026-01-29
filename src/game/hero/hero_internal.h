@@ -16,7 +16,7 @@ struct sprite_hero {
   double walkanimclock;
   int walkanimframe;
   double potionclock; // Animating potion.
-  int qx,qy,root; // Stays fresh passively while divining rod armed. Otherwise (-1,-1,0). Most POI interactions use feet.
+  int qx,qy,root; // Stays fresh passively while divining rod armed. Otherwise (-1,-1,0). Most POI interactions use feet. Shovel too.
   struct divining_alert {
     int x,y; // plane pixels, to the center of the cell.
     uint8_t tileid;

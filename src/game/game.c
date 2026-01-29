@@ -517,6 +517,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=1,
     .fld16=0,
   },
+  [NS_itemid_shovel]={
+    .tileid=0x4d,
+    .hand_tileid=0x8f,
+    .strix_name=54,
+    .strix_help=55,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {
@@ -637,4 +646,88 @@ void game_hurt_hero() {
     store_set_fld16(NS_fld16_hp,hp);
     bm_sound(RID_sound_ouch);
   }
+}
+
+/* List nearby secrets, within one map.
+ */
+ 
+static int game_find_secrets_1(struct secret *dst,int dsta,struct map *map,double x,double y,double r2) {
+  if (dsta<1) return 0;
+  int dstc=0;
+  double x0=(double)(map->lng*NS_sys_mapw)+0.5;
+  double y0=(double)(map->lat*NS_sys_maph)+0.5;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+    
+      case CMD_map_door: {
+          //TODO I'm sure we'll soon want buried doors in addition to buried treasure.
+        } break;
+        
+      case CMD_map_buriedtreasure: {
+          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (store_get_fld(fld)) break; // Already got; skip it.
+          double poix=cmd.arg[0]+x0;
+          double poiy=cmd.arg[1]+y0;
+          double dx=x-poix;
+          double dy=y-poiy;
+          double d2=dx*dx+dy*dy;
+          if (d2<r2) {
+            struct secret *secret=dst+dstc++;
+            secret->map=map;
+            secret->cmd=cmd;
+            secret->x=poix;
+            secret->y=poiy;
+            secret->d2=d2;
+            if (dstc>=dsta) return dstc;
+          }
+        } break;
+    }
+  }
+  return dstc;
+}
+
+/* List nearby secrets.
+ */
+ 
+int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius) {
+  if (!dst||(dsta<1)) return 0;
+  struct plane *plane=plane_by_position(z);
+  if (!plane||(plane->w<1)) return 0;
+  int planew=plane->w*NS_sys_mapw;
+  int planeh=plane->h*NS_sys_maph;
+
+  /* Calculate bounds as integer plane meters, and clamp to the plane.
+   * (xz,yz) are exclusive.
+   */
+  int xa=(int)(x-radius); if (xa<0) xa=0;
+  int xz=(int)(x+radius)+1; if (xz>planew) xz=planew;
+  int ya=(int)(y-radius); if (ya<0) ya=0;
+  int yz=(int)(y+radius)+1; if (yz>planeh) yz=planeh;
+  int w=xz-xa; if (w<1) return 0;
+  int h=yz-ya; if (h<1) return 0;
+  
+  /* Determine map coverage.
+   */
+  int mx=xa/NS_sys_mapw;
+  int mw=xz/NS_sys_mapw-mx+1;
+  int my=ya/NS_sys_maph;
+  int mh=yz/NS_sys_maph-my+1;
+  
+  /* Iterate maps.
+   */
+  int dstc=0;
+  double r2=radius*radius;
+  struct map *maprow=plane->v+my*plane->w+mx;
+  for (;mh-->0;maprow+=plane->w) {
+    struct map *map=maprow;
+    int xi=mw;
+    for (;xi-->0;map++) {
+      dstc+=game_find_secrets_1(dst+dstc,dsta-dstc,map,x,y,r2);
+      if (dstc>=dsta) return dstc;
+    }
+  }
+
+  return dstc;
 }
