@@ -328,7 +328,13 @@ static int all_barrels_hatted() {
 }
  
 static int knitter_cb(int optionid,void *userdata) {
+  //TODO incremental prizes?
   game_get_item(NS_itemid_barrelhat,0);
+  return 1;
+}
+
+static int knitter_cb_final(int optionid,void *userdata) {
+  game_get_item(NS_itemid_bell,0);
   return 1;
 }
  
@@ -336,7 +342,13 @@ static void begin_knitter(struct sprite *sprite) {
   if (store_get_itemid(NS_itemid_barrelhat)) {
     begin_dialogue(25,sprite);
   } else if (all_barrels_hatted()) {
-    begin_dialogue(26,sprite);//TODO There should be a prize for this. It should be an item, since the quest occupied an inventory slot.
+    if (store_get_itemid(NS_itemid_bell)) {
+      begin_dialogue(31,sprite); // "Thanks again!"
+    } else {
+      struct modal *dialogue=begin_dialogue(26,sprite); // "Woo hoo, here have a bell."
+      if (!dialogue) return;
+      modal_dialogue_set_callback(dialogue,knitter_cb_final,0);
+    }
   } else {
     struct modal *dialogue=begin_dialogue(24,sprite);
     if (!dialogue) return;
@@ -419,6 +431,29 @@ static void begin_thingwalla(struct sprite *sprite) {
   modal_shop_add_item(modal,NS_itemid_vanishing,6,0);
 }
 
+/* King: Behooves you to rescue the Princess, or recompenses you for doing so.
+ */
+ 
+static int king_cb(int optionid,void *userdata) {
+  store_set_fld(NS_fld_rescued_princess,1);
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  goldmax+=100;
+  store_set_fld16(NS_fld16_goldmax,goldmax);
+  store_set_fld16(NS_fld16_gold,goldmax); // Also fill er up, as long as we're in there.
+  bm_sound(RID_sound_treasure);
+  return 1;
+}
+ 
+static void begin_king(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_rescued_princess)) {
+    begin_dialogue(32,sprite); // "Thanks again!"
+  } else {
+    struct modal *modal=begin_dialogue(33,sprite);
+    if (!modal) return;
+    modal_dialogue_set_callback(modal,king_cb,sprite);
+  }
+}
+
 /* Begin activity.
  */
  
@@ -434,6 +469,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_knitter: begin_knitter(initiator); break;
     case NS_activity_magneticnorth: begin_magneticnorth(initiator); break;
     case NS_activity_thingwalla: begin_thingwalla(initiator); break;
+    case NS_activity_king: begin_king(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

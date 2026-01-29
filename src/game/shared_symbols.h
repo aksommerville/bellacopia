@@ -158,6 +158,7 @@
 #define NS_activity_knitter 8
 #define NS_activity_magneticnorth 9
 #define NS_activity_thingwalla 10
+#define NS_activity_king 11
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -240,6 +241,7 @@
 #define NS_fld_target_rootdevil 28
 #define NS_fld_target_sidequest 29
 #define NS_fld_target_gold 30
+#define NS_fld_rescued_princess 31
 
 /* "fld16" are 16 unsigned bits each.
  */

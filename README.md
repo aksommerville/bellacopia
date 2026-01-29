@@ -18,6 +18,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-15: I think I fucked up coordinates management, it's becoming seriously difficult. `maps.c:physics_at_sprite_position` is broken and I'm not sure how to fix it.
 - 2026-01-19: Fully committed to a rewrite. Expect mark 2 to be at parity with mark 1 before end of January.
 - 2026-01-27: Last features of mark 1 implemented in mark 2, and a bunch of other stuff. Looking good.
+- 2026-01-29: Added some shops and placeholder King. Should be possible to do everything except Magnifier and Telescope now without cheating. ...confirmed. Done in about 22 minutes.
 
 ## TODO
 
@@ -27,6 +28,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Fishsmith: Trade fish for goods.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
+- [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
@@ -57,7 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
 - - Shovel?
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
-- [ ] Knitter prize.
+- [ ] Knitter incremental prizes.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -96,29 +98,26 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [ ] End the war => Hookshot
 - [ ] Run for mayor => no prize
-- [ ] Hat the barrels => (incremental?) but must have an item at the end. Bell would be appropriately pointless.
+- [x] Hat the barrels => Bell
 - [ ] Catch em all => (incremental)
-- [ ] Rescue the Princess => ?
+- [ ] Rescue the Princess => purse+100
 - [ ] Decipher the goblins' text => ?
 - [ ] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?
 - [ ] Inventory critic => ? obvs not an item
-- [ ] Expensive health care => ?
+- [ ] Expensive health care => Heart Container, plus incremental prizes. Can't be gold.
 - [ ] Worldwide broom races => ?
-- [ ] Tree stories => ? must be an item
+- [ ] Tree stories => ?
 - [ ] Reverse Sokoban => ?
+- This set of quests doesn't feel adequate. Need like a dozen more.
 
 - Prizes unassigned.
 - [ ] Magnifier.
-- [ ] Compass. Give away at Magnetic North, I just haven't got to it yet.
-- [ ] Bell.
 - [ ] Telescope.
 - [ ] hc1
 - [ ] hc2
 - [ ] hc3
 - [ ] hc4
 - [ ] hc5
-- [ ] purse1
-- [ ] purse2
-- [ ] purse3. Not sure how many purse upgrades to do, we're flexible.
+- Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
