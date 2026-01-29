@@ -278,6 +278,30 @@ static void hero_render_hurt(struct sprite *sprite,int x,int y) {
   graf_fancy(&g.graf,x,y+hatdy,0x0e,0,0,NS_sys_tilesize,0,primary);
 }
 
+/* Telescope.
+ */
+ 
+static void hero_render_telescope(struct sprite *sprite,int x,int y) {
+  uint8_t bodytile,scopetile;
+  uint8_t xform=0;
+  if (SPRITE->facedx<0) {
+    bodytile=0x4f;
+    scopetile=0x4e;
+  } else if (SPRITE->facedx>0) {
+    bodytile=0x4f;
+    scopetile=0x4e;
+    xform=EGG_XFORM_XREV;
+  } else if (SPRITE->facedy<0) {
+    bodytile=0x3f;
+    scopetile=0x2f;
+  } else {
+    bodytile=0x2e;
+    scopetile=0x3e;
+  }
+  graf_tile(&g.graf,x,y,bodytile,xform);
+  graf_tile(&g.graf,x+SPRITE->facedx*NS_sys_tilesize,y+SPRITE->facedy*NS_sys_tilesize,scopetile,xform);
+}
+
 /* Render, main entry point.
  */
  
@@ -306,6 +330,7 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_fishpole: hero_render_fishpole(sprite,x,y); return;
     case NS_itemid_hookshot: hero_render_hookshot(sprite,x,y); return;
     case NS_itemid_potion: hero_render_potion(sprite,x,y); return;
+    case NS_itemid_telescope: hero_render_telescope(sprite,x,y); return;
   }
   
   uint8_t itemtileid=0;

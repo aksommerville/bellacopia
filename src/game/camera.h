@@ -35,6 +35,7 @@ struct camera {
   
   double darkness; // 0..1 = light..dark
   double lightness;
+  double teledx,teledy; // Telescope offset in pixels. We apply it, hero sets it directly.
   
   //TODO transitions
   //TODO weather

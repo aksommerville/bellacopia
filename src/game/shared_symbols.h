@@ -120,6 +120,7 @@
 #define NS_itemid_bell 20
 #define NS_itemid_heartcontainer 21
 #define NS_itemid_barrelhat 22
+#define NS_itemid_telescope 23
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -142,7 +143,8 @@
   _(jigpiece) \
   _(bell) \
   _(heartcontainer) \
-  _(barrelhat)
+  _(barrelhat) \
+  _(telescope)
 
 /* NPC activities are hard-coded. Select one from this list.
  */

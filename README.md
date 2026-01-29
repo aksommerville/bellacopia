@@ -21,30 +21,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Beta test. Aim to have this underway before GDEX.
-- - [ ] Automated system in-app to gather a log.
-- - [ ] Modify the Egg runtime to send collected logs to me.
-- - [ ] Stand a service on AWS to receive them.
-- - [ ] Probably use the same service for detecting and reporting carnival winners. I'm thinking "win five battles in a row"...
-- - [ ] Host on itch or aksommerville.com. Invite friends.
-- - [ ] Mail out rewards? Like, first ten people to beat the main quests get a stuffed witch?
-- - [ ] Tools to digest logs on my end.
-
-- [ ] Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
-- - [ ] Pins, buttons, stickers.
-- - [ ] Homemade stuffed witches, if I can work that out.
-- - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
-- - - ^ prefer bearsforhumanity.com
-- - - ...but I really would prefer "Made in Flytown"
-- - - Whatever we're doing, figure it out by the end of April.
-- - [ ] Witch hats. Same idea as the dolls.
-- - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly.
-- - [ ] Mini comic?
-- - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
-- - [ ] Book of sheet music.
-- - [ ] Videos.
-
-- Bugs, future, ...
+- [x] Telescope.
+- [ ] Magnetic North.
+- [ ] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
+- [ ] Fishsmith: Trade fish for goods.
+- [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
@@ -77,3 +58,68 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Shovel?
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter prize.
+
+- Beta test. Aim to have this underway before GDEX.
+- - [ ] Automated system in-app to gather a log.
+- - [ ] Modify the Egg runtime to send collected logs to me.
+- - [ ] Stand a service on AWS to receive them.
+- - [ ] Probably use the same service for detecting and reporting carnival winners. I'm thinking "win five battles in a row"...
+- - [ ] Host on itch or aksommerville.com. Invite friends.
+- - [ ] Mail out rewards? Like, first ten people to beat the main quests get a stuffed witch?
+- - [ ] Tools to digest logs on my end.
+
+- Validation.
+- [ ] Within each plane, if one map has a parent, they all must.
+- [ ] No grandparent maps.
+- [ ] Singleton items can't appear more than once.
+- [ ] Treasure chest with a quantity item must have a flag.
+- [ ] Plane edges must be solid, or have wind if we add that.
+- [ ] Map edges on plane zero must be solid.
+
+- Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
+- - [ ] Pins, buttons, stickers.
+- - [ ] Homemade stuffed witches, if I can work that out.
+- - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
+- - - ^ prefer bearsforhumanity.com
+- - - ...but I really would prefer "Made in Flytown"
+- - - Whatever we're doing, figure it out by the end of April.
+- - [ ] Witch hats. Same idea as the dolls.
+- - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly.
+- - [ ] Mini comic?
+- - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
+- - [ ] Book of sheet music.
+- - [ ] Videos.
+
+## Quests and Prizes
+
+- [ ] End the war => Hookshot
+- [ ] Run for mayor => no prize
+- [ ] Hat the barrels => (incremental?)
+- [ ] Catch em all => (incremental)
+- [ ] Rescue the Princess => ?
+- [ ] Decipher the goblins' text => ?
+- [ ] Escape the labyrinth => no prize?
+- [x] Pay the toll trolls => no prize
+- [ ] The toad and the boulder => no prize?
+- [ ] Inventory critic => ? obvs not an item
+- [ ] Expensive health care => ?
+- [ ] Worldwide broom races => ?
+- [ ] Tree stories => ?
+- [ ] Reverse Sokoban => ?
+
+- Prizes unassigned.
+- [ ] Bug spray.
+- [ ] Candy.
+- [ ] Magnifier.
+- [ ] Vanishing cream.
+- [ ] Compass. Give away at Magnetic North, I just haven't got to it yet.
+- [ ] Bell.
+- [ ] Telescope.
+- [ ] hc1
+- [ ] hc2
+- [ ] hc3
+- [ ] hc4
+- [ ] hc5
+- [ ] purse1
+- [ ] purse2
+- [ ] purse3. Not sure how many purse upgrades to do, we're flexible.

@@ -72,7 +72,7 @@ We'll group minigames by Zone.
 
 ## Side Quests
 
-- [ ] Jigsaw puzzle world map. See `xmark` project.
+- [x] Jigsaw puzzle world map. See `xmark` project.
 - - We can do 1 pixel per cell if regions never exceed 12x12 screens. I think that's enough.
 - [ ] Find all the useful items.
 - [ ] Some kind of korokky collectible.
@@ -111,7 +111,7 @@ We'll group minigames by Zone.
 - - Fishing too much in one area, the odds of a catch decrease.
 - - Can we do a complex animation for the water, with subtle hints toward the fish density there? Something hard to explain but easy to detect once you've learned how.
 - - [ ] Catch a mythical sea monster in the labyrinth.
-- [ ] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
+- [x] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
 - [ ] Talking trees that are bored and want you to tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
 - xxx Circumnavigate the globe. Since it's possible, there ought to be some fanfare the first time you do it.

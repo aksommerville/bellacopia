@@ -10,6 +10,7 @@ static int item_prevents_motion(uint8_t itemid) {
     case NS_itemid_fishpole:
     case NS_itemid_hookshot:
     case NS_itemid_potion:
+    case NS_itemid_telescope:
       return 1;
   }
   return 0;

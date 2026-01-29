@@ -658,6 +658,28 @@ static int barrelhat_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Telescope.
+ */
+ 
+#define TELESCOPE_AWAY_SPEED 250.0 /* px/s (NB not meters) */
+ 
+static int telescope_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_telescope;
+  return 1;
+}
+
+static void telescope_update(struct sprite *sprite,double elapsed) {
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    g.camera.teledx=0.0;
+    g.camera.teledy=0.0;
+    g.camera.cut=1;
+    SPRITE->itemid_in_progress=0;
+  } else {
+    g.camera.teledx+=TELESCOPE_AWAY_SPEED*elapsed*SPRITE->facedx;
+    g.camera.teledy+=TELESCOPE_AWAY_SPEED*elapsed*SPRITE->facedy;
+  }
+}
+
 /* Update items, main entry point.
  */
  
@@ -672,6 +694,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_fishpole: fishpole_update(sprite,elapsed); break;
       case NS_itemid_hookshot: hookshot_update(sprite,elapsed); break;
       case NS_itemid_potion: potion_update(sprite,elapsed); break;
+      case NS_itemid_telescope: telescope_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
@@ -710,6 +733,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_compass: result=compass_begin(sprite); break;
       case NS_itemid_bell: result=bell_begin(sprite); break;
       case NS_itemid_barrelhat: result=barrelhat_begin(sprite); break;
+      case NS_itemid_telescope: result=telescope_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

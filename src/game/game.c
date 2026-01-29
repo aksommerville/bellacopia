@@ -508,6 +508,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=1,
     .fld16=0,
   },
+  [NS_itemid_telescope]={
+    .tileid=0x3f,
+    .hand_tileid=0x8e,
+    .strix_name=52,
+    .strix_help=53,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {

@@ -23,6 +23,8 @@ void camera_reset() {
   g.camera.lock=0;
   g.camera.listenlock=0;
   g.camera.darkness=0.0;
+  g.camera.teledx=0.0;
+  g.camera.teledy=0.0;
 }
 
 /* Listeners.
@@ -374,6 +376,7 @@ void camera_update(double elapsed) {
   /* Find the ideal unclamped position.
    * This is generally the hero.
    * If we don't have a hero, it's our most recent position.
+   * Includes telescope offset.
    */
   double idealx=g.camera.fx;
   double idealy=g.camera.fy;
@@ -389,6 +392,8 @@ void camera_update(double elapsed) {
       }
     }
   }
+  idealx+=g.camera.teledx;
+  idealy+=g.camera.teledy;
   
   /* Advance (fx,fy) toward (idealx,idealy) at a global speed limit.
    * If we're within a pixel of it, just snap. (bear in mind this is running always).
