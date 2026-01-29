@@ -22,8 +22,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Telescope.
-- [ ] Magnetic North.
-- [ ] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
+- [x] Magnetic North.
+- [x] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
 - [ ] Fishsmith: Trade fish for goods.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
@@ -75,6 +75,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Treasure chest with a quantity item must have a flag.
 - [ ] Plane edges must be solid, or have wind if we add that.
 - [ ] Map edges on plane zero must be solid.
+- [ ] Continuous root paths leading to each root devil.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - - [ ] Pins, buttons, stickers.
@@ -89,12 +90,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
 - - [ ] Book of sheet music.
 - - [ ] Videos.
+- - [ ] Book of Cheating. Maybe a digital edition?
 
 ## Quests and Prizes
 
 - [ ] End the war => Hookshot
 - [ ] Run for mayor => no prize
-- [ ] Hat the barrels => (incremental?)
+- [ ] Hat the barrels => (incremental?) but must have an item at the end. Bell would be appropriately pointless.
 - [ ] Catch em all => (incremental)
 - [ ] Rescue the Princess => ?
 - [ ] Decipher the goblins' text => ?
@@ -104,14 +106,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Inventory critic => ? obvs not an item
 - [ ] Expensive health care => ?
 - [ ] Worldwide broom races => ?
-- [ ] Tree stories => ?
+- [ ] Tree stories => ? must be an item
 - [ ] Reverse Sokoban => ?
 
 - Prizes unassigned.
-- [ ] Bug spray.
-- [ ] Candy.
 - [ ] Magnifier.
-- [ ] Vanishing cream.
 - [ ] Compass. Give away at Magnetic North, I just haven't got to it yet.
 - [ ] Bell.
 - [ ] Telescope.

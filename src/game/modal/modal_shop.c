@@ -31,6 +31,7 @@ struct modal_shop {
     int itemid;
     int quantity; // Defaults to 1, or 0 if not applicable.
     int force_quantity; // If nonzero, it's a quantity-bearing item but we only sell so many, and (price) is for the set.
+    int limit;
     int price;
     int desc; // texid
     int descw,desch;
@@ -67,13 +68,20 @@ static void _shop_del(struct modal *modal) {
 static void shop_reposition(struct modal *modal) {
   if (!MODAL->optionc&&(MODAL->texw<1)) return;
   
+  int extraw=32; // Quantity and price. They right-align, but item lines must account for the extra width.
   MODAL->boxw=MODAL->texw;
   MODAL->boxh=MODAL->texh+MARGINT+MARGINB;
   struct option *option=MODAL->optionv;
   int i=MODAL->optionc;
-  for (;i-->0;option++) {
+  for (;i-->0;option++) { // First, do we have any quantity-bearing options?
+    if (option->quantity&&!option->force_quantity) {
+      extraw+=32;
+      break;
+    }
+  }
+  for (option=MODAL->optionv,i=MODAL->optionc;i-->0;option++) {
     MODAL->boxh+=option->h;
-    int w1=CURSOR_MARGIN+option->w;
+    int w1=CURSOR_MARGIN+option->w+extraw;
     if (w1>MODAL->boxw) MODAL->boxw=w1;
   }
   MODAL->boxw+=MARGINL+MARGINR;
@@ -283,8 +291,7 @@ static void shop_adjust(struct modal *modal,int d) {
     return;
   }
   int nq=option->quantity+d;
-  int limit=99;//TODO?
-  if ((nq<1)||(nq>limit)) {
+  if ((nq<1)||(nq>option->limit)) {
     bm_sound(RID_sound_reject);
     return;
   }
@@ -365,7 +372,7 @@ static void shop_small_decuint(struct modal *modal,int x,int y,int v,uint32_t co
  
 static void shop_render_quantity(struct modal *modal,int y,int quantity) {
   if (quantity<0) quantity=0;
-  int x=MODAL->boxx+100;
+  int x=MODAL->boxx+MODAL->boxw-10-48;
   graf_tile(&g.graf,x,y,'x',0);
   int digitc=1,limit=10;
   while (quantity>=limit) { digitc++; if (limit>INT_MAX/10) break; limit*=10; }
@@ -552,6 +559,13 @@ int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity) {
     option->quantity=option->force_quantity=quantity;
   } else if (detail->initial_limit) {
     option->quantity=1;
+    struct invstore *invstore=store_get_itemid(itemid);
+    if (invstore) {
+      option->limit=invstore->limit-invstore->quantity;
+      if (option->limit<1) option->limit=1;
+    } else {
+      option->limit=detail->initial_limit;
+    }
   }
   
   /* Generate textures.

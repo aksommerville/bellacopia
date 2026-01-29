@@ -260,19 +260,51 @@ static int int_present(const int *v,int c,int q) {
   return 0;
 }
 
-/* Test some target, should we list it?
+/* Target enablement.
+ * Any strix in RID_strings_item can be used as a target.
+ * By default, they are always available.
+ * Call out the upgrade-required targets here.
  */
  
-static int target_is_relevant(const struct target *target) {
-  if (store_get_fld(target->fld)) return 0;
-  //TODO probly other things to look at too
+static const struct upgrade { int strix,fld; } upgradev[]={
+  {NS_compass_heartcontainer,NS_fld_target_hc},
+  {NS_compass_rootdevil,NS_fld_target_rootdevil},
+  {NS_compass_sidequest,NS_fld_target_sidequest},
+  {NS_compass_gold,NS_fld_target_gold},
+};
+ 
+static int target_is_enabled(const struct target *target) {
+  const struct upgrade *upgrade=upgradev;
+  int i=sizeof(upgradev)/sizeof(upgradev[0]);
+  for (;i-->0;upgrade++) {
+    if (upgrade->strix==target->compass) return store_get_fld(upgrade->fld);
+  }
   return 1;
+}
+ 
+void game_disable_all_targets() {
+  const struct upgrade *upgrade=upgradev;
+  int i=sizeof(upgradev)/sizeof(upgradev[0]);
+  for (;i-->0;upgrade++) {
+    store_set_fld(upgrade->fld,0);
+  }
+}
+
+void game_enable_target(int strix) {
+  const struct upgrade *upgrade=upgradev;
+  int i=sizeof(upgradev)/sizeof(upgradev[0]);
+  for (;i-->0;upgrade++) {
+    if (upgrade->strix==strix) {
+      store_set_fld(upgrade->fld,1);
+      return;
+    }
+  }
 }
 
 /* List all available targets.
  */
  
-int game_list_targets(int *dstv,int dsta) {
+int game_list_targets(int *dstv,int dsta,int mode) {
   if (!dstv||(dsta<1)) return 0;
   int dstc=0;
   #define ADD(strix) { \
@@ -282,9 +314,11 @@ int game_list_targets(int *dstv,int dsta) {
   
   /* A few options are always available.
    */
-  ADD(NS_compass_auto)
-  ADD(NS_compass_north)
-  ADD(NS_compass_home)
+  if ((mode==TARGET_MODE_AVAILABLE)||(mode==TARGET_MODE_ALL)) {
+    ADD(NS_compass_auto)
+    ADD(NS_compass_north)
+    ADD(NS_compass_home)
+  }
   
   /* Run through the list of targets and add any (compass) value we don't have yet.
    */
@@ -298,11 +332,23 @@ int game_list_targets(int *dstv,int dsta) {
         target++; \
       } \
     }
+    // Don't include the same thing twice, of course.
     if (int_present(dstv,dstc,target->compass)) {
       NEXTCOMPASS
       continue;
     }
-    if (target_is_relevant(target)) {
+    // New mode. Should we list it? (fld) kind of overrides everything.
+    int relevant=0;
+    if (store_get_fld(target->fld)) {
+      relevant=(mode==TARGET_MODE_ALL);
+    } else {
+      switch (mode) {
+        case TARGET_MODE_AVAILABLE: relevant=target_is_enabled(target); break;
+        case TARGET_MODE_ALL: relevant=1; break;
+        case TARGET_MODE_UPGRADE: relevant=!target_is_enabled(target); break;
+      }
+    }
+    if (relevant) {
       ADD(target->compass)
       NEXTCOMPASS
       continue;

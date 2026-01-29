@@ -16,3 +16,4 @@ door @5,6 map:24 @5,6 0x0000
 parent map:mn_ext
 debugmsg "Magnetic\u0020North"
 position 1 0 0 0
+sprite @7,3 sprite:compasstech (u16:activity)magneticnorth (u16:activity_arg)0

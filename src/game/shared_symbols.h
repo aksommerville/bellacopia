@@ -156,6 +156,8 @@
 #define NS_activity_tolltroll 6 /* (u16:activity)appearance */
 #define NS_activity_wargate 7 /* (u16)0 ; The guards outside the north tent preventing you from leaving until the war is over. */
 #define NS_activity_knitter 8
+#define NS_activity_magneticnorth 9
+#define NS_activity_thingwalla 10
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -234,6 +236,10 @@
 #define NS_fld_barrelhat7 24
 #define NS_fld_barrelhat8 25
 #define NS_fld_barrelhat9 26
+#define NS_fld_target_hc 27
+#define NS_fld_target_rootdevil 28
+#define NS_fld_target_sidequest 29
+#define NS_fld_target_gold 30
 
 /* "fld16" are 16 unsigned bits each.
  */

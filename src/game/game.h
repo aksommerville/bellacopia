@@ -76,7 +76,10 @@ int game_warp(int mapid);
  * Never more than (dsta).
  * Returned values are strix in strings:item, hopefully a short name for the target.
  */
-int game_list_targets(int *dstv,int dsta);
+int game_list_targets(int *dstv,int dsta,int mode);
+#define TARGET_MODE_AVAILABLE 0 /* Dot has it. Should propose as an option in the compass's menu. */
+#define TARGET_MODE_ALL       1 /* All known targets. */
+#define TARGET_MODE_UPGRADE   2 /* Targets you don't have yet, for the menu at Magnetic North. */
 
 /* Get the position in plane meters for the given compass target on the given plane.
  * All targets are positionable on all planes. We'll point to a door if the real thing is somewhere else.
@@ -90,6 +93,12 @@ int game_get_target_position(int *lng,int *lat,int px,int py,int z,int strix);
  * Scans all maps and indexes compass targets.
  */
 int game_init_targets();
+
+/* For upgrading and downgrading the compass.
+ * Beyond the built-in targets, we won't report as available until you've enabled it.
+ */
+void game_disable_all_targets();
+void game_enable_target(int strix);
 
 /* Return zero or itemid, something you caught around the given cell.
  */

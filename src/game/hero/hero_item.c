@@ -580,7 +580,7 @@ static int compass_begin(struct sprite *sprite) {
   struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
   if (!modal) return 0;
   int strixv[10];
-  int strixc=game_list_targets(strixv,sizeof(strixv)/sizeof(int));
+  int strixc=game_list_targets(strixv,sizeof(strixv)/sizeof(int),TARGET_MODE_AVAILABLE);
   int i=0; for (;i<strixc;i++) {
     modal_dialogue_add_option_string(modal,RID_strings_item,strixv[i]);
   }

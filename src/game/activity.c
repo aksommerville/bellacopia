@@ -344,6 +344,81 @@ static void begin_knitter(struct sprite *sprite) {
   }
 }
 
+/* Compass technician at Magnetic North.
+ * These are generic. To add an upgradable target, see `upgradev` in `targets.c`.
+ */
+ 
+static int magneticnorth_cb_giveaway(int optionid,void *userdata) {
+  game_get_item(NS_itemid_compass,0);
+  game_disable_all_targets(); // In case this is your second time getting a compass.
+  return 1;
+}
+
+static int magneticnorth_cb_upgrade(int optionid,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (optionid<1) return 0;
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<10) {
+    begin_dialogue(2,sprite);
+    bm_sound(RID_sound_reject);
+    return 1;
+  }
+  gold-=10;
+  store_set_fld16(NS_fld16_gold,gold);
+  game_enable_target(optionid);
+  bm_sound(RID_sound_collect);
+  return 1;
+}
+ 
+static void begin_magneticnorth(struct sprite *sprite) {
+  struct invstore *invstore=store_get_itemid(NS_itemid_compass);
+  if (invstore) { // Offer upgrades...
+  
+    // Get all known targets.
+    int targetv[16];
+    int targetc=game_list_targets(targetv,sizeof(targetv)/sizeof(targetv[0]),TARGET_MODE_UPGRADE);
+    if (targetc<1) { // Fully upgraded.
+      begin_dialogue(28,sprite);
+    } else { // Offer upgrades...
+      // We're using regular dialogue for this, not shop. Shop can only sell things with an itemid.
+      struct modal_args_dialogue args={
+        .rid=RID_strings_dialogue,
+        .strix=29,
+        .speaker=sprite,
+        .cb=magneticnorth_cb_upgrade,
+        .userdata=sprite,
+      };
+      struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+      if (!modal) return;
+      int i=0; for (;i<targetc;i++) {
+        modal_dialogue_add_option_string(modal,RID_strings_item,targetv[i]);
+      }
+    }
+    
+  } else { // Give away the compass...
+    struct modal *dialogue=begin_dialogue(27,sprite);
+    if (!dialogue) return;
+    modal_dialogue_set_callback(dialogue,magneticnorth_cb_giveaway,0);
+  }
+}
+
+/* Thingwalla: The "things" shop in Fractia.
+ */
+ 
+static void begin_thingwalla(struct sprite *sprite) {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=30,
+    .speaker=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_candy,1,0);
+  modal_shop_add_item(modal,NS_itemid_bugspray,1,0);
+  modal_shop_add_item(modal,NS_itemid_match,2,0);
+  modal_shop_add_item(modal,NS_itemid_vanishing,6,0);
+}
+
 /* Begin activity.
  */
  
@@ -357,6 +432,8 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_tolltroll: begin_tolltroll(initiator,arg); break;
     case NS_activity_wargate: begin_dialogue(19,initiator); break; // It's just dialogue. But the activity causes sprite to abort at spawn.
     case NS_activity_knitter: begin_knitter(initiator); break;
+    case NS_activity_magneticnorth: begin_magneticnorth(initiator); break;
+    case NS_activity_thingwalla: begin_thingwalla(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }
