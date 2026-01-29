@@ -74,6 +74,20 @@ struct invstore *store_add_itemid(int itemid,int quantity); // => creates if not
  */
 double *store_require_clock(int clock);
 
+/* Scan all maps and all jigsaw pieces to measure progress.
+ * I wish we could report how many planes are fully complete, but that is an (n*m) problem.
+ * Likewise, quantifying intermediate completion of each plane is just too much.
+ * We basically just count pieces.
+ * If (piecec_got==piecec_total), then we scan jigstore to determine whether they are all connected.
+ */
+struct jigstore_progress {
+  int piecec_got;
+  int piecec_total;
+  int planec_total;
+  int finished;
+};
+void jigstore_progress_tabulate(struct jigstore_progress *progress);
+
 /* Serial format, written out to "save" in the Egg store.
  * Starts with 10 bytes for the lengths of the individual stores.
  * Each length is 2 Base64 digits, big-endianly:

@@ -138,13 +138,17 @@ int mapstore_link() {
   
   /* One more pass over every plane and reassign (lng,lat,z).
    * For real maps this is noop, but if there were any gaps, they will at least have valid coordinates.
+   * Also a good time to detect (full).
    */
   for (plane=g.mapstore.planev,i=g.mapstore.planec;i-->0;plane++) {
+    if ((plane->w<1)||(plane->h<1)) continue;
+    plane->full=1;
     struct map *map=plane->v;
     int lat=0;
     for (;lat<plane->h;lat++) {
       int lng=0;
       for (;lng<plane->w;lng++,map++) {
+        if (!map->rid) plane->full=0;
         map->lng=lng;
         map->lat=lat;
         map->z=plane->z;

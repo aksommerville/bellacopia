@@ -33,6 +33,7 @@ struct mapstore {
     uint8_t z; // Also my index.
     int w,h; // In maps.
     struct map *v; // Packed LRTB. Gaps have (rid==0) but all valid defaults.
+    int full;
   } planev[256];
   int planec;
   struct map **byidv; // Index is rid. May be null. If not null, owned by (planev) or (singv).

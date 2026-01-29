@@ -1,4 +1,5 @@
 #include "game/bellacopia.h"
+#include "game/modal/jigsaw.h"
 
 #define STORE_SAVE_DEBOUNCE 2.000
 #define STORE_MAX_ENCODED_SIZE 2048
@@ -673,4 +674,73 @@ double *store_require_clock(int clock) {
     while (clock>=g.store.clockc) g.store.clockv[g.store.clockc++]=0.0;
   }
   return g.store.clockv+clock;
+}
+
+/* Map has parent?
+ */
+ 
+static int map_has_parent(const struct map *map) {
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_parent) return 1;
+  }
+  return 0;
+}
+
+/* Measure jigstore progress.
+ */
+ 
+void jigstore_progress_tabulate(struct jigstore_progress *progress) {
+  memset(progress,0,sizeof(struct jigstore_progress));
+  /* Iterate planes from mapstore.
+   * Iterate maps in each. (mind that index zero isn't necessarily a real map, have to iterate to find the first).
+   * If the first map has a parent, abort the plane, move on.
+   * First map does not have a parent, increment (planec_total) and start counting maps into (piecec_total).
+   * ^ If (plane->full), we can short-circuit this.
+   * (piecec_got) is easy, it's just (g.store.jigstorec).
+   * If every piece is got, scan jigstore for completion. That's the tricky part.
+   */
+  struct plane *plane=g.mapstore.planev;
+  int planei=g.mapstore.planec;
+  for (;planei-->0;plane++) {
+    if (!plane->v) continue;
+    if (plane->full) {
+      if (map_has_parent(plane->v)) continue;
+      progress->planec_total++;
+      progress->piecec_total+=plane->w*plane->h;
+    } else {
+      struct map *map=plane->v;
+      int mapi=plane->w*plane->h;
+      while ((mapi-->0)&&!map->rid) map++;
+      if (map_has_parent(map)) continue;
+      progress->planec_total++;
+      progress->piecec_total++;
+      map++;
+      for (;mapi-->0;map++) if (map->rid) progress->piecec_total++;
+    }
+  }
+  if (progress->planec_total<1) return;
+  if (progress->piecec_total<1) return;
+  progress->piecec_got=g.store.jigstorec;
+  // If all the pieces are got, ask jigsaw for each plane, whether it's complete.
+  // We can stop at the first false.
+  if (progress->piecec_got==progress->piecec_total) {
+    progress->finished=1;
+    for (plane=g.mapstore.planev,planei=g.mapstore.planec;planei-->0;plane++) {
+      if (!plane->v) continue;
+      if (plane->full) {
+        if (map_has_parent(plane->v)) continue;
+      } else {
+        struct map *map=plane->v;
+        int mapi=plane->w*plane->h;
+        while ((mapi-->0)&&!map->rid) map++;
+        if (map_has_parent(map)) continue;
+      }
+      if (!jigsaw_plane_is_complete(plane->z)) {
+        progress->finished=0;
+        return;
+      }
+    }
+  }
 }

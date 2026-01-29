@@ -25,6 +25,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Telescope.
 - [x] Magnetic North.
 - [x] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
+- [ ] Shovel, for buried treasure.
+- [ ] Magnifier: Operate about like Divining Rod, but hint at distance to buried treasure.
 - [ ] Fishsmith: Trade fish for goods.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
@@ -44,20 +46,18 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Handicap for monster and fishpole.
-- [ ] Progress, side quests, and maps for vellum_stats.
+- [ ] Progress and side quests for vellum_stats.
 - [ ] Dynamically center vellum_stats, to accomodate multiple languages.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
-- [ ] Carpenter: Don't show singleton items if possessed. Do show matches even if at the limit.
+- [ ] Poke jigsaw after rotating a piece in case it's positioned to join.
+- [x] Carpenter: Don't show singleton items if possessed. Do show matches even if at the limit.
 - [ ] Have monsters consume the candy; it only lasts so long.
 - [ ] Need either 3, 7, or 12 new items. (if not 12, reduce the inventory size).
-- - Battlefield letter will be inventoriable but doesn't count -- its slot gets filled by hookshot after the quest.
 - - Portable Bus Stop
 - - Bomb
 - - Stopwatch
 - - Pepper: Creates a bonfire. Long-lasting light source, but fixed position.
-- - Telescope: Pan the camera in a cardinal direction, to its limit.
 - - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
-- - Shovel?
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 
@@ -115,6 +115,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Prizes unassigned.
 - [ ] Magnifier.
 - [ ] Telescope.
+- [ ] Shovel.
 - [ ] hc1
 - [ ] hc2
 - [ ] hc3

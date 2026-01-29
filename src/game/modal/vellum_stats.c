@@ -19,12 +19,6 @@ struct vellum_stats {
 static void _stats_del(struct vellum *vellum) {
 }
 
-/* Focus.
- */
- 
-static void _stats_focus(struct vellum *vellum,int focus) {
-}
-
 /* Rewrite bits of the report into (VELLUM->text).
  * The individual bits take a buffer COLC long and overwrite the whole thing.
  */
@@ -123,16 +117,31 @@ static void stats_write_items(struct vellum *vellum,char *dst) {
 
 static void stats_write_maps(struct vellum *vellum,char *dst) {
   memset(dst,' ',COLC);
-  // I assume we'll be counting entire puzzles, not pieces. (completec) I guess should be when you both have every piece, and the lot are assembled.
-  // This is surprisingly difficult to know.
-  int completec=0;//TODO
-  int totalc=0;//TODO
+  struct jigstore_progress progress;
+  jigstore_progress_tabulate(&progress);
+  int v=progress.piecec_got+progress.finished;
+  int c=progress.piecec_total+1;
+  int pct;
+  if (c<1) pct=0;
+  else if (v<1) pct=0;
+  else if (v>=c) pct=100;
+  else {
+    pct=(v*100)/c;
+    if (pct<1) pct=1;
+    else if (pct>99) pct=99;
+  }
   struct text_insertion insv[]={
-    {.mode='i',.i=completec},
-    {.mode='i',.i=totalc},
+    {.mode='i',.i=pct},
   };
-  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,22,insv,sizeof(insv)/sizeof(insv[0]));
+}
+
+static void stats_rewrite_all_except_maps(struct vellum *vellum) {
+  stats_write_progress  (vellum,VELLUM->text+ 0*COLC);
+  stats_write_time      (vellum,VELLUM->text+ 1*COLC);
+  stats_write_flowers   (vellum,VELLUM->text+ 2*COLC);
+  stats_write_sidequests(vellum,VELLUM->text+ 3*COLC);
+  stats_write_items     (vellum,VELLUM->text+ 4*COLC);
 }
   
 static void stats_rewrite_all(struct vellum *vellum) {
@@ -143,6 +152,16 @@ static void stats_rewrite_all(struct vellum *vellum) {
   stats_write_sidequests(vellum,VELLUM->text+ 3*COLC);
   stats_write_items     (vellum,VELLUM->text+ 4*COLC);
   stats_write_maps      (vellum,VELLUM->text+ 5*COLC);
+}
+
+/* Focus.
+ */
+ 
+static void _stats_focus(struct vellum *vellum,int focus) {
+  if (focus) {
+    // We have to assume that jigsaw progress could have changed, since their assembly happens in pause modal too.
+    stats_write_maps(vellum,VELLUM->text+ 5*COLC);
+  }
 }
 
 /* Update animation only.
@@ -203,7 +222,8 @@ struct vellum *vellum_new_stats(struct modal *parent) {
   vellum->render=_stats_render;
   vellum->langchanged=_stats_langchanged;
   
-  stats_rewrite_all(vellum);
+  memset(VELLUM->text,' ',sizeof(VELLUM->text));
+  stats_rewrite_all_except_maps(vellum); // maps are expensive, and we'll rewrite them at focus
   
   return vellum;
 }

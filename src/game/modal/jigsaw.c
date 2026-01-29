@@ -483,6 +483,7 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
   
   /* Generate a piece for each appropriate map.
    */
+  jigsaw->total=0;
   struct map *mrow=jigsaw->plane->v;
   int row=0;
   for (;row<jigsaw->plane->h;row++,mrow+=jigsaw->plane->w) {
@@ -491,8 +492,10 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
     for (;col<jigsaw->plane->w;col++,map++) {
       int x=0,y=0;
       uint8_t xform=0;
+      if (!map->rid) continue;
+      jigsaw->total++;
       struct jigstore *jigstore=store_get_jigstore(map->rid);
-      if (!jigstore) continue; // No such map. Maybe the plane is non-rectangular. (that's illegal but hey).
+      if (!jigstore) continue;
       x=jigstore->x;
       y=jigstore->y;
       xform=jigstore->xform;
@@ -865,4 +868,31 @@ void jigsaw_motion(struct jigsaw *jigsaw,int x,int y) {
   } else {
     jigsaw->hover=jigsaw_find_hover(jigsaw,x-jigsaw->ox,y-jigsaw->oy);
   }
+}
+
+/* Test plane completeness.
+ */
+ 
+static int jigsaw_plane_is_complete_inner(struct jigsaw *jigsaw,int z) {
+  if (!(jigsaw->plane=plane_by_position(z))) return 0;
+  if (!jigsaw->plane->v||(jigsaw->plane->w<1)||(jigsaw->plane->h<1)) return 0;
+  if (jigsaw_generate_pieces(jigsaw)<0) return 0;
+  if (jigsaw->jigpiecec<1) return 0;
+  if (jigsaw->jigpiecec<jigsaw->total) return 0;
+  // More than one clusterid, or a zero, means it's incomplete.
+  const struct jigpiece *jigpiece=jigsaw->jigpiecev;
+  int i=jigsaw->jigpiecec;
+  for (;i-->0;jigpiece++) {
+    if (jigpiece->xform) return 0;
+    if (!jigpiece->clusterid) return 0;
+    if (jigpiece->clusterid!=jigsaw->jigpiecev[0].clusterid) return 0;
+  }
+  return 1;
+}
+ 
+int jigsaw_plane_is_complete(int z) {
+  struct jigsaw jigsaw={0};
+  int result=jigsaw_plane_is_complete_inner(&jigsaw,z);
+  jigsaw_cleanup(&jigsaw);
+  return result;
 }

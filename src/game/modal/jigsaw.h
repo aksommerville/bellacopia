@@ -26,6 +26,7 @@ struct jigsaw {
     uint8_t indicator; // Tileid in RID_image_pause if nonzero.
   } *jigpiecev;
   int jigpiecec;
+  int total; // How many real maps in plane, tabulated during load.
   struct jigpiece *hover; // WEAK
   struct jigpiece *grab; // WEAK
   int cheerclock; // frames (we don't have a regular update)
@@ -45,5 +46,10 @@ void jigsaw_grab(struct jigsaw *jigsaw);
 void jigsaw_release(struct jigsaw *jigsaw);
 void jigsaw_rotate(struct jigsaw *jigsaw);
 void jigsaw_motion(struct jigsaw *jigsaw,int x,int y);
+
+/* An extra service, since jigsaw's internals are uniquely suited to it.
+ * Nonzero if a jigsaw exists for the given plane, and all pieces are connected and oriented correctly.
+ */
+int jigsaw_plane_is_complete(int z);
 
 #endif

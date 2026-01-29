@@ -25,7 +25,7 @@
 19 "    Flowers: %0/7"
 20 "Side Quests: %0/%1"
 21 "      Items: %0/%1"
-22 "       Maps: %0/%1"
+22 "       Maps: %0%%"
 
 # System vellum.
 23 Main Menu
