@@ -120,6 +120,11 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
       sprite_group_remove(GRP(light),sprite);
     }
   }
+  
+  // End of vanishment can defer and run arbitrarily long. (why we're doing it here repeatedly, instead of momentarily at game_update)
+  if (!(sprite->physics&(1<<NS_physics_vanishable))&&(g.vanishing<=0.0)) {
+    hero_unvanish(sprite);
+  }
 
   hero_item_update(sprite,elapsed);
   hero_motion_update(sprite,elapsed);

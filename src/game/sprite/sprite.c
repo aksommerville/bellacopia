@@ -135,6 +135,13 @@ struct sprite *sprite_new(
   sprite->layer=100;
   sprite->hbl=sprite->hbt=-0.5;
   sprite->hbr=sprite->hbb=0.5;
+  sprite->physics=(
+    (1<<NS_physics_solid)|
+    (1<<NS_physics_water)|
+    (1<<NS_physics_grabbable)|
+    (1<<NS_physics_hole)|
+    (1<<NS_physics_vanishable)|
+  0);
   
   if (sprite_group_add(GRP(keepalive),sprite)<0) {
     sprite_del(sprite);

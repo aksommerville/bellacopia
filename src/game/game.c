@@ -33,11 +33,18 @@ void game_update(double elapsed) {
   if (g.bugspray>0.0) {
     g.bugspray-=elapsed;
   }
-  if (g.vanishing>0.0) {
-    g.vanishing-=elapsed;
-  }
   if (g.flash>0.0) {
     g.flash-=elapsed;
+  }
+  
+  if (g.vanishing>0.0) {
+    if ((g.vanishing-=elapsed)<=0.0) {
+      // It would really suck to miss this event, so be extra careful and accomodate oddball cases where there could be multiple heroes.
+      //struct sprite **herop=GRP(hero)->sprv;
+      //int i=GRP(hero)->sprc;
+      //for (;i-->0;herop++) sprite_hero_unvanish(*herop);
+      //XXX hero takes care of it now
+    }
   }
 }
 
@@ -342,7 +349,7 @@ static const struct item_detail item_detailv[]={
     .hand_tileid=0x74,
     .strix_name=7,
     .strix_help=8,
-    .initial_limit=10,
+    .initial_limit=99,
     .inventoriable=1,
     .fld16=0,
   },

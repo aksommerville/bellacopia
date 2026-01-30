@@ -224,7 +224,7 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
      * I'm not sure that makes sense from the standpoint of the monsters' motivation,
      * but as a game mechanic, Candy is expensive so it should have a simple and pronounced effect.
      */
-    if (other->type==&sprite_type_hero) { //TODO "or princess"
+    if ((other->type==&sprite_type_hero)||(other->type==&sprite_type_princess)) {
       if (best&&(best->type==&sprite_type_candy)) continue; // Prefer Candy.
       if (other->type==&sprite_type_hero) {
         if (g.bugspray>0.0) continue;
@@ -296,7 +296,7 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
       monster_forbid_safe(sprite);
       monster_idle_begin(sprite);
     }
-  } else if (target->type==&sprite_type_hero) { // Hero gets a full vigorous attack. TODO Princess will get this treatment too.
+  } else if ((target->type==&sprite_type_hero)||(target->type==&sprite_type_princess)) { // Hero and Princess get a full vigorous attack.
     if (SPRITE->stage!=STAGE_ATTACK) {
       monster_permit_safe(sprite);
       monster_attack_begin(sprite,target);
@@ -353,25 +353,32 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->spent) return;
+  int players,left_name=0;
   if (other->type==&sprite_type_hero) {
     // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
     if (g.vanishing>0.0) {
       return;
     }
-    int battle=SPRITE->battle;
-    struct modal_args_battle args={
-      .battle=battle,
-      .players=NS_players_man_cpu,
-      .handicap=0x80,//TODO how to decide?
-      .cb=monster_cb_battle,
-      .userdata=sprite,
-      .left_name=4, // "Dot"
-      .right_name=SPRITE->name_strix,
-    };
-    struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
-    if (!modal) return;
-    SPRITE->spent=1;
+    players=NS_players_man_cpu;
+    left_name=4; // "Dot"
+  } else if (other->type==&sprite_type_princess) {
+    players=NS_players_cpu_cpu;
+    left_name=6; // "Princess"
   }
+  if (!left_name) return;
+  int battle=SPRITE->battle;
+  struct modal_args_battle args={
+    .battle=battle,
+    .players=players,
+    .handicap=0x80,//TODO how to decide?
+    .cb=monster_cb_battle,
+    .userdata=sprite,
+    .left_name=left_name,
+    .right_name=SPRITE->name_strix,
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return;
+  SPRITE->spent=1;
 }
 
 /* Type definition.

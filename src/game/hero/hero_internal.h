@@ -58,5 +58,6 @@ void hero_motion_update(struct sprite *sprite,double elapsed);
 
 // hero_item.c
 void hero_item_update(struct sprite *sprite,double elapsed);
+void hero_unvanish(struct sprite *sprite);
 
 #endif

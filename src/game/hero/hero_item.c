@@ -134,7 +134,7 @@ static int match_begin(struct sprite *sprite) {
   if (g.store.invstorev[0].quantity<1) return 0;
   g.store.invstorev[0].quantity--;
   bm_sound(RID_sound_match);
-  SPRITE->matchclock+=5.000;
+  SPRITE->matchclock+=8.000;
   sprite_group_add(GRP(light),sprite);
   return 1;
 }
@@ -408,7 +408,7 @@ static void hookshot_check_grabbage(struct sprite *sprite) {
         SPRITE->hookstage=HOOKSTAGE_PULL;
         sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
         return;
-      } else if (physics==NS_physics_solid) {
+      } else if ((physics==NS_physics_solid)||(physics==NS_physics_vanishable)) {
         bm_sound(RID_sound_hookshot_reject);
         SPRITE->hookstage=HOOKSTAGE_RETURN;
         return;
@@ -542,8 +542,18 @@ static int vanishing_begin(struct sprite *sprite) {
   g.store.invstorev[0].quantity--;
   g.store.dirty=1;
   g.vanishing+=5.000;
+  sprite->physics&=~(1<<NS_physics_vanishable);
   bm_sound(RID_sound_vanishing);
   return 1;
+}
+
+// Public, called from game_update().
+void hero_unvanish(struct sprite *sprite) {
+  int pvphysics=sprite->physics;
+  sprite->physics|=(1<<NS_physics_vanishable);
+  if (!sprite_test_position(sprite)) {
+    sprite->physics=pvphysics;
+  }
 }
 
 /* Bell.

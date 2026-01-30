@@ -22,6 +22,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Princess: Follow me.
+- [x] Princess battle: Strings not inserted in welcome message.
+- [ ] Princess battle: Took a heart from me instead of killing her.
+- [x] Monsters don't seem interested in the Princess. Did I forget to update that? ...yep forgot.
+- [ ] Add Princess graphics to existing games. Exterminating doesn't need it.
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
@@ -43,12 +48,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Poke jigsaw after rotating a piece in case it's positioned to join.
 - [ ] Have monsters consume the candy; it only lasts so long.
-- [ ] Need either 3, 7, or 12 new items. (if not 12, reduce the inventory size).
-- - Portable Bus Stop
-- - Bomb
-- - Stopwatch
-- - Pepper: Creates a bonfire. Long-lasting light source, but fixed position.
-- - Snowglobe? Maybe too powerful, as implemented in Full Moon and Dead Weight.
+- [ ] Pepper
+- [ ] Bomb
+- [ ] Stopwatch
+- [ ] Portable Bus Stop
+- [ ] Snowglobe
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
@@ -61,6 +65,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
+- [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -103,7 +108,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Hat the barrels => Bell
 - [ ] Catch em all => (incremental)
 - [ ] Rescue the Princess => purse+100
-- [ ] Decipher the goblins' text => ?
+- [ ] Decipher the goblins' text => Shovel
 - [ ] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?
@@ -117,7 +122,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Prizes unassigned.
 - [ ] Magnifier.
 - [ ] Telescope.
-- [ ] Shovel.
+- [x] Shovel.
 - [ ] hc1
 - [ ] hc2
 - [ ] hc3

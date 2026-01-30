@@ -125,6 +125,7 @@ static int battle_generate_prompt(struct modal *modal) {
     SETINS(0,title)
     SETINS(1,lname)
     SETINS(2,rname)
+    insc=3;
   }
   #undef SETINS
   msgc=text_format(msg,sizeof(msg),template,templatec,insv,insc);

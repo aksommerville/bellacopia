@@ -1,4 +1,4 @@
 image image:meadow_sprites
 tile 24 0
 type (u16:sprtype)bonfire
-groups (b32:sprgrp)visible,update,hazard
+groups (b32:sprgrp)visible,update,hazard,light
