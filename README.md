@@ -26,7 +26,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Princess battle: Strings not inserted in welcome message.
 - [ ] Princess battle: Took a heart from me instead of killing her.
 - [x] Monsters don't seem interested in the Princess. Did I forget to update that? ...yep forgot.
-- [ ] Add Princess graphics to existing games. Exterminating doesn't need it.
+- [x] Add Princess graphics to existing games. Exterminating doesn't need it.
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
@@ -59,6 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Boomerang: Drop the other rang after one collides.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Chopping: Start with the belt populated. Too much lead time as is.
+- [ ] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
 
 - For exploration some time in the uncertain future.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
@@ -100,6 +101,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Book of sheet music.
 - - [ ] Videos.
 - - [ ] Book of Cheating. Maybe a digital edition?
+- - [ ] Big banners, the kind that roll up into a case.
 
 ## Quests and Prizes
 

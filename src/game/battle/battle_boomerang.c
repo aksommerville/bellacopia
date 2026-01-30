@@ -37,6 +37,7 @@ struct battle_boomerang {
   double rang_speed;
   
   struct player {
+    int who; // 0,1: My index in this list.
     int human; // 0 for CPU, otherwise the playerid (1,2).
     int srcx,srcy;
     int dstx;
@@ -93,12 +94,12 @@ static void player_init_dot(void *ctx,struct player *player) {
   player->reacting=0;
 }
 
-// Dot, but on the right side facing left, and controlled by player 2.
+// Princess on the right side facing left, and controlled by player 2.
 static void player_init_altdot(void *ctx,struct player *player) {
   player->human=2;
   player->face=FACE_IDLE;
   player->srcx=0;
-  player->srcy=64;
+  player->srcy=0;
   player->dstx=228;
   player->xform=EGG_XFORM_XREV;
   player->gravity=0.0;
@@ -107,12 +108,12 @@ static void player_init_altdot(void *ctx,struct player *player) {
   player->reacting=0;
 }
 
-// CPU player on the left side. TODO graphics
+// CPU player on the left side.
 static void player_init_princess(void *ctx,struct player *player) {
   player->human=0;
   player->face=FACE_IDLE;
-  player->srcx=160;
-  player->srcy=16;
+  player->srcx=0;
+  player->srcy=0;
   player->dstx=44;
   player->xform=0;
   player->gravity=0.0;
@@ -174,6 +175,8 @@ static void *_boomerang_init(
   CTX->grab_time=GRAB_TIME_INITIAL;
   CTX->rang_speed=RANG_SPEED_INITIAL;
   
+  CTX->playerv[0].who=0;
+  CTX->playerv[1].who=1;
   switch (CTX->players) {
     case NS_players_cpu_cpu: {
         player_init_princess(ctx,CTX->playerv+0);
@@ -217,7 +220,12 @@ static void player_set_face(struct player *player,int face) {
   if (player->face==face) return;
   if (player->face==FACE_HURT) return; // No going back from HURT.
   player->face=face;
-  if (player->human) switch (face) {
+  if ((player->human==2)||(!player->human&&!player->who)) switch (face) { // Princess: Player 2, or CPU on the left side.
+    case FACE_IDLE: player->srcx=0; player->srcy=0; break;
+    case FACE_JUMP: player->srcx=48; player->srcy=0; break;
+    case FACE_DUCK: player->srcx=208; player->srcy=160; break;
+    case FACE_HURT: player->srcx=96; player->srcy=0; break;
+  } else if (player->human) switch (face) {
     case FACE_IDLE: player->srcx=0; player->srcy=64; break;
     case FACE_JUMP: player->srcx=48; player->srcy=64; break;
     case FACE_DUCK: player->srcx=144; player->srcy=64; break;

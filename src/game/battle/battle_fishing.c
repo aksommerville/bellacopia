@@ -27,6 +27,8 @@ struct battle_fishing {
   void *userdata;
   int outcome;
   uint8_t dot_xform,cat_xform; // Natural orientation is rightward.
+  int dot_srcx,dot_srcy;
+  int cat_srcx,cat_srcy;
   int dot_mass,cat_mass;
   int dot_mass_disp,cat_mass_disp; // Displayed mass. Steps by 1 kg/frame when out of sync (managed at render).
   struct fish {
@@ -83,6 +85,37 @@ static void *_fishing_init(
   CTX->userdata=userdata;
   CTX->cat_xform=EGG_XFORM_XREV; // Face each other initially.
   CTX->outcome=-2;
+  
+  /* Prepare images.
+   * We have just one image per player, it never changes.
+   */
+  switch (CTX->players) {
+    case NS_players_cpu_cpu: { // Princess, Cat
+        CTX->dot_srcx=192;
+        CTX->dot_srcy=64;
+        CTX->cat_srcx=48;
+        CTX->cat_srcy=0;
+      } break;
+    case NS_players_cpu_man: { // Cat, Dot
+        CTX->dot_srcx=48;
+        CTX->dot_srcy=0;
+        CTX->cat_srcx=0;
+        CTX->cat_srcy=0;
+      } break;
+    case NS_players_man_cpu: { // Dot, Cat
+        CTX->dot_srcx=0;
+        CTX->dot_srcy=0;
+        CTX->cat_srcx=48;
+        CTX->cat_srcy=0;
+      } break;
+    case NS_players_man_man: { // Dot, Princess
+        CTX->dot_srcx=0;
+        CTX->dot_srcy=0;
+        CTX->cat_srcx=192;
+        CTX->cat_srcy=64;
+      } break;
+    default: _fishing_del(ctx); return 0;
+  }
   
   /* Prepare the decision list.
    * We decide in advance how many mistakes the cat will make, directly proportionate to the handicap.
@@ -368,8 +401,8 @@ static void _fishing_render(void *ctx) {
   fishing_render_scale(CAT_X+48+32,GROUND_LEVEL-32,CTX->cat_mass_disp);
   const int playerw=48;
   const int playerh=48;
-  graf_decal_xform(&g.graf,DOT_X,GROUND_LEVEL-playerh,0,0,playerw,playerh,CTX->dot_xform);
-  graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,playerw,0,playerw,playerh,CTX->cat_xform);
+  graf_decal_xform(&g.graf,DOT_X,GROUND_LEVEL-playerh,CTX->dot_srcx,CTX->dot_srcy,playerw,playerh,CTX->dot_xform);
+  graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,CTX->cat_srcx,CTX->cat_srcy,playerw,playerh,CTX->cat_xform);
   struct fish *fish=CTX->fishv;
   int i=CTX->fishc;
   for (;i-->0;fish++) {

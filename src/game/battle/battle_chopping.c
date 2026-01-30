@@ -84,8 +84,13 @@ static void player_init(void *ctx,struct player *player,int y,int human) {
   player->texid_output=egg_texture_new();
   egg_texture_load_raw(player->texid_output,16,32,64,0,0);
   egg_texture_clear(player->texid_output);
-  if (human) player->srcx=0;
-  else player->srcx=64;
+  if (human) {
+    if (player->who==0) player->srcx=0; // Left Human = Dot
+    else player->srcx=128; // Right Human = Princess
+  } else {
+    if (player->who==0) player->srcx=128; // Left CPU = Princess
+    else player->srcx=64; // Right CPU = Goat
+  }
   player->srcy=176;
   player->chopping=0;
   player->blackout=1;
@@ -386,7 +391,7 @@ static void player_render(void *ctx,struct player *player) {
   graf_decal(&g.graf,PLEFTX,player->y-40,player->srcx+(player->chopping?32:0),player->srcy,32,48);
   
   // Score indicator.
-  graf_decal(&g.graf,XEND+40,player->y-24,128,16,32,32);
+  graf_decal(&g.graf,XEND+40,player->y-24,160,144,32,32);
   graf_tile(&g.graf,XEND+46,player->y-9,0x30+(player->score/100)%10,0);
   graf_tile(&g.graf,XEND+52,player->y-9,0x30+(player->score/ 10)%10,0);
   graf_tile(&g.graf,XEND+58,player->y-9,0x30+(player->score    )%10,0);
