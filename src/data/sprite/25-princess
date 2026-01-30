@@ -3,3 +3,4 @@ tile 160 0
 type (u16:sprtype)princess
 groups (b32:sprgrp)visible,update,monsterlike,solid,grabbable
 physics (b32:physics)solid,water,hole,grabbable,vanishable
+hitbox -7 7 -5 7

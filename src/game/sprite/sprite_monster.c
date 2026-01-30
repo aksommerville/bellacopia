@@ -348,12 +348,37 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
   }
 }
 
+static void monster_cb_princess(struct modal *modal,int outcome,void *userdata) {
+  struct sprite *sprite=userdata;
+  sprite_kill_soon(sprite);
+  if (outcome>0) {
+    // Opportunity to do something here. Should we get a gold? Probly not, since we want to discourage the Princess from fighting.
+  } else {
+    struct sprite *princess=0;
+    struct sprite **otherp=GRP(monsterlike)->sprv;
+    int i=GRP(monsterlike)->sprc;
+    for (;i-->0;otherp++) {
+      struct sprite *other=*otherp;
+      if (other->defunct) continue;
+      if (other->type!=&sprite_type_princess) continue;
+      princess=other;
+      break;
+    }
+    if (princess) {
+      sprite_kill_soon(princess);
+      // If the Princess loses a battle close to her cage, it will be awkward.
+      // I'll leave the two maps nearest the cage without any rsprite, that should do it.
+    }
+  }
+}
+
 /* Collide.
  */
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->spent) return;
-  int players,left_name=0;
+  int players,left_name=0,princess=0;
+  uint8_t handicap=0x80;
   if (other->type==&sprite_type_hero) {
     // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
     if (g.vanishing>0.0) {
@@ -361,17 +386,20 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
     }
     players=NS_players_man_cpu;
     left_name=4; // "Dot"
+    //TODO Determine handicap for a regular battle. How?
   } else if (other->type==&sprite_type_princess) {
     players=NS_players_cpu_cpu;
     left_name=6; // "Princess"
+    princess=1;
+    handicap=0xa0;
   }
   if (!left_name) return;
   int battle=SPRITE->battle;
   struct modal_args_battle args={
     .battle=battle,
     .players=players,
-    .handicap=0x80,//TODO how to decide?
-    .cb=monster_cb_battle,
+    .handicap=handicap,
+    .cb=princess?monster_cb_princess:monster_cb_battle,
     .userdata=sprite,
     .left_name=left_name,
     .right_name=SPRITE->name_strix,

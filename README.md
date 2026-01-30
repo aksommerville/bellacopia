@@ -22,9 +22,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Princess: Follow me.
+- [x] Return Princess to her cage after losing a battle.
+- [ ] How to get Princess through doors? "you don't" isn't an option, alas.
+- [x] Should there be a prize when Princess wins a battle? It shouldn't come up often. ...no
+- [x] Princess: Follow me.
 - [x] Princess battle: Strings not inserted in welcome message.
-- [ ] Princess battle: Took a heart from me instead of killing her.
+- [x] Princess battle: Took a heart from me instead of killing her.
 - [x] Monsters don't seem interested in the Princess. Did I forget to update that? ...yep forgot.
 - [x] Add Princess graphics to existing games. Exterminating doesn't need it.
 - [ ] Door transitions. Fade to black? Spotlight?
@@ -60,6 +63,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Chopping: Start with the belt populated. Too much lead time as is.
 - [ ] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
+- [ ] Exterminating: AI is really bad, it gets stuck in loops sometimes. Princess shouldn't play this in real life, but still, it's painful to watch.
+- [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 
 - For exploration some time in the uncertain future.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.

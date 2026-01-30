@@ -3,6 +3,9 @@
 struct sprite_princess {
   struct sprite hdr;
   double cooldown;
+  double animclock;
+  int animframe;
+  uint8_t tileid0;
 };
 
 #define SPRITE ((struct sprite_princess*)sprite)
@@ -17,6 +20,7 @@ static void _princess_del(struct sprite *sprite) {
  */
  
 static int _princess_init(struct sprite *sprite) {
+  SPRITE->tileid0=sprite->tileid;
 
   /* Already rescued? I will never exist anymore.
    */
@@ -38,14 +42,111 @@ static int _princess_init(struct sprite *sprite) {
   return 0;
 }
 
+/* Walk.
+ * (dx,dy) account for elapsed time but not for walking speed.
+ */
+ 
+static void princess_walk(struct sprite *sprite,double dx,double dy) {
+  if (dx<0.0) sprite->xform=0;
+  else if (dx>0.0) sprite->xform=EGG_XFORM_XREV;
+  const double speed=5.0; // less than dot's, which is 6
+  sprite_move(sprite,dx*speed,dy*speed);
+}
+
+static int princess_walk_naive(struct sprite *sprite,struct sprite *hero,double elapsed) {
+  // Try to walk in the straightest line to Dot.
+  // This is actually not bad. I thought we were going to need some complex path-finding... maybe we can do without.
+  const double CLOSE_ENOUGH_2=1.250;
+  const double TOO_CLOSE_2=1.000; // If we're this close, Dot must be pushing me. Walk the other way.
+  const double SPEED=4.000; // Less than Dot (6), and also we don't root-two the diagonals like she does.
+  double dx=hero->x-sprite->x;
+  double dy=hero->y-sprite->y;
+  double d2=dx*dx+dy*dy;
+  if (d2<=TOO_CLOSE_2) { // Dot must be pushing us. Walk the other way.
+    // Walk cardinally, whichever axis is more significant.
+    double adx=dx; if (adx<0.0) adx=-adx;
+    double ady=dy; if (ady<0.0) ady=-ady;
+    if (adx>ady) {
+      dx*=-2.0;
+      dy=0.0;
+    } else {
+      dx=0.0;
+      dy*=-2.0;
+    }
+    d2=dx*dx+dy*dy;
+  }
+  if (dx<0.0) sprite->xform=0; // We only do left and right faces.
+  else if (dx>0.0) sprite->xform=EGG_XFORM_XREV;
+  if (d2<CLOSE_ENOUGH_2) return 0;
+  double distance=sqrt(d2);
+  double ndx=dx/distance;
+  double ndy=dy/distance;
+  if (!sprite_move(sprite,ndx*elapsed*SPEED,ndy*elapsed*SPEED)) return 0;
+  return 1;
+}
+
+/* When walking the same direction as a monster -- likely -- it often doesn't detect a collision.
+ * You end up being tailgated by a monster until the first time you stop or turn.
+ * To mitigate, we'll scan for monsters any time we're walking.
+ * Anyone super close, call their collision callback.
+ */
+ 
+static void princess_check_missed_triggers(struct sprite *sprite) {
+  struct sprite **otherp=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    if (other==sprite) continue;
+    if (other->type==&sprite_type_hero) continue;
+    if (!other->type->collide) continue;
+    double dx=other->x-sprite->x;
+    double dy=other->y-sprite->y;
+    const double radius=1.0; // We could check against hitboxes, that would surely be more correct.
+    if ((dx>=-radius)&&(dy>=-radius)&&(dx<=radius)&&(dy<=radius)) {
+      other->type->collide(other,sprite);
+      return;
+    }
+  }
+}
+
 /* Update.
  */
  
 static void _princess_update(struct sprite *sprite,double elapsed) {
+
+  // If the jail is still locked, we're just an NPC.
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
   }
-  //TODO
+  if (!store_get_fld(NS_fld_jailopen)) return;
+  
+  // Jail is open, now things get interesting.
+  int walking=0;
+  if (GRP(hero)->sprc>=1) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    walking=princess_walk_naive(sprite,hero,elapsed);
+  }
+  
+  // Animate if walking, otherwise return to idle face.
+  if (walking) {
+    if ((SPRITE->animclock-=elapsed)<=0.0) {
+      SPRITE->animclock+=0.200;
+      if (++(SPRITE->animframe)>=4) SPRITE->animframe=0;
+    }
+    princess_check_missed_triggers(sprite);
+  } else {
+    SPRITE->animclock=0.0;
+    SPRITE->animframe=0;
+  }
+  
+  // Update face.
+  switch (SPRITE->animframe) {
+    case 0: sprite->tileid=SPRITE->tileid0; break;
+    case 1: sprite->tileid=SPRITE->tileid0+1; break;
+    case 2: sprite->tileid=SPRITE->tileid0; break;
+    case 3: sprite->tileid=SPRITE->tileid0+2; break;
+  }
 }
 
 /* Collide.

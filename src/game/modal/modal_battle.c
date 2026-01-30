@@ -29,6 +29,7 @@ struct modal_battle {
   int report_texid,report_w,report_h;
   
   double timeout;
+  double duration;
   
   struct consequence {
     int itemid,d;
@@ -261,12 +262,26 @@ static void battle_begin_play(struct modal *modal) {
 /* End play.
  */
  
+static const char *repr_players(int players) { // For private logging only.
+  switch (players) {
+    case NS_players_cpu_cpu: return "Princess";
+    case NS_players_cpu_man: return "cpu-vs-man";
+    case NS_players_man_cpu: return "Dot";
+    case NS_players_man_man: return "2-player";
+  }
+  return "?";
+}
+ 
 static void battle_cb_end(int outcome,void *userdata) {
   struct modal *modal=userdata;
   if (MODAL->stage!=STAGE_PLAY) {
     fprintf(stderr,"%s:ERROR: Battle '%s' called cb_end more than once.\n",__func__,MODAL->type->name);
     return;
   }
+  fprintf(stderr,
+    "%s: battle=%d players=%s handicap=0x%02x outcome=%d duration=%.03fs\n",__func__,
+    MODAL->battle,repr_players(MODAL->players),MODAL->handicap,outcome,MODAL->duration
+  );
   MODAL->outcome=(outcome<0)?-1:(outcome>0)?1:0;
   MODAL->stage=STAGE_REPORT;
   MODAL->timeout=0.500;
@@ -359,6 +374,7 @@ static void battle_update_play(struct modal *modal,double elapsed) {
     battle_cb_end(0,modal);
     return;
   }
+  MODAL->duration+=elapsed;
   MODAL->type->update(MODAL->ctx,elapsed);
 }
 
