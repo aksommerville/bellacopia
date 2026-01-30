@@ -454,6 +454,90 @@ static void begin_king(struct sprite *sprite) {
   }
 }
 
+/* Fish Processor: Offers to change your fish into items.
+ * greenfish => candy x10
+ * bluefish => bugspray x10
+ * redfish => potion x3
+ */
+ 
+static int fishprocessor_cb(int optionid,void *userdata) {
+  if (!optionid) return 0;
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<2) {
+    bm_sound(RID_sound_reject);
+    begin_dialogue(2,userdata);
+    return 1;
+  }
+  gold-=2;
+  store_set_fld16(NS_fld16_gold,gold);
+  switch (optionid) {
+  
+    case NS_itemid_candy: {
+        int fishc=store_get_fld16(NS_fld16_greenfish);
+        if (fishc<1) return 0;
+        fishc--;
+        store_set_fld16(NS_fld16_greenfish,fishc);
+        game_get_item(NS_itemid_candy,10);
+      } return 1;
+      
+    case NS_itemid_bugspray: {
+        int fishc=store_get_fld16(NS_fld16_bluefish);
+        if (fishc<1) return 0;
+        fishc--;
+        store_set_fld16(NS_fld16_bluefish,fishc);
+        game_get_item(NS_itemid_bugspray,10);
+      } return 1;
+      
+    case NS_itemid_potion: {
+        int fishc=store_get_fld16(NS_fld16_redfish);
+        if (fishc<1) return 0;
+        fishc--;
+        store_set_fld16(NS_fld16_redfish,fishc);
+        game_get_item(NS_itemid_potion,3);
+      } return 1;
+  }
+  return 0;
+}
+ 
+static void begin_fishprocessor(struct sprite *sprite) {
+
+  // Only propose options where they have one fish and room for at least one output.
+  int greenc=store_get_fld16(NS_fld16_greenfish);
+  int bluec=store_get_fld16(NS_fld16_bluefish);
+  int redc=store_get_fld16(NS_fld16_redfish);
+  int gold=store_get_fld16(NS_fld16_gold);
+  
+  // No options, show a different message.
+  if (!greenc&&!bluec&&!redc) {
+    begin_dialogue(34,sprite);
+    return;
+  }
+  
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=35,
+    .speaker=sprite,
+    .cb=fishprocessor_cb,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  #define ADD(color,tag,strix,qty) if (color##c) { \
+    char tmp[64]; \
+    struct text_insertion insv[]={ \
+      {.mode='i',.i=1}, /* how many fish, always 1 */ \
+      {.mode='i',.i=qty}, \
+    }; \
+    int tmpc=text_format_res(tmp,sizeof(tmp),RID_strings_dialogue,strix,insv,sizeof(insv)/sizeof(insv[0])); \
+    if ((tmpc<0)||(tmpc>sizeof(tmp))) tmpc=0; \
+    modal_dialogue_add_option(modal,NS_itemid_##tag,tmp,tmpc); \
+  }
+  ADD(green,candy,36,10)
+  ADD(blue,bugspray,37,10)
+  ADD(red,potion,38,3)
+  #undef ADD
+}
+
 /* Begin activity.
  */
  
@@ -470,6 +554,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_magneticnorth: begin_magneticnorth(initiator); break;
     case NS_activity_thingwalla: begin_thingwalla(initiator); break;
     case NS_activity_king: begin_king(initiator); break;
+    case NS_activity_fishprocessor: begin_fishprocessor(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

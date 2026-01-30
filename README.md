@@ -27,7 +27,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
 - [x] Shovel, for buried treasure.
 - [x] Magnifier: Operate about like Divining Rod, but hint at distance to buried treasure.
-- [ ] Fishsmith: Trade fish for goods.
+- [x] Fishsmith: Trade fish for goods.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
@@ -61,6 +61,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
+- [ ] Boomerang: Drop the other rang after one collides.
+- [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
+- [ ] Chopping: Start with the belt populated. Too much lead time as is.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -70,6 +73,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Host on itch or aksommerville.com. Invite friends.
 - - [ ] Mail out rewards? Like, first ten people to beat the main quests get a stuffed witch?
 - - [ ] Tools to digest logs on my end.
+- - [ ] I want to see 2-player mode too. By March or so, we should engage at game night and COGG meetings.
 
 - Validation.
 - [ ] Within each plane, if one map has a parent, they all must.

@@ -526,6 +526,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=1,
     .fld16=0,
   },
+  [NS_itemid_pepper]={
+    .tileid=0x4e,
+    .hand_tileid=0x93,
+    .strix_name=56,
+    .strix_help=57,
+    .initial_limit=10,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {

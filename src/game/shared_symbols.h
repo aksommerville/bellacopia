@@ -123,6 +123,7 @@
 #define NS_itemid_barrelhat 22
 #define NS_itemid_telescope 23
 #define NS_itemid_shovel 24
+#define NS_itemid_pepper 25
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -147,7 +148,8 @@
   _(heartcontainer) \
   _(barrelhat) \
   _(telescope) \
-  _(shovel)
+  _(shovel) \
+  _(pepper)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -162,6 +164,7 @@
 #define NS_activity_magneticnorth 9
 #define NS_activity_thingwalla 10
 #define NS_activity_king 11
+#define NS_activity_fishprocessor 12
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
