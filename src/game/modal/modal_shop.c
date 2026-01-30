@@ -150,6 +150,7 @@ static void shop_origin_sprite(struct modal *modal,const struct sprite *sprite) 
 static int _shop_init(struct modal *modal,const void *arg,int argc) {
   modal->opaque=0;
   modal->interactive=1;
+  modal->blotter=1;
   
   MODAL->x0=FBW>>1;
   MODAL->y0=FBH>>1;
@@ -397,12 +398,6 @@ static void _shop_render(struct modal *modal) {
   if (MODAL->boxdirty) {
     MODAL->boxdirty=0;
     shop_reposition(modal);
-  }
-
-  int alpha=(int)(MODAL->presence*128.0);
-  if (alpha>0) {
-    if (alpha>0xff) alpha=0xff;
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
   }
   
   // Dialogue box.

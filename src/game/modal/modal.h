@@ -54,6 +54,7 @@ struct modal {
   int defunct;
   int opaque; // Nothing below me will render, and I promise to clear the whole framebuffer.
   int interactive; // Nothing below me will update.
+  int blotter; // Draw a transparent black blotter below me, if no one above is doing it.
 };
 
 /* These should only be used by modal.c.

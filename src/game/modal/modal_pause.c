@@ -121,6 +121,7 @@ static void pause_focus_vellum(struct modal *modal,int focus) {
 static int _pause_init(struct modal *modal,const void *arg,int argc) {
   modal->opaque=0;
   modal->interactive=1;
+  modal->blotter=1;
   MODAL->drise=1.0;
   
   pause_draw_bg(modal);
@@ -223,7 +224,7 @@ static void _pause_update(struct modal *modal,double elapsed) {
  */
  
 static void _pause_render(struct modal *modal) {
-  
+
   int ya=FBH,yz=(FBH>>1)-(MODAL->bgh>>1);
   int bgy;
   if (MODAL->rise>=1.0) bgy=yz;

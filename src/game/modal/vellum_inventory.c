@@ -64,7 +64,7 @@ static int inventory_strix_for_lblid(int lblid,int *hlimit) {
     case LBLID_EQUIPPED_DESC: {
         const struct item_detail *detail=item_detail_for_itemid(g.store.invstorev[0].itemid);
         if (!detail) return 0;
-        if (hlimit) *hlimit=font_get_line_height(g.font);
+        if (hlimit) *hlimit=font_get_line_height(g.font)*2;
         return detail->strix_help;
       }
     case LBLID_FOCUS_NAME: {
@@ -150,7 +150,6 @@ static void inventory_move(struct vellum *vellum,int dx,int dy) {
   invcolp+=dx; if (invcolp<0) invcolp=BPCOLC-1; else if (invcolp>=BPCOLC) invcolp=0;
   invrowp+=dy; if (invrowp<0) invrowp=BPROWC-1; else if (invrowp>=BPROWC) invrowp=0;
   inventory_rebuild_labels(vellum);
-  //TODO The cursor ought to also participate in modal_pause's paging. How should that work?
 }
 
 /* Swap equipped item with the focussed cell.
@@ -316,7 +315,7 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
    * So we rendered them at the start and it's ready to copy dumbly, right below the equipped item.
    */
   graf_set_input(&g.graf,VELLUM->extraid);
-  graf_decal(&g.graf,bpx+bpw+10,bpy+50,0,0,VELLUM->extraw,VELLUM->extrah);
+  graf_decal(&g.graf,bpx+bpw+10,bpy+60,0,0,VELLUM->extraw,VELLUM->extrah);
   
   /* Name and description of focussed item, in the lower right.
    */

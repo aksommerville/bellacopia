@@ -24,7 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
-- [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
+- [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.

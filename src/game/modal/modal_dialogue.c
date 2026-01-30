@@ -132,6 +132,7 @@ static void dialogue_origin_sprite(struct modal *modal,const struct sprite *spri
 static int _dialogue_init(struct modal *modal,const void *arg,int argc) {
   modal->opaque=0;
   modal->interactive=1;
+  modal->blotter=1;
   
   MODAL->x0=FBW>>1;
   MODAL->y0=FBH>>1;
@@ -253,12 +254,6 @@ static void _dialogue_render(struct modal *modal) {
   if (MODAL->boxdirty) {
     MODAL->boxdirty=0;
     dialogue_reposition(modal);
-  }
-
-  int alpha=(int)(MODAL->presence*128.0);
-  if (alpha>0) {
-    if (alpha>0xff) alpha=0xff;
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
   }
   
   int boxx,boxy,boxw,boxh;

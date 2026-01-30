@@ -114,7 +114,8 @@ void modals_update(double elapsed) {
  
 void modals_render() {
 
-  // Find the topmost opaque modal.
+  // Find the topmost opaque modal, and the topmost with blotter.
+  struct modal *blotbefore=0;
   int opaquep=-1;
   int i=g.modalc;
   while (i-->0) {
@@ -123,6 +124,9 @@ void modals_render() {
     if (modal->opaque) {
       opaquep=i;
       break;
+    }
+    if (modal->blotter&&!blotbefore) {
+      blotbefore=modal;
     }
   }
   
@@ -136,6 +140,9 @@ void modals_render() {
   for (i=opaquep;i<g.modalc;i++) {
     struct modal *modal=g.modalv[i];
     if (modal->defunct) continue;
+    if (modal==blotbefore) {
+      graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000a0);
+    }
     if (!modal->type->render) continue; // weird not to have this...
     modal->type->render(modal);
   }
