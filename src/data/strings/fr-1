@@ -13,3 +13,15 @@
 14 Mappe
 15 Stattes
 16 Systeme
+
+# Stats vellum.
+17 Le Progresse: %0%%
+18 Abcdefghijklm: %0
+19 Fleurs: %0/7
+20 Questtes de Side: %0/%1
+21 Itemes: %0/%1
+22 Mappes: %0%%
+
+# System vellum.
+23 Main Menu
+24 Quit

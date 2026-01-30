@@ -118,4 +118,11 @@ struct secret {
 };
 int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius);
 
+/* Percentage of things done, accounting for everything.
+ * Zero only for a fresh session, and 100 only if everything is actually done.
+ */
+int game_get_completion();
+
+void game_get_sidequests(int *done,int *total);
+
 #endif

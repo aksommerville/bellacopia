@@ -22,13 +22,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Telescope.
-- [x] Magnetic North.
-- [x] Add a shop in Fractia: Candy, Bug Spray, Matches, Vanishing Cream. (all the depletables except potion)
-- [x] Shovel, for buried treasure.
-- [x] Magnifier: Operate about like Divining Rod, but hint at distance to buried treasure.
-- [x] Fishsmith: Trade fish for goods.
-- [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
@@ -46,11 +39,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Handicap for monster and fishpole.
-- [ ] Progress and side quests for vellum_stats.
-- [ ] Dynamically center vellum_stats, to accomodate multiple languages.
+- [x] Progress and side quests for vellum_stats.
+- [x] Dynamically center vellum_stats, to accomodate multiple languages.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Poke jigsaw after rotating a piece in case it's positioned to join.
-- [x] Carpenter: Don't show singleton items if possessed. Do show matches even if at the limit.
 - [ ] Have monsters consume the candy; it only lasts so long.
 - [ ] Need either 3, 7, or 12 new items. (if not 12, reduce the inventory size).
 - - Portable Bus Stop
@@ -64,6 +56,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Boomerang: Drop the other rang after one collides.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Chopping: Start with the belt populated. Too much lead time as is.
+
+- For exploration some time in the uncertain future.
+- [ ] Is it possible to reach inconsistent states by pausing while item in progress?
+- [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
+- [ ] Remove the fake French text, or even better, get it translated correctly.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

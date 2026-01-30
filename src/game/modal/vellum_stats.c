@@ -2,13 +2,13 @@
 #include "vellum.h"
 
 #define GLYPHSIZE 8
-#define COLC 26 /* 36 fits neatly. 26 should be the most we'll need, in English. */
-#define ROWC 7 /* TODO 18 fits neatly. Add things to the report until it fills the page. */
-//TODO Effect the horizontal centering dynamically. Once we allow multiple languages, we can't know the width limit statically.
+#define COLC 36 /* 36 fits neatly. 26 should be the most we'll need, in English. */
+#define ROWC 6 /* TODO 18 fits neatly. Add things to the report until it fills the page. */
 
 struct vellum_stats {
   struct vellum hdr;
   char text[COLC*ROWC];
+  int colonp;
 };
 
 #define VELLUM ((struct vellum_stats*)vellum)
@@ -19,18 +19,64 @@ struct vellum_stats {
 static void _stats_del(struct vellum *vellum) {
 }
 
+/* Take measurements for per-line alignment.
+ */
+ 
+static void stats_measure_alignment(struct vellum *vellum) {
+  // Read all the format strings and find the longest key (measuring to colon).
+  VELLUM->colonp=0;
+  int i=17; for (;i<=22;i++) {
+    const char *src=0;
+    int srcc=text_get_string(&src,1,i);
+    int srcp=0;
+    for (;srcp<srcc;srcp++) {
+      if (src[srcp]==':') {
+        if (srcp>VELLUM->colonp) VELLUM->colonp=srcp;
+        break;
+      }
+    }
+  }
+  
+  // Assume 11 bytes after the key, and center that longest line.
+  int linelen=VELLUM->colonp+11;
+  int extra=(COLC>>1)-(linelen>>1);
+  if (extra>0) VELLUM->colonp+=extra;
+}
+
+/* Line up colons, based on a measurement we took at load.
+ */
+ 
+static void stats_align(char *line,struct vellum *vellum) {
+  int linep=0,colonp=-1;
+  for (;linep<COLC;linep++) {
+    if (line[linep]==':') {
+      colonp=linep;
+      break;
+    }
+  }
+  if (colonp<0) return;
+  int shift=VELLUM->colonp-colonp;
+  if (shift<=0) return;
+  int available=0;
+  while ((available<COLC)&&((unsigned char)line[COLC-available-1]<=0x20)) available++;
+  if (available<=0) return;
+  if (shift>available) shift=available;
+  memmove(line+shift,line,COLC-shift);
+  memset(line,' ',shift);
+}
+
 /* Rewrite bits of the report into (VELLUM->text).
  * The individual bits take a buffer COLC long and overwrite the whole thing.
  */
   
 static void stats_write_progress(struct vellum *vellum,char *dst) {
   memset(dst,' ',COLC);
-  int pct=0;//TODO Total completion 0..100.
+  int pct=game_get_completion();
   struct text_insertion insv[]={
     {.mode='i',.i=pct},
   };
-  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,17,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_write_time(struct vellum *vellum,char *dst) {
@@ -70,6 +116,7 @@ static void stats_write_time(struct vellum *vellum,char *dst) {
     {.mode='s',.s={.v=tmp+lopc,.c=sizeof(tmp)-lopc}},
   };
   text_format_res(dst,COLC,1,18,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_write_flowers(struct vellum *vellum,char *dst) {
@@ -86,18 +133,19 @@ static void stats_write_flowers(struct vellum *vellum,char *dst) {
     {.mode='i',.i=flowerc},
   };
   text_format_res(dst,COLC,1,19,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_write_sidequests(struct vellum *vellum,char *dst) {
   memset(dst,' ',COLC);
-  int completec=0;//TODO
-  int totalc=0;//TODO
+  int completec,totalc;
+  game_get_sidequests(&completec,&totalc);
   struct text_insertion insv[]={
     {.mode='i',.i=completec},
     {.mode='i',.i=totalc},
   };
-  insv[0].mode='s'; insv[0].s.v="TODO"; insv[0].s.c=4;//XXX
   text_format_res(dst,COLC,1,20,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_write_items(struct vellum *vellum,char *dst) {
@@ -113,6 +161,7 @@ static void stats_write_items(struct vellum *vellum,char *dst) {
     {.mode='i',.i=INVSTORE_SIZE},
   };
   text_format_res(dst,COLC,1,21,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_write_maps(struct vellum *vellum,char *dst) {
@@ -134,6 +183,7 @@ static void stats_write_maps(struct vellum *vellum,char *dst) {
     {.mode='i',.i=pct},
   };
   text_format_res(dst,COLC,1,22,insv,sizeof(insv)/sizeof(insv[0]));
+  stats_align(dst,vellum);
 }
 
 static void stats_rewrite_all_except_maps(struct vellum *vellum) {
@@ -183,6 +233,7 @@ static void _stats_update(struct vellum *vellum,double elapsed) {
  */
  
 static void _stats_langchanged(struct vellum *vellum,int lang) {
+  stats_measure_alignment(vellum);
   stats_rewrite_all(vellum);
 }
 
@@ -222,6 +273,7 @@ struct vellum *vellum_new_stats(struct modal *parent) {
   vellum->render=_stats_render;
   vellum->langchanged=_stats_langchanged;
   
+  stats_measure_alignment(vellum);
   memset(VELLUM->text,' ',sizeof(VELLUM->text));
   stats_rewrite_all_except_maps(vellum); // maps are expensive, and we'll rewrite them at focus
   
