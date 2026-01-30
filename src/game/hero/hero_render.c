@@ -347,10 +347,17 @@ void hero_render(struct sprite *sprite,int x,int y) {
     graf_tile(&g.graf,shx,shy,0x00,xform);
   }
   
+  /* Acquire the equipped item.
+   * If we're walking and blocked, nix it.
+   */
   uint8_t itemtileid=0;
-  const struct item_detail *detail=item_detail_for_equipped();
-  if (detail) {
-    itemtileid=detail->hand_tileid;
+  if (SPRITE->walking&&SPRITE->blocked) {
+    // Pretend there's no item.
+  } else {
+    const struct item_detail *detail=item_detail_for_equipped();
+    if (detail) {
+      itemtileid=detail->hand_tileid;
+    }
   }
   
   uint8_t tileid=sprite->tileid;
@@ -410,7 +417,12 @@ void hero_render(struct sprite *sprite,int x,int y) {
   }
   
   if (SPRITE->walking) {
-    switch (SPRITE->walkanimframe) {
+    if (SPRITE->blocked) {
+      if (SPRITE->facedx<0) { tileid=0x2b; xform=0; }
+      else if (SPRITE->facedx>0) { tileid=0x2b; xform=EGG_XFORM_XREV; }
+      else if (SPRITE->facedy<0) { tileid=0x2a; xform=0; }
+      else { tileid=0x29; xform=0; }
+    } else switch (SPRITE->walkanimframe) {
       case 1: tileid+=0x10; break;
       case 3: tileid+=0x20; break;
     }

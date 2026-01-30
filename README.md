@@ -26,12 +26,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
-- [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
 - [ ] More spells. Not sure what...
 - [ ] Invalid spell, should we do a head-shake like in Full Moon?
-- [ ] Don't animate walking when bumping into a wall. Maybe a pushing face?
+- [x] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
@@ -58,6 +57,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Chopping: Start with the belt populated. Too much lead time as is.
 
 - For exploration some time in the uncertain future.
+- [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.

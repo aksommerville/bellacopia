@@ -107,10 +107,10 @@ static void hero_fudge_horz(struct sprite *sprite,double elapsed) {
   if (dx>FUDGE_TOLERANCE) return;
   double target=whole+0.5;
   if (dx<0.0) {
-    sprite_move(sprite,-FUDGE_SPEED*elapsed,0.0);
+    if (sprite_move(sprite,-FUDGE_SPEED*elapsed,0.0)) SPRITE->blocked=0;
     if (sprite->x<target) sprite->x=target;
   } else if (dx>0.0) {
-    sprite_move(sprite,FUDGE_SPEED*elapsed,0.0);
+    if (sprite_move(sprite,FUDGE_SPEED*elapsed,0.0)) SPRITE->blocked=0;
     if (sprite->x>target) sprite->x=target;
   }
 }
@@ -123,10 +123,10 @@ static void hero_fudge_vert(struct sprite *sprite,double elapsed) {
   if (dy>FUDGE_TOLERANCE) return;
   double target=whole+0.5;
   if (dy<0.0) {
-    sprite_move(sprite,0.0,-FUDGE_SPEED*elapsed);
+    if (sprite_move(sprite,0.0,-FUDGE_SPEED*elapsed)) SPRITE->blocked=0;
     if (sprite->y<target) sprite->y=target;
   } else if (dy>0.0) {
-    sprite_move(sprite,0.0,FUDGE_SPEED*elapsed);
+    if (sprite_move(sprite,0.0,FUDGE_SPEED*elapsed)) SPRITE->blocked=0;
     if (sprite->y>target) sprite->y=target;
   }
 }
@@ -135,6 +135,7 @@ static void hero_fudge_vert(struct sprite *sprite,double elapsed) {
  */
  
 void hero_motion_update(struct sprite *sprite,double elapsed) {
+  SPRITE->blocked=0;
   hero_motion_update_input(sprite);
   if (!SPRITE->walking) return;
   
@@ -148,6 +149,7 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
     speed=12.0*elapsed;
   }
   if (!sprite_move(sprite,SPRITE->indx*speed,SPRITE->indy*speed)) {
+    SPRITE->blocked=1;
     // If she's trying to move cardinally, perform an off-axis correction.
     if (SPRITE->indx&&!SPRITE->indy) hero_fudge_vert(sprite,elapsed);
     else if (!SPRITE->indx&&SPRITE->indy) hero_fudge_horz(sprite,elapsed);
