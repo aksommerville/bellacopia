@@ -15,7 +15,29 @@ You can currently reach 93% completion, and at a leisurely pace but knowing what
 Telescope and Magnifier can only be got in the Cave of Cheating.
 One puzzle, the cave just south of start, is probably temporary.
 The world map is noticeably sparse, biome edges are not blended at all, and jigsaw colors don't always agree across biomes.
-5 battles are implemented: Fishing, Chopping, Exterminating, Boomerang, and Strangling.
+6 battles are implemented: Fishing, Chopping, Exterminating, Boomerang, Strangling, and Laziness.
 None is fully polished but all playable.
 The quests that exist are mostly placeholders. Tap a stompbox to mark it complete.
 Barrel Hats and Rescue the Princess are pretty much done.
+
+One day per minigame might be too optimistic.
+I earlier estimated completion in June but now I'm thinking more like 200 days, which would be September.
+Maybe more like end of year.
+
+I am feeling really good about the progress so far, and the feasibility of the project as a whole.
+
+Stats as of d4930d199ba4b436a82694e9111a7476dac323b6, 2026-01-31:
+ - Code: 18760 lines. (`src/game/**.[ch]`, naive count)
+ - ROM size: 413151
+ - Non-placeholder battles: 7 (bluefish, redfish, and all the goblins except Laziness are placeholders)
+ - Casual full-clear time, no cheating: 38:25. 91% (only 14/26 items currently reachable without cheating; 16 if you cheat).
+ 
+## February 2026
+
+Goals:
+- [ ] Finish the 10 outstanding goblin battles.
+- [ ] 10 other battles.
+- [ ] Crypto puzzle in the goblins' cave.
+- [ ] Generate the labyrinth. Do the layout around it but needn't be final.
+- [ ] Letter exchange at battlefield.
+- [ ] Election. Just the battle and the broad framework. Not expecting all the guilds' battles yet.

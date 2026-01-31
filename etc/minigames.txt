@@ -68,7 +68,7 @@
  R2      KarateChop        Sensei             Battlefield
   2      Latin             Naturalist         Jungle
   2      Lawnmowing        Gardener           Farm
-  2      Laziness          Sloblin            Cave
+  2____D Laziness          Sloblin            Cave
  R2      Levitation        Monk               Desert
   2      Licking           Puppy              Farm
   2      Lighting          Acolyte            City

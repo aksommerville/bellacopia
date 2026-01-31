@@ -19,6 +19,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-19: Fully committed to a rewrite. Expect mark 2 to be at parity with mark 1 before end of January.
 - 2026-01-27: Last features of mark 1 implemented in mark 2, and a bunch of other stuff. Looking good.
 - 2026-01-29: Added some shops and placeholder King. Should be possible to do everything except Magnifier and Telescope now without cheating. ...confirmed. Done in about 22 minutes.
+- 2026-01-31: On track I think. Starting monthly reports.
 
 ## TODO
 
