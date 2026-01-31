@@ -434,7 +434,7 @@ static void begin_thingwalla(struct sprite *sprite) {
 /* King: Behooves you to rescue the Princess, or recompenses you for doing so.
  */
  
-static int king_cb(int optionid,void *userdata) {
+static int king_cb_win(int optionid,void *userdata) {
   store_set_fld(NS_fld_rescued_princess,1);
   int goldmax=store_get_fld16(NS_fld16_goldmax);
   goldmax+=100;
@@ -443,14 +443,43 @@ static int king_cb(int optionid,void *userdata) {
   bm_sound(RID_sound_treasure);
   return 1;
 }
+
+// null and (*near) nonzero if the princess exists but out of range.
+static struct sprite *find_princess(struct sprite *king,int *near) {
+  struct sprite **spritep=GRP(monsterlike)->sprv;
+  int i=GRP(monsterlike)->sprc;
+  for (;i-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    if (sprite->defunct) continue;
+    if (sprite->type!=&sprite_type_princess) continue;
+    *near=1;
+    double dx=sprite->x-king->x;
+    double dy=sprite->y-king->y;
+    double d2=dx*dx+dy*dy;
+    double tolerance=5.0;
+    tolerance*=tolerance;
+    if (d2>tolerance) return 0;
+    return sprite;
+  }
+  return 0;
+}
  
 static void begin_king(struct sprite *sprite) {
   if (store_get_fld(NS_fld_rescued_princess)) {
     begin_dialogue(32,sprite); // "Thanks again!"
   } else {
-    struct modal *modal=begin_dialogue(33,sprite);
-    if (!modal) return;
-    modal_dialogue_set_callback(modal,king_cb,sprite);
+    int near=0;
+    struct sprite *princess=find_princess(sprite,&near);
+    if (princess) {
+      sprite_kill_soon(princess);
+      struct modal *modal=begin_dialogue(20,sprite); // "Hey thanks!"
+      if (!modal) return;
+      modal_dialogue_set_callback(modal,king_cb_win,sprite);
+    } else if (near) {
+      begin_dialogue(42,sprite); // "Where is she?"
+    } else {
+      begin_dialogue(33,sprite); // "Oh no Princess is kidnapped!"
+    }
   }
 }
 

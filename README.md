@@ -22,7 +22,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Princess: Finish quest.
+- [x] Princess: Finish quest.
 - [x] Return Princess to her cage after losing a battle.
 - [x] How to get Princess through doors? "you don't" isn't an option, alas.
 - [x] Should there be a prize when Princess wins a battle? It shouldn't come up often. ...no

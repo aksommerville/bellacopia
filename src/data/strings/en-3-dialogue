@@ -14,7 +14,7 @@
 17 If you catch any fish, I'll buy them from you.
 18 Sell me those %0 fish for %1 gold?
 19 Nobody passes until the war is over. Captain's orders.
-20 
+20 You're the best, Dot! The reward I want to give you won't fit in your purse, so I'll give you a bigger purse too.
 21 That's the %0 I want. OK, you can pass.
 22 %0? I don't want that. Must be for other troll, but his shift is over. I want a %1.
 23 You want cross bridge? Pay toll of one %0.
@@ -26,8 +26,8 @@
 29 Upgrade your compass for 10 gold?
 30 Buy some thing?
 31 Thanks again for your help with the barrel hats.
-32 [TODO] Thanks for rescuing the Princess, that was nice of you.
-33 [TODO] Rescue the Princess! Actually, let's just pretend that you already did. Purse+=100.
+32 Thanks for rescuing the Princess, that was nice of you.
+33 The Princess has been kidnapped by goblins! Rescue her and you'll be rewarded handsomely.
 34 Bring fish and I can process them into more useful things.
 35 Process your fish for 2 gold?
 36 %0 green => %1 candy
@@ -36,3 +36,4 @@
 39 Take this vanishing cream and walk through the bars. It won't work on me, because I'm not a witch.
 40 Are you still there?
 41 Vanish and escape! And if it's not too much trouble, come back to rescue me?
+42 Where's the Princess? Bring her near.
