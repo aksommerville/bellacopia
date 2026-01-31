@@ -211,6 +211,17 @@
 #define NS_battle_bluefish 7
 #define NS_battle_redfish 8
 #define NS_battle_placeholder 9 /* Do not use in production! */
+#define NS_battle_throwing 10
+#define NS_battle_stealing 11
+#define NS_battle_regex 12
+#define NS_battle_racketeering 13
+#define NS_battle_laziness 14
+#define NS_battle_hiring 15
+#define NS_battle_gobbling 16
+#define NS_battle_erudition 17
+#define NS_battle_crying 18
+#define NS_battle_cobbling 19
+#define NS_battle_apples 20
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -220,7 +231,18 @@
   _(greenfish) \
   _(bluefish) \
   _(redfish) \
-  _(placeholder)
+  _(placeholder) \
+  _(throwing) \
+  _(stealing) \
+  _(regex) \
+  _(racketeering) \
+  _(laziness) \
+  _(hiring) \
+  _(gobbling) \
+  _(erudition) \
+  _(crying) \
+  _(cobbling) \
+  _(apples)
 
 /* "fld" are single bits.
  */
