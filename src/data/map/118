@@ -15,5 +15,4 @@ image image:battlefield_int
 door @9,8 map:57 @4,6 0x0000
 parent map:57
 position 0 3 0 0
-debugmsg "south_tent"
 sprite @7,6 sprite:jigpiece (u32)0

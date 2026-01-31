@@ -13,7 +13,6 @@
 
 image image:botire
 position 2 4 1 *
-debugmsg "botire\u0020nw"
 door @14,8 map:114 @9,9 0x0000
 root @0,9 (u16:fld)root4
 root @19,9 (u16:fld)root4

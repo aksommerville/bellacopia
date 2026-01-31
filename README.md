@@ -22,24 +22,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Princess: Finish quest.
-- [x] Return Princess to her cage after losing a battle.
-- [x] How to get Princess through doors? "you don't" isn't an option, alas.
-- [x] Should there be a prize when Princess wins a battle? It shouldn't come up often. ...no
-- [x] Princess: Follow me.
-- [x] Princess battle: Strings not inserted in welcome message.
-- [x] Princess battle: Took a heart from me instead of killing her.
-- [x] Monsters don't seem interested in the Princess. Did I forget to update that? ...yep forgot.
-- [x] Add Princess graphics to existing games. Exterminating doesn't need it.
-- [x] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
-- [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
-- - While in there, pause also needs a blotter.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
 - [ ] More spells. Not sure what...
 - [ ] Invalid spell, should we do a head-shake like in Full Moon?
-- [x] Don't animate walking when bumping into a wall. Maybe a pushing face?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
@@ -47,8 +34,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Handicap for monster and fishpole.
-- [x] Progress and side quests for vellum_stats.
-- [x] Dynamically center vellum_stats, to accomodate multiple languages.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Poke jigsaw after rotating a piece in case it's positioned to join.
 - [ ] Have monsters consume the candy; it only lasts so long.
@@ -114,6 +99,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Quests and Prizes
 
+- Don't delete finished items.
 - [ ] End the war => Hookshot
 - [ ] Run for mayor => no prize
 - [x] Hat the barrels => Bell
@@ -133,7 +119,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Prizes unassigned.
 - [ ] Magnifier.
 - [ ] Telescope.
-- [x] Shovel.
 - [ ] hc1
 - [ ] hc2
 - [ ] hc3

@@ -13,5 +13,4 @@
 
 image image:meadow
 position 2 2 1 *
-debugmsg "2,2"
 sprite @17,8 sprite:jigpiece (u32)0

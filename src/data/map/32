@@ -14,7 +14,6 @@
 image image:meadow
 position 4 7 1 *
 sprite @13,4 sprite:jigpiece (u32)0
-debugmsg "farm"
 root @15,4 (u16:fld)root1
 root @19,4 (u16:fld)root1
 root @18,4 (u16:fld)root1

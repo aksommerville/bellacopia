@@ -13,5 +13,4 @@
 
 image image:tundra
 position 0 0 1 *
-debugmsg "Caution:\u0020end-o-world"
 sprite @8,5 sprite:jigpiece (u32)0

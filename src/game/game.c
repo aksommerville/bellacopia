@@ -765,7 +765,7 @@ const int progress_fldv[]={
   //TODO Keep me up to date as we add achievements.
 };
 const int sidequest_fldv[]={
-  NS_fld_toll_paid,
+  NS_fld_toll_paid, // Debatable. He's gating a root devil, and player might broom across instead.
   NS_fld_mayor,
   NS_fld_war_over,
   NS_fld_rescued_princess,

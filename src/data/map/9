@@ -13,7 +13,6 @@
 
 image image:meadow
 position 5 5 1 *
-debugmsg "5,5"
 sprite @8,6 sprite:jigpiece (u32)0
 rsprite sprite:leopard 10 1 (u32)0
 rsprite sprite:stick 30 2 (u32)0

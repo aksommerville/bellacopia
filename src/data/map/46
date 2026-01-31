@@ -13,7 +13,6 @@ a1a1a1a1a1a1a184919191919191919191919191
 
 image image:botire
 position 3 4 1 *
-debugmsg "botire\u0020ne"
 door @4,8 map:115 @9,9 0x0000
 root @0,9 (u16:fld)root4
 root @7,11 (u16:fld)root4

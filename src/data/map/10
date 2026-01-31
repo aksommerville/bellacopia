@@ -13,7 +13,6 @@
 
 image image:meadow
 position 4 4 1 *
-debugmsg "4,4"
 sprite @10,3 sprite:jigpiece (u32)0
 root @19,0 (u16:fld)root5
 root @12,11 (u16:fld)root5
