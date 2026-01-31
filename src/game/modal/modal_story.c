@@ -57,7 +57,7 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
   
   int mapid,col,row;
   if (maps_get_start_position(&mapid,&col,&row)<0) return -1;
-  camera_cut(mapid,col,row);
+  camera_cut(mapid,col,row,NS_transition_cut);
   
   return 0;
 }

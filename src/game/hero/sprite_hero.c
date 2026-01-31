@@ -112,6 +112,12 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
     }
   }
   
+  // Suspend normal updating during the dark half of a transition.
+  switch (camera_describe_transition()) {
+    //case 1: return; // Partially visible. Debatable whether to suspend.
+    case 2: return; // Invisible. Suspend.
+  }
+  
   if (SPRITE->divining_alert_clock>0.0) {
     SPRITE->divining_alert_clock-=elapsed;
   }
@@ -221,7 +227,8 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
           break;
         }
         
-        camera_cut(rid,dstx,dsty);
+        int transition=NS_transition_spotlight;
+        camera_cut(rid,dstx,dsty,transition);
       } break;
   }
 }

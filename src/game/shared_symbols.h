@@ -88,6 +88,11 @@
 #define NS_sprgrp_light        9 /* Light source in darkened rooms. */
 #define NS_sprgrp_monsterlike 10 /* Hero, princess, candy, and anything else monsters pay attention to. */
 
+#define NS_transition_cut 0
+#define NS_transition_spotlight 1
+#define NS_transition_crossfade 2
+#define NS_transition_fadeblack 3
+
 // Compass target classes. Value is strix in strings:item for the target's display name.
 #define NS_compass_home 40
 #define NS_compass_north 42

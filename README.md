@@ -31,7 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Princess battle: Took a heart from me instead of killing her.
 - [x] Monsters don't seem interested in the Princess. Did I forget to update that? ...yep forgot.
 - [x] Add Princess graphics to existing games. Exterminating doesn't need it.
-- [ ] Door transitions. Fade to black? Spotlight?
+- [x] Door transitions. Fade to black? Spotlight?
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] When multiple dialogue modals, there are multiple blotters. Can we have just one blotter, and magically put it at the right layer? (eg "Not enough gold" at a shop)
 - - While in there, pause also needs a blotter.
@@ -74,6 +74,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
+- [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
+- - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

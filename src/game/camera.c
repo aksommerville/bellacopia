@@ -25,6 +25,8 @@ void camera_reset() {
   g.camera.darkness=0.0;
   g.camera.teledx=0.0;
   g.camera.teledy=0.0;
+  g.camera.transition=0;
+  g.camera.transition_time=0.0;
 }
 
 /* Listeners.
@@ -350,17 +352,30 @@ static void camera_singleton_map(struct map *map) {
   g.camera.mapsdirty=1;
 }
 
+/* Render current scene to use as the still "from" image of a transition.
+ */
+ 
+static void camera_acquire_transition_bits() {
+  if (g.camera.transition_texid<1) {
+    g.camera.transition_texid=egg_texture_new();
+    egg_texture_load_raw(g.camera.transition_texid,FBW,FBH,FBW<<2,0,0);
+  }
+  camera_render_pretransition(g.camera.transition_texid);
+}
+
 /* Update.
  */
 
 void camera_update(double elapsed) {
 
-  //TODO Tick transition.
-  
-  /* If a door transition was scheduled, effect it.
-   * TODO This should be on a timer, with a visual transition.
+  /* If a door transition was scheduled, effect it now.
+   * Modelwise, we're at the destination map directly a transition begins.
+   * Only reason we don't do this during camera_cut() is we want to be outside the sprites' update cycle.
    */
   if (g.camera.door_map) {
+    if (g.camera.transition) {
+      camera_acquire_transition_bits();
+    }
     if (g.camera.door_map->z) {
       g.camera.fx=g.camera.door_x+0.5;
       g.camera.fy=g.camera.door_y+0.5;
@@ -371,6 +386,17 @@ void camera_update(double elapsed) {
     g.camera.cut=1;
     g.camera.lock=0;
     g.camera.door_map=0;
+  }
+  
+  /* If a transition is in progress, advance it.
+   */
+  if (g.camera.transition_clock<g.camera.transition_time) {
+    g.camera.transition_clock+=elapsed;
+    if (g.camera.transition_clock>=g.camera.transition_time) {
+      g.camera.transition=0;
+      g.camera.transition_clock=0.0;
+      g.camera.transition_time=0.0;
+    }
   }
   
   /* Find the ideal unclamped position.
@@ -470,6 +496,16 @@ void camera_update(double elapsed) {
   g.camera.ry=ry;
   camera_check_exposures(ox,oy);
   
+  /* During a spotlight transition, dynamically update the To focus point.
+   */
+  if (g.camera.transition==NS_transition_spotlight) {
+    if (GRP(hero)->sprc>=1) {
+      struct sprite *sprite=GRP(hero)->sprv[0];
+      g.camera.tox=(int)(sprite->x*NS_sys_tilesize)-g.camera.rx;
+      g.camera.toy=(int)(sprite->y*NS_sys_tilesize)-g.camera.ry;
+    }
+  }
+  
   /* Update darkness.
    */
   if (g.camera.map) {
@@ -554,7 +590,8 @@ static void camera_render_darkness() {
 /* Render.
  */
 
-void camera_render() {
+void camera_render_pretransition(int dsttexid) {
+  graf_set_output(&g.graf,dsttexid);
   
   /* Rerender scoped maps if dirty.
    */
@@ -610,13 +647,151 @@ void camera_render() {
   }
   
   //TODO Weather.
-  //TODO Transitions.
+  
+  graf_set_output(&g.graf,1);
+}
+
+/* Spotlight transition.
+ */
+ 
+static void camera_render_spotlight(double t) {
+  
+  // Pick the focus point and rephrase (t) as 0..1 = collapsed..expanded.
+  int fx,fy,stage;
+  if (t<0.5) { // Show From bits with the frame collapsing into the From focus point.
+    t=1.0-t*2.0;
+    fx=g.camera.fromx;
+    fy=g.camera.fromy;
+    stage=0;
+  } else { // Show To bits with the frame expanding from the To focus point.
+    t=(t-0.5)*2.0;
+    fx=g.camera.tox;
+    fy=g.camera.toy;
+    stage=1;
+  }
+  
+  // Slide focus point to the screen's center according to (t).
+  int midx=FBW>>1,midy=FBH>>1;
+  fx=(int)(fx*(1.0-t)+midx*t);
+  fy=(int)(fy*(1.0-t)+midy*t);
+  
+  // Select bounds. The width and height we slide up to should be about sqrt(2) times the framebuffer size.
+  const double ROOT2=1.4142135623730951;
+  int maxw=(int)(FBW*ROOT2);
+  int maxh=(int)(FBH*ROOT2);
+  int cpw=(int)(maxw*t);
+  int cph=(int)(maxh*t);
+  int cpx=fx-(cpw>>1); //if (cpx<0) cpx=0; else if (cpx>FBW-cpw) cpx=FBW-cpw;
+  int cpy=fy-(cph>>1); //if (cpy<0) cpy=0; else if (cpy>FBH-cph) cpy=FBH-cph;
+  
+  /* In the From stage, black out framebuffer, then copy the focussed bounds from (transition_texid).
+   * In the To stage, render the whole scene, then black out the rectangles outside the focus.
+   */
+  const uint32_t bgcolor=0x000000ff;
+  if (stage) {
+    camera_render_pretransition(1);
+    graf_fill_rect(&g.graf,0,0,cpx,FBH,bgcolor);
+    graf_fill_rect(&g.graf,cpx+cpw,0,FBW,FBH,bgcolor);
+    graf_fill_rect(&g.graf,cpx,0,cpw,cpy,bgcolor);
+    graf_fill_rect(&g.graf,cpx,cpy+cph,cpw,FBH,bgcolor);
+  } else {
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,bgcolor);
+    graf_set_input(&g.graf,g.camera.transition_texid);
+    graf_decal(&g.graf,cpx,cpy,cpx,cpy,cpw,cph);
+  }
+  
+  /* Stretch a fuzzy circle cutout with black corners over the focus bounds.
+   * I said "circle", but in truth it has a wide aspect. Shouldn't really matter.
+   */
+  const int srcx=1,srcy=161,srcw=94,srch=46;
+  graf_set_image(&g.graf,RID_image_pause);
+  graf_set_filter(&g.graf,1);
+  graf_triangle_strip_tex_begin(&g.graf,
+    cpx    ,cpy    ,srcx     ,srcy,
+    cpx+cpw,cpy    ,srcx+srcw,srcy,
+    cpx    ,cpy+cph,srcx     ,srcy+srch
+  );
+  graf_triangle_strip_tex_more(&g.graf,
+    cpx+cpw,cpy+cph,srcx+srcw,srcy+srch
+  );
+  graf_set_filter(&g.graf,0);
+}
+
+/* Crossfade transition.
+ */
+ 
+static void camera_render_crossfade(double t) {
+  camera_render_pretransition(1);
+  int alpha=(int)((1.0-t)*255.0);
+  if (alpha<1) return;
+  if (alpha>0xff) alpha=0xff;
+  graf_set_alpha(&g.graf,alpha);
+  graf_set_input(&g.graf,g.camera.transition_texid);
+  graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+  graf_set_alpha(&g.graf,0xff);
+}
+
+/* Fade to color transition.
+ */
+ 
+static void camera_render_fadevia(double t,uint32_t rgba) {
+  // Draw the scene and rephrase (t) as 0..1 = transparent..black.
+  if (t<0.5) {
+    graf_set_input(&g.graf,g.camera.transition_texid);
+    graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+    t*=2.0;
+  } else {
+    camera_render_pretransition(1);
+    t=(1.0-t)*2.0;
+  }
+  // Draw the blackout on top.
+  int alpha=(int)(t*255.0);
+  if (alpha<1) return;
+  if (alpha>0xff) alpha=0xff;
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,(rgba&0xffffff00)|alpha);
+}
+
+/* Render, main.
+ */
+ 
+void camera_render() {
+
+  /* No transition requested or texture invalid, do the normal render.
+   */
+  if (!g.camera.transition||(g.camera.transition_texid<1)||(g.camera.transition_time<=0.0)) {
+    camera_render_pretransition(1);
+    return;
+  }
+  
+  /* Normalize transition progress, 0..1 = from..to
+   * If it's at or beyond either boundary, take a shortcut.
+   */
+  double t=g.camera.transition_clock/g.camera.transition_time;
+  if (t<=0.0) {
+    graf_set_input(&g.graf,g.camera.transition_texid);
+    graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+    return;
+  }
+  if (t>=1.0) {
+    camera_render_pretransition(1);
+    return;
+  }
+  
+  /* Dispatch per transition type.
+   * Anything handled should return. If we fall thru, we'll render the default.
+   */
+  switch (g.camera.transition) {
+    case NS_transition_spotlight: camera_render_spotlight(t); return;
+    case NS_transition_crossfade: camera_render_crossfade(t); return;
+    case NS_transition_fadeblack: camera_render_fadevia(t,0x000000ff); return;
+  }
+  camera_render_pretransition(1);
 }
 
 /* Schedule door transition.
  */
 
-void camera_cut(int mapid,int subcol,int subrow) {
+void camera_cut(int mapid,int subcol,int subrow,int transition) {
   struct map *map=map_by_id(mapid);
   if (!map) return;
   g.camera.door_map=map;
@@ -624,5 +799,52 @@ void camera_cut(int mapid,int subcol,int subrow) {
   g.camera.door_y=map->lat*NS_sys_maph+subrow;
   g.camera.cut=1;
   g.camera.lock=0;
-  //TODO Transition.
+
+  g.camera.transition_clock=0.0;
+  g.camera.transition_time=CAMERA_TRANSITION_TIME;
+  switch (g.camera.transition=transition) {
+  
+    // Typical transition are good to go.
+    case NS_transition_crossfade:
+    case NS_transition_fadeblack:
+      break;
+    
+    // Spotlight needs to sample the hero position before and after.
+    // We don't know the after point yet, so use the screen's center and trust it will be set properly after the first update.
+    // (subcol,subrow) aren't super helpful for determining the after point, since we'd have to account for clamping.
+    case NS_transition_spotlight: {
+        g.camera.fromx=g.camera.tox=FBW>>1;
+        g.camera.tox=g.camera.toy=FBH>>1;
+        if (GRP(hero)->sprc>=1) {
+          struct sprite *sprite=GRP(hero)->sprv[0];
+          g.camera.fromx=(int)(sprite->x*NS_sys_tilesize)-g.camera.rx;
+          g.camera.fromy=(int)(sprite->y*NS_sys_tilesize)-g.camera.ry;
+        }
+      } break;
+    
+    // Unknown transition, cut instead.
+    case NS_transition_cut:
+    default: {
+        g.camera.transition=NS_transition_cut;
+        g.camera.transition_time=0.0;
+      }
+  }
+}
+
+/* Describe transition.
+ */
+ 
+int camera_describe_transition() {
+  if (!g.camera.transition) return 0;
+  if (g.camera.transition_clock>=g.camera.transition_time) return 0;
+  // Call out transitions with an occlusive front half.
+  if (g.camera.transition_clock<g.camera.transition_time*0.5) {
+    switch (g.camera.transition) {
+      case NS_transition_spotlight:
+      case NS_transition_fadeblack:
+        return 2;
+    }
+  }
+  // Everything else, assume we're partially occluded.
+  return 1;
 }

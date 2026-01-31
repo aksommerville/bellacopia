@@ -602,7 +602,7 @@ int possessed_quantity_for_itemid(int itemid,int *limit) {
 /* Warp.
  */
  
-int game_warp(int mapid) {
+int game_warp(int mapid,int transition) {
   if (g.warp_listener) return -1;
 
   // Confirm (mapid) exists and has a hero spawn point.
@@ -623,7 +623,7 @@ int game_warp(int mapid) {
   }
   if (col<0) return -1;
   
-  camera_cut(mapid,col,row);
+  camera_cut(mapid,col,row,transition);
   
   // Move hero immediately.
   if (GRP(hero)->sprc>=1) {

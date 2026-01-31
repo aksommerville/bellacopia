@@ -70,7 +70,7 @@ int game_cast_spell(const char *src,int srcc);
 /* (mapid) must contain a hero spawn point, we fail immediately if not.
  * Does not move immediately. We negatiate a transition with camera, and move the hero when it takes effect.
  */
-int game_warp(int mapid);
+int game_warp(int mapid,int transition);
 
 /* Generate a list of things the compass can target.
  * Never more than (dsta).

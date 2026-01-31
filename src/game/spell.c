@@ -12,7 +12,7 @@ void spell_flash() {
  */
  
 void spell_home() {
-  game_warp(RID_map_start);
+  game_warp(RID_map_start,NS_transition_fadeblack);
 }
 
 /* Cast spell, main entry point.

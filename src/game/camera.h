@@ -13,6 +13,7 @@
 
 #define CAMERA_PAN_SPEED 10.0
 #define CAMERA_LOCK_DISTANCE 0.450
+#define CAMERA_TRANSITION_TIME 0.750
 
 // Global singleton (g.camera).
 struct camera {
@@ -32,12 +33,16 @@ struct camera {
   
   struct map *door_map;
   int door_x,door_y;
+  int transition; // NS_transition_*
+  double transition_clock; // Counts up.
+  double transition_time; // Probably constant, but if needed we can run transitions at arbitrary speed.
+  int transition_texid; // If nonzero, it's the same size as framebuffer.
+  int fromx,fromy,tox,toy; // Focus points for spotlight transition, in framebuffer pixels.
   
   double darkness; // 0..1 = light..dark
   double lightness;
   double teledx,teledy; // Telescope offset in pixels. We apply it, hero sets it directly.
   
-  //TODO transitions
   //TODO weather
   
   int listenerid_next;
@@ -69,13 +74,14 @@ void camera_update(double elapsed);
  * We do not draw any artificial overlay, that's someone else's problem.
  */
 void camera_render();
+void camera_render_pretransition(int dsttexid);
 
 /* Schedule a transition.
  * We'll fade out and effect the transition when black, it's not immediate.
  * (subcol,subrow) are in meters relative to the map -- not the usual plane meters. It should come right off a door poi.
  * This does not touch the hero or any other sprites. Hero should listen for map exposures and move herself when the new one focusses.
  */
-void camera_cut(int mapid,int subcol,int subrow);
+void camera_cut(int mapid,int subcol,int subrow,int transition);
 
 /* Listeners get called as the camera updates, to inform of exposure.
  * There are two granularities: map and cell.
@@ -90,5 +96,12 @@ void camera_cut(int mapid,int subcol,int subrow);
 void camera_unlisten(int listenerid);
 int camera_listen_map(void (*cb)(struct map *map,int focus,void *userdata),void *userdata);
 int camera_listen_cell(void (*cb)(int x,int y,int w,int h,void *userdata),void *userdata);
+
+/* Returns one of:
+ *  0: No transition in progress.
+ *  1: Transition in progress, end scene is at least partially visible.
+ *  2: Transition in progress, end scene is definitely not visible. eg first half of fadeblack or spotlight.
+ */
+int camera_describe_transition();
 
 #endif

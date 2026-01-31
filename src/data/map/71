@@ -14,4 +14,4 @@ c805060402d5d6151515d9e9fbe4f2e6e4f1e0f8
 image image:mountains
 position 9 5 1 *
 sprite @2,5 sprite:jigpiece (u32)0
-door @8,8 map:145 @4,3 0x0000
+door @8,8 map:145 @8,2 0x0000
