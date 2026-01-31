@@ -58,7 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] gs- Stealing: Roblin
 - [ ] gs- Regex: Globlin
 - [ ] gs- Racketeering: Moblin
-- [ ] gs- Laziness: Sloblin
+- [x] gs- Laziness: Sloblin
 - [ ] gs- Hiring: Joblin
 - [ ] gs- Gobbling: Goblin
 - [ ] gs- Erudition: Snoblin

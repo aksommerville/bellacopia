@@ -279,8 +279,8 @@ static void battle_cb_end(int outcome,void *userdata) {
     return;
   }
   fprintf(stderr,
-    "%s: battle=%d players=%s handicap=0x%02x outcome=%d duration=%.03fs\n",__func__,
-    MODAL->battle,repr_players(MODAL->players),MODAL->handicap,outcome,MODAL->duration
+    "%s: battle=%d(%s) players=%s handicap=0x%02x outcome=%d duration=%.03fs\n",__func__,
+    MODAL->battle,MODAL->type->name,repr_players(MODAL->players),MODAL->handicap,outcome,MODAL->duration
   );
   MODAL->outcome=(outcome<0)?-1:(outcome>0)?1:0;
   MODAL->stage=STAGE_REPORT;

@@ -125,7 +125,8 @@ export class EditWorldModal {
       if (cmd[0] !== "rsprite") continue;
       if (result) result += ",";
       const name = (cmd[1] || "").replace("sprite:", "");
-      result += name;
+      const weight = (cmd[2] || "").replace(/\(.*\)/, "");
+      result += name + "*" + weight;
     }
     return result;
   }
@@ -338,8 +339,9 @@ export class EditWorldModal {
           }
           // Add a new command for each in (option).
           // We really ought to copy the other args, but they weren't captured in the repr and... meh. Use defaults.
-          for (const name of option.split(',')) {
-            map.cmd.commands.push(["rsprite", `sprite:${name}`, `(u8:weight)10`, "(u8:limit)1", "(u32)0"]);
+          for (const src of option.split(',')) {
+            const [name, weight] = src.split("*");
+            map.cmd.commands.push(["rsprite", `sprite:${name}`, `(u8:weight)${weight}`, "(u8:limit)1", "(u32)0"]);
           }
         } return true;
         

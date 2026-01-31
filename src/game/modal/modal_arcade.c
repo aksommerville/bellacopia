@@ -214,6 +214,25 @@ static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userda
  
 static void arcade_begin_game(struct modal *modal) {
   fprintf(stderr,"%s battle=%d players=%d handicap=%d\n",__func__,MODAL->battle,MODAL->players,MODAL->handicap);//TODO
+  int left_name=0,right_name=0; // Can leave them zero, to suppress the report.
+  switch (MODAL->players) {
+    case NS_players_cpu_cpu: {
+        left_name=6; // Princess
+        right_name=5; // Monster (the canonical trigger monster of a battle is not known to the battle itself, only to the sprite)
+      } break;
+    case NS_players_cpu_man: {
+        left_name=5; // Monster
+        right_name=6; // Princess
+      } break;
+    case NS_players_man_cpu: {
+        left_name=4; // Dot
+        right_name=5; // Monster
+      } break;
+    case NS_players_man_man: {
+        left_name=4; // Dot
+        right_name=6; // Princess
+      } break;
+  }
   struct modal_args_battle args={
     .battle=MODAL->battle,
     .players=MODAL->players,
@@ -221,6 +240,8 @@ static void arcade_begin_game(struct modal *modal) {
     .cb=arcade_cb_battle,
     .userdata=modal,
     .skip_prompt=1,
+    .left_name=left_name,
+    .right_name=right_name,
   };
   struct modal *battle_modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!battle_modal) return;
