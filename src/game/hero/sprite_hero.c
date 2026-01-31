@@ -161,6 +161,13 @@ static void hero_cb_map(struct map *map,int focus,void *userdata) {
   sprite->z=map->z;
   SPRITE->ignoreqx=(int)sprite->x-map->lng*NS_sys_mapw;
   SPRITE->ignoreqy=(int)sprite->y-map->lat*NS_sys_maph;
+  
+  if (SPRITE->respawn_princess) {
+    struct sprite *princess=sprite_spawn(sprite->x,sprite->y+0.125,RID_sprite_princess,0,0,0,0,0);
+    if (princess) {
+      sprite_group_remove(GRP(solid),princess);
+    }
+  }
 }
 
 /* POI.
@@ -194,6 +201,26 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
         }
         SPRITE->doorx=map->lng*NS_sys_mapw+dstx+0.5;
         SPRITE->doory=map->lat*NS_sys_maph+dsty+0.5;
+        
+        // If there's a Princess and she's close to us, arrange to respawn her on the other side.
+        SPRITE->respawn_princess=0;
+        struct sprite **otherp=GRP(monsterlike)->sprv;
+        int i=GRP(monsterlike)->sprc;
+        for (;i-->0;otherp++) {
+          struct sprite *other=*otherp;
+          if (other->defunct) continue;
+          if (other->type!=&sprite_type_princess) continue;
+          double dx=other->x-sprite->x;
+          double dy=other->y-sprite->y;
+          double d2=dx*dx+dy*dy;
+          double tolerance=6.0; // Wide. Ensure there aren't any doors near the jail.
+          tolerance*=tolerance;
+          if (d2<tolerance) {
+            SPRITE->respawn_princess=1;
+          }
+          break;
+        }
+        
         camera_cut(rid,dstx,dsty);
       } break;
   }

@@ -6,6 +6,7 @@ struct sprite_princess {
   double animclock;
   int animframe;
   uint8_t tileid0;
+  int recheck_solid;
 };
 
 #define SPRITE ((struct sprite_princess*)sprite)
@@ -146,6 +147,21 @@ static void _princess_update(struct sprite *sprite,double elapsed) {
     case 1: sprite->tileid=SPRITE->tileid0+1; break;
     case 2: sprite->tileid=SPRITE->tileid0; break;
     case 3: sprite->tileid=SPRITE->tileid0+2; break;
+  }
+  
+  /* Hero kicks us out of the solid group when we pass thru a door.
+   * Periodically check whether I'm missing it, and try to reenable.
+   */
+  if (--(SPRITE->recheck_solid)<0) {
+    SPRITE->recheck_solid=60;
+    if (!sprite_group_has(GRP(solid),sprite)) {
+      sprite_group_add(GRP(solid),sprite);
+      if (sprite_test_position(sprite)) {
+        // cool, we're back to normal
+      } else {
+        sprite_group_remove(GRP(solid),sprite);
+      }
+    }
   }
 }
 

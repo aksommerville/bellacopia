@@ -22,8 +22,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Princess: Finish quest.
 - [x] Return Princess to her cage after losing a battle.
-- [ ] How to get Princess through doors? "you don't" isn't an option, alas.
+- [x] How to get Princess through doors? "you don't" isn't an option, alas.
 - [x] Should there be a prize when Princess wins a battle? It shouldn't come up often. ...no
 - [x] Princess: Follow me.
 - [x] Princess battle: Strings not inserted in welcome message.
@@ -65,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
 - [ ] Exterminating: AI is really bad, it gets stuck in loops sometimes. Princess shouldn't play this in real life, but still, it's painful to watch.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
+- [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 
 - For exploration some time in the uncertain future.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.

@@ -41,6 +41,7 @@ struct sprite_hero {
   double fishclock;
   double hurt; // Counts down.
   double hurtdx,hurtdy; // Normal or 0,0.
+  int respawn_princess; // Signal to ourselves during door transition, to bring the Princess along.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.
