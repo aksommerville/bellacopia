@@ -14,5 +14,14 @@
 image image:caves
 position 3 3 3 *
 sprite @9,1 sprite:jigpiece (u32)0
-rsprite sprite:leopard 20 2 (u32)0
-rsprite sprite:koala 20 2 (u32)0
+rsprite sprite:goblin  10 1 (u32)0
+rsprite sprite:loblin  10 1 (u32)0
+rsprite sprite:roblin  10 1 (u32)0
+rsprite sprite:globlin 10 1 (u32)0
+rsprite sprite:moblin  10 1 (u32)0
+rsprite sprite:sloblin 10 1 (u32)0
+rsprite sprite:joblin  10 1 (u32)0
+rsprite sprite:snoblin 10 1 (u32)0
+rsprite sprite:soblin  10 1 (u32)0
+rsprite sprite:coblin  10 1 (u32)0
+rsprite sprite:boblin  10 1 (u32)0

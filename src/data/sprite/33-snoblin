@@ -1,0 +1,7 @@
+image image:cave_sprites
+tile 14 0
+type (u16:sprtype)monster
+groups (b32:sprgrp)visible,update,solid,grabbable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+monster (u16:battle)placeholder (u8:radius)0x40 (u8:speed)0x50 (u16)44 (u16)0
+hitbox -7 7 -7 7

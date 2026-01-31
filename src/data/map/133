@@ -14,3 +14,14 @@
 image image:caves
 position 5 5 3 *
 sprite @8,5 sprite:jigpiece (u32)0
+rsprite sprite:goblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:loblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:roblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:globlin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:moblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:sloblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:joblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:snoblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:soblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:coblin (u8:weight)10 (u8:limit)1 (u32)0
+rsprite sprite:boblin (u8:weight)10 (u8:limit)1 (u32)0

@@ -53,6 +53,20 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 
+- Second batch of minigames: The Eleven Goblin Games
+- [ ] gs- Throwing: Loblin
+- [ ] gs- Stealing: Roblin
+- [ ] gs- Regex: Globlin
+- [ ] gs- Racketeering: Moblin
+- [ ] gs- Laziness: Sloblin
+- [ ] gs- Hiring: Joblin
+- [ ] gs- Gobbling: Goblin
+- [ ] gs- Erudition: Snoblin
+- [ ] gs- Crying: Soblin
+- [ ] gs- Cobbling: Coblin
+- [ ] gs- Apples: Boblin
+
+
 - For exploration some time in the uncertain future.
 - [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?

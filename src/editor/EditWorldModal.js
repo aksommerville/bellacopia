@@ -124,9 +124,8 @@ export class EditWorldModal {
     for (const cmd of map.cmd.commands) {
       if (cmd[0] !== "rsprite") continue;
       if (result) result += ",";
-      const name = (cmd[2] || "").replace("sprite:", "");
-      const weight = (cmd[3] || "").replace(/\(.*\)/, "");
-      result += name + "*" + weight;
+      const name = (cmd[1] || "").replace("sprite:", "");
+      result += name;
     }
     return result;
   }
@@ -311,23 +310,25 @@ export class EditWorldModal {
   applyOption(map, op, option) {
     switch (op) {
     
-      case "rsprite": {
+      case "rsprite": { // u16:rid u8:weight u8:limit u32:arg
           if (option === "OTHER") {
             return this.dom.modalText("Sprite name or ID:", "").then(rsp => {
               if (!rsp) return false;
               const cmd = map.cmd.commands.find(c => c[0] === "rsprite");
               if (cmd) cmd[2] = rsp;
-              else map.cmd.commands.push(["rsprite", "(u16)0", `sprite:${rsp}`, "(u32)0"]);
+              else map.cmd.commands.push(["rsprite", `sprite:${rsp}`, "(u8:weight)10 (u8:limit)1 (u32)0"]);
               return true;
             });
           }
           if (option === "NONE") {
-            const p = map.cmd.commands.findIndex(c => c[0] === "rsprite");
-            if (p >= 0) {
-              map.cmd.commands.splice(p, 1);
-              return true;
+            let result = false;
+            for (let i=map.cmd.commands.length; i-->0; ) {
+              if (map.cmd.commands[i][0] === "rsprite") {
+                map.cmd.commands.splice(i, 1);
+                result = true;
+              }
             }
-            return false;
+            return result;
           }
           // Drop all rsprite commands.
           for (let i=map.cmd.commands.length; i-->0; ) {
@@ -336,9 +337,9 @@ export class EditWorldModal {
             }
           }
           // Add a new command for each in (option).
-          for (const src of option.split(',')) {
-            const [name, weight] = src.split('*');
-            map.cmd.commands.push(["rsprite", "(u16)0", `sprite:${name}`, `(u8)${weight}`, "(u24)0"]);
+          // We really ought to copy the other args, but they weren't captured in the repr and... meh. Use defaults.
+          for (const name of option.split(',')) {
+            map.cmd.commands.push(["rsprite", `sprite:${name}`, `(u8:weight)10`, "(u8:limit)1", "(u32)0"]);
           }
         } return true;
         

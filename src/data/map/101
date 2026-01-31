@@ -19,7 +19,7 @@ sprite @12,3 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
 sprite @14,3 sprite:treasure (u8:itemid)divining (u8:quantity)0 (u16:fld)0
 sprite @16,3 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
 sprite @2,6 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
-sprite @4,6 sprite:treasure (u8:itemid)match (u8:quantity)10 (u16:fld)0
+sprite @4,6 sprite:treasure (u8:itemid)match (u8:quantity)99 (u16:fld)0
 sprite @6,6 sprite:treasure (u8:itemid)bugspray (u8:quantity)10 (u16:fld)0
 sprite @8,6 sprite:treasure (u8:itemid)candy (u8:quantity)10 (u16:fld)0
 sprite @10,6 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
