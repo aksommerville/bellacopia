@@ -567,6 +567,18 @@ static void begin_fishprocessor(struct sprite *sprite) {
   #undef ADD
 }
 
+/* Jaildoor: Unlock if we have the key.
+ */
+ 
+static void begin_jaildoor() {
+  if (store_get_fld(NS_fld_jailopen)) return;
+  if (store_get_fld(NS_fld_jailkey)) {
+    store_set_fld(NS_fld_jailopen,1);
+    g.camera.mapsdirty=1;
+    bm_sound(RID_sound_presto);
+  }
+}
+
 /* Begin activity.
  */
  
@@ -584,6 +596,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_thingwalla: begin_thingwalla(initiator); break;
     case NS_activity_king: begin_king(initiator); break;
     case NS_activity_fishprocessor: begin_fishprocessor(initiator); break;
+    case NS_activity_jaildoor: begin_jaildoor(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

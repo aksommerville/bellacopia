@@ -131,13 +131,55 @@ static void hero_fudge_vert(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Just collided with a wall.
+ * Scan for any bump activities and trigger them.
+ */
+ 
+static void hero_check_bumps(struct sprite *sprite) {
+  int x=(int)(sprite->x+SPRITE->facedx);
+  int y=(int)(sprite->y+SPRITE->facedy);
+  if ((x<0)||(y<0)) return;
+  struct map *map=map_by_sprite_position(x,y,sprite->z);
+  if (!map) return;
+  x%=NS_sys_mapw;
+  y%=NS_sys_maph;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_bump: {
+          if (cmd.arg[0]!=x) break;
+          if (cmd.arg[1]!=y) break;
+          int activity=(cmd.arg[2]<<8)|cmd.arg[3];
+          int rid=(cmd.arg[4]<<8)|cmd.arg[5];
+          int strix=(cmd.arg[6]<<8)|cmd.arg[7];
+          if (activity) {
+            game_begin_activity(activity,rid,0);
+          } else {
+            int speakerx=(int)((sprite->x+SPRITE->facedx)*NS_sys_tilesize)-g.camera.rx;
+            int speakery=(int)((sprite->y+SPRITE->facedy)*NS_sys_tilesize)-g.camera.ry;
+            struct modal_args_dialogue args={
+              .rid=rid,
+              .strix=strix,
+              .speakerx=speakerx,
+              .speakery=speakery,
+            };
+            modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+          }
+        } break;
+    }
+  }
+}
+
 /* Update motion, main entry point.
  */
  
 void hero_motion_update(struct sprite *sprite,double elapsed) {
-  SPRITE->blocked=0;
   hero_motion_update_input(sprite);
-  if (!SPRITE->walking) return;
+  if (!SPRITE->walking) {
+    SPRITE->blocked=0;
+    return;
+  }
   
   if ((SPRITE->walkanimclock-=elapsed)<=0.0) {
     SPRITE->walkanimclock+=0.150;
@@ -149,9 +191,16 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
     speed=12.0*elapsed;
   }
   if (!sprite_move(sprite,SPRITE->indx*speed,SPRITE->indy*speed)) {
-    SPRITE->blocked=1;
-    // If she's trying to move cardinally, perform an off-axis correction.
-    if (SPRITE->indx&&!SPRITE->indy) hero_fudge_vert(sprite,elapsed);
-    else if (!SPRITE->indx&&SPRITE->indy) hero_fudge_horz(sprite,elapsed);
+    if (!SPRITE->blocked) {
+      bm_sound(RID_sound_bump);
+      SPRITE->blocked=1;
+      hero_check_bumps(sprite);
+    } else {
+      // If she's trying to move cardinally, perform an off-axis correction.
+      if (SPRITE->indx&&!SPRITE->indy) hero_fudge_vert(sprite,elapsed);
+      else if (!SPRITE->indx&&SPRITE->indy) hero_fudge_horz(sprite,elapsed);
+    }
+  } else {
+    SPRITE->blocked=0;
   }
 }

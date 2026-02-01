@@ -38,6 +38,7 @@
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
+#define CMD_map_bump            0x65 /* u16:pos u16:activity u16:arg_or_stringsid u16:strix ; Trigger static text or activity when colliding with a solid. For signs and such. */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
 #define CMD_sprite_image        0x20 /* u16:rid */
@@ -171,6 +172,7 @@
 #define NS_activity_thingwalla 10
 #define NS_activity_king 11
 #define NS_activity_fishprocessor 12
+#define NS_activity_jaildoor 13
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -186,6 +188,7 @@
 #define NS_sprtype_tolltroll   11 /* (u32)0 */
 #define NS_sprtype_toast       12 /* (u32)0 */
 #define NS_sprtype_princess    13 /* (u32)0 */
+#define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -200,7 +203,8 @@
   _(bonfire) \
   _(tolltroll) \
   _(toast) \
-  _(princess)
+  _(princess) \
+  _(setfld)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -283,6 +287,7 @@
 #define NS_fld_bt3 34
 #define NS_fld_bt4 35
 #define NS_fld_jailopen 36
+#define NS_fld_jailkey 37
 
 /* "fld16" are 16 unsigned bits each.
  */

@@ -612,7 +612,7 @@ static void player_render(void *ctx,struct player *player) {
   
   // Celebration or misery dance, if established.
   if (player->outcome>0) {
-    if (g.framec&16) y--;
+    if (g.framec&8) y--;
     graf_tile(&g.graf,x,y,player->tileid+2,xform);
     return;
   } else if (player->outcome<0) {

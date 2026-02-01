@@ -251,13 +251,6 @@ static void throwing_set_preoutcome(void *ctx) {
   DIFF(rscore,ra,CTX->ltarget)
   DIFF(rscore,rz,CTX->rtarget)
   #undef DIFF
-  fprintf(stderr,
-    "%s: target=%.03f .. %.03f ; dot=%.03f .. %.03f ; monster=%.03f .. %.03f ; score=%.03f,%.03f\n",
-    __func__,CTX->ltarget,CTX->rtarget,
-    CTX->playerv[0].pressp,CTX->playerv[0].releasep,
-    CTX->playerv[1].pressp,CTX->playerv[1].releasep,
-    lscore,rscore
-  );
   if (lscore<rscore) {
     CTX->preoutcome=1;
   } else if (lscore>rscore) {

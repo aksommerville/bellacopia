@@ -870,6 +870,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     SPRITE->item_blackout=0;
   }
   if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+    SPRITE->blocked=0;
     int result=0;
     switch (g.store.invstorev[0].itemid) {
       case NS_itemid_broom: result=broom_begin(sprite); break;

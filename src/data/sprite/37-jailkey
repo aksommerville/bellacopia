@@ -1,0 +1,4 @@
+image image:cave_sprites
+tile 22 0
+type (u16:sprtype)setfld
+groups (b32:sprgrp)visible,solid,grabbable
