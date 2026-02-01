@@ -121,7 +121,7 @@
   2      Sparing           Beetle             Desert
   2      Stacking          Waiter             City
   1      Staring           Deer               Woodland
-  2      Stealing          Roblin             Cave
+  2____D Stealing          Roblin             Cave
   2      Steering          Buck               Farm
   2      Stenography       Secretary          City
  R2      Stirring          Mouse              Woodland
@@ -132,7 +132,7 @@
   2      Swinging          Kid                City
   2      Telekinesis       Psychic            Labyrinth
   2      Tempting          Siren              Sea
-  2      Throwing          Loblin             Cave
+  2____D Throwing          Loblin             Cave
   2      TicTacToe         Raccoon            Woodland
   2      Topping           HotDogVendor       City
  R2      Traffic           Cop                City

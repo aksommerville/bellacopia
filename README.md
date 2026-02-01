@@ -23,6 +23,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
+- - Need a "trigger activity once" POI. And we'll start the kidnapping quest the same way.
 - [ ] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
@@ -57,7 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Second batch of minigames: The Eleven Goblin Games
 - [x] gs- Throwing: Loblin
-- [ ] gs- Stealing: Roblin
+- [x] gs- Stealing: Roblin
 - [ ] gs- Regex: Globlin
 - [ ] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin
