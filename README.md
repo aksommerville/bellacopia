@@ -23,6 +23,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
@@ -55,7 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 
 - Second batch of minigames: The Eleven Goblin Games
-- [ ] gs- Throwing: Loblin
+- [x] gs- Throwing: Loblin
 - [ ] gs- Stealing: Roblin
 - [ ] gs- Regex: Globlin
 - [ ] gs- Racketeering: Moblin
