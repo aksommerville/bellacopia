@@ -242,6 +242,7 @@ static void arcade_begin_game(struct modal *modal) {
     .skip_prompt=1,
     .left_name=left_name,
     .right_name=right_name,
+    .no_store=1, // Store might not be initialized yet. Ticking its battleclock is first off wrong, and second, would cause the existing save to get clobbered.
   };
   struct modal *battle_modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!battle_modal) return;

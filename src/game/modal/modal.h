@@ -104,6 +104,7 @@ struct modal_args_battle {
   int left_name; // NS_strings_battle. Omit names to suppress the "Player Wins!" message at the end.
   int right_name; // NS_strings_battle
   int skip_prompt;
+  int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.
 };
 
 struct modal_args_dialogue {

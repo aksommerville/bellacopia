@@ -24,6 +24,7 @@ struct modal_battle {
   void *ctx;
   int outcome; // Zero until STAGE_REPORT, then (-1,0,1).
   int stage;
+  int no_store;
   
   int prompt_texid,prompt_w,prompt_h;
   int report_texid,report_w,report_h;
@@ -313,6 +314,7 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
   MODAL->userdata=args->userdata;
   MODAL->left_name=args->left_name;
   MODAL->right_name=args->right_name;
+  MODAL->no_store=args->no_store;
   if (!(MODAL->type=battle_type_by_id(MODAL->battle))) {
     fprintf(stderr,"%s: battle %d not found\n",__func__,MODAL->battle);
     return -1;
@@ -396,8 +398,10 @@ static void battle_update_report(struct modal *modal,double elapsed) {
 static void _battle_update(struct modal *modal,double elapsed) {
 
   // Tick (battletime).
-  double *battletime=store_require_clock(NS_clock_battletime);
-  if (battletime) (*battletime)+=elapsed;
+  if (!MODAL->no_store) {
+    double *battletime=store_require_clock(NS_clock_battletime);
+    if (battletime) (*battletime)+=elapsed;
+  }
 
   switch (MODAL->stage) {
     case STAGE_PROMPT: battle_update_prompt(modal,elapsed); break;

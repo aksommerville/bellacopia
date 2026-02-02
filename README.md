@@ -25,7 +25,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
 - - Need a "trigger activity once" POI. And we'll start the kidnapping quest the same way.
-- [ ] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.
+- [x] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.
 - - Update: It happens when you enter Arcade Mode and play one, before doing Story Mode. Story Mode first, it seems to persist as expected.
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
