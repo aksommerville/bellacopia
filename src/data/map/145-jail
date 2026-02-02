@@ -19,3 +19,4 @@ switchable @6,6 (u16:fld)jailopen
 song song:bone_soup
 bump @8,7 (u16)0 strings:dialogue (u16)43
 bump @6,6 (u16:activity)jaildoor (u16)0 (u16)0
+sprite @8,2 sprite:hero (u32)0

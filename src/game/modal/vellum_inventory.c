@@ -315,7 +315,7 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
    * So we rendered them at the start and it's ready to copy dumbly, right below the equipped item.
    */
   graf_set_input(&g.graf,VELLUM->extraid);
-  graf_decal(&g.graf,bpx+bpw+10,bpy+60,0,0,VELLUM->extraw,VELLUM->extrah);
+  graf_decal(&g.graf,bpx+bpw+10,bpy+53,0,0,VELLUM->extraw,VELLUM->extrah);
   
   /* Name and description of focussed item, in the lower right.
    */
@@ -353,7 +353,7 @@ static void inventory_extra_counter(int x,int y,uint8_t tileid,int fld16c,int fl
  
 static void inventory_rebuild_extra(struct vellum *vellum) {
   if (VELLUM->extraid<1) VELLUM->extraid=egg_texture_new();
-  int fullw=120,fullh=48; // We have exactly 64 pixels vertically, if no margin. Use less.
+  int fullw=120,fullh=56; // We have exactly 64 pixels vertically, if no margin. Use less.
   if (egg_texture_load_raw(VELLUM->extraid,fullw,fullh,fullw<<2,0,0)<0) {
     VELLUM->extraw=VELLUM->extrah=0;
     return;
@@ -368,6 +368,14 @@ static void inventory_rebuild_extra(struct vellum *vellum) {
   inventory_extra_counter(5,y,0x2a,NS_fld16_greenfish,0); y+=8;
   inventory_extra_counter(5,y,0x2b,NS_fld16_bluefish,0); y+=8;
   inventory_extra_counter(5,y,0x2c,NS_fld16_redfish,0); y+=8;
+  y+=8;
+  int x=8;
+  if (store_get_fld(NS_fld_jailkey)) {
+    graf_set_image(&g.graf,RID_image_cave_sprites);
+    graf_tile(&g.graf,x,y,0x16,0);
+    x+=17;
+  }
+  // Plenty of space here for other field-driven items.
   
   graf_set_output(&g.graf,1);
 }

@@ -386,6 +386,7 @@ void camera_update(double elapsed) {
     g.camera.cut=1;
     g.camera.lock=0;
     g.camera.door_map=0;
+    g.camera.transition_ready=1;
   }
   
   /* If a transition is in progress, advance it.
@@ -591,7 +592,6 @@ static void camera_render_darkness() {
  */
 
 void camera_render_pretransition(int dsttexid) {
-  graf_set_output(&g.graf,dsttexid);
   
   /* Rerender scoped maps if dirty.
    */
@@ -604,6 +604,8 @@ void camera_render_pretransition(int dsttexid) {
       camera_render_scope(scope,0);
     }
   }
+  
+  graf_set_output(&g.graf,dsttexid);
   
   /* Copy all scopes to the main output.
    * We take it on faith that these will cover the whole framebuffer opaquely.
@@ -758,7 +760,7 @@ void camera_render() {
 
   /* No transition requested or texture invalid, do the normal render.
    */
-  if (!g.camera.transition||(g.camera.transition_texid<1)||(g.camera.transition_time<=0.0)) {
+  if (!g.camera.transition||!g.camera.transition_ready||(g.camera.transition_texid<1)||(g.camera.transition_time<=0.0)) {
     camera_render_pretransition(1);
     return;
   }
@@ -799,6 +801,7 @@ void camera_cut(int mapid,int subcol,int subrow,int transition) {
   g.camera.door_y=map->lat*NS_sys_maph+subrow;
   g.camera.cut=1;
   g.camera.lock=0;
+  g.camera.transition_ready=0;
 
   g.camera.transition_clock=0.0;
   g.camera.transition_time=CAMERA_TRANSITION_TIME;

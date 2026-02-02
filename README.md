@@ -23,7 +23,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
+- [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
 - - Need a "trigger activity once" POI. And we'll start the kidnapping quest the same way.
 - [ ] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.
 - - Update: It happens when you enter Arcade Mode and play one, before doing Story Mode. Story Mode first, it seems to persist as expected.
@@ -61,7 +61,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Second batch of minigames: The Eleven Goblin Games
 - [x] gs- Throwing: Loblin
 - [x] gs- Stealing: Roblin
-- [ ] gs- Regex: Globlin
+- [ ] gs- Regex: Globlin. Skipping this because I have no idea what to do. If nothing comes to me, drop it.
 - [ ] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin
 - [ ] gs- Hiring: Joblin
@@ -73,7 +73,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 
 - For exploration some time in the uncertain future.
-- [ ] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
+- [x] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
+- - `vellum_inventory.c:inventory_rebuild_extra()`, using for jailkey, and we should follow the same pattern for similar items and achievements.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.

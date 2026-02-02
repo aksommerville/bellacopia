@@ -38,6 +38,7 @@ struct camera {
   double transition_time; // Probably constant, but if needed we can run transitions at arbitrary speed.
   int transition_texid; // If nonzero, it's the same size as framebuffer.
   int fromx,fromy,tox,toy; // Focus points for spotlight transition, in framebuffer pixels.
+  int transition_ready;
   
   double darkness; // 0..1 = light..dark
   double lightness;

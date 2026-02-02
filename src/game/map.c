@@ -193,10 +193,14 @@ struct plane *plane_by_position(int z) {
 /* Start position.
  */
  
+static int maps_get_start_mapid() {
+  if (store_get_fld(NS_fld_kidnapped)&&!store_get_fld(NS_fld_escaped)) return RID_map_jail;
+  return RID_map_start;
+}
+ 
 int maps_get_start_position(int *mapid,int *col,int *row) {
-  //TODO I think there should be other checkpoints scattered around the world.
-  // Maybe store the most recent mapid as a fld16, and then here we'll search for the appropriate checkpoint map.
-  struct map *map=map_by_id(RID_map_start);
+  *mapid=maps_get_start_mapid();
+  struct map *map=map_by_id(*mapid);
   if (!map) return -1;
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;

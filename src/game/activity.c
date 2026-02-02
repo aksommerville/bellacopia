@@ -579,6 +579,35 @@ static void begin_jaildoor() {
   }
 }
 
+/* Kidnap: The big cutscene where Dot gets kidnapped by goblins.
+ */
+ 
+static int kidnap_cb(int optionid,void *userdata) {
+  game_warp(RID_map_jail,NS_transition_fadeblack);
+  return 0;
+}
+ 
+static void begin_kidnap(struct sprite *sprite) {
+  fprintf(stderr,"TODO %s:%d:%s\n",__FILE__,__LINE__,__func__);
+  struct modal_args_dialogue args={
+    .text="TODO: Cutscene of Dot falling into a trap, then the goblins drag her off.",
+    .textc=-1,
+    .cb=kidnap_cb,
+    .userdata=sprite,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  store_set_fld(NS_fld_kidnapped,1);
+}
+
+/* Escape: Nothing noticeable to the user, but as you leave the cave we set this flag.
+ * It's so we know whether to spawn you next in jail or at home.
+ * A crafty user might try to get out of jail by quitting and restarting the game.
+ */
+ 
+static void begin_escape() {
+  store_set_fld(NS_fld_escaped,1);
+}
+
 /* Begin activity.
  */
  
@@ -597,6 +626,8 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_king: begin_king(initiator); break;
     case NS_activity_fishprocessor: begin_fishprocessor(initiator); break;
     case NS_activity_jaildoor: begin_jaildoor(); break;
+    case NS_activity_kidnap: begin_kidnap(initiator); break;
+    case NS_activity_escape: begin_escape(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }
