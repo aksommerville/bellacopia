@@ -17,6 +17,7 @@ struct battle_type {
   int no_article; // We usually prepend an indefinite article (with per-language conditions). Nonzero to suppress.
   int no_contest; // We usually append the word "contest". Nonzero to suppress it. (eg "to a Dance Off" not "to a Dance Off contest")
   int supported_players; // Bits, (1<<NS_players_*). 15 for all 4 modes.
+  int no_timeout; // Suppress universal timeout. You must guarantee that games terminate when unattended! Most battles should aim way lower than the timeout and accept it.
   
   /* You must return a non-null context object at (init), which will be provided to all other calls.
    * If you allocate it on the heap, you must free it at (del).

@@ -59,12 +59,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Exterminating: AI is really bad, it gets stuck in loops sometimes. Princess shouldn't play this in real life, but still, it's painful to watch.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
+- [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
 
 - Second batch of minigames: The Eleven Goblin Games
 - [x] gs- Throwing: Loblin
 - [x] gs- Stealing: Roblin
 - [ ] gs- Regex: Globlin. Skipping this because I have no idea what to do. If nothing comes to me, drop it.
-- [ ] gs- Racketeering: Moblin
+- [x] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin
 - [ ] gs- Hiring: Joblin
 - [ ] gs- Gobbling: Goblin

@@ -371,10 +371,12 @@ static void battle_update_play(struct modal *modal,double elapsed) {
     modal->defunct=1;
     return;
   }
-  if ((MODAL->timeout-=elapsed)<=0.0) {
-    fprintf(stderr,"%s: Aborting battle '%s' due to %.0f-second timeout.\n",__func__,MODAL->type->name,BATTLE_UNIVERSAL_TIMEOUT);
-    battle_cb_end(0,modal);
-    return;
+  if (!MODAL->type->no_timeout) {
+    if ((MODAL->timeout-=elapsed)<=0.0) {
+      fprintf(stderr,"%s: Aborting battle '%s' due to %.0f-second timeout.\n",__func__,MODAL->type->name,BATTLE_UNIVERSAL_TIMEOUT);
+      battle_cb_end(0,modal);
+      return;
+    }
   }
   MODAL->duration+=elapsed;
   MODAL->type->update(MODAL->ctx,elapsed);
