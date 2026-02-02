@@ -23,6 +23,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] After a wee change to hero->blocked, now she jitters sometimes on first touching a wall.
+- - Due to off-axis correction. New policy: Off-axis correction counts as movement. You're not "blocked" until fudge brings you to a standstill.
 - [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
 - - Need a "trigger activity once" POI. And we'll start the kidnapping quest the same way.
 - [x] Seems like playing Arcade Mode kills the saved game sometimes. Maybe all the time.

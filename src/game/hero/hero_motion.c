@@ -99,36 +99,40 @@ static void hero_motion_update_input(struct sprite *sprite) {
 #define FUDGE_TOLERANCE 0.333
 #define FUDGE_SPEED 1.000
  
-static void hero_fudge_horz(struct sprite *sprite,double elapsed) {
+static int hero_fudge_horz(struct sprite *sprite,double elapsed) {
+  int moved=0;
   double whole,fract;
   fract=modf(sprite->x,&whole);
   double dx=0.5-fract;
-  if (dx<-FUDGE_TOLERANCE) return;
-  if (dx>FUDGE_TOLERANCE) return;
+  if (dx<-FUDGE_TOLERANCE) return 0;
+  if (dx>FUDGE_TOLERANCE) return 0;
   double target=whole+0.5;
   if (dx<0.0) {
-    if (sprite_move(sprite,-FUDGE_SPEED*elapsed,0.0)) SPRITE->blocked=0;
-    if (sprite->x<target) sprite->x=target;
+    moved=sprite_move(sprite,-FUDGE_SPEED*elapsed,0.0);
+    if (sprite->x<target) { sprite->x=target; moved=0; }
   } else if (dx>0.0) {
-    if (sprite_move(sprite,FUDGE_SPEED*elapsed,0.0)) SPRITE->blocked=0;
-    if (sprite->x>target) sprite->x=target;
+    moved=sprite_move(sprite,FUDGE_SPEED*elapsed,0.0);
+    if (sprite->x>target) { sprite->x=target; moved=0; }
   }
+  return moved;
 }
  
-static void hero_fudge_vert(struct sprite *sprite,double elapsed) {
+static int hero_fudge_vert(struct sprite *sprite,double elapsed) {
+  int moved=0;
   double whole,fract;
   fract=modf(sprite->y,&whole);
   double dy=0.5-fract;
-  if (dy<-FUDGE_TOLERANCE) return;
-  if (dy>FUDGE_TOLERANCE) return;
+  if (dy<-FUDGE_TOLERANCE) return 0;
+  if (dy>FUDGE_TOLERANCE) return 0;
   double target=whole+0.5;
   if (dy<0.0) {
-    if (sprite_move(sprite,0.0,-FUDGE_SPEED*elapsed)) SPRITE->blocked=0;
-    if (sprite->y<target) sprite->y=target;
+    moved=sprite_move(sprite,0.0,-FUDGE_SPEED*elapsed);
+    if (sprite->y<target) { sprite->y=target; moved=0; }
   } else if (dy>0.0) {
-    if (sprite_move(sprite,0.0,FUDGE_SPEED*elapsed)) SPRITE->blocked=0;
-    if (sprite->y>target) sprite->y=target;
+    moved=sprite_move(sprite,0.0,FUDGE_SPEED*elapsed);
+    if (sprite->y>target) { sprite->y=target; moved=0; }
   }
+  return moved;
 }
 
 /* Just collided with a wall.
@@ -191,16 +195,18 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
     speed=12.0*elapsed;
   }
   if (!sprite_move(sprite,SPRITE->indx*speed,SPRITE->indy*speed)) {
-    if (!SPRITE->blocked) {
+    // If she's trying to move cardinally, perform an off-axis correction.
+    int fudged=0;
+    if (SPRITE->indx&&!SPRITE->indy) fudged=hero_fudge_vert(sprite,elapsed);
+    else if (!SPRITE->indx&&SPRITE->indy) fudged=hero_fudge_horz(sprite,elapsed);
+    if (!fudged&&!SPRITE->blocked) {
       bm_sound(RID_sound_bump);
       SPRITE->blocked=1;
       hero_check_bumps(sprite);
-    } else {
-      // If she's trying to move cardinally, perform an off-axis correction.
-      if (SPRITE->indx&&!SPRITE->indy) hero_fudge_vert(sprite,elapsed);
-      else if (!SPRITE->indx&&SPRITE->indy) hero_fudge_horz(sprite,elapsed);
     }
   } else {
-    SPRITE->blocked=0;
+    if (SPRITE->blocked) {
+      SPRITE->blocked=0;
+    }
   }
 }
