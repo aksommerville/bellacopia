@@ -22,6 +22,9 @@
 #define WALK_SPEED_HIGH 120.0
 #define HUMAN_SPEED_BIAS 1.125 /* Humans get to go a little faster, to make up for the CPU's perfect reaction time. */
 #define CPU_TURNAROUND_TIME 0.300 /* CPU players changing direction (aside from stopping for the dragon), they wait this long first. */
+#define SPARKLE_LIMIT 3
+#define SPARKLE_TTL 1.0
+#define SPARKLE_WAIT 0.4
 
 struct battle_stealing {
   uint8_t handicap;
@@ -71,6 +74,12 @@ struct battle_stealing {
     int animframe; // 0..3
   } fireballv[FIREBALL_LIMIT];
   int fireballc;
+  
+  struct sparkle {
+    int x,y;
+    double ttl;
+  } sparklev[SPARKLE_LIMIT];
+  int sparklec;
 };
 
 #define CTX ((struct battle_stealing*)ctx)
@@ -559,6 +568,39 @@ static void stealing_select_winners(void *ctx) {
   }
 }
 
+/* Update sparkles.
+ */
+ 
+static void sparkles_update(void *ctx,double elapsed) {
+  struct sparkle *sparkle;
+  int i;
+
+  // Create a new one if there's room, and existing ones are at least a tasteful interval old.
+  if (CTX->sparklec<SPARKLE_LIMIT) {
+    int oldenough=1;
+    for (sparkle=CTX->sparklev,i=CTX->sparklec;i-->0;sparkle++) {
+      if (sparkle->ttl>SPARKLE_TTL-SPARKLE_WAIT) {
+        oldenough=0;
+        break;
+      }
+    }
+    if (oldenough) {
+      sparkle=CTX->sparklev+CTX->sparklec++;
+      sparkle->ttl=SPARKLE_TTL;
+      sparkle->x=(FBW>>1)-(NS_sys_tilesize*2)-(NS_sys_tilesize>>1)+rand()%(NS_sys_tilesize*5);
+      sparkle->y=GROUNDY-rand()%NS_sys_tilesize;
+    }
+  }
+  
+  // Advance timers and drop expired ones.
+  for (i=CTX->sparklec,sparkle=CTX->sparklev+CTX->sparklec-1;i-->0;sparkle--) {
+    if ((sparkle->ttl-=elapsed)<=0.0) {
+      CTX->sparklec--;
+      memmove(sparkle,sparkle+1,sizeof(struct sparkle)*(CTX->sparklec-i));
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -600,6 +642,8 @@ static void _stealing_update(void *ctx,double elapsed) {
     CTX->fireballc--;
     memmove(fireball,fireball+1,sizeof(struct fireball)*(CTX->fireballc-i));
   }
+  
+  sparkles_update(ctx,elapsed);
 }
 
 /* Render player.
@@ -652,6 +696,22 @@ static void fireball_render(void *ctx,struct fireball *fireball) {
   graf_tile(&g.graf,(int)fireball->x,(int)fireball->y,tileid,xform);
 }
 
+/* Render sparkle.
+ */
+ 
+static void sparkle_render(void *ctx,struct sparkle *sparkle) {
+  // 3 frames pingponging, so 5.
+  int frame=(int)((sparkle->ttl*5.0)/SPARKLE_TTL);
+  if (frame<0) frame=0; else if (frame>4) frame=4;
+  uint8_t tileid=0x05;
+  switch (frame) {
+    case 1: tileid+=0x10; break;
+    case 2: tileid+=0x20; break;
+    case 3: tileid+=0x10; break;
+  }
+  graf_tile(&g.graf,sparkle->x,sparkle->y,tileid,0);
+}
+
 /* Render.
  */
  
@@ -663,13 +723,21 @@ static void _stealing_render(void *ctx) {
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_goblins);
   
-  // Dragon. And fireballs render between body and head.
+  // Dragon's body and the pile of gold, a static image.
   const int dragonw=NS_sys_tilesize*5;
   const int dragonh=NS_sys_tilesize*3;
   graf_decal(&g.graf,(FBW>>1)-(dragonw>>1),GROUNDY-dragonh,0,0,dragonw,dragonh);
+  
+  // Sparkles on the gold.
+  struct sparkle *sparkle=CTX->sparklev;
+  int i=CTX->sparklec;
+  for (;i-->0;sparkle++) sparkle_render(ctx,sparkle);
+  
+  // Fireballs.
   struct fireball *fireball=CTX->fireballv;
-  int i=CTX->fireballc;
-  for (;i-->0;fireball++) fireball_render(ctx,fireball);
+  for (i=CTX->fireballc;i-->0;fireball++) fireball_render(ctx,fireball);
+  
+  // Dragon's head.
   int headx=(int)((FBW>>1)+CTX->dragon.headx*NS_sys_tilesize);
   int heady=GROUNDY-NS_sys_tilesize*2-(NS_sys_tilesize>>1);
   graf_tile(&g.graf,headx,heady,CTX->dragon.headtile,CTX->dragon.headxform);
