@@ -78,13 +78,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] gs- Laziness: Sloblin
 - [ ] gs- Hiring: Joblin. Another tricky one. Come back to it.
 - [x] gs- Gobbling: Goblin
-- [ ] gs- Erudition: Snoblin
+- [x] gs- Erudition: Snoblin
 - [ ] gs- Crying: Soblin
 - [ ] gs- Cobbling: Coblin
 - [ ] gs- Apples: Boblin
 
 
 - For exploration some time in the uncertain future.
+- [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [x] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - - `vellum_inventory.c:inventory_rebuild_extra()`, using for jailkey, and we should follow the same pattern for similar items and achievements.
