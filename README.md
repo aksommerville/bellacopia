@@ -23,6 +23,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Monster battles should sometimes reward a heart, if you need one.
+- [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
+- - Ultimately I'd like 2-player mode to let you choose your hero.
+- - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".
+- - [ ] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
+- - Do finish the goblin games first as is, then update.
 - [x] After a wee change to hero->blocked, now she jitters sometimes on first touching a wall.
 - - Due to off-axis correction. New policy: Off-axis correction counts as movement. You're not "blocked" until fudge brings you to a standstill.
 - [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
@@ -60,15 +66,18 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 - [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
+- [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate.
+- [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
 
 - Second batch of minigames: The Eleven Goblin Games
 - [x] gs- Throwing: Loblin
 - [x] gs- Stealing: Roblin
-- [ ] gs- Regex: Globlin. Skipping this because I have no idea what to do. If nothing comes to me, drop it.
+- [ ] gs- Regex: Globlin. ~Skipping this because I have no idea what to do. If nothing comes to me, drop it.~
+- - Show a jasmine unit test like `expect( LITERAL_STRING ).toMatch( REGEX )`, and you have to select the one wrong character in REGEX.
 - [x] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin
-- [ ] gs- Hiring: Joblin
-- [ ] gs- Gobbling: Goblin
+- [ ] gs- Hiring: Joblin. Another tricky one. Come back to it.
+- [x] gs- Gobbling: Goblin
 - [ ] gs- Erudition: Snoblin
 - [ ] gs- Crying: Soblin
 - [ ] gs- Cobbling: Coblin
@@ -76,6 +85,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 
 - For exploration some time in the uncertain future.
+- [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [x] There's room for badges under the currency counters in the inventory vellum. Maybe for the flowers? Or keys, something like that.
 - - `vellum_inventory.c:inventory_rebuild_extra()`, using for jailkey, and we should follow the same pattern for similar items and achievements.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
@@ -112,7 +122,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...but I really would prefer "Made in Flytown"
 - - - Whatever we're doing, figure it out by the end of April.
 - - [ ] Witch hats. Same idea as the dolls.
-- - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly.
+- - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly (~$30 ea at a glance).
 - - [ ] Mini comic?
 - - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
 - - [ ] Book of sheet music.
