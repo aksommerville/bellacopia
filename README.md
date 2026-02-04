@@ -32,6 +32,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".
 - - [ ] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
 - - Do finish the goblin games first as is, then update.
+- - [ ] After this refactor, rewrite the placeholder and incorporate all the boilerplate I've been repeating on each goblin game.
 - [x] After a wee change to hero->blocked, now she jitters sometimes on first touching a wall.
 - - Due to off-axis correction. New policy: Off-axis correction counts as movement. You're not "blocked" until fudge brings you to a standstill.
 - [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
@@ -69,7 +70,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 - [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
-- [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate.
+- [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
+- - Can we just mark her as "never delete due to distance"?
 - [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
 
 - Second batch of minigames: The Eleven Goblin Games
@@ -83,7 +85,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] gs- Gobbling: Goblin
 - [x] gs- Erudition: Snoblin
 - [x] gs- Crying: Soblin
-- [ ] gs- Cobbling: Coblin
+- [x] gs- Cobbling: Coblin
 - [ ] gs- Apples: Boblin
 
 - [ ] Crypto side quest.

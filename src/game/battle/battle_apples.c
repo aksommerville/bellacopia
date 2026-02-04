@@ -78,7 +78,7 @@ static void _apples_render(void *ctx) {
 /* Type definition.
  */
  
-const struct battle_type battle_type_apples={//TODO
+const struct battle_type battle_type_apples={
   .name="apples",
   .strix_name=58,
   .no_article=0,
