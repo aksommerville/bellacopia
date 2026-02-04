@@ -23,6 +23,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Gobbling: Can't pull the last item off the table!
+- [ ] Goblin cave: Try making the whole thing dark, with lots of firepots. Must be able to reach entrance, jail, and Skull Lake without matches.
 - [x] Ooops I forgot to make the real sprites for erudition contest
 - [ ] Monster battles should sometimes reward a heart, if you need one.
 - [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
@@ -84,6 +86,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] gs- Cobbling: Coblin
 - [ ] gs- Apples: Boblin
 
+- [ ] Crypto side quest.
+- - Clues to the Bone and Leaf rooms are by Skull Lake. Encrypted, plus you can't read them in the dark.
+- - Bone and Leaf tasks should both be "Use item X twice while standing on the seal.".
+- - - Depletable items only, to discourage guessing. Potion, match, candy, bugspray, vanishing cream.
+- - Opening the Star room requires losing a battle, to a specific goblin, with a specific item equipped, while standing on the seal.
+- - Arrange dynamically for that goblin species not to spawn in the seal room.
+- - Express the random parts in 16 bits exactly, so we can store as fld16 and regenerate on demand. Alphabet order, Bone task, Leaf task, Star goblin, Star item.
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
