@@ -560,7 +560,7 @@ static void ball_render(void *ctx,struct ball *ball) {
   
   // And finally, the ball itself.
   uint32_t tint=0;
-  if (ball->z<BLINK_Z) {
+  if ((ball->z<BLINK_Z)&&(ball->dz<0.0)) {
     tint=0x00ff0080;
   }
   racketeering_project_point(&x,&y,ctx,ball->x,ball->y,ball->z);

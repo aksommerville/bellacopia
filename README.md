@@ -23,6 +23,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Ooops I forgot to make the real sprites for erudition contest
 - [ ] Monster battles should sometimes reward a heart, if you need one.
 - [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
@@ -72,7 +73,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Second batch of minigames: The Eleven Goblin Games
 - [x] gs- Throwing: Loblin
 - [x] gs- Stealing: Roblin
-- [ ] gs- Regex: Globlin. ~Skipping this because I have no idea what to do. If nothing comes to me, drop it.~
+- [x] gs- Regex: Globlin. ~Skipping this because I have no idea what to do. If nothing comes to me, drop it.~
 - - Show a jasmine unit test like `expect( LITERAL_STRING ).toMatch( REGEX )`, and you have to select the one wrong character in REGEX.
 - [x] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin

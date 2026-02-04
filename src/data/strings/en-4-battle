@@ -65,3 +65,21 @@
 61 "Seurat: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
 62 "Fragonard: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
 63 "Bosch: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+
+# Regex Contest. First the plaintext, then the regex. Regex must contain '@' once to mark the error position.
+64 Find the typo!
+65 "expect(\n  \"%\"\n).toMatch(\n  %\n);"
+66 "Break all their bones!"
+67 "/^Break all their bon@us!$/"
+68 "Kidnap the Princess!"
+69 "/^.* the Princess@?$/"
+70 "Vegetable soup."
+71 "/^Vegetable @po.p\\.$/"
+72 "Rip flesh off a shattered bone."
+73 "/^Rip .+ off ((a|an) .+)? bon@d.$/"
+74 "The lurking terror awaits."
+75 "/^The ([d-z]+) ([c-z]+) ([@b-z]+)\\.$/"
+76 "Grumble, grumble."
+77 "/^[a-zA-@z]+, [a-z]+\\.$/"
+78 "The 7 unspeakable curses."
+79 "/^\\w+ \\@n+ \\w+ \\w+\\.$/"
