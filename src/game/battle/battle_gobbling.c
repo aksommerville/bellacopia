@@ -6,11 +6,12 @@
 #define END_COOLDOWN 1.0
 #define TABLEW (NS_sys_tilesize*6)
 #define CLOTHW (TABLEW-8)
-#define PULL_LIMIT (TABLEW-24)
+#define PULL_LIMIT (TABLEW-15)
+#define VISIBLE_PULL_LIMIT (TABLEW-24)
 #define ENTREE_LIMIT 5
 #define PULL_RATE_SLOW (1.0/40.0)
 #define PULL_RATE_FAST (1.0/80.0)
-#define CPU_PENALTY 1.200 /* Give humans an edge against CPU players. */
+#define CPU_PENALTY 1.400 /* Give humans an edge against CPU players. */
 #define GOBBLE_TIME 1.000
 
 struct battle_gobbling {
@@ -506,6 +507,10 @@ static void _gobbling_update(void *ctx,double elapsed) {
  */
  
 static void table_render(void *ctx,int dstx,int pull) {
+
+  // The logical pull limit goes a bit beyond what we'll render.
+  if (pull>VISIBLE_PULL_LIMIT) pull=VISIBLE_PULL_LIMIT;
+  else if (pull<-VISIBLE_PULL_LIMIT) pull=-VISIBLE_PULL_LIMIT;
 
   // Wood.
   graf_decal(&g.graf,dstx   ,124,160,24,32,24);

@@ -23,7 +23,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Gobbling: Can't pull the last item off the table!
+- [x] Gobbling: Can't pull the last item off the table!
 - [ ] Goblin cave: Try making the whole thing dark, with lots of firepots. Must be able to reach entrance, jail, and Skull Lake without matches.
 - [x] Ooops I forgot to make the real sprites for erudition contest
 - [ ] Monster battles should sometimes reward a heart, if you need one.
@@ -82,7 +82,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] gs- Hiring: Joblin. Another tricky one. Come back to it.
 - [x] gs- Gobbling: Goblin
 - [x] gs- Erudition: Snoblin
-- [ ] gs- Crying: Soblin
+- [x] gs- Crying: Soblin
 - [ ] gs- Cobbling: Coblin
 - [ ] gs- Apples: Boblin
 
@@ -105,6 +105,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
+- [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
