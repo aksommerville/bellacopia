@@ -26,7 +26,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Gobbling: Can't pull the last item off the table!
 - [x] Goblin cave: Try making the whole thing dark, with lots of firepots. Must be able to reach entrance, jail, and Skull Lake without matches.
 - [x] Ooops I forgot to make the real sprites for erudition contest
-- [ ] Monster battles should sometimes reward a heart, if you need one.
+- [x] Monster battles should sometimes reward a heart, if you need one.
 - [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
 - - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".

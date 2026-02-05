@@ -3,7 +3,7 @@
 # D = Done.
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
 #RC____D NAME              OPPONENT           ZONE
-  2      Apples            Boblin             Cave
+  2____D Apples            Boblin             Cave
   2      ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
   2      BodySlam          Yak                Taiga
@@ -25,12 +25,12 @@
   1      Cinematography    Filmmaker          Woodland
   2      ClamBaking        Dragon             Sea
   2      Climbing          Spider             Desert
-  2      Cobbling          Coblin             Cave
+  2____D Cobbling          Coblin             Cave
   2      Conducting        Conductor          Desert
   2      Counting          Vampire            Labyrinth
   2      CPR               Nurse              City
   2      Crossing          Frog               Farm
-  2      Crying            Soblin             Cave
+  2____D Crying            Soblin             Cave
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
   2      Dissection        Doctor             City
@@ -38,7 +38,7 @@
   2      Diving            Penguin            Taiga
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
-  2      Erudition         Snoblin            Cave
+  2____D Erudition         Snoblin            Cave
   2____D Exterminating     Solider            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
@@ -52,10 +52,10 @@
   2      FloeChart         PolarBear          Taiga
   2      Flying            Sparrow            Farm
   2      FrogEating        Pelican            Sea
-  2      Gobbling          Goblin             Cave
+  2____D Gobbling          Goblin             Cave
   2      Golf              Unicorn            Labyrinth
   2      Harvesting        Picker             Farm
-  2      Hiring            Joblin             Cave
+  2____D Hiring            Joblin             Cave
   2      HomeRunDerby      Bat                Cave
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
@@ -90,11 +90,11 @@
   2      Pouring           Dowager            City
   2      Protecting        Goose              Farm
   2      Pushing           Golem              Labyrinth
-  2      Racketeering      Moblin             Cave
+  2____D Racketeering      Moblin             Cave
   2      Ramming           Orca               Sea
   2      RatRace           Rat                Cave
   2      Rebounding        Hoplite            Battlefield
-  2      Regex             Globlin            Cave
+  2____D Regex             Globlin            Cave
   2      Remembering       Elephant           Jungle
   2      Robohorse         Cavalier           Battlefield
   2      Rodeo             Cowpoke            Desert

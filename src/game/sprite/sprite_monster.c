@@ -339,9 +339,13 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
   sprite_kill_soon(sprite);
   if (outcome>0) {
-    //TODO Other prizes.
-    game_get_item(NS_itemid_gold,1);
-    modal_battle_add_consequence(modal,NS_itemid_gold,1);
+    struct prize prizev[8];
+    int prizec=game_get_prizes(prizev,8,SPRITE->battle,sprite->arg);
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
   } else if (outcome<0) {
     game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
@@ -386,7 +390,7 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
     }
     players=NS_players_man_cpu;
     left_name=4; // "Dot"
-    //TODO Determine handicap for a regular battle. How?
+    handicap=game_get_handicap(SPRITE->battle);
   } else if (other->type==&sprite_type_princess) {
     players=NS_players_cpu_cpu;
     left_name=6; // "Princess"

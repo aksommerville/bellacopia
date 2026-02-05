@@ -650,6 +650,34 @@ int game_choose_fish(int x,int y,int z) {
   return 0;
 }
 
+/* Handicap and prize for regular battles.
+ */
+ 
+uint8_t game_get_handicap(int battle) {
+  return 0x80;//TODO
+}
+
+int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) {
+  if (!v||(a<1)) return 0;
+  int c=0;
+  //TODO Opportunity for refined logic and per-sprite exceptions.
+  
+  // If our hp is below the max, award a heart instead of a coin, at say 1/3 odds.
+  int hp=store_get_fld16(NS_fld16_hp);
+  int hpmax=store_get_fld16(NS_fld16_hpmax);
+  if (hp<hpmax) {
+    if (!(rand()%3)) {
+      v[c++]=(struct prize){NS_itemid_heart,1};
+    }
+  }
+  
+  // Nothing else? Give a coin, whether we can hold it or not.
+  if (!c) {
+    v[c++]=(struct prize){NS_itemid_gold,1};
+  }
+  return c;
+}
+
 /* Hurt the hero.
  */
  
