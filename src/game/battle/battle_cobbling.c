@@ -203,8 +203,6 @@ static void _cobbling_update(void *ctx,double elapsed) {
     return;
   }
   
-  if (g.input[0]&EGG_BTN_AUX2) { CTX->outcome=1; return; }//XXX
-  
   struct player *player=CTX->playerv;
   int i=2;
   for (;i-->0;player++) {

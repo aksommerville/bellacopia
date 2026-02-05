@@ -261,7 +261,6 @@ static void _crying_render(void *ctx) {
   const uint32_t light=0x8090a0ff;
   const uint32_t dark= 0x406090ff;
   const int horizon=100;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x8090a0ff);
   graf_gradient_rect(&g.graf,0,0,FBW,horizon,dark,dark,light,light);
   graf_gradient_rect(&g.graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
   

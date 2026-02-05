@@ -86,7 +86,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] gs- Erudition: Snoblin
 - [x] gs- Crying: Soblin
 - [x] gs- Cobbling: Coblin
-- [ ] gs- Apples: Boblin
+- [x] gs- Apples: Boblin
 
 - [ ] Crypto side quest.
 - - Clues to the Bone and Leaf rooms are by Skull Lake. Encrypted, plus you can't read them in the dark.
