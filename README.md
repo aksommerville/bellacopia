@@ -33,6 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
 - - Do finish the goblin games first as is, then update.
 - - [ ] After this refactor, rewrite the placeholder and incorporate all the boilerplate I've been repeating on each goblin game.
+- - [ ] Ensure that we're preventing the Princess from entering battles that don't support cpu-vs-cpu. The battles between the jail and the castle must support cpu-vs-cpu.
 - [x] After a wee change to hero->blocked, now she jitters sometimes on first touching a wall.
 - - Due to off-axis correction. New policy: Off-axis correction counts as movement. You're not "blocked" until fudge brings you to a standstill.
 - [x] If you get killed in the goblins' cave before escaping, you should spawn in the jail, not at home.
@@ -81,7 +82,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Show a jasmine unit test like `expect( LITERAL_STRING ).toMatch( REGEX )`, and you have to select the one wrong character in REGEX.
 - [x] gs- Racketeering: Moblin
 - [x] gs- Laziness: Sloblin
-- [ ] gs- Hiring: Joblin. Another tricky one. Come back to it.
+- [x] gs- Hiring: Joblin. Another tricky one. Come back to it.
 - [x] gs- Gobbling: Goblin
 - [x] gs- Erudition: Snoblin
 - [x] gs- Crying: Soblin

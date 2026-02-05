@@ -76,10 +76,41 @@
 70 "Vegetable soup."
 71 "/^Vegetable @po.p\\.$/"
 72 "Rip flesh off a shattered bone."
-73 "/^Rip .+ off ((a|an) .+)? bon@d.$/"
+73 "/^Rip .+ off( (a|an) .+)? bon@d.$/"
 74 "The lurking terror awaits."
 75 "/^The ([d-z]+) ([c-z]+) ([@b-z]+)\\.$/"
 76 "Grumble, grumble."
 77 "/^[a-zA-@z]+, [a-z]+\\.$/"
 78 "The 7 unspeakable curses."
 79 "/^\\w+ \\@n+ \\w+ \\w+\\.$/"
+
+# Hiring Contest.
+80 Which one is lying?
+81 Glorbax Ripper
+82 glorbax@example.com (614) 555-0987
+83 Krugh Krughovich
+84 krucrew42@example.com (614) 555-0123
+85 Uli Impalinator
+86 Tel. 614-555-0321, Email: stabby22@example.com
+87 Frrrng Nrglatxo
+88 frrrngwith3rs@example.com 614-555-0456
+89 Charn Durgesberg
+90 cidurgesberg@example.com 614-555-0654
+91 Orfa Stilt
+92 (614) 555-0878, brownsfan33@example.com
+93 Tapered tail.
+94 Forked tail.
+95 Skinny.
+96 Fat.
+97 Perfect vision.
+98 Wears glasses.
+99 Just one tooth.
+100 At least two teeth.
+101 No necktie.
+102 Wears a necktie.
+103 No hat.
+104 Wears a hat.
+105 Qualifications:
+106 Key Skills
+107 Vital Stats:
+108 - About Me -
