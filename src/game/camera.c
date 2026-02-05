@@ -520,6 +520,35 @@ void camera_update(double elapsed) {
   }
 }
 
+/* Dark overlay sprites.
+ * When Dot walks in a dark room there may be sprites above her.
+ * But we yoink her and rerender after, because she is supposed to remain visible above the darkness.
+ * So what about the overlay bit that partially occludes her?
+ * We'll rerender every sprite above layer 100, with a global tint.
+ * WARNING: This will go bad if the sprites override graf's tint.
+ */
+ 
+static void camera_render_dark_overlay_sprites(int alpha) {
+  struct sprite **spritev=GRP(visible)->sprv;
+  int spritec=GRP(visible)->sprc;
+  int spritep=spritec;
+  while ((spritep>0)&&(spritev[spritep-1]->layer>100)) spritep--;
+  if (spritep>=spritec) return;
+  graf_set_tint(&g.graf,0x00000000|alpha);
+  for (;spritep<spritec;spritep++) {
+    struct sprite *sprite=spritev[spritep];
+    int dstx=(int)(sprite->x*NS_sys_tilesize)-g.camera.rx;
+    int dsty=(int)(sprite->y*NS_sys_tilesize)-g.camera.ry;
+    if (sprite->type->render) {
+      sprite->type->render(sprite,dstx,dsty);
+    } else {
+      graf_set_image(&g.graf,sprite->imageid);
+      graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+    }
+  }
+  graf_set_tint(&g.graf,0);
+}
+
 /* Darkness and light.
  */
  
@@ -563,10 +592,8 @@ static void camera_render_darkness() {
     }
     if ((darkness-=g.camera.lightness)<0.0) darkness=0.0;
     int alpha=(int)(darkness*255.0);
-    if (alpha>0) {
-      if (alpha>0xff) alpha=0xff;
-      graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
-    }
+    if (alpha>0xff) alpha=0xff;
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
     // Hero renders on top of the darkness.
     if (GRP(hero)->sprc>=1) {
       struct sprite *sprite=GRP(hero)->sprv[0];
@@ -578,6 +605,7 @@ static void camera_render_darkness() {
         graf_set_image(&g.graf,sprite->imageid);
         graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
       }
+      camera_render_dark_overlay_sprites(alpha);
     }
   
   /* Flashing in the light.

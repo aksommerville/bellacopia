@@ -192,6 +192,7 @@
 #define NS_sprtype_toast       12 /* (u32)0 */
 #define NS_sprtype_princess    13 /* (u32)0 */
 #define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
+#define NS_sprtype_ornament2x2 15 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -207,7 +208,8 @@
   _(tolltroll) \
   _(toast) \
   _(princess) \
-  _(setfld)
+  _(setfld) \
+  _(ornament2x2)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -293,6 +295,9 @@
 #define NS_fld_jailkey 37
 #define NS_fld_kidnapped 38
 #define NS_fld_escaped 39
+#define NS_fld_bonedoor 40
+#define NS_fld_leafdoor 41
+#define NS_fld_stardoor 42
 
 /* "fld16" are 16 unsigned bits each.
  */
