@@ -99,6 +99,7 @@ export class EditWorldModal {
       this.dom.spawn(null, "OPTION", { value: "rsprite" }, "rsprite"),
       this.dom.spawn(null, "OPTION", { value: "song" }, "song"),
       this.dom.spawn(null, "OPTION", { value: "parent" }, "parent"),
+      this.dom.spawn(null, "OPTION", { value: "dark" }, "dark"),
     );
     
     this.dom.spawn(topRow, "INPUT", { type: "button", value: "Printable...", "on-click": () => this.onPrintable() });
@@ -145,6 +146,7 @@ export class EditWorldModal {
         case "rsprite": addl = this.reprRspriteFromMap(this.tattleMap); break;
         case "song": addl = this.tattleMap.cmd.getFirstArg("song") || ""; break;
         case "parent": addl = this.tattleMap.cmd.getFirstArg("parent") || ""; break;
+        case "dark": addl = this.tattleMap.cmd.getFirstArgArray("dark") ? "dark" : ""; break;
       }
       this.element.querySelector(".tattle").innerText = `${addl} map:${this.tattleMap.rid}`;
     } else {
@@ -235,6 +237,7 @@ export class EditWorldModal {
       case "rsprite": highlightValue = this.reprRspriteFromMap(map); break;
       case "song": highlightValue = map.cmd.getFirstArg("song"); break;
       case "parent": highlightValue = map.cmd.getFirstArg("parent"); break;
+      case "dark": highlightValue = map.cmd.getFirstArgArray("dark") ? "dark" : ""; break;
     }
     if (highlightValue) {
       if (printable) {
@@ -302,6 +305,10 @@ export class EditWorldModal {
           }
           options.sort();
           return options;
+        }
+        
+      case "dark": {
+          return ["dark", "NONE"];
         }
     }
     return [];
@@ -389,6 +396,21 @@ export class EditWorldModal {
             map.cmd.commands.push(["parent", option]);
           }
         } return true;
+        
+      case "dark": {
+          if (option === "dark") {
+            if (!map.cmd.commands.find(c => c[0] === "dark")) {
+              map.cmd.commands.push(["dark"]);
+              return true;
+            }
+          } else {
+            const p = map.cmd.commands.findIndex(c => c[0] === "dark");
+            if (p >= 0) {
+              map.cmd.commands.splice(p, 1);
+              return true;
+            }
+          }
+        } return false;
     }
     return false;
   }

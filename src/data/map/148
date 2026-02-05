@@ -26,3 +26,4 @@ rsprite sprite:snoblin (u8:weight)3 (u8:limit)1 (u32)0
 rsprite sprite:soblin (u8:weight)3 (u8:limit)1 (u32)0
 rsprite sprite:coblin (u8:weight)3 (u8:limit)1 (u32)0
 rsprite sprite:boblin (u8:weight)3 (u8:limit)1 (u32)0
+dark

@@ -20,3 +20,5 @@ song song:bone_soup
 bump @8,7 (u16)0 strings:dialogue (u16)43
 bump @6,6 (u16:activity)jaildoor (u16)0 (u16)0
 sprite @8,2 sprite:hero (u32)0
+dark
+sprite @4,10 sprite:firepot (u8:radius_m)3 (u24)0

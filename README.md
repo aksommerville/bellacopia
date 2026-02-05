@@ -24,7 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Gobbling: Can't pull the last item off the table!
-- [ ] Goblin cave: Try making the whole thing dark, with lots of firepots. Must be able to reach entrance, jail, and Skull Lake without matches.
+- [x] Goblin cave: Try making the whole thing dark, with lots of firepots. Must be able to reach entrance, jail, and Skull Lake without matches.
 - [x] Ooops I forgot to make the real sprites for erudition contest
 - [ ] Monster battles should sometimes reward a heart, if you need one.
 - [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
@@ -109,6 +109,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
+- [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
