@@ -99,13 +99,13 @@ struct modal_args_story {
 
 struct modal_args_battle {
   int battle; // NS_battle_*
-  int players; // NS_players_*
-  uint8_t handicap; // 0..128..255 = easy..balanced..hard ("easy" for the left player)
+  struct battle_args args;
   void (*cb)(struct modal *modal,int outcome,void *userdata); // -1,0,1 = right wins,tie,left wins. Report consequences back to the modal during this callback.
+  void (*cb_final)(struct modal *modal,int outcome,void *userdata); // Same idea, but called as we dismiss, after the report. Fine to use both.
   void *userdata;
-  int left_name; // NS_strings_battle. Omit names to suppress the "Player Wins!" message at the end.
-  int right_name; // NS_strings_battle
-  int skip_prompt;
+  int left_name,right_name; // NS_strings_battle. Highly recommended for NS_face_monster, otherwise we can assume "Dot" or "Princess".
+  int skip_prompt; // We normally do a generic "Battle draws near!" hopefully with some helpful instructions.
+  int skip_outtro; // We normally wait for a keystroke after completion, while reporting the winner and consequences.
   int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.
 };
 
@@ -145,6 +145,7 @@ struct modal_args_linguist {
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
  * If you win a no-quantity item from battle (are we doing that?), use (d==0).
+ * Use NS_itemid_string with (d) a strix in RID_strings_battle.
  * This does not effect any changes, it only talks about them.
  */
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d);

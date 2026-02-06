@@ -15,11 +15,7 @@
 #define GOBBLE_TIME 1.000
 
 struct battle_gobbling {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   int poison_texid,poisonw,poisonh;
   
@@ -46,28 +42,27 @@ struct battle_gobbling {
   } playerv[2];
 };
 
-#define CTX ((struct battle_gobbling*)ctx)
+#define BATTLE ((struct battle_gobbling*)battle)
 
 /* Delete.
  */
  
-static void _gobbling_del(void *ctx) {
-  egg_texture_del(CTX->poison_texid);
-  free(ctx);
+static void _gobbling_del(struct battle *battle) {
+  egg_texture_del(BATTLE->poison_texid);
 }
 
 /* Init player.
  */
  
-static void player_init(void *ctx,struct player *player,int human,int appearance) {
-  if (player==CTX->playerv) { // Left
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
+  if (player==BATTLE->playerv) { // Left
     player->who=0;
     player->btnid=EGG_BTN_LEFT;
-    player->skill=1.0-(CTX->handicap/255.0);
+    player->skill=1.0-(battle->args.bias/255.0);
   } else { // Right
     player->who=1;
     player->btnid=EGG_BTN_RIGHT;
-    player->skill=(CTX->handicap/255.0);
+    player->skill=(battle->args.bias/255.0);
   }
   if (player->human=human) { // Human
   } else { // CPU
@@ -119,40 +114,10 @@ static void assign_entree(struct player *player,int p,uint8_t tileid) {
 
 /* New.
  */
- 
-static void *_gobbling_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_gobbling));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
-  
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(ctx,CTX->playerv+0,0,2);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_man_man: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    default: _gobbling_del(ctx); return 0;
-  }
+
+static int _gobbling_init(struct battle *battle) {
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   
   /* Select six entrees.
    * Both players get the same six things but not in the same order.
@@ -181,11 +146,11 @@ static void *_gobbling_init(
    */
   int available=ENTREE_LIMIT;
   for (i=0;i<ENTREE_LIMIT;i++,available--) {
-    assign_entree(CTX->playerv+0,rand()%available,menu[i]);
-    assign_entree(CTX->playerv+1,rand()%available,menu[i]);
+    assign_entree(BATTLE->playerv+0,rand()%available,menu[i]);
+    assign_entree(BATTLE->playerv+1,rand()%available,menu[i]);
   }
    
-  return ctx;
+  return 0;
 }
 
 /* Choose a randomish spot on the floor that isn't occupied yet.
@@ -221,7 +186,7 @@ static void entree_choose_discard_position(struct entree *entree,struct entree *
  * The actual pull delta might increase by more than one per frame.
  */
  
-static void player_pull(void *ctx,struct player *player,double elapsed) {
+static void player_pull(struct battle *battle,struct player *player,double elapsed) {
 
   /* Arm extending.
    * We won't extend and pull on the same update, but we might leave some remainder in (pullclock) for next time.
@@ -274,7 +239,7 @@ static void player_pull(void *ctx,struct player *player,double elapsed) {
   }
 }
 
-static void player_pull_no(void *ctx,struct player *player,double elapsed) {
+static void player_pull_no(struct battle *battle,struct player *player,double elapsed) {
   player->grab=0;
   if (player->armw>0) {
     player->pullclock-=elapsed;
@@ -296,12 +261,12 @@ static void player_pull_no(void *ctx,struct player *player,double elapsed) {
 /* Generate poison label if we don't have one.
  */
  
-static void gobbling_require_poison_label(void *ctx) {
-  if (CTX->poison_texid) return;
+static void gobbling_require_poison_label(struct battle *battle) {
+  if (BATTLE->poison_texid) return;
   const char *src;
   int srcc=text_get_string(&src,RID_strings_battle,59);
-  CTX->poison_texid=font_render_to_texture(0,g.font,src,srcc,FBW,FBH,0xffffffff);
-  egg_texture_get_size(&CTX->poisonw,&CTX->poisonh,CTX->poison_texid);
+  BATTLE->poison_texid=font_render_to_texture(0,g.font,src,srcc,FBW,FBH,0xffffffff);
+  egg_texture_get_size(&BATTLE->poisonw,&BATTLE->poisonh,BATTLE->poison_texid);
 }
 
 /* Eat the next thing if it's in range.
@@ -316,7 +281,7 @@ static int tileid_is_food(uint8_t tileid) {
   return 0;
 }
  
-static void player_gobble(void *ctx,struct player *player) {
+static void player_gobble(struct battle *battle,struct player *player) {
   player->blackout=1;
   struct entree *nearest=0;
   struct entree *q=player->entreev;
@@ -342,49 +307,49 @@ static void player_gobble(void *ctx,struct player *player) {
     bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
   } else { // Eat something that isn't food -- you lose.
     bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
-    CTX->outcome=player->who?1:-1;
-    CTX->end_cooldown=END_COOLDOWN;
+    battle->outcome=player->who?1:-1;
+    BATTLE->end_cooldown=END_COOLDOWN;
     player->highlight_poison=nearest->tileid;
-    gobbling_require_poison_label(ctx);
+    gobbling_require_poison_label(battle);
   }
 }
 
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   if (player->blackout) {
     if (!(input&EGG_BTN_SOUTH)) player->blackout=0;
     else input&=~EGG_BTN_SOUTH;
   }
   if (player->gobble>0.0) {
     player->gobble-=elapsed;
-    player_pull_no(ctx,player,elapsed);
+    player_pull_no(battle,player,elapsed);
     return;
   }
   if (input&player->btnid) {
-    player_pull(ctx,player,elapsed);
+    player_pull(battle,player,elapsed);
   } else {
-    player_pull_no(ctx,player,elapsed);
-    if (input&EGG_BTN_SOUTH) player_gobble(ctx,player);
+    player_pull_no(battle,player,elapsed);
+    if (input&EGG_BTN_SOUTH) player_gobble(battle,player);
   }
 }
 
 /* Update CPU player.
  */
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
 
   // Gobbling? Carry on.
   if (player->gobble>0.0) {
     player->gobble-=elapsed;
-    player_pull_no(ctx,player,elapsed);
+    player_pull_no(battle,player,elapsed);
     return;
   }
   
   // If we're pulling and arm is maximally contracted, spend one cycle ending the pull.
   if (player->grab&&(player->armw<1)) {
-    player_pull_no(ctx,player,elapsed);
+    player_pull_no(battle,player,elapsed);
     return;
   }
   
@@ -407,30 +372,30 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   
   // If the nearest entree doesn't exist, the only thing to do is nothing.
   if (!nearest) {
-    player_pull_no(ctx,player,elapsed);
+    player_pull_no(battle,player,elapsed);
     return;
   }
   
   // If the nearest entree is poison, keep pulling until it falls.
   // CPU player will never eat poison. (TODO Maybe at very low skill?)
   if (!tileid_is_food(nearest->tileid)) {
-    player_pull(ctx,player,elapsed);
+    player_pull(battle,player,elapsed);
     return;
   }
   
   // If the nearest entree is too far away, keep pulling.
   // The threshold is 20. We'll aim for less than that, out of pity for the humans. (TODO Could adjust threshold per skill)
   if (distance>10) {
-    player_pull(ctx,player,elapsed);
+    player_pull(battle,player,elapsed);
     return;
   }
   
   // If our arm is still extended, wait for it to retreat.
-  player_pull_no(ctx,player,elapsed);
+  player_pull_no(battle,player,elapsed);
   if (player->armw>0) return;
   
   // Eat it.
-  player_gobble(ctx,player);
+  player_gobble(battle,player);
 }
 
 /* Check outcome.
@@ -438,19 +403,19 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
  * We do not handle the eating-poison case; that should cause an outcome to be set immediately.
  */
  
-static int gobbling_check_outcome(void *ctx) {
+static int gobbling_check_outcome(struct battle *battle) {
   struct entree *entree;
   int i;
   // Each of a player's entrees are either on the table, on the floor, or in the belly.
   // For those on the floor, we'll distinguish between food and poison. Poison belongs there; food does not.
   int ltable=0,lfoodfloor=0,lpoisonfloor=0,lbelly=0,rtable=0,rfoodfloor=0,rpoisonfloor=0,rbelly=0;
-  for (entree=CTX->playerv[0].entreev,i=ENTREE_LIMIT;i-->0;entree++) {
+  for (entree=BATTLE->playerv[0].entreev,i=ENTREE_LIMIT;i-->0;entree++) {
     if (!entree->tileid) lbelly++; // Item removed. Could only have been eaten.
     else if (!entree->discard) ltable++;
     else if (tileid_is_food(entree->tileid)) lfoodfloor++;
     else lpoisonfloor++;
   }
-  for (entree=CTX->playerv[1].entreev,i=ENTREE_LIMIT;i-->0;entree++) {
+  for (entree=BATTLE->playerv[1].entreev,i=ENTREE_LIMIT;i-->0;entree++) {
     if (!entree->tileid) rbelly++; // Item removed. Could only have been eaten.
     else if (!entree->discard) rtable++;
     else if (tileid_is_food(entree->tileid)) rfoodfloor++;
@@ -474,31 +439,23 @@ static int gobbling_check_outcome(void *ctx) {
 /* Update.
  */
  
-static void _gobbling_update(void *ctx,double elapsed) {
+static void _gobbling_update(struct battle *battle,double elapsed) {
 
   // Done?
-  if (CTX->outcome>-2) {
-    if (CTX->end_cooldown>0.0) {
-      CTX->end_cooldown-=elapsed;
-    } else if (CTX->cb_end) {
-      CTX->cb_end(CTX->outcome,CTX->userdata);
-      CTX->cb_end=0;
-    }
-    return;
-  }
+  if (battle->outcome>-2) return;
   
   // Regular update.
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-    else player_update_cpu(ctx,player,elapsed);
-    if (CTX->outcome>-2) return; // Eating poison forces an outcome immediately.
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
+    if (battle->outcome>-2) return; // Eating poison forces an outcome immediately.
   }
   
   // Finished?
-  if ((CTX->outcome=gobbling_check_outcome(ctx))>-2) {
-    CTX->end_cooldown=END_COOLDOWN;
+  if ((battle->outcome=gobbling_check_outcome(battle))>-2) {
+    BATTLE->end_cooldown=END_COOLDOWN;
   }
 }
 
@@ -506,7 +463,7 @@ static void _gobbling_update(void *ctx,double elapsed) {
  * (pull) is the pixels of tablecloth displacement. Negative for leftward, positive rightward.
  */
  
-static void table_render(void *ctx,int dstx,int pull) {
+static void table_render(struct battle *battle,int dstx,int pull) {
 
   // The logical pull limit goes a bit beyond what we'll render.
   if (pull>VISIBLE_PULL_LIMIT) pull=VISIBLE_PULL_LIMIT;
@@ -584,7 +541,7 @@ static void table_render(void *ctx,int dstx,int pull) {
 /* Render player.
  */
  
-static void player_render(void *ctx,struct player *player) {
+static void player_render(struct battle *battle,struct player *player) {
   int dstx=30;
   uint8_t xform=0;
   if (player->who) {
@@ -612,9 +569,9 @@ static void player_render(void *ctx,struct player *player) {
   
   int tablex;
   if (player->who==0) {
-    table_render(ctx,tablex=dstx+24,-player->pull);
+    table_render(battle,tablex=dstx+24,-player->pull);
   } else {
-    table_render(ctx,tablex=dstx-88,player->pull);
+    table_render(battle,tablex=dstx-88,player->pull);
   }
   
   int entreey=117;
@@ -634,9 +591,9 @@ static void player_render(void *ctx,struct player *player) {
     int poisonx=tablex+(player->who?(TABLEW-10):10);
     graf_tile(&g.graf,poisonx,100,player->highlight_poison,0);
     if (g.framec%50>=10) {
-      graf_set_input(&g.graf,CTX->poison_texid);
+      graf_set_input(&g.graf,BATTLE->poison_texid);
       graf_set_tint(&g.graf,0x800000ff);
-      graf_decal(&g.graf,poisonx-(CTX->poisonw>>1),90-CTX->poisonh,0,0,CTX->poisonw,CTX->poisonh);
+      graf_decal(&g.graf,poisonx-(BATTLE->poisonw>>1),90-BATTLE->poisonh,0,0,BATTLE->poisonw,BATTLE->poisonh);
       graf_set_tint(&g.graf,0);
       graf_set_image(&g.graf,RID_image_battle_goblins);
     }
@@ -646,12 +603,12 @@ static void player_render(void *ctx,struct player *player) {
 /* Render.
  */
  
-static void _gobbling_render(void *ctx) {
+static void _gobbling_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
   
   graf_set_image(&g.graf,RID_image_battle_goblins);
-  player_render(ctx,CTX->playerv+0);
-  player_render(ctx,CTX->playerv+1);
+  player_render(battle,BATTLE->playerv+0);
+  player_render(battle,BATTLE->playerv+1);
 }
 
 /* Type definition.
@@ -659,10 +616,12 @@ static void _gobbling_render(void *ctx) {
  
 const struct battle_type battle_type_gobbling={
   .name="gobbling",
+  .objlen=sizeof(struct battle_gobbling),
   .strix_name=48,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_gobbling_del,
   .init=_gobbling_init,
   .update=_gobbling_update,

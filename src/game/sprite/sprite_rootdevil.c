@@ -41,7 +41,7 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
 }
 
 // We don't care what order you fight the root devils, their difficulty increases with each one you defeat.
-static uint8_t rootdevil_choose_handicap() {
+static uint8_t rootdevil_choose_bias() {
   int winc=0;
   if (store_get_fld(NS_fld_root1)) winc++;
   if (store_get_fld(NS_fld_root2)) winc++;
@@ -68,11 +68,16 @@ static void _rootdevil_collide(struct sprite *sprite,struct sprite *other) {
   if (other->type==&sprite_type_hero) {
     struct modal_args_battle args={
       .battle=NS_battle_strangling,
-      .players=NS_players_man_cpu,
-      .handicap=rootdevil_choose_handicap(),
+      .args={
+        .difficulty=0x80,
+        .bias=rootdevil_choose_bias(),
+        .lctl=1,
+        .lface=NS_face_dot,
+        .rctl=0,
+        .rface=NS_face_monster,
+      },
       .cb=rootdevil_cb_battle,
       .userdata=sprite,
-      .left_name=4, // "Dot"
       .right_name=18, // "Root Devil"
     };
     struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));

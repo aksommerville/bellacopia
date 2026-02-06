@@ -239,20 +239,11 @@ static int dress_battle(char *dst,int dsta,const char *name,int namec,const stru
 }
  
 static int cryptmsg_fmt_battle(char *dst,int dsta,const char *src,int srcc,int battle) {
-  const struct battle_type *type=battle_type_by_id(battle);
-  if (type) {
-    const char *name=0;
-    int namec=text_get_string(&name,RID_strings_battle,type->strix_name);
-    char tmp[256];
-    int tmpc=dress_battle(tmp,sizeof(tmp),name,namec,type);
-    if ((tmpc>0)&&(tmpc<=sizeof(tmp))) {
-      struct text_insertion ins={.mode='s',.s={.v=tmp,.c=tmpc}};
-      return text_format(dst,dsta,src,srcc,&ins,1);
-    }
-  }
-  if (srcc>dsta) srcc=dsta;
-  memcpy(dst,src,srcc);
-  return srcc;
+  char name[256];
+  int namec=battle_type_describe_long(dst,dsta,battle_type_by_id(battle));
+  if ((namec<0)||(namec>sizeof(name))) namec=0;
+  struct text_insertion ins={.mode='s',.s={.v=name,.c=namec}};
+  return text_format(dst,dsta,src,srcc,&ins,1);
 }
 
 /* Insert item name in a message.

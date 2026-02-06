@@ -14,17 +14,19 @@
 #define KEY_REPEAT_ONGOING 0.080
 #define INPUT_BLACKOUT 0.333 /* Ignore South and West for so long after returning from a game, they might keep tapping. */
 
-#define LABEL_LIMIT 25
+#define LABEL_LIMIT 30
 #define LABELID_PLAYERS 1
-#define LABELID_HANDICAP 2
-#define LABELID_OUTCOME 3
-#define LABELID_BATTLE 4 /* +row. Displayed row, not including scroll. */
+#define LABELID_DIFFICULTY 2
+#define LABELID_BIAS 3
+#define LABELID_OUTCOME 4
+#define LABELID_BATTLE 5 /* +row. Displayed row, not including scroll. */
 
 struct modal_arcade {
   struct modal hdr;
   int battle; // NS_battle_*
-  int players; // NS_players_*, NB not count of players
-  int handicap; // 0..255
+  int players; // (0,1,2) = (princess-vs-monster, dot-vs-monster, dot-vs-princess)
+  int difficulty; // 0..255
+  int bias; // 0..255
   int outcome; // From most recent game, or zero initially.
   int scroll; // Position in battle list of first displayed row.
   int battlec;
@@ -103,10 +105,9 @@ static void arcade_rewrite_label_battle(struct modal *modal,struct label *label,
 static void arcade_rewrite_label_players(struct modal *modal,struct label *label) {
   const char *src="?";
   switch (MODAL->players) {
-    case NS_players_cpu_cpu: src="princess"; break;
-    case NS_players_cpu_man: src="cpu vs man"; break;
-    case NS_players_man_cpu: src="dot"; break;
-    case NS_players_man_man: src="dot vs moon"; break;
+    case 0: src="princess"; break;
+    case 1: src="dot"; break;
+    case 2: src="2-player"; break;
   }
   int ntexid=font_render_to_texture(label->texid,g.font,src,-1,FBW,font_get_line_height(g.font),0xffffffff);
   if (ntexid<=0) return;
@@ -116,9 +117,9 @@ static void arcade_rewrite_label_players(struct modal *modal,struct label *label
   label->y=1;
 }
  
-static void arcade_rewrite_label_handicap(struct modal *modal,struct label *label) {
+static void arcade_rewrite_label_difficulty(struct modal *modal,struct label *label) {
   char src[32];
-  int srcc=snprintf(src,sizeof(src),"handicap 0x%02x",MODAL->handicap);
+  int srcc=snprintf(src,sizeof(src),"diff 0x%02x",MODAL->difficulty);
   if ((srcc<0)||(srcc>=sizeof(src))) srcc=0;
   int ntexid=font_render_to_texture(label->texid,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
   if (ntexid<=0) return;
@@ -126,6 +127,18 @@ static void arcade_rewrite_label_handicap(struct modal *modal,struct label *labe
   egg_texture_get_size(&label->w,&label->h,label->texid);
   label->x=FBW-1-label->w;
   label->y=label->h+1;
+}
+ 
+static void arcade_rewrite_label_bias(struct modal *modal,struct label *label) {
+  char src[32];
+  int srcc=snprintf(src,sizeof(src),"bias 0x%02x",MODAL->bias);
+  if ((srcc<0)||(srcc>=sizeof(src))) srcc=0;
+  int ntexid=font_render_to_texture(label->texid,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
+  if (ntexid<=0) return;
+  label->texid=ntexid;
+  egg_texture_get_size(&label->w,&label->h,label->texid);
+  label->x=FBW-1-label->w;
+  label->y=label->h*2+1;
 }
  
 static void arcade_rewrite_label_outcome(struct modal *modal,struct label *label) {
@@ -137,7 +150,7 @@ static void arcade_rewrite_label_outcome(struct modal *modal,struct label *label
   label->texid=ntexid;
   egg_texture_get_size(&label->w,&label->h,label->texid);
   label->x=FBW-1-label->w;
-  label->y=label->h*2+1;
+  label->y=label->h*3+1;
 }
 
 /* Rebuild all labels.
@@ -159,8 +172,10 @@ static int arcade_rebuild_labels(struct modal *modal) {
   }
   if (!(label=arcade_add_label(modal,LABELID_PLAYERS))) return -1;
   arcade_rewrite_label_players(modal,label);
-  if (!(label=arcade_add_label(modal,LABELID_HANDICAP))) return -1;
-  arcade_rewrite_label_handicap(modal,label);
+  if (!(label=arcade_add_label(modal,LABELID_DIFFICULTY))) return -1;
+  arcade_rewrite_label_difficulty(modal,label);
+  if (!(label=arcade_add_label(modal,LABELID_BIAS))) return -1;
+  arcade_rewrite_label_bias(modal,label);
   if (!(label=arcade_add_label(modal,LABELID_OUTCOME))) return -1;
   arcade_rewrite_label_outcome(modal,label);
   return 0;
@@ -174,8 +189,9 @@ static int _arcade_init(struct modal *modal,const void *arg,int argc) {
   modal->interactive=1;
   
   MODAL->battle=NS_battle_fishing;
-  MODAL->players=NS_players_man_cpu;
-  MODAL->handicap=0x80;
+  MODAL->players=1;
+  MODAL->difficulty=0x80;
+  MODAL->bias=0x80;
   
   // Count the battles. Assume that they are id'd contiguously.
   while (battle_type_by_id(MODAL->battlec+1)) MODAL->battlec++;
@@ -202,7 +218,7 @@ static void _arcade_notify(struct modal *modal,int k,int v) {
 
 /* Begin game.
  */
- 
+
 static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userdata) {
   struct modal *modal=userdata;
   fprintf(stderr,"%s: outcome=%d\n",__func__,outcome);
@@ -213,37 +229,39 @@ static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userda
 }
  
 static void arcade_begin_game(struct modal *modal) {
-  fprintf(stderr,"%s battle=%d players=%d handicap=%d\n",__func__,MODAL->battle,MODAL->players,MODAL->handicap);//TODO
-  int left_name=0,right_name=0; // Can leave them zero, to suppress the report.
-  switch (MODAL->players) {
-    case NS_players_cpu_cpu: {
-        left_name=6; // Princess
-        right_name=5; // Monster (the canonical trigger monster of a battle is not known to the battle itself, only to the sprite)
-      } break;
-    case NS_players_cpu_man: {
-        left_name=5; // Monster
-        right_name=6; // Princess
-      } break;
-    case NS_players_man_cpu: {
-        left_name=4; // Dot
-        right_name=5; // Monster
-      } break;
-    case NS_players_man_man: {
-        left_name=4; // Dot
-        right_name=6; // Princess
-      } break;
-  }
+  fprintf(stderr,"%s battle=%d players=%d\n",__func__,MODAL->battle,MODAL->players);//TODO
   struct modal_args_battle args={
     .battle=MODAL->battle,
-    .players=MODAL->players,
-    .handicap=MODAL->handicap,
+    .args={
+      .difficulty=MODAL->difficulty,
+      .bias=MODAL->bias,
+    },
     .cb=arcade_cb_battle,
     .userdata=modal,
     .skip_prompt=1,
-    .left_name=left_name,
-    .right_name=right_name,
     .no_store=1, // Store might not be initialized yet. Ticking its battleclock is first off wrong, and second, would cause the existing save to get clobbered.
   };
+  switch (MODAL->players) {
+    case 0: { // Princess vs Monster
+        args.args.lctl=0;
+        args.args.rctl=0;
+        args.args.lface=NS_face_princess;
+        args.args.rface=NS_face_monster;
+      } break;
+    case 1: { // Dot vs Monster
+        args.args.lctl=1;
+        args.args.rctl=0;
+        args.args.lface=NS_face_dot;
+        args.args.rface=NS_face_monster;
+      } break;
+    case 2: { // Dot vs Princess
+        args.args.lctl=1;
+        args.args.rctl=2;
+        args.args.lface=NS_face_dot;
+        args.args.rface=NS_face_princess;
+      } break;
+    default: return;
+  }
   struct modal *battle_modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!battle_modal) return;
 }
@@ -251,16 +269,28 @@ static void arcade_begin_game(struct modal *modal) {
 /* Adjust selections.
  */
  
-static void arcade_adjust_handicap(struct modal *modal,int d) {
+static void arcade_adjust_difficulty(struct modal *modal,int d) {
   if (!d) return;
-  int nv=MODAL->handicap+d;
+  int nv=MODAL->difficulty+d;
   if (nv<0) nv=0;
   else if (nv>0xff) nv=0xff;
-  if (nv==MODAL->handicap) return;
-  MODAL->handicap=nv;
+  if (nv==MODAL->difficulty) return;
+  MODAL->difficulty=nv;
   bm_sound(RID_sound_uimotion);
-  struct label *label=arcade_label_by_id(modal,LABELID_HANDICAP);
-  if (label) arcade_rewrite_label_handicap(modal,label);
+  struct label *label=arcade_label_by_id(modal,LABELID_DIFFICULTY);
+  if (label) arcade_rewrite_label_difficulty(modal,label);
+}
+ 
+static void arcade_adjust_bias(struct modal *modal,int d) {
+  if (!d) return;
+  int nv=MODAL->bias+d;
+  if (nv<0) nv=0;
+  else if (nv>0xff) nv=0xff;
+  if (nv==MODAL->bias) return;
+  MODAL->bias=nv;
+  bm_sound(RID_sound_uimotion);
+  struct label *label=arcade_label_by_id(modal,LABELID_BIAS);
+  if (label) arcade_rewrite_label_bias(modal,label);
 }
  
 static void arcade_adjust_battle(struct modal *modal,int d) {
@@ -281,7 +311,7 @@ static void arcade_adjust_battle(struct modal *modal,int d) {
 static void arcade_adjust_players(struct modal *modal,int d) {
   if (!d) return;
   int nv=MODAL->players+d;
-  if (nv<0) nv=3; else if (nv>3) nv=0;
+  if (nv<0) nv=2; else if (nv>2) nv=0;
   MODAL->players=nv;
   bm_sound(RID_sound_uimotion);
   struct label *label=arcade_label_by_id(modal,LABELID_PLAYERS);
@@ -293,7 +323,8 @@ static void arcade_adjust_players(struct modal *modal,int d) {
  
 static void _arcade_update(struct modal *modal,double elapsed) {
 
-  // Handicap has a range of 255. Use key-repeat.
+  // Difficulty and bias have a range of 255. Use key-repeat.
+  // Hold EAST to adjust difficulty; bias by default.
   int horz=g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT);
   if (horz==MODAL->horzpv) {
     int d=(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0;
@@ -301,14 +332,16 @@ static void _arcade_update(struct modal *modal,double elapsed) {
       if ((MODAL->horzclock-=elapsed)<=0.0) {
         MODAL->horzclock+=KEY_REPEAT_ONGOING;
         MODAL->horzc++;
-        arcade_adjust_handicap(modal,d*MODAL->horzc/5);
+        if (g.input[0]&EGG_BTN_EAST) arcade_adjust_difficulty(modal,d*MODAL->horzc/5);
+        else arcade_adjust_bias(modal,d*MODAL->horzc/5);
       }
     }
   } else {
     MODAL->horzpv=horz;
     MODAL->horzclock=KEY_REPEAT_INITIAL;
     MODAL->horzc=1;
-    arcade_adjust_handicap(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
+    if (g.input[0]&EGG_BTN_EAST) arcade_adjust_difficulty(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
+    else arcade_adjust_bias(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
   }
   
   // Potentially huge list of battles. Use key-repeat.

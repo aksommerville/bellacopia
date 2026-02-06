@@ -21,11 +21,7 @@
 #define END_COOLDOWN_TIME 1.0
 
 struct battle_fishing {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   uint8_t dot_xform,cat_xform; // Natural orientation is rightward.
   int dot_srcx,dot_srcy;
   int cat_srcx,cat_srcy;
@@ -47,112 +43,101 @@ struct battle_fishing {
   double end_cooldown;
 };
 
-#define CTX ((struct battle_fishing*)ctx)
+#define BATTLE ((struct battle_fishing*)battle)
 
 /* Delete.
  */
  
-static void _fishing_del(void *ctx) {
-  free(ctx);
+static void _fishing_del(struct battle *battle) {
 }
 
 /* 0..DECISION_COUNT-1, a random index where value is currently zero.
  */
  
-static int fishing_random_zero_decision(void *ctx) {
+static int fishing_random_zero_decision(struct battle *battle) {
   int panic=200;
   while (panic-->0) {
     int p=rand()%DECISION_COUNT;
-    if (!CTX->decisionv[p]) return p;
+    if (!BATTLE->decisionv[p]) return p;
   }
   return 0;
 }
 
 /* New.
  */
- 
-static void *_fishing_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_fishing));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->cat_xform=EGG_XFORM_XREV; // Face each other initially.
-  CTX->outcome=-2;
+
+static int _fishing_init(struct battle *battle) {
+  BATTLE->cat_xform=EGG_XFORM_XREV; // Face each other initially.
   
   /* Prepare images.
    * We have just one image per player, it never changes.
    */
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: { // Princess, Cat
-        CTX->dot_srcx=192;
-        CTX->dot_srcy=64;
-        CTX->cat_srcx=48;
-        CTX->cat_srcy=0;
+  switch (battle->args.lface) {
+    case NS_face_monster: {
+        BATTLE->dot_srcx=48;
+        BATTLE->dot_srcy=0;
       } break;
-    case NS_players_cpu_man: { // Cat, Dot
-        CTX->dot_srcx=48;
-        CTX->dot_srcy=0;
-        CTX->cat_srcx=0;
-        CTX->cat_srcy=0;
+    case NS_face_dot: {
+        BATTLE->dot_srcx=0;
+        BATTLE->dot_srcy=0;
       } break;
-    case NS_players_man_cpu: { // Dot, Cat
-        CTX->dot_srcx=0;
-        CTX->dot_srcy=0;
-        CTX->cat_srcx=48;
-        CTX->cat_srcy=0;
+    case NS_face_princess: {
+        BATTLE->dot_srcx=192;
+        BATTLE->dot_srcy=64;
       } break;
-    case NS_players_man_man: { // Dot, Princess
-        CTX->dot_srcx=0;
-        CTX->dot_srcy=0;
-        CTX->cat_srcx=192;
-        CTX->cat_srcy=64;
+  }
+  switch (battle->args.rface) {
+    case NS_face_monster: {
+        BATTLE->cat_srcx=48;
+        BATTLE->cat_srcy=0;
       } break;
-    default: _fishing_del(ctx); return 0;
+    case NS_face_dot: {
+        BATTLE->cat_srcx=0;
+        BATTLE->cat_srcy=0;
+      } break;
+    case NS_face_princess: {
+        BATTLE->cat_srcx=192;
+        BATTLE->cat_srcy=64;
+      } break;
   }
   
   /* Prepare the decision list.
    * We decide in advance how many mistakes the cat will make, directly proportionate to the handicap.
    * There will always be at least one correct decision and at least one incorrect.
    */
-  if ((CTX->players==NS_players_man_cpu)||(CTX->players==NS_players_cpu_cpu)) {
-    int correctc=1+((handicap*(DECISION_COUNT-2))>>8);
+  if (!battle->args.lctl||!battle->args.rctl) {
+    //TODO Need separate decision lists, if both players are cpu
+    int correctc=1+((battle->args.bias*(DECISION_COUNT-2))>>8);
     if (correctc<1) correctc=1; else if (correctc>=DECISION_COUNT) correctc=DECISION_COUNT-1;
     while (correctc-->0) {
-      int p=fishing_random_zero_decision(ctx);
-      CTX->decisionv[p]=1;
+      int p=fishing_random_zero_decision(battle);
+      BATTLE->decisionv[p]=1;
     }
   }
   
-  return ctx;
+  return 0;
 }
 
 /* If space exists, spawn four new fish.
  * Each fish gets spawned twice; Dot and the Cat both see the same two fish.
  */
  
-static void fishing_spawn(void *ctx) {
+static void fishing_spawn(struct battle *battle) {
 
   // If we're already over the limit, get out. Shouldn't have called us.
-  if (CTX->decisionp>=DECISION_COUNT) return;
+  if (BATTLE->decisionp>=DECISION_COUNT) return;
 
   // First drop any defunct.
-  int i=CTX->fishc;
-  struct fish *fish=CTX->fishv+i-1;
+  int i=BATTLE->fishc;
+  struct fish *fish=BATTLE->fishv+i-1;
   for (;i-->0;fish--) {
     if (fish->tileid) continue;
-    CTX->fishc--;
-    memmove(fish,fish+1,sizeof(struct fish)*(CTX->fishc-i));
+    BATTLE->fishc--;
+    memmove(fish,fish+1,sizeof(struct fish)*(BATTLE->fishc-i));
   }
   
   // If we don't have at least 4 slots available, forget it.
-  if (CTX->fishc>FISH_LIMIT-4) return;
+  if (BATTLE->fishc>FISH_LIMIT-4) return;
   
   // Select the two masses. Then tileid is related to mass.
   int massa=MASS_MIN+(((MASS_MAX-MASS_MIN)*(rand()&0xffff))>>16);
@@ -179,7 +164,7 @@ static void fishing_spawn(void *ctx) {
   }
   
   // Spawn.
-  fish=CTX->fishv+CTX->fishc++;
+  fish=BATTLE->fishv+BATTLE->fishc++;
   fish->x=COL0X;
   fish->y=-8.0;
   fish->col=0;
@@ -187,7 +172,7 @@ static void fishing_spawn(void *ctx) {
   fish->tileid=tileida;
   fish->xform=rand()&EGG_XFORM_XREV;
   
-  fish=CTX->fishv+CTX->fishc++;
+  fish=BATTLE->fishv+BATTLE->fishc++;
   fish->x=COL1X;
   fish->y=-8.0;
   fish->col=1;
@@ -195,13 +180,13 @@ static void fishing_spawn(void *ctx) {
   fish->tileid=tileidb;
   fish->xform=rand()&EGG_XFORM_XREV;
   
-  struct fish *catl=CTX->fishv+CTX->fishc++;
+  struct fish *catl=BATTLE->fishv+BATTLE->fishc++;
   catl->x=COL2X;
   catl->y=-8.0;
   catl->col=2;
   catl->xform=rand()&EGG_XFORM_XREV;
   
-  struct fish *catr=CTX->fishv+CTX->fishc++;
+  struct fish *catr=BATTLE->fishv+BATTLE->fishc++;
   catr->x=COL3X;
   catr->y=-8.0;
   catr->col=3;
@@ -222,7 +207,7 @@ static void fishing_spawn(void *ctx) {
   
   // Whether the cat will choose correctly was determined in advance at init.
   catl->cat_prefer=catr->cat_prefer=0;
-  if (CTX->decisionv[CTX->decisionp++]) {
+  if (BATTLE->decisionv[BATTLE->decisionp++]) {
     if (catl->mass>catr->mass) catl->cat_prefer=1;
     else catr->cat_prefer=1;
   } else {
@@ -234,7 +219,7 @@ static void fishing_spawn(void *ctx) {
 /* Update one fish.
  */
  
-static void fish_update(void *ctx,struct fish *fish,double elapsed) {
+static void fish_update(struct battle *battle,struct fish *fish,double elapsed) {
   int yia=(int)fish->y;
   fish->y+=GRAVITY*elapsed;
   int yiz=(int)fish->y;
@@ -245,20 +230,20 @@ static void fish_update(void *ctx,struct fish *fish,double elapsed) {
   if ((yia<BASKET_LEVEL)&&(yiz>=BASKET_LEVEL)) {
     bm_sound(RID_sound_collect); // Tempting to pan based on (fish->col), but there will always be two collects at the same moment, it's pointless.
     switch (fish->col) {
-      case 0: if (CTX->dot_xform&EGG_XFORM_XREV) {
-          CTX->dot_mass+=fish->mass;
+      case 0: if (BATTLE->dot_xform&EGG_XFORM_XREV) {
+          BATTLE->dot_mass+=fish->mass;
           fish->tileid=0;
         } break;
-      case 1: if (!(CTX->dot_xform&EGG_XFORM_XREV)) {
-          CTX->dot_mass+=fish->mass;
+      case 1: if (!(BATTLE->dot_xform&EGG_XFORM_XREV)) {
+          BATTLE->dot_mass+=fish->mass;
           fish->tileid=0;
         } break;
-      case 2: if (CTX->cat_xform&EGG_XFORM_XREV) {
-          CTX->cat_mass+=fish->mass;
+      case 2: if (BATTLE->cat_xform&EGG_XFORM_XREV) {
+          BATTLE->cat_mass+=fish->mass;
           fish->tileid=0;
         } break;
-      case 3: if (!(CTX->cat_xform&EGG_XFORM_XREV)) {
-          CTX->cat_mass+=fish->mass;
+      case 3: if (!(BATTLE->cat_xform&EGG_XFORM_XREV)) {
+          BATTLE->cat_mass+=fish->mass;
           fish->tileid=0;
         } break;
     }
@@ -268,7 +253,7 @@ static void fish_update(void *ctx,struct fish *fish,double elapsed) {
 /* Update a manual player.
  */
  
-static void fishing_update_manual(void *ctx,uint8_t *xform,int input,int pvinput) {
+static void fishing_update_manual(struct battle *battle,uint8_t *xform,int input,int pvinput) {
   switch (input&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: *xform=EGG_XFORM_XREV; break;
     case EGG_BTN_RIGHT: *xform=0; break;
@@ -278,11 +263,11 @@ static void fishing_update_manual(void *ctx,uint8_t *xform,int input,int pvinput
 /* Update a CPU player.
  */
  
-static void fishing_update_auto(void *ctx,uint8_t *xform,int coll,int colr) {
+static void fishing_update_auto(struct battle *battle,uint8_t *xform,int coll,int colr) {
   // Find the nearest fish in each column, whose (y) is above BASKET_LEVEL.
   struct fish *fishl=0,*fishr=0;
-  struct fish *fish=CTX->fishv;
-  int i=CTX->fishc;
+  struct fish *fish=BATTLE->fishv;
+  int i=BATTLE->fishc;
   for (;i-->0;fish++) {
     if (!fish->tileid) continue;
     if (fish->y>=BASKET_LEVEL) continue;
@@ -304,18 +289,18 @@ static void fishing_update_auto(void *ctx,uint8_t *xform,int coll,int colr) {
  * If all fish are gone, set (outcome) and return nonzero.
  */
  
-static int fishing_finished(void *ctx) {
-  struct fish *fish=CTX->fishv;
-  int i=CTX->fishc;
+static int fishing_finished(struct battle *battle) {
+  struct fish *fish=BATTLE->fishv;
+  int i=BATTLE->fishc;
   for (;i-->0;fish++) {
     if (fish->tileid) return 0;
   }
-  if (CTX->dot_mass>CTX->cat_mass) {
-    CTX->outcome=1;
-  } else if (CTX->dot_mass<CTX->cat_mass) {
-    CTX->outcome=-1;
+  if (BATTLE->dot_mass>BATTLE->cat_mass) {
+    battle->outcome=1;
+  } else if (BATTLE->dot_mass<BATTLE->cat_mass) {
+    battle->outcome=-1;
   } else {
-    CTX->outcome=0;
+    battle->outcome=0;
   }
   return 1;
 }
@@ -323,56 +308,32 @@ static int fishing_finished(void *ctx) {
 /* Update.
  */
  
-static void _fishing_update(void *ctx,double elapsed) {
-  if (CTX->outcome>-2) {
-    if (CTX->cb_end) {
-      if (CTX->end_cooldown>0.0) {
-        if ((CTX->end_cooldown-=elapsed)<=0.0) {
-          CTX->cb_end(CTX->outcome,CTX->userdata);
-          CTX->cb_end=0;
-        }
-      }
-    }
-    return;
-  }
+static void _fishing_update(struct battle *battle,double elapsed) {
+  if (battle->outcome>-2) return;
 
-  struct fish *fish=CTX->fishv;
-  int i=CTX->fishc;
+  struct fish *fish=BATTLE->fishv;
+  int i=BATTLE->fishc;
   for (;i-->0;fish++) {
     if (!fish->tileid) continue;
-    fish_update(ctx,fish,elapsed);
+    fish_update(battle,fish,elapsed);
   }
   
-  if (CTX->decisionp<DECISION_COUNT) {
-    if ((CTX->spawnclock-=elapsed)<=0.0) {
-      CTX->spawnclock+=SPAWN_INTERVAL;
-      fishing_spawn(ctx);
+  if (BATTLE->decisionp<DECISION_COUNT) {
+    if ((BATTLE->spawnclock-=elapsed)<=0.0) {
+      BATTLE->spawnclock+=SPAWN_INTERVAL;
+      fishing_spawn(battle);
     }
   } else {
-    if (fishing_finished(ctx)) {
-      CTX->end_cooldown=END_COOLDOWN_TIME;
+    if (fishing_finished(battle)) {
+      BATTLE->end_cooldown=END_COOLDOWN_TIME;
       return;
     }
   }
   
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        fishing_update_auto(ctx,&CTX->dot_xform,0,1);
-        fishing_update_auto(ctx,&CTX->cat_xform,2,3);
-      } break;
-    case NS_players_cpu_man: {
-        fishing_update_auto(ctx,&CTX->dot_xform,0,1);
-        fishing_update_manual(ctx,&CTX->cat_xform,g.input[2],g.pvinput[2]);
-      } break;
-    case NS_players_man_cpu: {
-        fishing_update_manual(ctx,&CTX->dot_xform,g.input[1],g.pvinput[1]);
-        fishing_update_auto(ctx,&CTX->cat_xform,2,3);
-      } break;
-    case NS_players_man_man: {
-        fishing_update_manual(ctx,&CTX->dot_xform,g.input[1],g.pvinput[1]);
-        fishing_update_manual(ctx,&CTX->cat_xform,g.input[2],g.pvinput[2]);
-      } break;
-  }
+  if (battle->args.lctl) fishing_update_manual(battle,&BATTLE->dot_xform,g.input[battle->args.lctl],g.pvinput[battle->args.lctl]);
+  else fishing_update_auto(battle,&BATTLE->dot_xform,0,1);
+  if (battle->args.rctl) fishing_update_manual(battle,&BATTLE->cat_xform,g.input[battle->args.rctl],g.pvinput[battle->args.rctl]);
+  else fishing_update_auto(battle,&BATTLE->cat_xform,2,3);
 }
 
 /* Render one scale. Caller loads image.
@@ -390,21 +351,21 @@ static void fishing_render_scale(int dstx,int dsty,int mass) {
 /* Render.
  */
  
-static void _fishing_render(void *ctx) {
+static void _fishing_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
   graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
   graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_fishing);
-  if (CTX->dot_mass_disp<CTX->dot_mass) CTX->dot_mass_disp++;
-  if (CTX->cat_mass_disp<CTX->cat_mass) CTX->cat_mass_disp++;
-  fishing_render_scale(DOT_X-32-32,GROUND_LEVEL-32,CTX->dot_mass_disp);
-  fishing_render_scale(CAT_X+48+32,GROUND_LEVEL-32,CTX->cat_mass_disp);
+  if (BATTLE->dot_mass_disp<BATTLE->dot_mass) BATTLE->dot_mass_disp++;
+  if (BATTLE->cat_mass_disp<BATTLE->cat_mass) BATTLE->cat_mass_disp++;
+  fishing_render_scale(DOT_X-32-32,GROUND_LEVEL-32,BATTLE->dot_mass_disp);
+  fishing_render_scale(CAT_X+48+32,GROUND_LEVEL-32,BATTLE->cat_mass_disp);
   const int playerw=48;
   const int playerh=48;
-  graf_decal_xform(&g.graf,DOT_X,GROUND_LEVEL-playerh,CTX->dot_srcx,CTX->dot_srcy,playerw,playerh,CTX->dot_xform);
-  graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,CTX->cat_srcx,CTX->cat_srcy,playerw,playerh,CTX->cat_xform);
-  struct fish *fish=CTX->fishv;
-  int i=CTX->fishc;
+  graf_decal_xform(&g.graf,DOT_X,GROUND_LEVEL-playerh,BATTLE->dot_srcx,BATTLE->dot_srcy,playerw,playerh,BATTLE->dot_xform);
+  graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,BATTLE->cat_srcx,BATTLE->cat_srcy,playerw,playerh,BATTLE->cat_xform);
+  struct fish *fish=BATTLE->fishv;
+  int i=BATTLE->fishc;
   for (;i-->0;fish++) {
     if (!fish->tileid) continue;
     graf_tile(&g.graf,fish->x,(int)fish->y,fish->tileid,fish->xform);
@@ -416,10 +377,12 @@ static void _fishing_render(void *ctx) {
  
 const struct battle_type battle_type_fishing={
   .name="fishing",
+  .objlen=sizeof(struct battle_fishing),
   .strix_name=13,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_fishing_del,
   .init=_fishing_init,
   .update=_fishing_update,

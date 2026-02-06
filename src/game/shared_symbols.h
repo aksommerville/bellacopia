@@ -74,11 +74,6 @@
 #define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
 #define NS_plane_labyrinth1 4 /* jungle */
 
-#define NS_players_cpu_cpu 0 /* Princess vs monster. */
-#define NS_players_cpu_man 1 /* I doubt we'll use this. */
-#define NS_players_man_cpu 2 /* Dot vs monster, the usual case. */
-#define NS_players_man_man 3 /* Two-player mode. */
-
 #define NS_sprgrp_keepalive    0 /* All sprites are in this group. */
 #define NS_sprgrp_deathrow     1 /* Everything here gets killed at the end of each update. */
 #define NS_sprgrp_visible      2 /* Render order. Unusual for a sprite not to be here. */
@@ -104,6 +99,11 @@
 #define NS_compass_heartcontainer 36
 #define NS_compass_gold 27
 #define NS_compass_auto 41
+
+// Face choices for battle.
+#define NS_face_monster 0 /* "The monster", whatever the game prefers. */
+#define NS_face_dot 1
+#define NS_face_princess 2
 
 /* Everything you can pick up has an itemid.
  * So this includes gold, keys, powerups (things that don't go in inventory).

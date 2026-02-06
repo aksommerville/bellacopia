@@ -23,10 +23,7 @@
 #define WALK_SPEED_HUMAN 80.0
 
 struct battle_laziness {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
+  struct battle hdr;
   double clock;
   
   struct player {
@@ -66,20 +63,19 @@ struct battle_laziness {
   int collx,colly; // If nonzero, highlight a collision centered here.
 };
 
-#define CTX ((struct battle_laziness*)ctx)
+#define BATTLE ((struct battle_laziness*)battle)
 
 /* Delete.
  */
  
-static void _laziness_del(void *ctx) {
-  free(ctx);
+static void _laziness_del(struct battle *battle) {
 }
 
 /* Initialize one player.
  * (appearance) is 0,1,2 = sloblin,dot,princess
  */
  
-static void player_init(struct player *player,int human,int appearance) {
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
   player->human=human;
   if (human) player->walk_speed=WALK_SPEED_HUMAN;
   else player->walk_speed=WALK_SPEED_WORST*(1.0-player->skill)+WALK_SPEED_BEST*player->skill;
@@ -116,83 +112,54 @@ static void player_init(struct player *player,int human,int appearance) {
 /* Initialize penalties.
  */
  
-static void laziness_balanced_penalty(void *ctx) {
+static void laziness_balanced_penalty(struct battle *battle) {
   const double peak=0.5;
   // Based on (handicap), the favored player gets 1..peak, and penalized player gets the inverse of that.
-  double balance=((CTX->handicap-0x80)*peak)/128.0;
+  double balance=((battle->args.bias-0x80)*peak)/128.0;
   if (balance<0.0) {
-    CTX->playerv[1].penalty=1.0-balance;
-    CTX->playerv[0].penalty=1.0/CTX->playerv[1].penalty;
+    BATTLE->playerv[1].penalty=1.0-balance;
+    BATTLE->playerv[0].penalty=1.0/BATTLE->playerv[1].penalty;
   } else {
-    CTX->playerv[0].penalty=1.0+balance;
-    CTX->playerv[1].penalty=1.0/CTX->playerv[0].penalty;
+    BATTLE->playerv[0].penalty=1.0+balance;
+    BATTLE->playerv[1].penalty=1.0/BATTLE->playerv[0].penalty;
   }
 }
 
-static void laziness_biased_penalty(void *ctx,struct player *penal,struct player *favor) {
+static void laziness_biased_penalty(struct battle *battle,struct player *penal,struct player *favor) {
   // Take the balanced penalties, then thumb the scale toward our bias.
-  laziness_balanced_penalty(ctx);
+  laziness_balanced_penalty(battle);
   penal->penalty+=0.25;
   favor->penalty-=0.25;
 }
 
 /* New.
  */
- 
-static void *_laziness_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_laziness));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->clock=DURATION;
+
+static int _laziness_init(struct battle *battle) {
+  BATTLE->clock=DURATION;
   
-  CTX->playerv[1].skill=(double)handicap/255.0;
-  CTX->playerv[0].skill=1.0-CTX->playerv[1].skill;
+  BATTLE->playerv[1].skill=(double)battle->args.bias/255.0;
+  BATTLE->playerv[0].skill=1.0-BATTLE->playerv[1].skill;
   
-  CTX->playerv[0].who=0;
-  CTX->playerv[1].who=1;
-  CTX->playerv[0].x=(COLC/3)*NS_sys_tilesize+(NS_sys_tilesize>>1); // Starting positions should be column-quantized.
-  CTX->playerv[1].x=((COLC*2)/3)*NS_sys_tilesize+(NS_sys_tilesize>>1);
-  CTX->playerv[0].facedx=1;
-  CTX->playerv[1].facedx=-1;
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(CTX->playerv+0,0,2);
-        player_init(CTX->playerv+1,0,0);
-        laziness_balanced_penalty(ctx);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(CTX->playerv+0,0,0);
-        player_init(CTX->playerv+1,2,2);
-        laziness_biased_penalty(ctx,CTX->playerv+0,CTX->playerv+1);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(CTX->playerv+0,1,1);
-        player_init(CTX->playerv+1,0,0);
-        laziness_biased_penalty(ctx,CTX->playerv+1,CTX->playerv+0);
-      } break;
-    case NS_players_man_man: {
-        player_init(CTX->playerv+0,1,1);
-        player_init(CTX->playerv+1,2,2);
-        laziness_balanced_penalty(ctx);
-      } break;
-    default: _laziness_del(ctx); return 0;
-  }
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  BATTLE->playerv[0].x=(COLC/3)*NS_sys_tilesize+(NS_sys_tilesize>>1); // Starting positions should be column-quantized.
+  BATTLE->playerv[1].x=((COLC*2)/3)*NS_sys_tilesize+(NS_sys_tilesize>>1);
+  BATTLE->playerv[0].facedx=1;
+  BATTLE->playerv[1].facedx=-1;
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
+  if (BATTLE->playerv[0].human&&!BATTLE->playerv[1].human) laziness_biased_penalty(battle,BATTLE->playerv+1,BATTLE->playerv+0);
+  else if (!BATTLE->playerv[0].human&&BATTLE->playerv[1].human) laziness_biased_penalty(battle,BATTLE->playerv+0,BATTLE->playerv+1);
+  else laziness_balanced_penalty(battle);
   
-  return ctx;
+  return 0;
 }
 
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   switch (input&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: player->indx=-1; break;
     case EGG_BTN_RIGHT: player->indx=1; break;
@@ -203,7 +170,7 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
 /* Update CPU player.
  */
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
 
   /* Important! We don't change state at every update.
    * Use a private (holdclock) to nerf the AI in a controllable fashion.
@@ -225,8 +192,8 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   /* Find the lowest hazard in my column and its immediate neighbors.
    */
   struct hazard *lhazard=0,*hazard=0,*rhazard=0;
-  struct hazard *q=CTX->hazardv;
-  int i=CTX->hazardc;
+  struct hazard *q=BATTLE->hazardv;
+  int i=BATTLE->hazardc;
   for (;i-->0;q++) {
     if (q->col==lx) {
       if (!lhazard||(q->y>lhazard->y)) lhazard=q;
@@ -276,7 +243,7 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
 /* Update either mode, with (indx) decided.
  */
  
-static void player_update_common(void *ctx,struct player *player,double elapsed) {
+static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
 
   // Motion and animation.
   if (player->indx) {
@@ -299,9 +266,9 @@ static void player_update_common(void *ctx,struct player *player,double elapsed)
   }
   
   // Check collisions.
-  if (!CTX->cb_end) return;
-  struct hazard *hazard=CTX->hazardv;
-  int i=CTX->hazardc;
+  if (battle->outcome>-2) return;
+  struct hazard *hazard=BATTLE->hazardv;
+  int i=BATTLE->hazardc;
   for (;i-->0;hazard++) {
     if (hazard->y<DANGERY) continue;
     double dx=hazard->x-player->x;
@@ -311,10 +278,9 @@ static void player_update_common(void *ctx,struct player *player,double elapsed)
     int py=GROUNDY-(NS_sys_tilesize>>1);
     int hx=hazard->x;
     int hy=(int)hazard->y;
-    CTX->collx=(px+hx)>>1;
-    CTX->colly=(py+hy)>>1;
-    CTX->cb_end(player->who?1:-1,CTX->userdata);
-    CTX->userdata=0;
+    BATTLE->collx=(px+hx)>>1;
+    BATTLE->colly=(py+hy)>>1;
+    battle->outcome=player->who?1:-1;
     return;
   }
 }
@@ -322,7 +288,7 @@ static void player_update_common(void *ctx,struct player *player,double elapsed)
 /* Update hazard. Returns zero if defunct.
  */
  
-static int hazard_update(void *ctx,struct hazard *hazard,double elapsed) {
+static int hazard_update(struct battle *battle,struct hazard *hazard,double elapsed) {
   hazard->y+=hazard->dy*elapsed;
   if (hazard->y>GROUNDY) return 0;
   return 1;
@@ -331,22 +297,22 @@ static int hazard_update(void *ctx,struct hazard *hazard,double elapsed) {
 /* Spawn a random hazard.
  */
  
-static struct hazard *hazard_spawn(void *ctx) {
-  if (CTX->hazardc>=HAZARD_LIMIT) return 0;
-  struct hazard *hazard=CTX->hazardv+CTX->hazardc++;
+static struct hazard *hazard_spawn(struct battle *battle) {
+  if (BATTLE->hazardc>=HAZARD_LIMIT) return 0;
+  struct hazard *hazard=BATTLE->hazardv+BATTLE->hazardc++;
   
   /* Quantize to meters horizontally.
    * Track spawns at each column and take pains to balance the set.
    */
   int spawnmin=INT_MAX;
   int i=COLC;
-  while (i-->0) if (CTX->spawntrack[i]<spawnmin) spawnmin=CTX->spawntrack[i];
+  while (i-->0) if (BATTLE->spawntrack[i]<spawnmin) spawnmin=BATTLE->spawntrack[i];
   uint8_t colv[COLC];
   int colc=0;
-  for (i=COLC;i-->0;) if (CTX->spawntrack[i]==spawnmin) colv[colc++]=i;
+  for (i=COLC;i-->0;) if (BATTLE->spawntrack[i]==spawnmin) colv[colc++]=i;
   if (colc<1) return 0; // oops?
   int col=colv[rand()%colc];
-  CTX->spawntrack[col]++;
+  BATTLE->spawntrack[col]++;
   hazard->x=col*NS_sys_tilesize+(NS_sys_tilesize>>1);
   hazard->col=col;
   
@@ -359,40 +325,36 @@ static struct hazard *hazard_spawn(void *ctx) {
 /* Update.
  */
  
-static void _laziness_update(void *ctx,double elapsed) {
+static void _laziness_update(struct battle *battle,double elapsed) {
 
-  if (!CTX->cb_end) { // Already terminated and reported. Noop.
+  if (battle->outcome>-2) return;
+  
+  if ((BATTLE->clock-=elapsed)<=0.0) { // Played to the bell. Pick a winner.
+    if (BATTLE->playerv[0].score<BATTLE->playerv[1].score) battle->outcome=1;
+    else if (BATTLE->playerv[0].score>BATTLE->playerv[1].score) battle->outcome=-1;
+    else battle->outcome=0;
     return;
   }
   
-  if ((CTX->clock-=elapsed)<=0.0) { // Played to the bell. Pick a winner.
-    int outcome=0;
-    if (CTX->playerv[0].score<CTX->playerv[1].score) outcome=1;
-    else if (CTX->playerv[0].score>CTX->playerv[1].score) outcome=-1;
-    CTX->cb_end(outcome,CTX->userdata);
-    CTX->cb_end=0;
-    return;
-  }
-  
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
-    if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-    else player_update_cpu(ctx,player,elapsed);
-    player_update_common(ctx,player,elapsed);
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
+    player_update_common(battle,player,elapsed);
   }
   
-  struct hazard *hazard=CTX->hazardv+CTX->hazardc-1;
-  for (i=CTX->hazardc;i-->0;hazard--) {
-    if (!hazard_update(ctx,hazard,elapsed)) {
-      CTX->hazardc--;
-      memmove(hazard,hazard+1,sizeof(struct hazard)*(CTX->hazardc-i));
+  struct hazard *hazard=BATTLE->hazardv+BATTLE->hazardc-1;
+  for (i=BATTLE->hazardc;i-->0;hazard--) {
+    if (!hazard_update(battle,hazard,elapsed)) {
+      BATTLE->hazardc--;
+      memmove(hazard,hazard+1,sizeof(struct hazard)*(BATTLE->hazardc-i));
     }
   }
   
-  if (CTX->hazardc<HAZARD_LIMIT) {
-    if ((CTX->hazardclock-=elapsed)<=0.0) {
-      CTX->hazardclock+=HAZARD_TIME;
-      hazard_spawn(ctx);
+  if (BATTLE->hazardc<HAZARD_LIMIT) {
+    if ((BATTLE->hazardclock-=elapsed)<=0.0) {
+      BATTLE->hazardclock+=HAZARD_TIME;
+      hazard_spawn(battle);
     }
   }
 }
@@ -400,7 +362,7 @@ static void _laziness_update(void *ctx,double elapsed) {
 /* Render player.
  */
  
-static void render_player(void *ctx,struct player *player) {
+static void render_player(struct battle *battle,struct player *player) {
   int x=(int)player->x;
   int y=GROUNDY-(NS_sys_tilesize>>1);
   uint8_t tileid=player->tileidv[player->animframe];
@@ -417,7 +379,7 @@ static void render_player(void *ctx,struct player *player) {
 /* Render meter.
  */
  
-static void render_meter(void *ctx,int x,int y,int w,int h,double v,uint32_t rgba) {
+static void render_meter(struct battle *battle,int x,int y,int w,int h,double v,uint32_t rgba) {
   const uint32_t bgcolor=0x181010ff;
   int fillw=(int)(w*v);
   if (fillw<=0) {
@@ -433,24 +395,24 @@ static void render_meter(void *ctx,int x,int y,int w,int h,double v,uint32_t rgb
 /* Render.
  */
  
-static void _laziness_render(void *ctx) {
+static void _laziness_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,GROUND_COLOR);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   
-  render_player(ctx,CTX->playerv+0);
-  render_player(ctx,CTX->playerv+1);
+  render_player(battle,BATTLE->playerv+0);
+  render_player(battle,BATTLE->playerv+1);
   
   graf_set_image(&g.graf,RID_image_battle_goblins);
-  struct hazard *hazard=CTX->hazardv;
-  int i=CTX->hazardc;
+  struct hazard *hazard=BATTLE->hazardv;
+  int i=BATTLE->hazardc;
   for (;i-->0;hazard++) {
     int y=(int)hazard->y;
     graf_tile(&g.graf,hazard->x,y,hazard->tileid,0);
   }
   
-  if (CTX->collx) {
-    graf_tile(&g.graf,CTX->collx,CTX->colly,0x60,0);
+  if (BATTLE->collx) {
+    graf_tile(&g.graf,BATTLE->collx,BATTLE->colly,0x60,0);
   }
   
   /* Score meters.
@@ -461,23 +423,23 @@ static void _laziness_render(void *ctx) {
   const int meterw=FBW>>1;
   const int meterh=6;
   const int groundh=FBH-GROUNDY;
-  double lv=CTX->playerv[0].score;
-  double rv=CTX->playerv[1].score;
+  double lv=BATTLE->playerv[0].score;
+  double rv=BATTLE->playerv[1].score;
   double hiv=(lv>rv)?lv:rv;
   if (hiv>0.5) ; // yikes, what you doing, player? Use the full range.
   else if (hiv>0.25) { lv*=2.0; rv*=2.0; }
   else { lv*=4.0; rv*=4.0; }
-  render_meter(ctx,(FBW>>1)-(meterw>>1),GROUNDY+(groundh/3)-(meterh>>1),meterw,meterh,lv,CTX->playerv[0].meter_color);
-  render_meter(ctx,(FBW>>1)-(meterw>>1),GROUNDY+((groundh*2)/3)-(meterh>>1),meterw,meterh,rv,CTX->playerv[1].meter_color);
+  render_meter(battle,(FBW>>1)-(meterw>>1),GROUNDY+(groundh/3)-(meterh>>1),meterw,meterh,lv,BATTLE->playerv[0].meter_color);
+  render_meter(battle,(FBW>>1)-(meterw>>1),GROUNDY+((groundh*2)/3)-(meterh>>1),meterw,meterh,rv,BATTLE->playerv[1].meter_color);
   
   /* Clock.
    */
-  int ms=(int)(CTX->clock*1000.0);
+  int ms=(int)(BATTLE->clock*1000.0);
   int sec=(ms+999)/1000;
   int x=(FBW>>1)-4;
   int y=10;
   graf_set_image(&g.graf,RID_image_fonttiles);
-  if (CTX->clock<3.0) {
+  if (BATTLE->clock<3.0) {
     ms%=1000;
     graf_set_tint(&g.graf,(ms>=500)?0xff8080ff:0xffff00ff);
   }
@@ -491,10 +453,12 @@ static void _laziness_render(void *ctx) {
  
 const struct battle_type battle_type_laziness={
   .name="laziness",
+  .objlen=sizeof(struct battle_laziness),
   .strix_name=53,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_laziness_del,
   .init=_laziness_init,
   .update=_laziness_update,

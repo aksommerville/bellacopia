@@ -29,11 +29,7 @@
 #define PROP_HAT      0x20
 
 struct battle_hiring {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   int texid_scratch; // For use while generating resumes.
   int texid_prompt;
@@ -67,39 +63,38 @@ struct battle_hiring {
   double princess_clock;
 };
 
-#define CTX ((struct battle_hiring*)ctx)
+#define BATTLE ((struct battle_hiring*)battle)
 
 /* Delete.
  */
  
-static void _hiring_del(void *ctx) {
-  struct applicant *applicant=CTX->applicantv;
-  int i=CTX->applicantc;
+static void _hiring_del(struct battle *battle) {
+  struct applicant *applicant=BATTLE->applicantv;
+  int i=BATTLE->applicantc;
   for (;i-->0;applicant++) {
     egg_texture_del(applicant->texid);
   }
-  egg_texture_del(CTX->texid_scratch);
-  egg_texture_del(CTX->texid_prompt);
-  free(ctx);
+  egg_texture_del(BATTLE->texid_scratch);
+  egg_texture_del(BATTLE->texid_prompt);
 }
 
 /* Initialize one applicant.
  * Sets props and colors but does not render the resume yet.
- * (CTX->applicantv,c) must be up to date, and not include the one in question.
+ * (BATTLE->applicantv,c) must be up to date, and not include the one in question.
  */
  
-static struct applicant *applicant_by_props(void *ctx,uint8_t props) {
-  struct applicant *applicant=CTX->applicantv;
-  int i=CTX->applicantc;
+static struct applicant *applicant_by_props(struct battle *battle,uint8_t props) {
+  struct applicant *applicant=BATTLE->applicantv;
+  int i=BATTLE->applicantc;
   for (;i-->0;applicant++) {
     if (applicant->props==props) return applicant;
   }
   return 0;
 }
  
-static struct applicant *applicant_by_name(void *ctx,int name) {
-  struct applicant *applicant=CTX->applicantv;
-  int i=CTX->applicantc;
+static struct applicant *applicant_by_name(struct battle *battle,int name) {
+  struct applicant *applicant=BATTLE->applicantv;
+  int i=BATTLE->applicantc;
   for (;i-->0;applicant++) {
     if (applicant->name==name) return applicant;
   }
@@ -121,17 +116,17 @@ static uint32_t color_near(uint32_t rgba) {
   return (r<<24)|(g<<16)|(b<<8)|0xff;
 }
  
-static void applicant_init(void *ctx,struct applicant *applicant) {
+static void applicant_init(struct battle *battle,struct applicant *applicant) {
   
   // (props) and (name) are purely random but must not collide with existing applicants.
   int panic;
   for (panic=100;panic-->0;) {
     applicant->props=(rand()&0x3f);
-    if (!applicant_by_props(ctx,applicant->props)) break;
+    if (!applicant_by_props(battle,applicant->props)) break;
   }
   for (panic=100;panic-->0;) {
     applicant->name=NAME_STRIX+(rand()%NAME_COUNT)*2;
-    if (!applicant_by_name(ctx,applicant->name)) break;
+    if (!applicant_by_name(battle,applicant->name)) break;
   }
   
   // Colors and hats are random, and collisions are allowed. All decorative only.
@@ -145,7 +140,7 @@ static void applicant_init(void *ctx,struct applicant *applicant) {
  * If (lie), we'll pick one property at random and say the opposite.
  */
  
-static void applicant_generate_resume(void *ctx,struct applicant *applicant,int lie) {
+static void applicant_generate_resume(struct battle *battle,struct applicant *applicant,int lie) {
   if (applicant->texid) return;
   applicant->texid=egg_texture_new();
   egg_texture_load_raw(applicant->texid,RESUMEW,RESUMEH,RESUMEW<<2,0,0);
@@ -165,13 +160,13 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
     graf_flush(&g.graf); /* We're about to overwrite a texture that might be queued for render. */ \
     const char *src=0; \
     int srcc=text_get_string(&src,RID_strings_battle,strix); \
-    font_render_to_texture(CTX->texid_scratch,g.font,src,srcc,RESUMEW-5,FBH,0x000000ff); \
-    egg_texture_get_size(&srcw,&srch,CTX->texid_scratch); \
+    font_render_to_texture(BATTLE->texid_scratch,g.font,src,srcc,RESUMEW-5,FBH,0x000000ff); \
+    egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch); \
   }
   
   // Name centered at the top.
   GETSTR(applicant->name)
-  graf_set_input(&g.graf,CTX->texid_scratch);
+  graf_set_input(&g.graf,BATTLE->texid_scratch);
   graf_decal(&g.graf,(RESUMEW>>1)-(srcw>>1),y,0,0,srcw,srch);
   y+=srch;
   
@@ -194,20 +189,20 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
     }
     if (spacep>=0) { // One space, so we'll split it left/right.
       graf_flush(&g.graf);
-      font_render_to_texture(CTX->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
-      egg_texture_get_size(&srcw,&srch,CTX->texid_scratch);
-      graf_set_input(&g.graf,CTX->texid_scratch);
+      font_render_to_texture(BATTLE->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
+      egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
+      graf_set_input(&g.graf,BATTLE->texid_scratch);
       graf_decal(&g.graf,3,y,0,0,srcw,srch);
       graf_flush(&g.graf);
-      font_render_to_texture(CTX->texid_scratch,g.font,src+spacep+1,srcc-spacep-1,RESUMEW-5,FBH,0x404040ff);
-      egg_texture_get_size(&srcw,&srch,CTX->texid_scratch);
-      graf_set_input(&g.graf,CTX->texid_scratch);
+      font_render_to_texture(BATTLE->texid_scratch,g.font,src+spacep+1,srcc-spacep-1,RESUMEW-5,FBH,0x404040ff);
+      egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
+      graf_set_input(&g.graf,BATTLE->texid_scratch);
       graf_decal(&g.graf,RESUMEW-4-srcw,y,0,0,srcw,srch);
     } else { // Render as-is, random alignment.
       graf_flush(&g.graf);
-      font_render_to_texture(CTX->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
-      egg_texture_get_size(&srcw,&srch,CTX->texid_scratch);
-      graf_set_input(&g.graf,CTX->texid_scratch);
+      font_render_to_texture(BATTLE->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
+      egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
+      graf_set_input(&g.graf,BATTLE->texid_scratch);
       int dstx=(rand()&1)?3:(RESUMEW-4-srcw);
       graf_decal(&g.graf,dstx,y,0,0,srcw,srch);
     }
@@ -230,7 +225,7 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
   y+=8;
   int hdrstrix=105+rand()%4;
   GETSTR(hdrstrix)
-  graf_set_input(&g.graf,CTX->texid_scratch);
+  graf_set_input(&g.graf,BATTLE->texid_scratch);
   graf_decal(&g.graf,5,y,0,0,srcw,srch);
   y+=srch;
   
@@ -240,7 +235,7 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
    */
   int prop=1,strix=93;
   int liectr=-1;
-  if (lie) liectr=rand()%CTX->oppropc;
+  if (lie) liectr=rand()%BATTLE->oppropc;
   char pfx=0;
   switch (rand()%6) {
     case 0: pfx='-'; break;
@@ -248,7 +243,7 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
     case 2: pfx='~'; break;
     case 3: pfx='>'; break;
   }
-  int i=CTX->oppropc;
+  int i=BATTLE->oppropc;
   for (;i-->0;prop<<=1,strix+=2) {
     int positive=(applicant->props&prop)?1:0;
     if (!liectr--) positive^=1;
@@ -264,9 +259,9 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
       srcc+=2;
     }
     graf_flush(&g.graf);
-    font_render_to_texture(CTX->texid_scratch,g.font,src,srcc,RESUMEW-8,FBH,0x000000ff);
-    egg_texture_get_size(&srcw,&srch,CTX->texid_scratch);
-    graf_set_input(&g.graf,CTX->texid_scratch);
+    font_render_to_texture(BATTLE->texid_scratch,g.font,src,srcc,RESUMEW-8,FBH,0x000000ff);
+    egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
+    graf_set_input(&g.graf,BATTLE->texid_scratch);
     graf_decal(&g.graf,5,y,0,0,srcw,srch);
     y+=srch;
   }
@@ -277,30 +272,14 @@ static void applicant_generate_resume(void *ctx,struct applicant *applicant,int 
 
 /* New.
  */
- 
-static void *_hiring_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_hiring));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
-  CTX->end_cooldown=END_COOLDOWN;
+
+static int _hiring_init(struct battle *battle) {
+  BATTLE->end_cooldown=END_COOLDOWN;
   
   // Unlike most battles, we don't support 2 players.
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        CTX->princess_choice=-1;
-        CTX->princess_clock=PRINCESS_STEP_TIME;
-      } break;
-    case NS_players_man_cpu: break;
-    default: _hiring_del(ctx); return 0;
+  if (battle->args.lctl==0) {
+    BATTLE->princess_choice=-1;
+    BATTLE->princess_clock=PRINCESS_STEP_TIME;
   }
   
   /* Select count of properties and applicants per handicap.
@@ -308,142 +287,142 @@ static void *_hiring_init(
    * My feeling is that adding an applicant is more significant than adding a property.
    */
   const uint8_t diffv[]={ 0x33,0x34,0x35,0x43,0x44,0x45,0x54,0x55,0x56,0x65,0x66 };
-  int diffp=(CTX->handicap*sizeof(diffv))/255;
+  int diffp=(battle->args.bias*sizeof(diffv))/255;
   if (diffp<0) diffp=0;
   else if (diffp>=sizeof(diffv)) diffp=sizeof(diffv)-1;
-  CTX->oppropc=diffv[diffp]&15;
+  BATTLE->oppropc=diffv[diffp]&15;
   int applicantc=diffv[diffp]>>4;
   
   // First pick random properties for each applicant.
-  struct applicant *applicant=CTX->applicantv;
-  for (;CTX->applicantc<applicantc;CTX->applicantc++,applicant++) {
-    applicant_init(ctx,applicant);
-    applicant->dstx=(FBW*(CTX->applicantc+1))/(applicantc+1);
+  struct applicant *applicant=BATTLE->applicantv;
+  for (;BATTLE->applicantc<applicantc;BATTLE->applicantc++,applicant++) {
+    applicant_init(battle,applicant);
+    applicant->dstx=(FBW*(BATTLE->applicantc+1))/(applicantc+1);
   }
   
   // Select one as the liar.
-  CTX->liarp=rand()%CTX->applicantc;
+  BATTLE->liarp=rand()%BATTLE->applicantc;
   
   // Render the resumes.
-  CTX->texid_scratch=egg_texture_new();
+  BATTLE->texid_scratch=egg_texture_new();
   int i=0;
-  for (applicant=CTX->applicantv;i<CTX->applicantc;i++,applicant++) {
-    applicant_generate_resume(ctx,applicant,i==CTX->liarp);
+  for (applicant=BATTLE->applicantv;i<BATTLE->applicantc;i++,applicant++) {
+    applicant_generate_resume(battle,applicant,i==BATTLE->liarp);
   }
-  egg_texture_del(CTX->texid_scratch);
-  CTX->texid_scratch=0;
+  egg_texture_del(BATTLE->texid_scratch);
+  BATTLE->texid_scratch=0;
   
   // Generate the prompt.
   const char *src=0;
   int srcc=text_get_string(&src,RID_strings_battle,80);
-  CTX->texid_prompt=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
-  egg_texture_get_size(&CTX->promptw,&CTX->prompth,CTX->texid_prompt);
+  BATTLE->texid_prompt=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
+  egg_texture_get_size(&BATTLE->promptw,&BATTLE->prompth,BATTLE->texid_prompt);
   
   // Time limit is important! Since we are entirely user-driven, without this they could wait for the timeout.
-  double diff=CTX->handicap/255.0;
-  CTX->timelimit=diff*TIMELIMIT_HARD+(1.0-diff)*TIMELIMIT_EASY;
+  double diff=battle->args.bias/255.0;
+  BATTLE->timelimit=diff*TIMELIMIT_HARD+(1.0-diff)*TIMELIMIT_EASY;
   
   // Select the left applicant initially, and let his resume slide in.
-  CTX->cursor=0;
-  CTX->resume=CTX->applicantv+CTX->cursor;
-  CTX->resumey=FBH;
-  CTX->resumedy=-SLIDE_IN_SPEED;
+  BATTLE->cursor=0;
+  BATTLE->resume=BATTLE->applicantv+BATTLE->cursor;
+  BATTLE->resumey=FBH;
+  BATTLE->resumedy=-SLIDE_IN_SPEED;
   
-  return ctx;
+  return 0;
 }
 
 /* Commit choice.
  */
  
-static void hiring_activate(void *ctx) {
-  if ((CTX->cursor<0)||(CTX->cursor>=CTX->applicantc)) return;
-  if (CTX->cursor==CTX->liarp) {
+static void hiring_activate(struct battle *battle) {
+  if ((BATTLE->cursor<0)||(BATTLE->cursor>=BATTLE->applicantc)) return;
+  if (BATTLE->cursor==BATTLE->liarp) {
     bm_sound(RID_sound_treasure);
-    CTX->outcome=1;
+    battle->outcome=1;
   } else {
     bm_sound(RID_sound_reject);
-    CTX->outcome=-1;
+    battle->outcome=-1;
   }
 }
 
 /* Move cursor.
  */
  
-static void hiring_move(void *ctx,int d) {
-  CTX->cursor+=d;
-  if (CTX->cursor<0) CTX->cursor=CTX->applicantc-1;
-  else if (CTX->cursor>=CTX->applicantc) CTX->cursor=0;
+static void hiring_move(struct battle *battle,int d) {
+  BATTLE->cursor+=d;
+  if (BATTLE->cursor<0) BATTLE->cursor=BATTLE->applicantc-1;
+  else if (BATTLE->cursor>=BATTLE->applicantc) BATTLE->cursor=0;
   bm_sound(RID_sound_uimotion);
 }
 
 /* Advance the resume sliding transition, or start it if selection changed.
  */
  
-static void hiring_update_resume(void *ctx,double elapsed) {
+static void hiring_update_resume(struct battle *battle,double elapsed) {
   
   /* If we're sliding down, usually just keep going.
    * But check whether the cursor has returned to this guy, and in that case reverse direction.
    */
-  if (CTX->resumedy>0.0) {
-    if (CTX->resume==CTX->applicantv+CTX->cursor) { // Oops, slide it back.
-      CTX->resumedy=-SLIDE_IN_SPEED;
+  if (BATTLE->resumedy>0.0) {
+    if (BATTLE->resume==BATTLE->applicantv+BATTLE->cursor) { // Oops, slide it back.
+      BATTLE->resumedy=-SLIDE_IN_SPEED;
       return;
     }
-    CTX->resumey+=CTX->resumedy*elapsed;
+    BATTLE->resumey+=BATTLE->resumedy*elapsed;
     // When the slide-out completes, select the one indicated by (cursor) and slide back in.
-    if (CTX->resumey>=FBH) {
-      CTX->resume=CTX->applicantv+CTX->cursor;
-      CTX->resumedy=-SLIDE_IN_SPEED;
+    if (BATTLE->resumey>=FBH) {
+      BATTLE->resume=BATTLE->applicantv+BATTLE->cursor;
+      BATTLE->resumedy=-SLIDE_IN_SPEED;
     }
     return;
   }
   
   /* Sliding up or not sliding, begin slide-out if the cursor disagrees.
    */
-  if (CTX->resume!=CTX->applicantv+CTX->cursor) {
-    CTX->resumedy=SLIDE_OUT_SPEED;
+  if (BATTLE->resume!=BATTLE->applicantv+BATTLE->cursor) {
+    BATTLE->resumedy=SLIDE_OUT_SPEED;
   }
   
   // Not sliding? Cool.
-  if (CTX->resumedy>=0.0) return;
+  if (BATTLE->resumedy>=0.0) return;
   
   // Slide up and stop at the top.
-  CTX->resumey+=CTX->resumedy*elapsed;
-  if (CTX->resumey<=RESUMEY) {
-    CTX->resumey=RESUMEY;
-    CTX->resumedy=0.0;
+  BATTLE->resumey+=BATTLE->resumedy*elapsed;
+  if (BATTLE->resumey<=RESUMEY) {
+    BATTLE->resumey=RESUMEY;
+    BATTLE->resumedy=0.0;
   }
 }
 
 /* Update, Princess mode.
  */
  
-static void hiring_princess_choose(void *ctx) {
+static void hiring_princess_choose(struct battle *battle) {
   // (handicap) is the odds of an incorrect decision, straight up.
   // At zero, she'll always guess right and at 255 she'll always guess wrong.
   int p=rand()%255;
-  if (p<CTX->handicap) { // Pick an incorrect one.
-    CTX->princess_choice=rand()%(CTX->applicantc-1);
-    if (CTX->princess_choice>=CTX->liarp) CTX->princess_choice++;
+  if (p<battle->args.bias) { // Pick an incorrect one.
+    BATTLE->princess_choice=rand()%(BATTLE->applicantc-1);
+    if (BATTLE->princess_choice>=BATTLE->liarp) BATTLE->princess_choice++;
   } else { // Pick the correct one.
-    CTX->princess_choice=CTX->liarp;
+    BATTLE->princess_choice=BATTLE->liarp;
   }
 }
  
-static void hiring_update_princess(void *ctx,double elapsed) {
-  if ((CTX->princess_clock-=elapsed)>0.0) return;
-  CTX->princess_clock+=PRINCESS_STEP_TIME;
-  if (CTX->princess_choice<0) { // Move right until we reach the end, then make the decision.
-    if (CTX->cursor<CTX->applicantc-1) {
-      hiring_move(ctx,1);
+static void hiring_update_princess(struct battle *battle,double elapsed) {
+  if ((BATTLE->princess_clock-=elapsed)>0.0) return;
+  BATTLE->princess_clock+=PRINCESS_STEP_TIME;
+  if (BATTLE->princess_choice<0) { // Move right until we reach the end, then make the decision.
+    if (BATTLE->cursor<BATTLE->applicantc-1) {
+      hiring_move(battle,1);
     } else {
-      hiring_princess_choose(ctx);
+      hiring_princess_choose(battle);
     }
   } else { // Move left until we're at the choice, then select it.
-    if (CTX->cursor>CTX->princess_choice) {
-      hiring_move(ctx,-1);
+    if (BATTLE->cursor>BATTLE->princess_choice) {
+      hiring_move(battle,-1);
     } else {
-      hiring_activate(ctx);
+      hiring_activate(battle);
     }
   }
 }
@@ -451,42 +430,34 @@ static void hiring_update_princess(void *ctx,double elapsed) {
 /* Update.
  */
  
-static void _hiring_update(void *ctx,double elapsed) {
+static void _hiring_update(struct battle *battle,double elapsed) {
 
-  if (CTX->outcome>-2) {
-    if (CTX->end_cooldown>0.0) {
-      CTX->end_cooldown-=elapsed;
-    } else if (CTX->cb_end) {
-      CTX->cb_end(CTX->outcome,CTX->userdata);
-      CTX->cb_end=0;
-    }
+  if (battle->outcome>-2) return;
+  
+  if ((BATTLE->timelimit-=elapsed)<=0.0) {
+    battle->outcome=-1;
     return;
   }
   
-  if ((CTX->timelimit-=elapsed)<=0.0) {
-    CTX->outcome=-1;
-    return;
-  }
-  
-  hiring_update_resume(ctx,elapsed);
+  hiring_update_resume(battle,elapsed);
   
   /* Unlike most battles, we are asymmetric and one-player only.
    * So it's fair for us to read input[0].
    */
-  if (CTX->players==NS_players_man_cpu) {
-    if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) hiring_move(ctx,-1);
-    if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) hiring_move(ctx,1);
-    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) hiring_activate(ctx);
+  if (battle->args.lctl==1) {
+    if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) hiring_move(battle,-1);
+    if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) hiring_move(battle,1);
+    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) hiring_activate(battle);
   // ...but we do have a Princess mode:
   } else {
-    hiring_update_princess(ctx,elapsed);
+    hiring_update_princess(battle,elapsed);
   }
 }
 
 /* Render one applicant.
  */
  
-static void applicant_render(void *ctx,struct applicant *applicant) {
+static void applicant_render(struct battle *battle,struct applicant *applicant) {
   uint8_t tileid;
   const int ht=NS_sys_tilesize>>1;
   const int ts=NS_sys_tilesize;
@@ -543,8 +514,8 @@ static void applicant_render(void *ctx,struct applicant *applicant) {
 /* Render.
  */
  
-static void _hiring_render(void *ctx) {
-  int ms=(int)(CTX->timelimit*1000.0);
+static void _hiring_render(struct battle *battle) {
+  int ms=(int)(BATTLE->timelimit*1000.0);
   if (ms<0) ms=0;
   int sec=ms/1000;
   ms%=1000;
@@ -557,27 +528,27 @@ static void _hiring_render(void *ctx) {
   graf_gradient_rect(&g.graf,0,0,FBW,ly,dark,dark,lite,lite);
   graf_gradient_rect(&g.graf,0,ly,FBW,FBH-ly,lite,lite,dark,dark);
   if ((sec<=3)&&(ms>=800)) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xff000040);
-  graf_set_input(&g.graf,CTX->texid_prompt);
-  graf_decal(&g.graf,(FBW>>1)-(CTX->promptw>>1),5,0,0,CTX->promptw,CTX->prompth);
+  graf_set_input(&g.graf,BATTLE->texid_prompt);
+  graf_decal(&g.graf,(FBW>>1)-(BATTLE->promptw>>1),5,0,0,BATTLE->promptw,BATTLE->prompth);
   
   // Applicants.
   graf_set_image(&g.graf,RID_image_cave_sprites);
-  struct applicant *applicant=CTX->applicantv;
-  int i=CTX->applicantc;
+  struct applicant *applicant=BATTLE->applicantv;
+  int i=BATTLE->applicantc;
   for (;i-->0;applicant++) {
-    applicant_render(ctx,applicant);
+    applicant_render(battle,applicant);
   }
   
   // Point at one applicant. Use a fancy tho tile would work; we can piggyback on the applicants' fancy batch.
-  if ((ms||sec)&&(CTX->cursor>=0)&&(CTX->cursor<CTX->applicantc)) {
-    applicant=CTX->applicantv+CTX->cursor;
+  if ((ms||sec)&&(BATTLE->cursor>=0)&&(BATTLE->cursor<BATTLE->applicantc)) {
+    applicant=BATTLE->applicantv+BATTLE->cursor;
     graf_fancy(&g.graf,applicant->dstx-NS_sys_tilesize,ly,0x17,0,0,NS_sys_tilesize,0,0);
   }
   
   // Resume.
-  if (CTX->resume) {
-    graf_set_input(&g.graf,CTX->resume->texid);
-    graf_decal(&g.graf,(FBW>>1)-(RESUMEW>>1),(int)CTX->resumey,0,0,RESUMEW,RESUMEH);
+  if (BATTLE->resume) {
+    graf_set_input(&g.graf,BATTLE->resume->texid);
+    graf_decal(&g.graf,(FBW>>1)-(RESUMEW>>1),(int)BATTLE->resumey,0,0,RESUMEW,RESUMEH);
   }
   
   // Clock.
@@ -598,10 +569,12 @@ static void _hiring_render(void *ctx) {
  
 const struct battle_type battle_type_hiring={
   .name="hiring",
+  .objlen=sizeof(struct battle_hiring),
   .strix_name=54,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_man_cpu)|(1<<NS_players_cpu_cpu),
+  .support_pvp=0, // We're one of the rare exceptions, no 2-player.
+  .support_cvc=1,
   .del=_hiring_del,
   .init=_hiring_init,
   .update=_hiring_update,

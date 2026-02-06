@@ -104,11 +104,6 @@ void game_enable_target(int strix);
  */
 int game_choose_fish(int x,int y,int z);
 
-/* Handicap for a typical random encounter.
- * Accounts for current state and all.
- */
-uint8_t game_get_handicap(int battle);
-
 /* Decide what should be awarded for winning some battle, accounting for current state.
  * (monsterarg) is the 4-byte argument to a monster sprite, or null.
  * Never returns more than (a).

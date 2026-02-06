@@ -23,11 +23,7 @@
 #define LABEL_LIMIT 2
 
 struct battle_strangling {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   double animclock;
   int animframe;
@@ -60,35 +56,34 @@ struct battle_strangling {
   } playerv[2];
 };
 
-#define CTX ((struct battle_strangling*)ctx)
+#define BATTLE ((struct battle_strangling*)battle)
 
 /* Delete.
  */
  
-static void _strangling_del(void *ctx) {
-  struct label *label=CTX->labelv;
-  int i=CTX->labelc;
+static void _strangling_del(struct battle *battle) {
+  struct label *label=BATTLE->labelv;
+  int i=BATTLE->labelc;
   for (;i-->0;label++) egg_texture_del(label->texid);
-  free(ctx);
 }
 
 /* Add or replace a label.
  */
  
-static struct label *strangling_label_by_labelid(void *ctx,int labelid) {
-  struct label *label=CTX->labelv;
-  int i=CTX->labelc;
+static struct label *strangling_label_by_labelid(struct battle *battle,int labelid) {
+  struct label *label=BATTLE->labelv;
+  int i=BATTLE->labelc;
   for (;i-->0;label++) {
     if (label->labelid==labelid) return label;
   }
   return 0;
 }
  
-static void strangling_set_label(void *ctx,int labelid,int strix) {
-  struct label *label=strangling_label_by_labelid(ctx,labelid);
+static void strangling_set_label(struct battle *battle,int labelid,int strix) {
+  struct label *label=strangling_label_by_labelid(battle,labelid);
   if (!label) {
-    if (CTX->labelc>=LABEL_LIMIT) return;
-    label=CTX->labelv+CTX->labelc++;
+    if (BATTLE->labelc>=LABEL_LIMIT) return;
+    label=BATTLE->labelv+BATTLE->labelc++;
     memset(label,0,sizeof(struct label));
     label->labelid=labelid;
   }
@@ -107,93 +102,65 @@ static void strangling_set_label(void *ctx,int labelid,int strix) {
 /* Change requirements randomly.
  */
  
-static void strangling_change_requirements(void *ctx) {
+static void strangling_change_requirements(struct battle *battle) {
   int hold=rand()&3; // 0..3 = left,right,up,down
   int tap=rand()&1; // 0..1 = south,west
   int holdbase=21;
   int tapbase=33;
-  if (CTX->handicap>0x80) {
+  if (battle->args.bias>0x80) {
     switch (rand()%3) {
       case 1: holdbase=25; break;
       case 2: holdbase=29; break;
     }
     if (rand()&1) tapbase=35;
   }
-  strangling_set_label(ctx,LABELID_HOLD,holdbase+hold);
-  strangling_set_label(ctx,LABELID_TAP,tapbase+tap);
+  strangling_set_label(battle,LABELID_HOLD,holdbase+hold);
+  strangling_set_label(battle,LABELID_TAP,tapbase+tap);
   switch (hold) {
-    case 0: CTX->btnid_hold=EGG_BTN_LEFT; break;
-    case 1: CTX->btnid_hold=EGG_BTN_RIGHT; break;
-    case 2: CTX->btnid_hold=EGG_BTN_UP; break;
-    case 3: CTX->btnid_hold=EGG_BTN_DOWN; break;
+    case 0: BATTLE->btnid_hold=EGG_BTN_LEFT; break;
+    case 1: BATTLE->btnid_hold=EGG_BTN_RIGHT; break;
+    case 2: BATTLE->btnid_hold=EGG_BTN_UP; break;
+    case 3: BATTLE->btnid_hold=EGG_BTN_DOWN; break;
   }
   switch (tap) {
-    case 0: CTX->btnid_tap=EGG_BTN_SOUTH; break;
-    case 1: CTX->btnid_tap=EGG_BTN_WEST; break;
+    case 0: BATTLE->btnid_tap=EGG_BTN_SOUTH; break;
+    case 1: BATTLE->btnid_tap=EGG_BTN_WEST; break;
   }
 }
 
 /* New.
  */
  
-static void *_strangling_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_strangling));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
+static int _strangling_init(struct battle *battle) {
   
-  double diff=(double)handicap/255.0;
+  double diff=(double)battle->args.bias/255.0;
   double invdiff=1.0-diff;
-  CTX->changetime=CHANGE_TIME_EASY*invdiff+CHANGE_TIME_HARD*diff;
-  CTX->changeclock=CTX->changetime+((rand()&0xffff)*CHANGE_TIME_VARIATION)/65535.0;
-  strangling_change_requirements(ctx);
+  BATTLE->changetime=CHANGE_TIME_EASY*invdiff+CHANGE_TIME_HARD*diff;
+  BATTLE->changeclock=BATTLE->changetime+((rand()&0xffff)*CHANGE_TIME_VARIATION)/65535.0;
+  strangling_change_requirements(battle);
   
   // Init players. Visually, we don't support cpu-vs-cpu, no princess pictures, but technically it's ok.
   // But our difficulty is not a peer bias, so a cpu-vs-cpu battle would be random regardless of handicap.
-  CTX->playerv[0].who=0;
-  CTX->playerv[0].hp=1.0;
-  CTX->playerv[1].who=1;
-  CTX->playerv[1].hp=1.0;
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        CTX->playerv[0].human=0;
-        CTX->playerv[1].human=0;
-      } break;
-    case NS_players_cpu_man: {
-        CTX->playerv[0].human=0;
-        CTX->playerv[1].human=2;
-      } break;
-    case NS_players_man_cpu: {
-        CTX->playerv[0].human=1;
-        CTX->playerv[1].human=0;
-      } break;
-    case NS_players_man_man: {
-        CTX->playerv[0].human=1;
-        CTX->playerv[1].human=2;
-      } break;
-  }
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[0].hp=1.0;
+  BATTLE->playerv[1].who=1;
+  BATTLE->playerv[1].hp=1.0;
+  BATTLE->playerv[0].human=battle->args.lctl;
+  BATTLE->playerv[1].human=battle->args.rctl;
   
   // Set (taptime,awaretime) in both players, tho only cpu players need it. Human players will safely ignore.
-  double normhand=CTX->handicap/255.0;
+  double normhand=battle_scalar_difficulty(battle);
   double invhand=1.0-normhand;
-  CTX->playerv[0].taptime=TAP_TIME_LO*invhand+TAP_TIME_HI*normhand;
-  CTX->playerv[0].awaretime=AWARE_TIME_LO*invhand+AWARE_TIME_HI*normhand;
-  CTX->playerv[1].taptime=TAP_TIME_LO*normhand+TAP_TIME_HI*invhand;
-  CTX->playerv[1].awaretime=AWARE_TIME_LO*normhand+AWARE_TIME_HI*invhand;
-  CTX->playerv[0].awareclock=CTX->playerv[0].awaretime*0.5;
-  CTX->playerv[1].awareclock=CTX->playerv[1].awaretime*0.5;
+  BATTLE->playerv[0].taptime=TAP_TIME_LO*invhand+TAP_TIME_HI*normhand;
+  BATTLE->playerv[0].awaretime=AWARE_TIME_LO*invhand+AWARE_TIME_HI*normhand;
+  BATTLE->playerv[1].taptime=TAP_TIME_LO*normhand+TAP_TIME_HI*invhand;
+  BATTLE->playerv[1].awaretime=AWARE_TIME_LO*normhand+AWARE_TIME_HI*invhand;
+  BATTLE->playerv[0].awareclock=BATTLE->playerv[0].awaretime*0.5;
+  BATTLE->playerv[1].awareclock=BATTLE->playerv[1].awaretime*0.5;
   
   // Random position and direction for all labels.
-  struct label *label=CTX->labelv;
-  int i=CTX->labelc;
+  struct label *label=BATTLE->labelv;
+  int i=BATTLE->labelc;
   for (;i-->0;label++) {
     label->x=rand()%((FBW-label->w)|1);
     label->y=rand()%((GROUNDY-label->h)|1);
@@ -204,14 +171,14 @@ static void *_strangling_init(
     label->dy=cos(t)*LABEL_SPEED;
   }
   
-  return ctx;
+  return 0;
 }
 
 /* Update a CPU player.
  * Select new value for (player->input).
  */
  
-static void strangling_update_player_cpu(void *ctx,struct player *player,double elapsed) {
+static void strangling_update_player_cpu(struct battle *battle,struct player *player,double elapsed) {
 
   // If we were holding a thumb button, release it. They stay on for just one frame.
   player->pvinput=player->input;
@@ -220,7 +187,7 @@ static void strangling_update_player_cpu(void *ctx,struct player *player,double 
   // Tick (awareclock) and on expiry, note the current requirements.
   if ((player->awareclock-=elapsed)<=0.0) {
     player->awareclock+=player->awaretime;
-    player->input_choice=CTX->btnid_hold|CTX->btnid_tap;
+    player->input_choice=BATTLE->btnid_hold|BATTLE->btnid_tap;
   }
   
   // Tick (tapclock) and on expiry, press what we think are the right buttons.
@@ -234,21 +201,21 @@ static void strangling_update_player_cpu(void *ctx,struct player *player,double 
 /* Update either player, with its (input,pvinput) freshly updated.
  */
  
-static void strangling_update_player_common(void *ctx,struct player *player,double elapsed) {
+static void strangling_update_player_common(struct battle *battle,struct player *player,double elapsed) {
   // Power drains constantly.
   const double drain_rate=0.300;
   if ((player->power-=drain_rate*elapsed)<=0.0) {
     player->power=0.0;
   }
   // Must hold the one specific d-pad button.
-  int holdok=((player->input&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN))==CTX->btnid_hold);
+  int holdok=((player->input&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN))==BATTLE->btnid_hold);
   // If they tap the wrong thumb button, a penalty. If holding wrong, any tap is wrong.
   int tapgood=0,tapbad=0;
   if ((player->input&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) {
-    if (holdok&&(CTX->btnid_tap==EGG_BTN_SOUTH)) tapgood=1; else tapbad=1;
+    if (holdok&&(BATTLE->btnid_tap==EGG_BTN_SOUTH)) tapgood=1; else tapbad=1;
   }
   if ((player->input&EGG_BTN_WEST)&&!(player->pvinput&EGG_BTN_WEST)) {
-    if (holdok&&(CTX->btnid_tap==EGG_BTN_WEST)) tapgood=1; else tapbad=1;
+    if (holdok&&(BATTLE->btnid_tap==EGG_BTN_WEST)) tapgood=1; else tapbad=1;
   }
   if (tapbad) {
     player->power=0.0;
@@ -261,34 +228,26 @@ static void strangling_update_player_common(void *ctx,struct player *player,doub
 /* Update.
  */
  
-static void _strangling_update(void *ctx,double elapsed) {
+static void _strangling_update(struct battle *battle,double elapsed) {
   
   // Finished?
-  if (CTX->outcome>-2) {
-    if (CTX->cb_end) {
-      if ((CTX->end_cooldown-=elapsed)<=0.0) {
-        CTX->cb_end(CTX->outcome,CTX->userdata);
-        CTX->cb_end=0;
-      }
-    }
-    return;
-  }
+  if (battle->outcome>-2) return;
   
   // Tick animation.
-  if ((CTX->animclock-=elapsed)<=0.0) {
-    CTX->animclock+=0.200;
-    if (++(CTX->animframe)>=2) CTX->animframe=0;
+  if ((BATTLE->animclock-=elapsed)<=0.0) {
+    BATTLE->animclock+=0.200;
+    if (++(BATTLE->animframe)>=2) BATTLE->animframe=0;
   }
   
   // Change requirements periodically.
-  if ((CTX->changeclock-=elapsed)<=0.0) {
-    CTX->changeclock=CTX->changetime+((rand()&0xffff)*CHANGE_TIME_VARIATION)/65535.0;
-    strangling_change_requirements(ctx);
+  if ((BATTLE->changeclock-=elapsed)<=0.0) {
+    BATTLE->changeclock=BATTLE->changetime+((rand()&0xffff)*CHANGE_TIME_VARIATION)/65535.0;
+    strangling_change_requirements(battle);
   }
   
   // Move labels.
-  struct label *label=CTX->labelv;
-  int i=CTX->labelc;
+  struct label *label=BATTLE->labelv;
+  int i=BATTLE->labelc;
   for (;i-->0;label++) {
     label->fx+=label->dx*elapsed;
     label->fy+=label->dy*elapsed;
@@ -301,37 +260,37 @@ static void _strangling_update(void *ctx,double elapsed) {
   }
   
   // Collect input, AI, and update each player's power.
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   for (i=2;i-->0;player++) {
     if (player->human) {
       player->input=g.input[player->human];
       player->pvinput=g.pvinput[player->human];
     } else {
-      strangling_update_player_cpu(ctx,player,elapsed);
+      strangling_update_player_cpu(battle,player,elapsed);
     }
-    strangling_update_player_common(ctx,player,elapsed);
+    strangling_update_player_common(battle,player,elapsed);
   }
   
   // Select state based on players' power.
   // Different thresholds for catch and release, to avoid rapid toggling.
-  if (CTX->stateclock>0.0) {
-    CTX->stateclock-=elapsed;
+  if (BATTLE->stateclock>0.0) {
+    BATTLE->stateclock-=elapsed;
   } else {
     const double threshup  =0.250;
     const double threshdown=0.210;
-    int pvstate=CTX->state;
-    if (CTX->state&2) {
-      if (CTX->playerv[0].power<threshdown) CTX->state&=~2;
+    int pvstate=BATTLE->state;
+    if (BATTLE->state&2) {
+      if (BATTLE->playerv[0].power<threshdown) BATTLE->state&=~2;
     } else {
-      if (CTX->playerv[0].power>threshup) CTX->state|=2;
+      if (BATTLE->playerv[0].power>threshup) BATTLE->state|=2;
     }
-    if (CTX->state&1) {
-      if (CTX->playerv[1].power<threshdown) CTX->state&=~1;
+    if (BATTLE->state&1) {
+      if (BATTLE->playerv[1].power<threshdown) BATTLE->state&=~1;
     } else {
-      if (CTX->playerv[1].power>threshup) CTX->state|=1;
+      if (BATTLE->playerv[1].power>threshup) BATTLE->state|=1;
     }
-    if (pvstate!=CTX->state) {
-      CTX->stateclock=STATE_HOLD_TIME;
+    if (pvstate!=BATTLE->state) {
+      BATTLE->stateclock=STATE_HOLD_TIME;
     }
   }
   
@@ -339,17 +298,17 @@ static void _strangling_update(void *ctx,double elapsed) {
   // Ties are mathematically possible, but practically unlikely.
   // We'll drop the left player first; right wins ties.
   // HP is not visible to the user.
-  if (CTX->state&1) {
-    if ((CTX->playerv[0].hp-=STRANGLE_RATE*elapsed*CTX->playerv[1].power)<=0.0) {
-      CTX->outcome=-1;
-      CTX->end_cooldown=END_COOLDOWN;
+  if (BATTLE->state&1) {
+    if ((BATTLE->playerv[0].hp-=STRANGLE_RATE*elapsed*BATTLE->playerv[1].power)<=0.0) {
+      battle->outcome=-1;
+      BATTLE->end_cooldown=END_COOLDOWN;
       return;
     }
   }
-  if (CTX->state&2) {
-    if ((CTX->playerv[1].hp-=STRANGLE_RATE*elapsed*CTX->playerv[0].power)<=0.0) {
-      CTX->outcome=1;
-      CTX->end_cooldown=END_COOLDOWN;
+  if (BATTLE->state&2) {
+    if ((BATTLE->playerv[1].hp-=STRANGLE_RATE*elapsed*BATTLE->playerv[0].power)<=0.0) {
+      battle->outcome=1;
+      BATTLE->end_cooldown=END_COOLDOWN;
       return;
     }
   }
@@ -359,7 +318,7 @@ static void _strangling_update(void *ctx,double elapsed) {
  * Caller supplies the final outer bounds.
  */
  
-static void strangling_render_meter(void *ctx,int x,int y,int w,int h,double power) {
+static void strangling_render_meter(struct battle *battle,int x,int y,int w,int h,double power) {
   int ph=(int)(h*power);
   if (ph<0) ph=0;
   else if (ph>h) ph=h;
@@ -370,7 +329,7 @@ static void strangling_render_meter(void *ctx,int x,int y,int w,int h,double pow
 /* Render.
  */
  
-static void _strangling_render(void *ctx) {
+static void _strangling_render(struct battle *battle) {
 
   // Background.
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
@@ -378,9 +337,9 @@ static void _strangling_render(void *ctx) {
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // Labels.
-  if (CTX->outcome==-2) {
-    struct label *label=CTX->labelv;
-    int i=CTX->labelc;
+  if (battle->outcome==-2) {
+    struct label *label=BATTLE->labelv;
+    int i=BATTLE->labelc;
     for (;i-->0;label++) {
       if (!label->texid) continue;
       graf_set_input(&g.graf,label->texid);
@@ -394,23 +353,23 @@ static void _strangling_render(void *ctx) {
   const int srcw=96;
   const int srch=64;
   int srcx,srcy;
-  if (CTX->outcome==-1) {
+  if (battle->outcome==-1) {
     srcx=0;
     srcy=srch*4;
-  } else if (CTX->outcome==1) {
+  } else if (battle->outcome==1) {
     srcx=srcw;
     srcy=srch*4;
   } else {
-    srcx=srcw*CTX->animframe;
-    srcy=srch*CTX->state;
+    srcx=srcw*BATTLE->animframe;
+    srcy=srch*BATTLE->state;
   }
   graf_set_image(&g.graf,RID_image_battle_strangling);
   graf_decal(&g.graf,(FBW>>1)-(srcw>>1),GROUNDY-srch+1,srcx,srcy,srcw,srch);
   
   // Power meters left and right.
   int barw=10,barh=80;
-  strangling_render_meter(ctx,(FBW>>1)-60-barw,GROUNDY-5-barh,barw,barh,CTX->playerv[0].power);
-  strangling_render_meter(ctx,(FBW>>1)+60,GROUNDY-5-barh,barw,barh,CTX->playerv[1].power);
+  strangling_render_meter(battle,(FBW>>1)-60-barw,GROUNDY-5-barh,barw,barh,BATTLE->playerv[0].power);
+  strangling_render_meter(battle,(FBW>>1)+60,GROUNDY-5-barh,barw,barh,BATTLE->playerv[1].power);
 }
 
 /* Type definition.
@@ -418,10 +377,13 @@ static void _strangling_render(void *ctx) {
  
 const struct battle_type battle_type_strangling={
   .name="strangling",
+  .objlen=sizeof(struct battle_strangling),
   .strix_name=19,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  // We do support both pvp and cvc. But the appearance is always Dot vs Root Devil.
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_strangling_del,
   .init=_strangling_init,
   .update=_strangling_update,

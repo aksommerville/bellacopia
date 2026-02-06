@@ -384,33 +384,36 @@ static void monster_cb_princess(struct modal *modal,int outcome,void *userdata) 
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->spent) return;
-  int players,left_name=0,princess=0;
-  uint8_t handicap=0x80;
+  struct modal_args_battle args={
+    .battle=SPRITE->battle,
+    .args={
+      .difficulty=0x80,
+      .bias=0x80,
+      .rctl=0,
+      .rface=NS_face_monster,
+    },
+    .userdata=sprite,
+    .right_name=SPRITE->name_strix,
+  };
+
   if (other->type==&sprite_type_hero) {
     // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
     if (g.vanishing>0.0) {
       return;
     }
-    players=NS_players_man_cpu;
-    left_name=4; // "Dot"
-    handicap=game_get_handicap(SPRITE->battle);
+    args.args.lctl=1;
+    args.args.lface=NS_face_dot;
+    //TODO difficulty and bias
+    args.cb=monster_cb_battle;
   } else if (other->type==&sprite_type_princess) {
-    players=NS_players_cpu_cpu;
-    left_name=6; // "Princess"
-    princess=1;
-    handicap=0xa0;
+    args.args.lctl=0;
+    args.args.lface=NS_face_princess;
+    args.args.bias=0xa0;
+    args.cb=monster_cb_princess;
+  } else {
+    return;
   }
-  if (!left_name) return;
-  int battle=SPRITE->battle;
-  struct modal_args_battle args={
-    .battle=battle,
-    .players=players,
-    .handicap=handicap,
-    .cb=princess?monster_cb_princess:monster_cb_battle,
-    .userdata=sprite,
-    .left_name=left_name,
-    .right_name=SPRITE->name_strix,
-  };
+
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;
   SPRITE->spent=1;

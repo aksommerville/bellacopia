@@ -659,12 +659,8 @@ int game_choose_fish(int x,int y,int z) {
   return 0;
 }
 
-/* Handicap and prize for regular battles.
+/* Prize for regular battles.
  */
- 
-uint8_t game_get_handicap(int battle) {
-  return 0x80;//TODO
-}
 
 int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) {
   if (!v||(a<1)) return 0;

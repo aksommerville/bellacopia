@@ -18,11 +18,7 @@
 #define CPU_HEADSTART 1.000 /* No bobbing this early in any match. */
 
 struct battle_apples {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   
   struct player {
@@ -55,20 +51,19 @@ struct battle_apples {
   int applec;
 };
 
-#define CTX ((struct battle_apples*)ctx)
+#define BATTLE ((struct battle_apples*)battle)
 
 /* Delete.
  */
  
-static void _apples_del(void *ctx) {
-  free(ctx);
+static void _apples_del(struct battle *battle) {
 }
 
 /* Initialize player.
  */
  
-static void player_init(void *ctx,struct player *player,int human,int appearance) {
-  if (player==CTX->playerv) {
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
+  if (player==BATTLE->playerv) {
     player->who=0;
     player->dstx=FBW>>2;
   } else {
@@ -79,7 +74,7 @@ static void player_init(void *ctx,struct player *player,int human,int appearance
   if (player->human=human) {
     player->pvinput=EGG_BTN_SOUTH;
   } else {
-    double skill=CTX->handicap/255.0;
+    double skill=battle->args.bias/255.0;
     if (!player->who) skill=1.0-skill;
     player->cputime=CPU_DELAY_LONG*(1.0-skill)+CPU_DELAY_SHORT*skill;
     player->cpuclock=player->cputime+CPU_HEADSTART;
@@ -119,44 +114,14 @@ static void player_init(void *ctx,struct player *player,int human,int appearance
 
 /* New.
  */
- 
-static void *_apples_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_apples));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
+
+static int _apples_init(struct battle *battle) {
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(ctx,CTX->playerv+0,0,2);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_man_man: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    default: _apples_del(ctx); return 0;
-  }
-  
-  CTX->applec=APPLE_LIMIT;
-  struct apple *apple=CTX->applev;
-  int i=CTX->applec;
+  BATTLE->applec=APPLE_LIMIT;
+  struct apple *apple=BATTLE->applev;
+  int i=BATTLE->applec;
   for (;i-->0;apple++) {
     apple->animclock=((rand()&0xffff)*0.200)/65535.0;
     apple->animframe=rand()&3;
@@ -166,33 +131,33 @@ static void *_apples_init(
     if (i&1) apple->dx=-apple->dx; // Initial direction, give half each way.
   }
   
-  return ctx;
+  return 0;
 }
 
 /* End of bob. If an apple is in range, start eating it.
  */
  
-static void player_check_apples(void *ctx,struct player *player) {
+static void player_check_apples(struct battle *battle,struct player *player) {
   if (player->eating) {
     player->eating=0;
-    struct apple *apple=CTX->applev+CTX->applec-1;
-    int i=CTX->applec;
+    struct apple *apple=BATTLE->applev+BATTLE->applec-1;
+    int i=BATTLE->applec;
     for (;i-->0;apple--) {
       if (apple->distress==player) {
-        CTX->applec--;
-        memmove(apple,apple+1,sizeof(struct apple)*(CTX->applec-i));
+        BATTLE->applec--;
+        memmove(apple,apple+1,sizeof(struct apple)*(BATTLE->applec-i));
       }
     }
     return;
   }
   player->bobclock=0.0;
-  if (CTX->outcome>-2) return;
+  if (battle->outcome>-2) return;
   const double radius=8.0;
   double focusx=player->dstx;
   if (player->xform) focusx-=20.0;
   else focusx+=20.0;
-  struct apple *apple=CTX->applev+CTX->applec-1;
-  int i=CTX->applec;
+  struct apple *apple=BATTLE->applev+BATTLE->applec-1;
+  int i=BATTLE->applec;
   for (;i-->0;apple--) {
     double dx=apple->x-focusx;
     if ((dx<-radius)||(dx>radius)) continue;
@@ -211,17 +176,17 @@ static void player_check_apples(void *ctx,struct player *player) {
 /* Begin bobbing.
  */
  
-static void player_bob(void *ctx,struct player *player) {
-  if (CTX->outcome>-2) return;
+static void player_bob(struct battle *battle,struct player *player) {
+  if (battle->outcome>-2) return;
   player->bobclock=player->bobtime;
 }
 
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   if (input!=player->pvinput) {
-    if ((input&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_bob(ctx,player);
+    if ((input&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_bob(battle,player);
     player->pvinput=input;
   }
 }
@@ -229,12 +194,12 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
 /* Update CPU player.
  */
  
-static int should_bob(void *ctx,struct player *player) {
+static int should_bob(struct battle *battle,struct player *player) {
   double focusx=player->dstx;
   if (player->xform) focusx-=20.0;
   else focusx+=20.0;
-  struct apple *apple=CTX->applev;
-  int i=CTX->applec;
+  struct apple *apple=BATTLE->applev;
+  int i=BATTLE->applec;
   for (;i-->0;apple++) {
     double dx=apple->x-focusx;
     if (dx<-6.0) continue;
@@ -244,18 +209,18 @@ static int should_bob(void *ctx,struct player *player) {
   return 0;
 }
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
   if ((player->cpuclock-=elapsed)>0.0) return;
-  if (should_bob(ctx,player)) {
+  if (should_bob(battle,player)) {
     player->cpuclock+=player->cputime;
-    player_bob(ctx,player);
+    player_bob(battle,player);
   }
 }
 
 /* Update apple.
  */
  
-static void apple_update(void *ctx,struct apple *apple,double elapsed) {
+static void apple_update(struct battle *battle,struct apple *apple,double elapsed) {
   if (apple->distress) return;
   apple->x+=apple->dx*elapsed;
   if (apple->x<APPLE_X0) {
@@ -274,48 +239,37 @@ static void apple_update(void *ctx,struct apple *apple,double elapsed) {
 /* Update.
  */
  
-static void _apples_update(void *ctx,double elapsed) {
-
-  if (CTX->outcome>-2) {
-    if (CTX->end_cooldown>0.0) {
-      CTX->end_cooldown-=elapsed;
-    } else if (CTX->cb_end) {
-      CTX->cb_end(CTX->outcome,CTX->userdata);
-      CTX->cb_end=0;
-    }
-    // Do allow update to proceed during the cooldown.
-    // But we'll forbid any further bobbing.
-  }
+static void _apples_update(struct battle *battle,double elapsed) {
   
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
     if (player->bobclock>0.0) {
       if ((player->bobclock-=elapsed)<=0.0) {
-        player_check_apples(ctx,player);
+        player_check_apples(battle,player);
       }
     } else if (player->eatclock>0.0) {
       player->eatclock-=elapsed;
     } else {
-      if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-      else player_update_cpu(ctx,player,elapsed);
+      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      else player_update_cpu(battle,player,elapsed);
     }
   }
   
-  struct apple *apple=CTX->applev;
-  for (i=CTX->applec;i-->0;apple++) {
-    apple_update(ctx,apple,elapsed);
+  struct apple *apple=BATTLE->applev;
+  for (i=BATTLE->applec;i-->0;apple++) {
+    apple_update(battle,apple,elapsed);
   }
   
   // First to 4 wins.
   // Ties are very unlikely. Break to the left, because that's how the scoreboard will render.
-  if (CTX->outcome==-2) {
-    if (CTX->playerv[0].score>=4) {
-      CTX->outcome=1;
-      CTX->end_cooldown=END_COOLDOWN;
-    } else if (CTX->playerv[1].score>=4) {
-      CTX->outcome=-1;
-      CTX->end_cooldown=END_COOLDOWN;
+  if (battle->outcome==-2) {
+    if (BATTLE->playerv[0].score>=4) {
+      battle->outcome=1;
+      BATTLE->end_cooldown=END_COOLDOWN;
+    } else if (BATTLE->playerv[1].score>=4) {
+      battle->outcome=-1;
+      BATTLE->end_cooldown=END_COOLDOWN;
     }
   }
 }
@@ -323,7 +277,7 @@ static void _apples_update(void *ctx,double elapsed) {
 /* Render player.
  */
  
-static void player_render(void *ctx,struct player *player) {
+static void player_render(struct battle *battle,struct player *player) {
   int topy=GROUNDY-38;
   if (player->bobclock>0.0) {
     int dstx=player->dstx;
@@ -347,7 +301,7 @@ static void player_render(void *ctx,struct player *player) {
 /* Render apple.
  */
  
-static void apple_render(void *ctx,struct apple *apple) {
+static void apple_render(struct battle *battle,struct apple *apple) {
   uint8_t tileid,xform=0;
   if (apple->dx<0.0) xform=EGG_XFORM_XREV;
   if (apple->distress) {
@@ -364,7 +318,7 @@ static void apple_render(void *ctx,struct apple *apple) {
 /* Render.
  */
  
-static void _apples_render(void *ctx) {
+static void _apples_render(struct battle *battle) {
 
   // Background.
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
@@ -373,11 +327,11 @@ static void _apples_render(void *ctx) {
   
   // Sprites.
   graf_set_image(&g.graf,RID_image_battle_goblins);
-  player_render(ctx,CTX->playerv+0);
-  player_render(ctx,CTX->playerv+1);
-  struct apple *apple=CTX->applev;
-  int i=CTX->applec;
-  for (;i-->0;apple++) apple_render(ctx,apple);
+  player_render(battle,BATTLE->playerv+0);
+  player_render(battle,BATTLE->playerv+1);
+  struct apple *apple=BATTLE->applev;
+  int i=BATTLE->applec;
+  for (;i-->0;apple++) apple_render(battle,apple);
   
   // Scoreboard
   const int lighty=GROUNDY+NS_sys_tilesize;
@@ -386,8 +340,8 @@ static void _apples_render(void *ctx) {
   int lightsx=(FBW>>1)-(lightsw>>1)+(NS_sys_tilesize>>1);
   for (i=0;i<7;i++,lightsx+=lightspacing) {
     uint32_t color=0x808080ff;
-    if (i<CTX->playerv[0].score) color=CTX->playerv[0].color;
-    else if (i>=7-CTX->playerv[1].score) color=CTX->playerv[1].color;
+    if (i<BATTLE->playerv[0].score) color=BATTLE->playerv[0].color;
+    else if (i>=7-BATTLE->playerv[1].score) color=BATTLE->playerv[1].color;
     graf_fancy(&g.graf,lightsx,lighty,0xd2,0,0,NS_sys_tilesize,0,color);
   }
 }
@@ -397,10 +351,12 @@ static void _apples_render(void *ctx) {
  
 const struct battle_type battle_type_apples={
   .name="apples",
+  .objlen=sizeof(struct battle_apples),
   .strix_name=58,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_apples_del,
   .init=_apples_init,
   .update=_apples_update,

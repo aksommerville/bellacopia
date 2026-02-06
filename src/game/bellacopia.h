@@ -11,13 +11,13 @@
 #include "egg_res_toc.h"
 #include "map.h"
 #include "store.h"
+#include "battle/battle.h"
 #include "modal/modal.h"
 #include "sprite/sprite.h"
 #include "camera.h"
 #include "game.h"
 #include "feet.h"
 #include "spawner.h"
-#include "battle/battle.h"
 
 #define SOUND_BLACKOUT_LIMIT 16
 #define MODAL_LIMIT 8 /* Could do the stack dynamically, but a static stack also serves as a sanity check on its depth. */

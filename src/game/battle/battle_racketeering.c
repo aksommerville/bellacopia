@@ -22,11 +22,7 @@
 #define THROW_LIMIT 3 /* CPU player with maximum skill will hit so many per volley, then miss deliberately. */
 
 struct battle_racketeering {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double cooldown;
   double serveto;
   
@@ -53,37 +49,36 @@ struct battle_racketeering {
   } ball;
 };
 
-#define CTX ((struct battle_racketeering*)ctx)
+#define BATTLE ((struct battle_racketeering*)battle)
 
 /* Delete.
  */
  
-static void _racketeering_del(void *ctx) {
-  free(ctx);
+static void _racketeering_del(struct battle *battle) {
 }
 
 /* The other guy.
  */
  
-static struct player *other_player(void *ctx,struct player *notme) {
-  if (notme==CTX->playerv) return CTX->playerv+1;
-  return CTX->playerv;
+static struct player *other_player(struct battle *battle,struct player *notme) {
+  if (notme==BATTLE->playerv) return BATTLE->playerv+1;
+  return BATTLE->playerv;
 }
 
 /* Init player.
  */
  
-static void player_init(void *ctx,struct player *player,int human,int appearance) {
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
   player->blackout=1;
   player->delay=CPU_SERVE_DELAY;
   player->human=human;
   player->anyy=player->y=FBH>>1;
   if (!player->who) { // Left
     player->anyx=player->x=FBW*0.333;
-    player->skill=1.0-CTX->handicap/255.0;
+    player->skill=1.0-battle->args.bias/255.0;
   } else { // Right
     player->anyx=player->x=FBW*0.666;
-    player->skill=CTX->handicap/255.0;
+    player->skill=battle->args.bias/255.0;
   }
   player->speed=SPEED_MIN*(1.0-player->skill)+SPEED_MAX*player->skill;
   if (!human) player->speed*=CPU_SPEED_PENALTY;
@@ -102,65 +97,37 @@ static void player_init(void *ctx,struct player *player,int human,int appearance
 
 /* New.
  */
- 
-static void *_racketeering_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_racketeering));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
+
+static int _racketeering_init(struct battle *battle) {
   
-  CTX->playerv[0].who=0;
-  CTX->playerv[1].who=1;
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(ctx,CTX->playerv+0,0,2);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_man_man: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-  }
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   
   // With a discrepancy of skill, let the unskilled player serve first.
   // Very unskilled CPU players will miss every volley, so basically whoever gets the first serve wins.
-  if (CTX->handicap<=0x70) CTX->serving=CTX->playerv+1;
-  else if (CTX->handicap>=0x90) CTX->serving=CTX->playerv+0;
-  else CTX->serving=CTX->playerv+(rand()&1);
+  if (battle->args.bias<=0x70) BATTLE->serving=BATTLE->playerv+1;
+  else if (battle->args.bias>=0x90) BATTLE->serving=BATTLE->playerv+0;
+  else BATTLE->serving=BATTLE->playerv+(rand()&1);
   
-  return ctx;
+  return 0;
 }
 
 /* Align ball to a player, when serving.
  * We cheat it a little for visual appeal, so don't make any assumptions.
  */
  
-static void ball_align_to_player(void *ctx,struct ball *ball,struct player *player) {
-  ball->x=CTX->serving->x;
-  ball->y=CTX->serving->y-2.0;
+static void ball_align_to_player(struct battle *battle,struct ball *ball,struct player *player) {
+  ball->x=BATTLE->serving->x;
+  ball->y=BATTLE->serving->y-2.0;
   ball->z=0.0;
 }
 
 /* Choose a random serve vector.
  */
  
-static void ball_random_serve(void *ctx,struct ball *ball) {
+static void ball_random_serve(struct battle *battle,struct ball *ball) {
 
   // Pick three random numbers, and bias Z substantially -- it should go mostly toward the back wall.
   double x=((rand()&0xffff)-0x8000)/32768.0;
@@ -183,10 +150,10 @@ static void ball_random_serve(void *ctx,struct ball *ball) {
  * More skilled players will approach the center.
  */
  
-static void racketeering_reset_anys(void *ctx) {
+static void racketeering_reset_anys(struct battle *battle) {
   const double mx=FBW*0.5;
   const double my=FBH*0.5;
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
     if (player->human) continue;
@@ -200,8 +167,8 @@ static void racketeering_reset_anys(void *ctx) {
 /* Each time the ball is served, reset CPU players' (throw).
  */
  
-static void racketeering_reset_throws(void *ctx) {
-  struct player *player=CTX->playerv;
+static void racketeering_reset_throws(struct battle *battle) {
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
     if (player->human) continue;
@@ -212,7 +179,7 @@ static void racketeering_reset_throws(void *ctx) {
 /* Bias the ball's motion per (dx,dy), increase speed, and reverse dz.
  */
  
-static void ball_bias_and_increase(void *ctx,struct ball *ball,double dx,double dy) {
+static void ball_bias_and_increase(struct battle *battle,struct ball *ball,double dx,double dy) {
   double ospeed=sqrt(ball->dx*ball->dx+ball->dy*ball->dy+ball->dz*ball->dz);
   ball->dz=-ball->dz;
   ball->dx+=(dx*WHACK_BIAS)/STRIKE_ZONE;
@@ -230,38 +197,38 @@ static void ball_bias_and_increase(void *ctx,struct ball *ball,double dx,double 
  * Don't call if (player->swing>0).
  */
  
-static void racketeering_swing(void *ctx,struct player *player) {
+static void racketeering_swing(struct battle *battle,struct player *player) {
   player->swing=SWING_TIME;
   player->blackout=1;
   
-  if (player==CTX->serving) {
+  if (player==BATTLE->serving) {
     bm_sound(RID_sound_tennis_serve);
-    ball_align_to_player(ctx,&CTX->ball,player);
-    ball_random_serve(ctx,&CTX->ball);
-    CTX->volley=other_player(ctx,CTX->serving);
-    CTX->serving=0;
-    racketeering_reset_anys(ctx);
-    racketeering_reset_throws(ctx);
+    ball_align_to_player(battle,&BATTLE->ball,player);
+    ball_random_serve(battle,&BATTLE->ball);
+    BATTLE->volley=other_player(battle,BATTLE->serving);
+    BATTLE->serving=0;
+    racketeering_reset_anys(battle);
+    racketeering_reset_throws(battle);
     
-  } else if (CTX->serving) {
+  } else if (BATTLE->serving) {
     bm_sound(RID_sound_swing_racket);
     
   } else {
     bm_sound(RID_sound_swing_racket);
-    if (CTX->ball.dz>0.0) {
+    if (BATTLE->ball.dz>0.0) {
     } else {
-      double dx=CTX->ball.x-player->x;
-      double dy=CTX->ball.y-player->y;
-      double dz=CTX->ball.z;
+      double dx=BATTLE->ball.x-player->x;
+      double dy=BATTLE->ball.y-player->y;
+      double dz=BATTLE->ball.z;
       dz*=ANTI_WHIFF_Z_SCALE; // Scale down the Z difference because it's very hard to judge.
       double d2=dx*dx+dy*dy+dz*dz;
       if (d2>STRIKE_ZONE*STRIKE_ZONE) {
         // Whiff!
       } else {
         double distance=sqrt(d2);
-        ball_bias_and_increase(ctx,&CTX->ball,dx,dy);
-        CTX->volley=other_player(ctx,CTX->volley);
-        racketeering_reset_anys(ctx);
+        ball_bias_and_increase(battle,&BATTLE->ball,dx,dy);
+        BATTLE->volley=other_player(battle,BATTLE->volley);
+        racketeering_reset_anys(battle);
       }
     }
   }
@@ -270,7 +237,7 @@ static void racketeering_swing(void *ctx,struct player *player) {
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   if (player->blackout) {
     if (!(input&EGG_BTN_SOUTH)) player->blackout=0;
     else input&=~EGG_BTN_SOUTH;
@@ -295,7 +262,7 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
     if (player->x<0.0) player->x=0.0; else if (player->x>FBW) player->x=FBW;
     if (player->y<0.0) player->y=0.0; else if (player->y>FBH) player->y=FBH;
     if ((input&EGG_BTN_SOUTH)&&(player->delay<=0.0)) {
-      racketeering_swing(ctx,player);
+      racketeering_swing(battle,player);
     }
   }
 }
@@ -303,7 +270,7 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
 /* Update CPU player.
  */
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
 
   // Complete my swing.
   if (player->swing>0.0) {
@@ -312,9 +279,9 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   }
 
   // My serve?
-  if (CTX->serving==player) {
+  if (BATTLE->serving==player) {
     if ((player->delay-=elapsed)<=0.0) {
-      racketeering_swing(ctx,player);
+      racketeering_swing(battle,player);
     }
     return;
   }
@@ -326,21 +293,21 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
    * When it's not my turn, use the screen's center instead of (B). Since we don't know what the other guy's stroke will do to the ball.
    */
   double ax,ay,bx,by;
-  ax=CTX->ball.x;
-  ay=CTX->ball.y;
-  if ((player!=CTX->volley)||CTX->serving) {
+  ax=BATTLE->ball.x;
+  ay=BATTLE->ball.y;
+  if ((player!=BATTLE->volley)||BATTLE->serving) {
     ax=bx=player->anyx;
     ay=by=player->anyy;
   } else {
     // First determine how far we are from the breach. That's either (z,dz) directly, or when moving away, add the time to reach the rear wall.
-    double ballz=CTX->ball.z,balldz=CTX->ball.dz;
+    double ballz=BATTLE->ball.z,balldz=BATTLE->ball.dz;
     if (balldz>0.0) {
       balldz=-balldz;
       ballz+=ZLIMIT-ballz;
     }
     double time_to_breach=-ballz/balldz;
     // (bx) is pretty straightforward: Extrapolate, mod, then reverse if negative. dx doesn't change, it just flips signs.
-    bx=CTX->ball.x+CTX->ball.dx*time_to_breach;
+    bx=BATTLE->ball.x+BATTLE->ball.dx*time_to_breach;
     double bx0=bx;
     int eo=0;
     if (bx<0.0) bx=-bx;
@@ -349,9 +316,9 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
     if (eo&1) bx=FBW-bx;
     // (by) is much more interesting. The velocity changes over time and also reverses at each bounce.
     // A good estimate would be really tricky. Let me try cheesing it: Aim for half of current when it's at the rear wall, sliding toward current at the front wall.
-    double reary=CTX->ball.y+(FBH-CTX->ball.y)*0.5;
-    double fronty=CTX->ball.y;
-    double nz=CTX->ball.z/ZLIMIT;
+    double reary=BATTLE->ball.y+(FBH-BATTLE->ball.y)*0.5;
+    double fronty=BATTLE->ball.y;
+    double nz=BATTLE->ball.z/ZLIMIT;
     by=reary*nz+fronty*(1.0-nz);
   }
   
@@ -383,15 +350,15 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   /* If the ball is near and moving toward the front, swing at it.
    * But only when it is actually my turn. I missed that at first and it's hilarious.
    */
-  if ((CTX->volley==player)&&(CTX->ball.dz<0.0)) {
+  if ((BATTLE->volley==player)&&(BATTLE->ball.dz<0.0)) {
     const double inner_strike_zone=STRIKE_ZONE*0.5;
-    double dx=CTX->ball.x-player->x;
+    double dx=BATTLE->ball.x-player->x;
     if ((dx>-inner_strike_zone)&&(dx<inner_strike_zone)) {
-      double dy=CTX->ball.y-player->y;
+      double dy=BATTLE->ball.y-player->y;
       if ((dx>-inner_strike_zone)&&(dy<inner_strike_zone)) {
-        double dz=CTX->ball.z*ANTI_WHIFF_Z_SCALE;
+        double dz=BATTLE->ball.z*ANTI_WHIFF_Z_SCALE;
         if (dz<inner_strike_zone) {
-          racketeering_swing(ctx,player);
+          racketeering_swing(battle,player);
           player->throw--;
         }
       }
@@ -402,38 +369,38 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
 /* Update any player.
  */
  
-static void player_update_common(void *ctx,struct player *player,double elapsed) {
+static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
 }
 
 /* Ball has crossed into negative Z.
  * Score a point and begin the next serve.
  */
  
-static void racketeering_breach(void *ctx) {
-  struct player *winner=other_player(ctx,CTX->volley);
+static void racketeering_breach(struct battle *battle) {
+  struct player *winner=other_player(battle,BATTLE->volley);
   winner->score++;
   if (winner->score>=2) {
     if (winner->who) {
-      CTX->outcome=-1;
+      battle->outcome=-1;
     } else {
-      CTX->outcome=1;
+      battle->outcome=1;
     }
-    CTX->cooldown=END_COOLDOWN;
+    BATTLE->cooldown=END_COOLDOWN;
     return;
   }
-  CTX->serving=other_player(ctx,CTX->volley);
-  CTX->volley=0;
-  CTX->serving->delay=CPU_SERVE_DELAY;
-  CTX->serveto=0.0;
+  BATTLE->serving=other_player(battle,BATTLE->volley);
+  BATTLE->volley=0;
+  BATTLE->serving->delay=CPU_SERVE_DELAY;
+  BATTLE->serveto=0.0;
 }
 
 /* Update ball.
  */
  
-static void ball_update(void *ctx,struct ball *ball,double elapsed) {
+static void ball_update(struct battle *battle,struct ball *ball,double elapsed) {
 
-  if (CTX->serving) {
-    ball_align_to_player(ctx,ball,CTX->serving);
+  if (BATTLE->serving) {
+    ball_align_to_player(battle,ball,BATTLE->serving);
     return;
   }
   
@@ -457,7 +424,7 @@ static void ball_update(void *ctx,struct ball *ball,double elapsed) {
     ball->tag+=ball->d##tag*elapsed; \
     if (ball->tag<0.0) { \
       if (breach_negative) { \
-        racketeering_breach(ctx); \
+        racketeering_breach(battle); \
         return; \
       } else { \
         bm_sound(RID_sound_bounce); \
@@ -477,35 +444,27 @@ static void ball_update(void *ctx,struct ball *ball,double elapsed) {
 /* Update.
  */
  
-static void _racketeering_update(void *ctx,double elapsed) {
+static void _racketeering_update(struct battle *battle,double elapsed) {
 
   // Done?
-  if (CTX->outcome>-2) {
-    if (CTX->cooldown>0.0) {
-      CTX->cooldown-=elapsed;
-    } else if (CTX->cb_end) {
-      CTX->cb_end(CTX->outcome,CTX->userdata);
-      CTX->cb_end=0;
-    }
-    return;
-  }
+  if (battle->outcome>-2) return;
   
   // Players.
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-    else player_update_cpu(ctx,player,elapsed);
-    player_update_common(ctx,player,elapsed);
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
+    player_update_common(battle,player,elapsed);
   }
   
   // Ball.
-  ball_update(ctx,&CTX->ball,elapsed);
+  ball_update(battle,&BATTLE->ball,elapsed);
   
   // Enforce serve timeout.
-  if (CTX->serving) {
-    if ((CTX->serveto+=elapsed)>=SERVE_TIMEOUT) {
-      racketeering_swing(ctx,CTX->serving);
+  if (BATTLE->serving) {
+    if ((BATTLE->serveto+=elapsed)>=SERVE_TIMEOUT) {
+      racketeering_swing(battle,BATTLE->serving);
     }
   }
 }
@@ -513,7 +472,7 @@ static void _racketeering_update(void *ctx,double elapsed) {
 /* Project point from model space onto framebuffer.
  */
  
-static void racketeering_project_point(int *fbx,int *fby,void *ctx,double mx,double my,double mz) {
+static void racketeering_project_point(int *fbx,int *fby,struct battle *battle,double mx,double my,double mz) {
   // Shift (mx,my) such that (0,0) is the camera's center.
   const double halfw=FBW*0.5;
   const double halfh=FBH*0.5;
@@ -532,7 +491,7 @@ static void racketeering_project_point(int *fbx,int *fby,void *ctx,double mx,dou
 /* Render ball.
  */
  
-static void ball_render(void *ctx,struct ball *ball) {
+static void ball_render(struct battle *battle,struct ball *ball) {
   double nz=ball->z/ZLIMIT;
   int size=(int)(nz*(NS_sys_tilesize>>1)+(1.0-nz)*NS_sys_tilesize);
   int x,y;
@@ -540,7 +499,7 @@ static void ball_render(void *ctx,struct ball *ball) {
   
   // Cast a shadow on all five walls. Yes, I know, this is not how light works.
   #define SHADOW(sx,sy,sz) { \
-    racketeering_project_point(&x,&y,ctx,sx,sy,sz); \
+    racketeering_project_point(&x,&y,battle,sx,sy,sz); \
     int bsize=size; if (sz>=ZLIMIT) bsize=NS_sys_tilesize>>1; \
     uint32_t bcolor; \
     double distance=(sx-ball->x)+(sy-ball->y)+(sz-ball->z); \
@@ -563,7 +522,7 @@ static void ball_render(void *ctx,struct ball *ball) {
   if ((ball->z<BLINK_Z)&&(ball->dz<0.0)) {
     tint=0x00ff0080;
   }
-  racketeering_project_point(&x,&y,ctx,ball->x,ball->y,ball->z);
+  racketeering_project_point(&x,&y,battle,ball->x,ball->y,ball->z);
   graf_fancy(&g.graf,x,y,0x29,0,0,size,tint,0);
   graf_set_filter(&g.graf,0);
 }
@@ -571,15 +530,15 @@ static void ball_render(void *ctx,struct ball *ball) {
 /* Render player.
  */
  
-static void player_render(void *ctx,struct player *player) {
+static void player_render(struct battle *battle,struct player *player) {
   int x=(int)player->x;
   int y=(int)player->y;
   uint8_t tileid=0x09;
   uint8_t alpha=0xff;
-  if (CTX->serving) {
-    if (CTX->serving!=player) alpha=0x40;
-  } else if (CTX->volley) {
-    if (CTX->volley!=player) alpha=0x40;
+  if (BATTLE->serving) {
+    if (BATTLE->serving!=player) alpha=0x40;
+  } else if (BATTLE->volley) {
+    if (BATTLE->volley!=player) alpha=0x40;
   }
   if (player->swing>0.0) tileid=0x19;
   graf_fancy(&g.graf,x,y,tileid,0,0,NS_sys_tilesize,0,(player->color&0xffffff00)|alpha);
@@ -588,7 +547,7 @@ static void player_render(void *ctx,struct player *player) {
 /* Render.
  */
  
-static void _racketeering_render(void *ctx) {
+static void _racketeering_render(struct battle *battle) {
 
   /* Background.
    * The room must be symmetric, so we only project the upper-left corner, and infer the others.
@@ -598,7 +557,7 @@ static void _racketeering_render(void *ctx) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
   uint32_t near_color=0x404040ff,far_color=0x000000ff;
   int cornerx,cornery;
-  racketeering_project_point(&cornerx,&cornery,ctx,0.0,0.0,ZLIMIT);
+  racketeering_project_point(&cornerx,&cornery,battle,0.0,0.0,ZLIMIT);
   graf_line(&g.graf,0,0,near_color,cornerx,cornery,far_color);
   graf_line(&g.graf,FBW,0,near_color,FBW-cornerx,cornery,far_color);
   graf_line(&g.graf,0,FBH,near_color,cornerx,FBH-cornery,far_color);
@@ -621,20 +580,20 @@ static void _racketeering_render(void *ctx) {
   for (;i<3;i++) {
     int lightx=lightxv[i];
     uint32_t color=0x808080ff;
-    if (i<CTX->playerv[0].score) color=CTX->playerv[0].color;
-    else if (i>=3-CTX->playerv[1].score) color=CTX->playerv[1].color;
+    if (i<BATTLE->playerv[0].score) color=BATTLE->playerv[0].color;
+    else if (i>=3-BATTLE->playerv[1].score) color=BATTLE->playerv[1].color;
     graf_fancy(&g.graf,lightx,lighty,0x08,0,0,NS_sys_tilesize,0,color);
   }
   
   // Sprites. Ball goes on top if it's breached.
-  if (CTX->ball.z<0.0) {
-    player_render(ctx,CTX->playerv+0);
-    player_render(ctx,CTX->playerv+1);
-    ball_render(ctx,&CTX->ball);
+  if (BATTLE->ball.z<0.0) {
+    player_render(battle,BATTLE->playerv+0);
+    player_render(battle,BATTLE->playerv+1);
+    ball_render(battle,&BATTLE->ball);
   } else {
-    ball_render(ctx,&CTX->ball);
-    player_render(ctx,CTX->playerv+0);
-    player_render(ctx,CTX->playerv+1);
+    ball_render(battle,&BATTLE->ball);
+    player_render(battle,BATTLE->playerv+0);
+    player_render(battle,BATTLE->playerv+1);
   }
 }
 
@@ -643,11 +602,13 @@ static void _racketeering_render(void *ctx) {
  
 const struct battle_type battle_type_racketeering={
   .name="racketeering",
+  .objlen=sizeof(struct battle_racketeering),
   .strix_name=52,
   .no_article=0,
   .no_contest=0,
   .no_timeout=1,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_racketeering_del,
   .init=_racketeering_init,
   .update=_racketeering_update,

@@ -27,11 +27,7 @@
 #define SPARKLE_WAIT 0.4
 
 struct battle_stealing {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double playclock;
   double cooldown;
   
@@ -82,19 +78,18 @@ struct battle_stealing {
   int sparklec;
 };
 
-#define CTX ((struct battle_stealing*)ctx)
+#define BATTLE ((struct battle_stealing*)battle)
 
 /* Delete.
  */
  
-static void _stealing_del(void *ctx) {
-  free(ctx);
+static void _stealing_del(struct battle *battle) {
 }
 
 /* Initialize player.
  */
  
-static void player_init(void *ctx,struct player *player,int human,int appearance) {
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
   player->human=human;
   player->walk_speed=WALK_SPEED_LOW*(1.0-player->skill)+WALK_SPEED_HIGH*player->skill;
   if (human) player->walk_speed*=HUMAN_SPEED_BIAS;
@@ -130,7 +125,7 @@ static double nearish(double target) {
   return target*ish;
 }
  
-static void dragon_init(void *ctx) {
+static void dragon_init(struct battle *battle) {
   
   /* Regardless of handicap, the dragon will spend exactly the same amount of time facing left as right.
    * Furthermore, that time will be divided into chunks such that each side gets the same set of chunks (not necessarily in the same order).
@@ -163,81 +158,51 @@ static void dragon_init(void *ctx) {
   
   // Interleave (lv[n],rv[n]) into (watchtimev).
   // We called them "l" and "r", but they might be the reverse. Doesn't matter.
-  double *dst=CTX->dragon.watchtimev;
+  double *dst=BATTLE->dragon.watchtimev;
   const double *srcl=lv,*srcr=rv;
   int i=PERIOD_COUNT;
   while (i-->0) {
     *(dst++)=*srcl++;
     *(dst++)=*srcr++;
   }
-  CTX->dragon.watchtimep=0;
+  BATTLE->dragon.watchtimep=0;
   
   /* We start at the beginning of a watch cycle.
    * Choose randomly left or right.
    */
   if (rand()&1) { // Left.
-    CTX->dragon.headx=-1.0;
-    CTX->dragon.headxform=EGG_XFORM_XREV;
+    BATTLE->dragon.headx=-1.0;
+    BATTLE->dragon.headxform=EGG_XFORM_XREV;
   } else { // Right.
-    CTX->dragon.headx=1.0;
-    CTX->dragon.headxform=0;
+    BATTLE->dragon.headx=1.0;
+    BATTLE->dragon.headxform=0;
   }
-  CTX->dragon.headtile=0x26;
-  CTX->dragon.watchclock=CTX->dragon.watchtimev[CTX->dragon.watchtimep++];
-  CTX->dragon.traveldx=-CTX->dragon.headx;
+  BATTLE->dragon.headtile=0x26;
+  BATTLE->dragon.watchclock=BATTLE->dragon.watchtimev[BATTLE->dragon.watchtimep++];
+  BATTLE->dragon.traveldx=-BATTLE->dragon.headx;
 }
 
 /* New.
  */
  
-static void *_stealing_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_stealing));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
-  CTX->playclock=PLAY_TIME;
+static int _stealing_init(struct battle *battle) {
+  BATTLE->playclock=PLAY_TIME;
   
-  dragon_init(ctx);
+  dragon_init(battle);
   
-  CTX->playerv[0].who=0;
-  CTX->playerv[1].who=1;
-  CTX->playerv[1].skill=(double)handicap/256.0;
-  CTX->playerv[0].skill=1.0-CTX->playerv[1].skill;
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(ctx,CTX->playerv+0,0,2);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_man_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    default: _stealing_del(ctx); return 0;
-  }
-  return ctx;
+  return 0;
 }
 
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   switch (input&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: player->indx=-1; break;
     case EGG_BTN_RIGHT: player->indx=1; break;
@@ -248,7 +213,7 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
 /* Update CPU player.
  */
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
 
   /* If the dragon is looking at me, or within a certain threshold of it, stop.
    * This is immune to the turnaround penalty.
@@ -256,9 +221,9 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   const double SCARE_THRESHOLD=0.500;
   int scared=0;
   if (player->who) {
-    if (CTX->dragon.headx>=SCARE_THRESHOLD) scared=1;
+    if (BATTLE->dragon.headx>=SCARE_THRESHOLD) scared=1;
   } else {
-    if (CTX->dragon.headx<=-SCARE_THRESHOLD) scared=1;
+    if (BATTLE->dragon.headx<=-SCARE_THRESHOLD) scared=1;
   }
   if (scared) {
     // No need to check whether I'm showing treasure to the dragon -- if we're holding treasure, we're facing piggyward.
@@ -290,13 +255,13 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
  * If gathering or depositing is possible, we effect it.
  */
  
-static void player_check_gather(void *ctx,struct player *player) {
+static void player_check_gather(struct battle *battle,struct player *player) {
   if (player->carrying) return;
   player->carrying=1;
   bm_sound(RID_sound_collect);
 }
 
-static void player_check_deposit(void *ctx,struct player *player) {
+static void player_check_deposit(struct battle *battle,struct player *player) {
   if (!player->carrying) return;
   player->carrying=0;
   bm_sound(RID_sound_deposit_coin);
@@ -307,7 +272,7 @@ static void player_check_deposit(void *ctx,struct player *player) {
  * Controllers are expected to set (indx) and that's about it.
  */
  
-static void player_update_common(void *ctx,struct player *player,double elapsed) {
+static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
 
   // If hurt, we slide fast to the outer edge.
   if (player->hurt) {
@@ -340,25 +305,25 @@ static void player_update_common(void *ctx,struct player *player,double elapsed)
   
   // Check gathitude and deposition.
   if (player->x<player->xlo+END_ZONE_WIDTH) {
-    if (player->who) player_check_gather(ctx,player);
-    else player_check_deposit(ctx,player);
+    if (player->who) player_check_gather(battle,player);
+    else player_check_deposit(battle,player);
   } else if (player->x>player->xhi-END_ZONE_WIDTH) {
-    if (player->who) player_check_deposit(ctx,player);
-    else player_check_gather(ctx,player);
+    if (player->who) player_check_deposit(battle,player);
+    else player_check_gather(battle,player);
   }
 }
 
 /* Generate a new fireball.
  */
  
-static void stealing_generate_fireball(void *ctx,double x,double y,double xtra) {
-  if (CTX->fireballc>=FIREBALL_LIMIT) return;
-  struct fireball *fireball=CTX->fireballv+CTX->fireballc++;
+static void stealing_generate_fireball(struct battle *battle,double x,double y,double xtra) {
+  if (BATTLE->fireballc>=FIREBALL_LIMIT) return;
+  struct fireball *fireball=BATTLE->fireballv+BATTLE->fireballc++;
   fireball->x=x;
   fireball->y=y;
   struct player *victim;
-  if (x<FBW>>1) victim=CTX->playerv+0;
-  else victim=CTX->playerv+1;
+  if (x<FBW>>1) victim=BATTLE->playerv+0;
+  else victim=BATTLE->playerv+1;
   double dx=victim->x+xtra-fireball->x;
   double dy=GROUNDY-(NS_sys_tilesize>>1)-y;
   double distance=sqrt(dx*dx+dy*dy); // Always nonzero, because (y) is always above the players.
@@ -369,16 +334,16 @@ static void stealing_generate_fireball(void *ctx,double x,double y,double xtra) 
 /* Nonzero if the dragon ought to spit a fireball.
  */
  
-static int dragon_should_burninate(void *ctx) {
+static int dragon_should_burninate(struct battle *battle) {
 
   // Which player and which direction?
   struct player *player;
   int facedx_toward_me;
-  if (CTX->dragon.headx<0.0) {
-    player=CTX->playerv+0;
+  if (BATTLE->dragon.headx<0.0) {
+    player=BATTLE->playerv+0;
     facedx_toward_me=1;
   } else {
-    player=CTX->playerv+1;
+    player=BATTLE->playerv+1;
     facedx_toward_me=-1;
   }
   
@@ -398,27 +363,27 @@ static int dragon_should_burninate(void *ctx) {
 /* Update the dragon.
  */
  
-static void dragon_update(void *ctx,double elapsed) {
+static void dragon_update(struct battle *battle,double elapsed) {
 
   /* Travelling?
    * Update clock and position.
    */
-  if (CTX->dragon.travelclock>0.0) {
-    if ((CTX->dragon.travelclock-=elapsed)<=0.0) { // Arrived!
-      CTX->dragon.headx=CTX->dragon.traveldx;
-      CTX->dragon.traveldx=-CTX->dragon.traveldx;
-      CTX->dragon.headtile=0x26;
-      if (CTX->dragon.headx<0.0) CTX->dragon.headxform=EGG_XFORM_XREV;
-      else CTX->dragon.headxform=0;
-      if (CTX->dragon.watchtimep>=PERIOD_COUNT*2) { // No more durations... shouldn't happen.
-        CTX->dragon.watchclock=1.0;
+  if (BATTLE->dragon.travelclock>0.0) {
+    if ((BATTLE->dragon.travelclock-=elapsed)<=0.0) { // Arrived!
+      BATTLE->dragon.headx=BATTLE->dragon.traveldx;
+      BATTLE->dragon.traveldx=-BATTLE->dragon.traveldx;
+      BATTLE->dragon.headtile=0x26;
+      if (BATTLE->dragon.headx<0.0) BATTLE->dragon.headxform=EGG_XFORM_XREV;
+      else BATTLE->dragon.headxform=0;
+      if (BATTLE->dragon.watchtimep>=PERIOD_COUNT*2) { // No more durations... shouldn't happen.
+        BATTLE->dragon.watchclock=1.0;
       } else {
-        CTX->dragon.watchclock=CTX->dragon.watchtimev[CTX->dragon.watchtimep++];
+        BATTLE->dragon.watchclock=BATTLE->dragon.watchtimev[BATTLE->dragon.watchtimep++];
       }
     } else { // Absolute positioning based on the clock, no need to do it incrementally.
-      double from=-CTX->dragon.traveldx;
-      double t=CTX->dragon.travelclock/HEAD_TRAVEL_TIME; // 0..1 = to..from, reverse of what you'd expect
-      CTX->dragon.headx=from*t+CTX->dragon.traveldx*(1.0-t);
+      double from=-BATTLE->dragon.traveldx;
+      double t=BATTLE->dragon.travelclock/HEAD_TRAVEL_TIME; // 0..1 = to..from, reverse of what you'd expect
+      BATTLE->dragon.headx=from*t+BATTLE->dragon.traveldx*(1.0-t);
     }
     return;
   }
@@ -426,21 +391,21 @@ static void dragon_update(void *ctx,double elapsed) {
   /* If we had been burninating, tick that clock down and close mouth when appropriate.
    * If not burninating, should we be?
    */
-  if (CTX->dragon.burnclock>0.0) {
-    if ((CTX->dragon.burnclock-=elapsed)<=0.0) {
-      CTX->dragon.headtile=0x26;
+  if (BATTLE->dragon.burnclock>0.0) {
+    if ((BATTLE->dragon.burnclock-=elapsed)<=0.0) {
+      BATTLE->dragon.headtile=0x26;
     }
-  } else if (CTX->dragon.recharge>0.0) {
-    CTX->dragon.recharge-=elapsed;
-  } else if (dragon_should_burninate(ctx)) {
-    CTX->dragon.burnclock=BURNINATE_TIME;
-    CTX->dragon.recharge=RECHARGE_TIME;
-    CTX->dragon.headtile=0x07;
-    double x=(FBW>>1)+CTX->dragon.headx*NS_sys_tilesize;
+  } else if (BATTLE->dragon.recharge>0.0) {
+    BATTLE->dragon.recharge-=elapsed;
+  } else if (dragon_should_burninate(battle)) {
+    BATTLE->dragon.burnclock=BURNINATE_TIME;
+    BATTLE->dragon.recharge=RECHARGE_TIME;
+    BATTLE->dragon.headtile=0x07;
+    double x=(FBW>>1)+BATTLE->dragon.headx*NS_sys_tilesize;
     double y=GROUNDY-NS_sys_tilesize*2;
-    stealing_generate_fireball(ctx,x,y,0.0);
-    stealing_generate_fireball(ctx,x,y,-2.0*NS_sys_tilesize);
-    stealing_generate_fireball(ctx,x,y, 2.0*NS_sys_tilesize);
+    stealing_generate_fireball(battle,x,y,0.0);
+    stealing_generate_fireball(battle,x,y,-2.0*NS_sys_tilesize);
+    stealing_generate_fireball(battle,x,y, 2.0*NS_sys_tilesize);
     bm_sound(RID_sound_breathe_fire);
   }
   
@@ -448,11 +413,11 @@ static void dragon_update(void *ctx,double elapsed) {
    * When both watchclock and burnclock are negative, begin the next travel.
    * Due to the burnclock, we can be a little late to plan. Should be ok; the last phase is a travel.
    */
-  if ((CTX->dragon.watchclock-=elapsed)<=0.0) {
-    if (CTX->dragon.burnclock<=0.0) {
-      CTX->dragon.travelclock=HEAD_TRAVEL_TIME;
-      CTX->dragon.headtile=0x06;
-      CTX->dragon.recharge=0.0;
+  if ((BATTLE->dragon.watchclock-=elapsed)<=0.0) {
+    if (BATTLE->dragon.burnclock<=0.0) {
+      BATTLE->dragon.travelclock=HEAD_TRAVEL_TIME;
+      BATTLE->dragon.headtile=0x06;
+      BATTLE->dragon.recharge=0.0;
     }
   }
 }
@@ -461,7 +426,7 @@ static void dragon_update(void *ctx,double elapsed) {
  * Return zero if defunct or nonzero to carry on.
  */
  
-static int fireball_update(void *ctx,struct fireball *fireball,double elapsed) {
+static int fireball_update(struct battle *battle,struct fireball *fireball,double elapsed) {
 
   fireball->x+=fireball->dx*elapsed;
   fireball->y+=fireball->dy*elapsed;
@@ -475,7 +440,7 @@ static int fireball_update(void *ctx,struct fireball *fireball,double elapsed) {
   }
   
   const double radius=NS_sys_tilesize;
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
     double dx=player->x-fireball->x;
     if ((dx<-radius)||(dx>radius)) continue;
@@ -492,29 +457,25 @@ static int fireball_update(void *ctx,struct fireball *fireball,double elapsed) {
 
 /* Cooldown expired.
  * (playerv->outcome) must be established already.
- * Set (CTX->outcome) accordingly, and call the owner.
+ * Set (BATTLE->outcome) accordingly, and call the owner.
  */
  
-static void stealing_assign_outcome(void *ctx) {
-  if (CTX->playerv[0].outcome>0) {
-    if (CTX->playerv[1].outcome>0) CTX->outcome=0; // Everybody wins!
-    else CTX->outcome=1; // Left wins!
-  } else if (CTX->playerv[1].outcome>0) CTX->outcome=-1; // Right wins!
-  else CTX->outcome=0; // Everybody loses! Hooray!
-  if (CTX->cb_end) {
-    CTX->cb_end(CTX->outcome,CTX->userdata);
-    CTX->cb_end=0;
-  }
+static void stealing_assign_outcome(struct battle *battle) {
+  if (BATTLE->playerv[0].outcome>0) {
+    if (BATTLE->playerv[1].outcome>0) battle->outcome=0; // Everybody wins!
+    else battle->outcome=1; // Left wins!
+  } else if (BATTLE->playerv[1].outcome>0) battle->outcome=-1; // Right wins!
+  else battle->outcome=0; // Everybody loses! Hooray!
 }
 
 /* Play clock expired.
  * Select winner and assign (playerv->outcome).
- * Do not assign (CTX->outcome) yet -- that will happen after a cooldown.
+ * Do not assign (BATTLE->outcome) yet -- that will happen after a cooldown.
  */
  
-static void stealing_select_winners(void *ctx) {
-  struct player *l=CTX->playerv+0;
-  struct player *r=CTX->playerv+1;
+static void stealing_select_winners(struct battle *battle) {
+  struct player *l=BATTLE->playerv+0;
+  struct player *r=BATTLE->playerv+1;
   
   // More coins wins, obviously.
   if (l->score>r->score) {
@@ -571,21 +532,21 @@ static void stealing_select_winners(void *ctx) {
 /* Update sparkles.
  */
  
-static void sparkles_update(void *ctx,double elapsed) {
+static void sparkles_update(struct battle *battle,double elapsed) {
   struct sparkle *sparkle;
   int i;
 
   // Create a new one if there's room, and existing ones are at least a tasteful interval old.
-  if (CTX->sparklec<SPARKLE_LIMIT) {
+  if (BATTLE->sparklec<SPARKLE_LIMIT) {
     int oldenough=1;
-    for (sparkle=CTX->sparklev,i=CTX->sparklec;i-->0;sparkle++) {
+    for (sparkle=BATTLE->sparklev,i=BATTLE->sparklec;i-->0;sparkle++) {
       if (sparkle->ttl>SPARKLE_TTL-SPARKLE_WAIT) {
         oldenough=0;
         break;
       }
     }
     if (oldenough) {
-      sparkle=CTX->sparklev+CTX->sparklec++;
+      sparkle=BATTLE->sparklev+BATTLE->sparklec++;
       sparkle->ttl=SPARKLE_TTL;
       sparkle->x=(FBW>>1)-(NS_sys_tilesize*2)-(NS_sys_tilesize>>1)+rand()%(NS_sys_tilesize*5);
       sparkle->y=GROUNDY-rand()%NS_sys_tilesize;
@@ -593,10 +554,10 @@ static void sparkles_update(void *ctx,double elapsed) {
   }
   
   // Advance timers and drop expired ones.
-  for (i=CTX->sparklec,sparkle=CTX->sparklev+CTX->sparklec-1;i-->0;sparkle--) {
+  for (i=BATTLE->sparklec,sparkle=BATTLE->sparklev+BATTLE->sparklec-1;i-->0;sparkle--) {
     if ((sparkle->ttl-=elapsed)<=0.0) {
-      CTX->sparklec--;
-      memmove(sparkle,sparkle+1,sizeof(struct sparkle)*(CTX->sparklec-i));
+      BATTLE->sparklec--;
+      memmove(sparkle,sparkle+1,sizeof(struct sparkle)*(BATTLE->sparklec-i));
     }
   }
 }
@@ -604,52 +565,52 @@ static void sparkles_update(void *ctx,double elapsed) {
 /* Update.
  */
  
-static void _stealing_update(void *ctx,double elapsed) {
+static void _stealing_update(struct battle *battle,double elapsed) {
 
   // Done?
-  if (CTX->outcome>-2) return;
+  if (battle->outcome>-2) return;
   
   // Cooldown in progress?
-  if (CTX->cooldown>0.0) {
-    if ((CTX->cooldown-=elapsed)<=0.0) {
-      stealing_assign_outcome(ctx);
+  if (BATTLE->cooldown>0.0) {
+    if ((BATTLE->cooldown-=elapsed)<=0.0) {
+      stealing_assign_outcome(battle);
     }
     return;
   }
   
   // Tick playclock.
-  if ((CTX->playclock-=elapsed)<=0.0) {
-    CTX->cooldown=END_COOLDOWN;
-    stealing_select_winners(ctx);
+  if ((BATTLE->playclock-=elapsed)<=0.0) {
+    BATTLE->cooldown=END_COOLDOWN;
+    stealing_select_winners(battle);
     return;
   }
   
   // Update players.
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
-    if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-    else player_update_cpu(ctx,player,elapsed);
-    player_update_common(ctx,player,elapsed);
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
+    player_update_common(battle,player,elapsed);
   }
   
   // And the dragon.
-  dragon_update(ctx,elapsed);
+  dragon_update(battle,elapsed);
   
   // And the fireballs.
-  struct fireball *fireball=CTX->fireballv+CTX->fireballc-1;
-  for (i=CTX->fireballc;i-->0;fireball--) {
-    if (fireball_update(ctx,fireball,elapsed)) continue;
-    CTX->fireballc--;
-    memmove(fireball,fireball+1,sizeof(struct fireball)*(CTX->fireballc-i));
+  struct fireball *fireball=BATTLE->fireballv+BATTLE->fireballc-1;
+  for (i=BATTLE->fireballc;i-->0;fireball--) {
+    if (fireball_update(battle,fireball,elapsed)) continue;
+    BATTLE->fireballc--;
+    memmove(fireball,fireball+1,sizeof(struct fireball)*(BATTLE->fireballc-i));
   }
   
-  sparkles_update(ctx,elapsed);
+  sparkles_update(battle,elapsed);
 }
 
 /* Render player.
  */
  
-static void player_render(void *ctx,struct player *player) {
+static void player_render(struct battle *battle,struct player *player) {
   int x=(int)player->x;
   int y=GROUNDY-(NS_sys_tilesize>>1);
   uint8_t xform=(player->facedx<0)?EGG_XFORM_XREV:0;
@@ -685,7 +646,7 @@ static void player_render(void *ctx,struct player *player) {
 /* Render fireball.
  */
  
-static void fireball_render(void *ctx,struct fireball *fireball) {
+static void fireball_render(struct battle *battle,struct fireball *fireball) {
   uint8_t tileid=0x17;
   uint8_t xform=0;
   switch (fireball->animframe) {
@@ -699,7 +660,7 @@ static void fireball_render(void *ctx,struct fireball *fireball) {
 /* Render sparkle.
  */
  
-static void sparkle_render(void *ctx,struct sparkle *sparkle) {
+static void sparkle_render(struct battle *battle,struct sparkle *sparkle) {
   // 3 frames pingponging, so 5.
   int frame=(int)((sparkle->ttl*5.0)/SPARKLE_TTL);
   if (frame<0) frame=0; else if (frame>4) frame=4;
@@ -715,7 +676,7 @@ static void sparkle_render(void *ctx,struct sparkle *sparkle) {
 /* Render.
  */
  
-static void _stealing_render(void *ctx) {
+static void _stealing_render(struct battle *battle) {
 
   // Background. Then everything else comes from the one image.
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,0x785830ff);
@@ -729,32 +690,32 @@ static void _stealing_render(void *ctx) {
   graf_decal(&g.graf,(FBW>>1)-(dragonw>>1),GROUNDY-dragonh,0,0,dragonw,dragonh);
   
   // Sparkles on the gold.
-  struct sparkle *sparkle=CTX->sparklev;
-  int i=CTX->sparklec;
-  for (;i-->0;sparkle++) sparkle_render(ctx,sparkle);
+  struct sparkle *sparkle=BATTLE->sparklev;
+  int i=BATTLE->sparklec;
+  for (;i-->0;sparkle++) sparkle_render(battle,sparkle);
   
   // Fireballs.
-  struct fireball *fireball=CTX->fireballv;
-  for (i=CTX->fireballc;i-->0;fireball++) fireball_render(ctx,fireball);
+  struct fireball *fireball=BATTLE->fireballv;
+  for (i=BATTLE->fireballc;i-->0;fireball++) fireball_render(battle,fireball);
   
   // Dragon's head.
-  int headx=(int)((FBW>>1)+CTX->dragon.headx*NS_sys_tilesize);
+  int headx=(int)((FBW>>1)+BATTLE->dragon.headx*NS_sys_tilesize);
   int heady=GROUNDY-NS_sys_tilesize*2-(NS_sys_tilesize>>1);
-  graf_tile(&g.graf,headx,heady,CTX->dragon.headtile,CTX->dragon.headxform);
+  graf_tile(&g.graf,headx,heady,BATTLE->dragon.headtile,BATTLE->dragon.headxform);
   
   // Decorative piggy banks.
   graf_tile(&g.graf,NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,0);
   graf_tile(&g.graf,FBW-NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,EGG_XFORM_XREV);
   
   // Players.
-  player_render(ctx,CTX->playerv+0);
-  player_render(ctx,CTX->playerv+1);
+  player_render(battle,BATTLE->playerv+0);
+  player_render(battle,BATTLE->playerv+1);
   
   // Number overlays.
   // Scores can't get anywhere near 10, don't worry.
   graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_tile(&g.graf,NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+CTX->playerv[0].score,0);
-  graf_tile(&g.graf,FBW-NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+CTX->playerv[1].score,0);
+  graf_tile(&g.graf,NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[0].score,0);
+  graf_tile(&g.graf,FBW-NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[1].score,0);
   // Could render the clock if we like. I don't really feel a need for it.
 }
 
@@ -763,10 +724,12 @@ static void _stealing_render(void *ctx) {
  
 const struct battle_type battle_type_stealing={
   .name="stealing",
+  .objlen=sizeof(struct battle_stealing),
   .strix_name=50,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_stealing_del,
   .init=_stealing_init,
   .update=_stealing_update,

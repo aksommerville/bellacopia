@@ -2,62 +2,113 @@
  * We can use this battle when a real one is missing, during development.
  * User picks the outcome.
  * Remove before production!
+ TODO Rewrite with some of the boilerplate eg "struct player" that most games use.
  */
 
 #include "game/bellacopia.h"
 
 struct battle_placeholder {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
+  struct battle hdr;
   int choice;
+  
+  struct player {
+    int who; // My index in this list.
+    int human; // 0 for CPU, or the input index.
+  } playerv[2];
 };
 
-#define CTX ((struct battle_placeholder*)ctx)
+#define BATTLE ((struct battle_placeholder*)battle)
 
 /* Delete.
  */
  
-static void _placeholder_del(void *ctx) {
-  free(ctx);
+static void _placeholder_del(struct battle *battle) {
+}
+
+/* Init player.
+ */
+ 
+static void player_init(struct battle *battle,struct player *player,int human,int face) {
+  if (player==BATTLE->playerv) { // Left.
+    player->who=0;
+  } else { // Right.
+    player->who=1;
+  }
+  if (player->human=human) { // Human.
+  } else { // CPU.
+  }
+  switch (face) {
+    case NS_face_monster: {
+      } break;
+    case NS_face_dot: {
+      } break;
+    case NS_face_princess: {
+      } break;
+  }
 }
 
 /* New.
  */
  
-static void *_placeholder_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_placeholder));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  return ctx;
+static int _placeholder_init(struct battle *battle) {
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
+  return 0;
+}
+
+/* Update human player.
+ */
+ 
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
+  //TODO
+}
+
+/* Update CPU player.
+ */
+ 
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
+  //TODO
+}
+
+/* Update all players, after specific controller.
+ */
+ 
+static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
+  //TODO
 }
 
 /* Update.
  */
  
-static void _placeholder_update(void *ctx,double elapsed) {
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(CTX->choice)<-1) CTX->choice=1; }
-  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(CTX->choice)>1) CTX->choice=-1; }
-  if (CTX->cb_end&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    bm_sound(RID_sound_uiactivate);
-    CTX->cb_end(CTX->choice,CTX->userdata);
-    CTX->cb_end=0;
+static void _placeholder_update(struct battle *battle,double elapsed) {
+  if (battle->outcome>-2) return;
+  
+  struct player *player=BATTLE->playerv;
+  int i=2;
+  for (;i-->0;player++) {
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
+    player_update_common(battle,player,elapsed);
   }
+
+  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(BATTLE->choice)<-1) BATTLE->choice=1; }
+  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(BATTLE->choice)>1) BATTLE->choice=-1; }
+  if ((battle->outcome<-1)&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+    bm_sound(RID_sound_uiactivate);
+    battle->outcome=BATTLE->choice;
+  }
+}
+
+/* Render player.
+ */
+ 
+static void player_render(struct battle *battle,struct player *player) {
 }
 
 /* Render.
  */
  
-static void _placeholder_render(void *ctx) {
+static void _placeholder_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
   int y=FBH/3;
   int boxh=20;
@@ -71,11 +122,14 @@ static void _placeholder_render(void *ctx) {
   graf_fill_rect(&g.graf,xv[0],y,boxw,boxh,0xff0000ff);
   graf_fill_rect(&g.graf,xv[1],y,boxw,boxh,0x404040ff);
   graf_fill_rect(&g.graf,xv[2],y,boxw,boxh,0x00ff00ff);
-  switch (CTX->choice) {
+  switch (BATTLE->choice) {
     case -1: graf_fill_rect(&g.graf,xv[0],y1,boxw,boxh,0xffffffff); break;
     case  0: graf_fill_rect(&g.graf,xv[1],y1,boxw,boxh,0xffffffff); break;
     case  1: graf_fill_rect(&g.graf,xv[2],y1,boxw,boxh,0xffffffff); break;
   }
+  
+  player_render(battle,BATTLE->playerv+0);
+  player_render(battle,BATTLE->playerv+1);
 }
 
 /* Type definition.
@@ -83,10 +137,12 @@ static void _placeholder_render(void *ctx) {
  
 const struct battle_type battle_type_placeholder={
   .name="placeholder",
+  .objlen=sizeof(struct battle_placeholder),
   .strix_name=20,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_placeholder_del,
   .init=_placeholder_init,
   .update=_placeholder_update,

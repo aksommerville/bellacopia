@@ -257,8 +257,14 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
     if (battle) {
       struct modal_args_battle args={
         .battle=battle,
-        .players=NS_players_man_cpu,
-        .handicap=0x80,//TODO how to decide?
+        .args={
+          .difficulty=0x80,
+          .bias=0x80,
+          .lctl=1,
+          .rctl=0,
+          .lface=NS_face_dot,
+          .rface=NS_face_monster,
+        },
         .cb=fishpole_cb_battle,
         .userdata=sprite,
         .skip_prompt=1,

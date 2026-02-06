@@ -7,11 +7,7 @@
 #define THINKYTIME_MAX 0.500
 
 struct battle_exterminating {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   double canimclock;
   int canimframe;
@@ -30,34 +26,21 @@ struct battle_exterminating {
   } playerv[2];
 };
 
-#define CTX ((struct battle_exterminating*)ctx)
+#define BATTLE ((struct battle_exterminating*)battle)
 
 /* Delete.
  */
  
-static void _exterminating_del(void *ctx) {
-  free(ctx);
+static void _exterminating_del(struct battle *battle) {
 }
 
 /* New.
  */
- 
-static void *_exterminating_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_exterminating));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
+
+static int _exterminating_init(struct battle *battle) {
   
   // Fill xformv randomly. This is entirely decorative.
-  uint8_t *p=CTX->xformv;
+  uint8_t *p=BATTLE->xformv;
   int i=FLDW*FLDH;
   for (;i-->0;p++) *p=rand()&7;
   
@@ -65,62 +48,44 @@ static void *_exterminating_init(
   for (i=(FLDW*FLDH)>>1;i-->0;) {
     for (;;) {
       int ix=rand()%(FLDW*FLDH);
-      if (CTX->playerv[0].fld[ix]) continue;
-      CTX->playerv[0].fld[ix]=1;
+      if (BATTLE->playerv[0].fld[ix]) continue;
+      BATTLE->playerv[0].fld[ix]=1;
       break;
     }
   }
-  memcpy(CTX->playerv[1].fld,CTX->playerv[0].fld,FLDW*FLDH);
+  memcpy(BATTLE->playerv[1].fld,BATTLE->playerv[0].fld,FLDW*FLDH);
   
   // Both players start in the middle.
-  CTX->playerv[0].cx=CTX->playerv[1].cx=FLDW>>1;
-  CTX->playerv[0].cy=CTX->playerv[1].cy=FLDH>>1;
-  
-  // And set (player.human) per (playerc).
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        CTX->playerv[0].human=0;
-        CTX->playerv[1].human=0;
-      } break;
-    case NS_players_cpu_man: {
-        CTX->playerv[0].human=0;
-        CTX->playerv[1].human=2;
-      } break;
-    case NS_players_man_cpu: {
-        CTX->playerv[0].human=1;
-        CTX->playerv[1].human=0;
-      } break;
-    case NS_players_man_man: {
-        CTX->playerv[0].human=1;
-        CTX->playerv[1].human=2;
-      } break;
-  }
-  CTX->playerv[0].who=0;
-  CTX->playerv[1].who=1;
-  CTX->playerv[0].lastx=CTX->playerv[1].lastx=CTX->playerv[0].lasty=CTX->playerv[1].lasty=-2;
+  BATTLE->playerv[0].cx=BATTLE->playerv[1].cx=FLDW>>1;
+  BATTLE->playerv[0].cy=BATTLE->playerv[1].cy=FLDH>>1;
+  BATTLE->playerv[0].human=battle->args.lctl;
+  BATTLE->playerv[1].human=battle->args.rctl;
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  BATTLE->playerv[0].lastx=BATTLE->playerv[1].lastx=BATTLE->playerv[0].lasty=BATTLE->playerv[1].lasty=-2;
   // (thinkytime) only matters for CPU players, but no harm setting it in both.
   // Note that (handicap) is not used in man-vs-man mode.
-  CTX->playerv[0].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*(0xff-CTX->handicap))/255.0;
-  CTX->playerv[1].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*handicap)/255.0;
+  BATTLE->playerv[0].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*(0xff-battle->args.bias))/255.0;
+  BATTLE->playerv[1].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*battle->args.bias)/255.0;
   
-  return ctx;
+  return 0;
 }
 
 /* Swap tiles under cursor.
  */
  
-static void player_swap_1(void *ctx,struct player *player,int x,int y) {
+static void player_swap_1(struct battle *battle,struct player *player,int x,int y) {
   if ((x<0)||(x>=FLDW)||(y<0)||(y>=FLDH)) return;
   player->fld[y*FLDW+x]^=1;
 }
  
-static void player_swap(void *ctx,struct player *player) {
+static void player_swap(struct battle *battle,struct player *player) {
   bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
-  player_swap_1(ctx,player,player->cx,player->cy-1);
-  player_swap_1(ctx,player,player->cx-1,player->cy);
-  player_swap_1(ctx,player,player->cx,player->cy);
-  player_swap_1(ctx,player,player->cx+1,player->cy);
-  player_swap_1(ctx,player,player->cx,player->cy+1);
+  player_swap_1(battle,player,player->cx,player->cy-1);
+  player_swap_1(battle,player,player->cx-1,player->cy);
+  player_swap_1(battle,player,player->cx,player->cy);
+  player_swap_1(battle,player,player->cx+1,player->cy);
+  player_swap_1(battle,player,player->cx,player->cy+1);
   // Am I clear now?
   player->clear=0;
   const uint8_t *v=player->fld;
@@ -132,7 +97,7 @@ static void player_swap(void *ctx,struct player *player) {
 /* Move cursor.
  */
  
-static void player_move(void *ctx,struct player *player,int dx,int dy) {
+static void player_move(struct battle *battle,struct player *player,int dx,int dy) {
   player->cx+=dx;
   player->cy+=dy;
   if (player->cx<-1) player->cx=-1; else if (player->cx>FLDW) player->cx=FLDW;
@@ -143,12 +108,12 @@ static void player_move(void *ctx,struct player *player,int dx,int dy) {
 /* Update human player.
  */
  
-static void player_update_human(void *ctx,struct player *player,double elapsed) {
-  if ((g.input[player->human]&EGG_BTN_LEFT)&&!(g.pvinput[player->human]&EGG_BTN_LEFT)) player_move(ctx,player,-1,0);
-  if ((g.input[player->human]&EGG_BTN_RIGHT)&&!(g.pvinput[player->human]&EGG_BTN_RIGHT)) player_move(ctx,player,1,0);
-  if ((g.input[player->human]&EGG_BTN_UP)&&!(g.pvinput[player->human]&EGG_BTN_UP)) player_move(ctx,player,0,-1);
-  if ((g.input[player->human]&EGG_BTN_DOWN)&&!(g.pvinput[player->human]&EGG_BTN_DOWN)) player_move(ctx,player,0,1);
-  if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) player_swap(ctx,player);
+static void player_update_human(struct battle *battle,struct player *player,double elapsed) {
+  if ((g.input[player->human]&EGG_BTN_LEFT)&&!(g.pvinput[player->human]&EGG_BTN_LEFT)) player_move(battle,player,-1,0);
+  if ((g.input[player->human]&EGG_BTN_RIGHT)&&!(g.pvinput[player->human]&EGG_BTN_RIGHT)) player_move(battle,player,1,0);
+  if ((g.input[player->human]&EGG_BTN_UP)&&!(g.pvinput[player->human]&EGG_BTN_UP)) player_move(battle,player,0,-1);
+  if ((g.input[player->human]&EGG_BTN_DOWN)&&!(g.pvinput[player->human]&EGG_BTN_DOWN)) player_move(battle,player,0,1);
+  if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) player_swap(battle,player);
 }
 
 /* Update CPU player.
@@ -180,7 +145,7 @@ static void assess_candidate(int *bugc,int *expc,const uint8_t *fld,int x,int y)
   assess_candidate_1(bugc,expc,fld,x  ,y+1);
 }
  
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
   if ((player->thinkyclock-=elapsed)>0.0) return;
   player->thinkyclock+=player->thinkytime;
   
@@ -252,7 +217,7 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   
   // If we're already at the best cell, toggle it.
   if ((player->cx==bestx)&&(player->cy==besty)) {
-    player_swap(ctx,player);
+    player_swap(battle,player);
     player->lastx=player->cx;
     player->lasty=player->cy;
     return;
@@ -268,56 +233,46 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
   }
   if (dx<0) dx=-1; else if (dx>0) dx=1;
   if (dy<0) dy=-1; else if (dy>0) dy=1;
-  player_move(ctx,player,dx,dy);
+  player_move(battle,player,dx,dy);
 }
 
 /* Update.
  */
  
-static void _exterminating_update(void *ctx,double elapsed) {
-  if (CTX->outcome>-2) {
-    if (CTX->cb_end) {
-      if (CTX->end_cooldown>0.0) {
-        if ((CTX->end_cooldown-=elapsed)<=0.0) {
-          CTX->cb_end(CTX->outcome,CTX->userdata);
-          CTX->cb_end=0;
-        }
-      }
-    }
-  }
-  if ((CTX->xformclock-=elapsed)<=0.0) {
-    CTX->xformclock+=0.100;
+static void _exterminating_update(struct battle *battle,double elapsed) {
+  if ((BATTLE->xformclock-=elapsed)<=0.0) {
+    BATTLE->xformclock+=0.100;
     int p=rand()%(FLDW*FLDH);
-    CTX->xformv[p]=rand()&7;
+    BATTLE->xformv[p]=rand()&7;
   }
   
-  if (CTX->outcome<=-2) {
-    if ((CTX->canimclock-=elapsed)<=0.0) {
-      CTX->canimclock+=0.100;
-      if (++(CTX->canimframe)>=4) CTX->canimframe=0;
-      switch (CTX->canimframe) {
-        case 0: CTX->cxform=0; break;
-        case 1: CTX->cxform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
-        case 2: CTX->cxform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
-        case 3: CTX->cxform=EGG_XFORM_YREV|EGG_XFORM_SWAP; break;
+  if (battle->outcome<=-2) {
+    if ((BATTLE->canimclock-=elapsed)<=0.0) {
+      BATTLE->canimclock+=0.100;
+      if (++(BATTLE->canimframe)>=4) BATTLE->canimframe=0;
+      switch (BATTLE->canimframe) {
+        case 0: BATTLE->cxform=0; break;
+        case 1: BATTLE->cxform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;
+        case 2: BATTLE->cxform=EGG_XFORM_XREV|EGG_XFORM_YREV; break;
+        case 3: BATTLE->cxform=EGG_XFORM_YREV|EGG_XFORM_SWAP; break;
       }
     }
-    struct player *player=CTX->playerv;
+    struct player *player=BATTLE->playerv;
     int i=2;
     for (;i-->0;player++) {
-      if (player->human) player_update_human(ctx,player,elapsed);
-      else player_update_cpu(ctx,player,elapsed);
+      if (player->human) player_update_human(battle,player,elapsed);
+      else player_update_cpu(battle,player,elapsed);
     }
-    if (CTX->playerv[0].clear) {
-      if (CTX->playerv[1].clear) { // It's just barely possible that they clear at the same moment.
-        CTX->outcome=0;
+    if (BATTLE->playerv[0].clear) {
+      if (BATTLE->playerv[1].clear) { // It's just barely possible that they clear at the same moment.
+        battle->outcome=0;
       } else {
-        CTX->outcome=1;
+        battle->outcome=1;
       }
-      CTX->end_cooldown=END_COOLDOWN_TIME;
-    } else if (CTX->playerv[1].clear) {
-      CTX->outcome=-1;
-      CTX->end_cooldown=END_COOLDOWN_TIME;
+      BATTLE->end_cooldown=END_COOLDOWN_TIME;
+    } else if (BATTLE->playerv[1].clear) {
+      battle->outcome=-1;
+      BATTLE->end_cooldown=END_COOLDOWN_TIME;
     }
   }
 }
@@ -325,14 +280,14 @@ static void _exterminating_update(void *ctx,double elapsed) {
 /* Render one player's field.
  */
  
-static void player_render(void *ctx,struct player *player,int midx) {
+static void player_render(struct battle *battle,struct player *player,int midx) {
   const int tilesize=16;
   int x0=midx-((FLDW*tilesize)>>1)+(tilesize>>1);
   int y0=(FBH>>1)-((FLDH*tilesize)>>1)+(tilesize>>1);
   
   int y=y0;
   const uint8_t *p=player->fld;
-  const uint8_t *xform=CTX->xformv;
+  const uint8_t *xform=BATTLE->xformv;
   int yi=FLDH;
   for (;yi-->0;y+=tilesize) {
     int x=x0;
@@ -343,23 +298,23 @@ static void player_render(void *ctx,struct player *player,int midx) {
     }
   }
   
-  if (CTX->outcome<=-2) {
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy-1)*tilesize,0x7a,CTX->cxform);
-    graf_tile(&g.graf,x0+(player->cx-1)*tilesize,y0+(player->cy  )*tilesize,0x7a,CTX->cxform);
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy  )*tilesize,0x7a,CTX->cxform);
-    graf_tile(&g.graf,x0+(player->cx+1)*tilesize,y0+(player->cy  )*tilesize,0x7a,CTX->cxform);
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy+1)*tilesize,0x7a,CTX->cxform);
+  if (battle->outcome<=-2) {
+    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy-1)*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(&g.graf,x0+(player->cx-1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(&g.graf,x0+(player->cx+1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy+1)*tilesize,0x7a,BATTLE->cxform);
   }
 }
 
 /* Render.
  */
  
-static void _exterminating_render(void *ctx) {
+static void _exterminating_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
   graf_set_image(&g.graf,RID_image_battle_early);
-  player_render(ctx,CTX->playerv+0,(FBW*1)/3);
-  player_render(ctx,CTX->playerv+1,(FBW*2)/3);
+  player_render(battle,BATTLE->playerv+0,(FBW*1)/3);
+  player_render(battle,BATTLE->playerv+1,(FBW*2)/3);
 }
 
 /* Type definition.
@@ -367,10 +322,12 @@ static void _exterminating_render(void *ctx) {
  
 const struct battle_type battle_type_exterminating={
   .name="exterminating",
+  .objlen=sizeof(struct battle_exterminating),
   .strix_name=17,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_exterminating_del,
   .init=_exterminating_init,
   .update=_exterminating_update,

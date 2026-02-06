@@ -23,13 +23,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
+- [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
 - - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".
-- - [ ] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
+- - [x] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
 - - Do finish the goblin games first as is, then update.
-- - [ ] After this refactor, rewrite the placeholder and incorporate all the boilerplate I've been repeating on each goblin game.
-- - [ ] Ensure that we're preventing the Princess from entering battles that don't support cpu-vs-cpu. The battles between the jail and the castle must support cpu-vs-cpu.
+- - [x] After this refactor, rewrite the placeholder and incorporate all the boilerplate I've been repeating on each goblin game.
+- - [x] Ensure that we're preventing the Princess from entering battles that don't support cpu-vs-cpu. The battles between the jail and the castle must support cpu-vs-cpu.
+- - - It should reach `battle_new` and fail validation with some logging, shouldn't be any harm. (everything currently reachable does support cvc)
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
@@ -64,20 +65,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
 - [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
-
-- [x] Crypto side quest.
-- - Clues to the Bone and Leaf rooms are by Skull Lake. Encrypted, plus you can't read them in the dark.
-- - Bone and Leaf tasks should both be "Use item X twice while standing on the seal.".
-- - - Depletable items only, to discourage guessing. Potion, match, candy, bugspray, vanishing cream.
-- - Opening the Star room requires losing a battle, to a specific goblin, with a specific item equipped, while standing on the seal.
-- - Arrange dynamically for that goblin species not to spawn in the seal room.
-- - Express the random parts in 16 bits exactly, so we can store as fld16 and regenerate on demand. Alphabet order, Bone task, Leaf task, Star goblin, Star item.
-- - [x] Seal triggers.
-- - [x] Dead-languages scholar offering two things for sale:
-- - - [x] Alphabet key
-- - - [x] Spell of Translation
-- - - Because I'm sure most users will balk at deciphering even this basic cipher by hand.
-- - - Put him in the castle, so you meet him when returning the Princess.
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
@@ -134,7 +121,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Hat the barrels => Bell
 - [ ] Catch em all => (incremental)
 - [x] Rescue the Princess => purse+100
-- [ ] Decipher the goblins' text => Shovel
+- [x] Decipher the goblins' text => Shovel
 - [ ] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?

@@ -26,11 +26,7 @@
 #define FACE_HURT 3
 
 struct battle_boomerang {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   int input_blackout[3];
   double grab_time;
@@ -69,19 +65,18 @@ struct battle_boomerang {
   int rarmy,rgrab;
 };
 
-#define CTX ((struct battle_boomerang*)ctx)
+#define BATTLE ((struct battle_boomerang*)battle)
 
 /* Delete.
  */
  
-static void _boomerang_del(void *ctx) {
-  free(ctx);
+static void _boomerang_del(struct battle *battle) {
 }
 
 /* Prepare the player records.
  */
  
-static void player_init_dot(void *ctx,struct player *player) {
+static void player_init_dot(struct battle *battle,struct player *player) {
   player->human=1;
   player->face=FACE_IDLE;
   player->srcx=0;
@@ -95,7 +90,7 @@ static void player_init_dot(void *ctx,struct player *player) {
 }
 
 // Princess on the right side facing left, and controlled by player 2.
-static void player_init_altdot(void *ctx,struct player *player) {
+static void player_init_altdot(struct battle *battle,struct player *player) {
   player->human=2;
   player->face=FACE_IDLE;
   player->srcx=0;
@@ -109,7 +104,7 @@ static void player_init_altdot(void *ctx,struct player *player) {
 }
 
 // CPU player on the left side.
-static void player_init_princess(void *ctx,struct player *player) {
+static void player_init_princess(struct battle *battle,struct player *player) {
   player->human=0;
   player->face=FACE_IDLE;
   player->srcx=0;
@@ -118,11 +113,11 @@ static void player_init_princess(void *ctx,struct player *player) {
   player->xform=0;
   player->gravity=0.0;
   player->el=0.0;
-  player->judgment=JUDGMENT_EASIEST+(((0xff-CTX->handicap)*(JUDGMENT_HARDEST-JUDGMENT_EASIEST))>>8);
+  player->judgment=JUDGMENT_EASIEST+(((0xff-battle->args.bias)*(JUDGMENT_HARDEST-JUDGMENT_EASIEST))>>8);
   player->reacting=0;
 }
 
-static void player_init_koala(void *ctx,struct player *player) {
+static void player_init_koala(struct battle *battle,struct player *player) {
   player->human=0;
   player->face=FACE_IDLE;
   player->srcx=160;
@@ -131,7 +126,7 @@ static void player_init_koala(void *ctx,struct player *player) {
   player->xform=EGG_XFORM_XREV;
   player->gravity=0.0;
   player->el=0.0;
-  player->judgment=JUDGMENT_EASIEST+((CTX->handicap*(JUDGMENT_HARDEST-JUDGMENT_EASIEST))>>8);
+  player->judgment=JUDGMENT_EASIEST+((battle->args.bias*(JUDGMENT_HARDEST-JUDGMENT_EASIEST))>>8);
   player->reacting=0;
 }
 
@@ -143,10 +138,10 @@ static double rand_half_to_one() {
   return 0.5+((rand()&0x7fff)/65536.0);
 }
  
-static void rang_reset(void *ctx,struct rang *rang) {
-  // TODO bias grabclock and dx per CTX->handicap and rang->side
-  rang->grabclock=CTX->grab_time*rand_half_to_one();
-  rang->dx=CTX->rang_speed*rand_half_to_one();
+static void rang_reset(struct battle *battle,struct rang *rang) {
+  // TODO bias grabclock and dx per BATTLE->handicap and rang->side
+  rang->grabclock=BATTLE->grab_time*rand_half_to_one();
+  rang->dx=BATTLE->rang_speed*rand_half_to_one();
   rang->row=(rand()&1)?-1:1;
   rang->grabbed=1;
   rang->x=0.0;
@@ -157,60 +152,40 @@ static void rang_reset(void *ctx,struct rang *rang) {
 
 /* New.
  */
- 
-static void *_boomerang_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_boomerang));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
-  CTX->input_blackout[1]=CTX->input_blackout[2]=1;
-  CTX->grab_time=GRAB_TIME_INITIAL;
-  CTX->rang_speed=RANG_SPEED_INITIAL;
+
+static int _boomerang_init(struct battle *battle) {
+  BATTLE->input_blackout[1]=BATTLE->input_blackout[2]=1;
+  BATTLE->grab_time=GRAB_TIME_INITIAL;
+  BATTLE->rang_speed=RANG_SPEED_INITIAL;
   
-  CTX->playerv[0].who=0;
-  CTX->playerv[1].who=1;
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init_princess(ctx,CTX->playerv+0);
-        player_init_koala(ctx,CTX->playerv+1);
-      } break;
-    case NS_players_cpu_man: {
-        player_init_princess(ctx,CTX->playerv+0);
-        player_init_altdot(ctx,CTX->playerv+1);
-      } break;
-    case NS_players_man_cpu: {
-        player_init_dot(ctx,CTX->playerv+0);
-        player_init_koala(ctx,CTX->playerv+1);
-      } break;
-    case NS_players_man_man: {
-        player_init_dot(ctx,CTX->playerv+0);
-        player_init_altdot(ctx,CTX->playerv+1);
-      } break;
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  switch (battle->args.lctl) {
+    case 0: player_init_princess(battle,BATTLE->playerv+0); break;
+    case 1: player_init_dot(battle,BATTLE->playerv+0); break;
+    default: return -1;
+  }
+  switch (battle->args.rctl) {
+    case 0: player_init_koala(battle,BATTLE->playerv+1); break;
+    case 2: player_init_altdot(battle,BATTLE->playerv+1); break;
+    default: return -1;
   }
   
-  CTX->rangv[0].side=-1;
-  CTX->rangv[1].side=1;
-  rang_reset(ctx,CTX->rangv+0);
-  rang_reset(ctx,CTX->rangv+1);
+  BATTLE->rangv[0].side=-1;
+  BATTLE->rangv[1].side=1;
+  rang_reset(battle,BATTLE->rangv+0);
+  rang_reset(battle,BATTLE->rangv+1);
   
-  return ctx;
+  return 0;
 }
 
 /* Advance grab_time and rang_speed.
  */
  
-static void boomerang_harden(void *ctx) {
-  if ((CTX->grab_time*=GRAB_TIME_MLT)<GRAB_TIME_LIMIT) CTX->grab_time=GRAB_TIME_LIMIT;
-  if ((CTX->rang_speed*=RANG_SPEED_MLT)>RANG_SPEED_LIMIT) CTX->rang_speed=RANG_SPEED_LIMIT;
-  //fprintf(stderr,"%s: grab_time=%f, rang_speed=%f\n",__func__,CTX->grab_time,CTX->rang_speed);
+static void boomerang_harden(struct battle *battle) {
+  if ((BATTLE->grab_time*=GRAB_TIME_MLT)<GRAB_TIME_LIMIT) BATTLE->grab_time=GRAB_TIME_LIMIT;
+  if ((BATTLE->rang_speed*=RANG_SPEED_MLT)>RANG_SPEED_LIMIT) BATTLE->rang_speed=RANG_SPEED_LIMIT;
+  //fprintf(stderr,"%s: grab_time=%f, rang_speed=%f\n",__func__,BATTLE->grab_time,BATTLE->rang_speed);
 }
 
 /* Player faces.
@@ -305,10 +280,10 @@ static void player_duck_yes(struct player *player,double elapsed) {
 /* Human player.
  */
  
-static void player_update_human(void *ctx,struct player *player,double elapsed) {
+static void player_update_human(struct battle *battle,struct player *player,double elapsed) {
   int input=g.input[player->human];
-  if (CTX->input_blackout[player->human]) {
-    if (!(input&(EGG_BTN_SOUTH|EGG_BTN_DOWN))) CTX->input_blackout[player->human]=0;
+  if (BATTLE->input_blackout[player->human]) {
+    if (!(input&(EGG_BTN_SOUTH|EGG_BTN_DOWN))) BATTLE->input_blackout[player->human]=0;
     player_jump_no(player,elapsed);
     player_duck_no(player,elapsed);
   } else {
@@ -322,7 +297,7 @@ static void player_update_human(void *ctx,struct player *player,double elapsed) 
 /* CPU player.
  */
  
-static void player_update_cpu(void *ctx,struct player *player,struct rang *rang,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,struct rang *rang,double elapsed) {
   // We stand around 70. Rang turns at 120.
   double head= 40.0;
   double tail=100.0;
@@ -356,16 +331,16 @@ static void player_update_cpu(void *ctx,struct player *player,struct rang *rang,
 /* Hurt a player, ie end the game.
  */
  
-static void player_hurt(void *ctx,struct player *player,struct rang *rang) {
+static void player_hurt(struct battle *battle,struct player *player,struct rang *rang) {
   player_set_face(player,FACE_HURT);
-  if (player==CTX->playerv) { // Right player wins.
-    CTX->outcome=-1;
+  if (player==BATTLE->playerv) { // Right player wins.
+    battle->outcome=-1;
     bm_sound_pan(RID_sound_whack,-0.250);
   } else { // Left player wins.
-    CTX->outcome=1;
+    battle->outcome=1;
     bm_sound_pan(RID_sound_whack,0.250);
   }
-  CTX->end_cooldown=END_COOLDOWN_TIME;
+  BATTLE->end_cooldown=END_COOLDOWN_TIME;
   rang->dead=1;
   rang->deady=(rang->row<0)?(GROUND_LEVEL-40):(GROUND_LEVEL-9); // Must agree with rang_render.
 }
@@ -373,15 +348,15 @@ static void player_hurt(void *ctx,struct player *player,struct rang *rang) {
 /* Common player logic, applied after the human or cpu update.
  */
  
-static void player_update_common(void *ctx,struct player *player,struct rang *rang,double elapsed) {
-  if (CTX->outcome>-2) return; // Game is already over, just let it ride.
+static void player_update_common(struct battle *battle,struct player *player,struct rang *rang,double elapsed) {
+  if (battle->outcome>-2) return; // Game is already over, just let it ride.
   const double head=60.0;
   const double tail=80.0;
   if ((rang->x>=head)&&(rang->x<=tail)) {
     if (rang->row<0) {
-      if (player->face!=FACE_DUCK) player_hurt(ctx,player,rang);
+      if (player->face!=FACE_DUCK) player_hurt(battle,player,rang);
     } else {
-      if (player->el>-12.0) player_hurt(ctx,player,rang);
+      if (player->el>-12.0) player_hurt(battle,player,rang);
     }
   }
 }
@@ -390,9 +365,9 @@ static void player_update_common(void *ctx,struct player *player,struct rang *ra
  * Just the motion. player_update_common() manages hit detection.
  */
  
-static void rang_update(void *ctx,struct rang *rang,double elapsed) {
+static void rang_update(struct battle *battle,struct rang *rang,double elapsed) {
   if (rang->grabbed) {
-    if (CTX->outcome>-2) return;
+    if (battle->outcome>-2) return;
     if ((rang->grabclock-=elapsed)<=0.0) {
       rang->grabbed=0;
     }
@@ -409,8 +384,8 @@ static void rang_update(void *ctx,struct rang *rang,double elapsed) {
         rang->row=-rang->row;
         rang->yclock=1.0;
       } else if ((rang->x<=0.0)&&(rang->dx<0.0)) {
-        boomerang_harden(ctx);
-        rang_reset(ctx,rang);
+        boomerang_harden(battle);
+        rang_reset(battle,rang);
       }
     }
   }
@@ -419,37 +394,27 @@ static void rang_update(void *ctx,struct rang *rang,double elapsed) {
 /* Update.
  */
  
-static void _boomerang_update(void *ctx,double elapsed) {
-  if (CTX->outcome>-2) {
-    if (CTX->cb_end) {
-      if (CTX->end_cooldown>0.0) {
-        if ((CTX->end_cooldown-=elapsed)<=0.0) {
-          CTX->cb_end(CTX->outcome,CTX->userdata);
-          CTX->cb_end=0;
-        }
-      }
-    }
-  }
+static void _boomerang_update(struct battle *battle,double elapsed) {
   
   /* Of course we know that there are always 2 players and the first is always human.
    * But it's neater to do it all generically.
    * In theory, we already support a zero-player mode.
    */
-  struct player *player=CTX->playerv;
-  struct rang *rang=CTX->rangv;
+  struct player *player=BATTLE->playerv;
+  struct rang *rang=BATTLE->rangv;
   int i=2;
-  if (CTX->outcome>-2) {
+  if (battle->outcome>-2) {
     for (;i-->0;player++,rang++) {
-      rang_update(ctx,rang,elapsed);
+      rang_update(battle,rang,elapsed);
       player_jump_no(player,elapsed);
       player_duck_no(player,elapsed);
     }
   } else {
     for (;i-->0;player++,rang++) {
-      rang_update(ctx,rang,elapsed);
-      if (player->human) player_update_human(ctx,player,elapsed);
-      else player_update_cpu(ctx,player,rang,elapsed);
-      player_update_common(ctx,player,rang,elapsed);
+      rang_update(battle,rang,elapsed);
+      if (player->human) player_update_human(battle,player,elapsed);
+      else player_update_cpu(battle,player,rang,elapsed);
+      player_update_common(battle,player,rang,elapsed);
     }
   }
 }
@@ -511,11 +476,11 @@ static void player_render(struct player *player) {
 /* Render.
  */
  
-static void _boomerang_render(void *ctx) {
+static void _boomerang_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,(CTX->outcome>-2)?SKY_COLOR_KAPOW:SKY_COLOR);
-  if (CTX->outcome>-2) { // Draw a big "Kapow" starburst where the rang struck. Behind the ground.
-    struct rang *rang=CTX->rangv;
+  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,(battle->outcome>-2)?SKY_COLOR_KAPOW:SKY_COLOR);
+  if (battle->outcome>-2) { // Draw a big "Kapow" starburst where the rang struck. Behind the ground.
+    struct rang *rang=BATTLE->rangv;
     if (!rang->dead) rang++; // If it's not the first, must be the second.
     int hitx=(rang->side<0)?((FBW>>1)-24-(int)rang->x):((FBW>>1)+24+(int)rang->x);
     int hity=(rang->row<0)?(GROUND_LEVEL-40):(GROUND_LEVEL-9);
@@ -526,13 +491,13 @@ static void _boomerang_render(void *ctx) {
   graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
   
   graf_set_image(&g.graf,RID_image_battle_early);
-  player_render(CTX->playerv+0);
-  player_render(CTX->playerv+1);
+  player_render(BATTLE->playerv+0);
+  player_render(BATTLE->playerv+1);
   
   // Kangaroo in the middle.
   graf_decal(&g.graf,(FBW>>1)-24,GROUND_LEVEL-48,0,112,48,48);
-  rang_render(CTX->rangv+0);
-  rang_render(CTX->rangv+1);
+  rang_render(BATTLE->rangv+0);
+  rang_render(BATTLE->rangv+1);
 }
 
 /* Type definition.
@@ -540,10 +505,12 @@ static void _boomerang_render(void *ctx) {
  
 const struct battle_type battle_type_boomerang={
   .name="boomerang",
+  .objlen=sizeof(struct battle_boomerang),
   .strix_name=11,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_boomerang_del,
   .init=_boomerang_init,
   .update=_boomerang_update,

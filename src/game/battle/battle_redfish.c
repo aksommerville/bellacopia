@@ -12,13 +12,9 @@
 #define FISHDY_ACCEL 250.0
 
 struct battle_redfish {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
+  struct battle hdr;
   double wanimclock;
   int wanimframe;
-  int outcome; // -2 until established
   double cooldown;
   
   // Positions in floating-point framebuffer pixels; velocities in px/s.
@@ -33,87 +29,74 @@ struct battle_redfish {
   double fishanimclock;
 };
 
-#define CTX ((struct battle_redfish*)ctx)
+#define BATTLE ((struct battle_redfish*)battle)
 
 /* Delete.
  */
  
-static void _redfish_del(void *ctx) {
-  free(ctx);
+static void _redfish_del(struct battle *battle) {
 }
 
 /* New.
  */
- 
-static void *_redfish_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_redfish));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
+
+static int _redfish_init(struct battle *battle) {
   
-  CTX->dotx=FBW>>1;
+  BATTLE->dotx=FBW>>1;
   
   /* Choose fish position and direction.
    * Initial position is anywhere along the framebuffer, at the bottom.
    * Horizontal velocity will be constant. So pick one that yields a landing position also within the framebuffer's width.
    */
-  CTX->fishy=FBH;
-  CTX->fishx=rand()%FBW;
+  BATTLE->fishy=FBH;
+  BATTLE->fishx=rand()%FBW;
   double targetx=rand()%FBW; // Anywhere is fine, even exactly the same as (fishx).
-  CTX->fishdx=(targetx-CTX->fishx)/FLIGHT_TIME;
-  CTX->fishtileid=0x1a;
-  CTX->fishxform=(targetx<CTX->fishx)?EGG_XFORM_XREV:0;
-  CTX->fishdy=FISHDY_INITIAL;
+  BATTLE->fishdx=(targetx-BATTLE->fishx)/FLIGHT_TIME;
+  BATTLE->fishtileid=0x1a;
+  BATTLE->fishxform=(targetx<BATTLE->fishx)?EGG_XFORM_XREV:0;
+  BATTLE->fishdy=FISHDY_INITIAL;
   
-  return ctx;
+  return 0;
 }
 
 /* Dot's motion.
  */
  
-static void redfish_walk(void *ctx,double elapsed,int d) {
-  if ((CTX->dotanimclock-=elapsed)<=0.0) {
-    CTX->dotanimclock+=0.200;
-    if (++(CTX->dotframe)>=2) CTX->dotframe=0;
+static void redfish_walk(struct battle *battle,double elapsed,int d) {
+  if ((BATTLE->dotanimclock-=elapsed)<=0.0) {
+    BATTLE->dotanimclock+=0.200;
+    if (++(BATTLE->dotframe)>=2) BATTLE->dotframe=0;
   }
-  if (d<0) CTX->dotxform=EGG_XFORM_XREV;
-  else CTX->dotxform=0;
+  if (d<0) BATTLE->dotxform=EGG_XFORM_XREV;
+  else BATTLE->dotxform=0;
   double speed=80.0; // px/s
-  CTX->dotx+=speed*elapsed*d;
-  if (CTX->dotx<0.0) CTX->dotx=0.0;
-  else if (CTX->dotx>FBW) CTX->dotx=FBW;
+  BATTLE->dotx+=speed*elapsed*d;
+  if (BATTLE->dotx<0.0) BATTLE->dotx=0.0;
+  else if (BATTLE->dotx>FBW) BATTLE->dotx=FBW;
 }
 
-static void redfish_walk_none(void *ctx,double elapsed) {
-  CTX->dotframe=0;
-  CTX->dotanimclock=0.0;
+static void redfish_walk_none(struct battle *battle,double elapsed) {
+  BATTLE->dotframe=0;
+  BATTLE->dotanimclock=0.0;
 }
 
 /* Move the fish.
  */
  
-static void redfish_move_fish(void *ctx,double elapsed) {
-  if ((CTX->fishanimclock-=elapsed)<=0.0) {
-    CTX->fishanimclock+=0.200;
-    if (CTX->fishtileid==0x1a) CTX->fishtileid=0x2a;
-    else CTX->fishtileid=0x1a;
+static void redfish_move_fish(struct battle *battle,double elapsed) {
+  if ((BATTLE->fishanimclock-=elapsed)<=0.0) {
+    BATTLE->fishanimclock+=0.200;
+    if (BATTLE->fishtileid==0x1a) BATTLE->fishtileid=0x2a;
+    else BATTLE->fishtileid=0x1a;
   }
-  double pvdy=CTX->fishdy;
-  CTX->fishdy+=FISHDY_ACCEL*elapsed;
-  if ((pvdy<=0.0)&&(CTX->fishdy>0.0)) { // Crested.
-    if (CTX->fishxform==0) CTX->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
-    else if (CTX->fishxform==EGG_XFORM_XREV) CTX->fishxform=EGG_XFORM_SWAP;
+  double pvdy=BATTLE->fishdy;
+  BATTLE->fishdy+=FISHDY_ACCEL*elapsed;
+  if ((pvdy<=0.0)&&(BATTLE->fishdy>0.0)) { // Crested.
+    if (BATTLE->fishxform==0) BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+    else if (BATTLE->fishxform==EGG_XFORM_XREV) BATTLE->fishxform=EGG_XFORM_SWAP;
   }
-  CTX->fishy+=CTX->fishdy*elapsed;
-  CTX->fishx+=CTX->fishdx*elapsed;
+  BATTLE->fishy+=BATTLE->fishdy*elapsed;
+  BATTLE->fishx+=BATTLE->fishdx*elapsed;
 }
 
 /* Check both terminal conditions.
@@ -121,11 +104,11 @@ static void redfish_move_fish(void *ctx,double elapsed) {
  * In theory, 0 if tied, but we don't do ties.
  */
  
-static int redfish_check_termination(void *ctx) {
-  if (CTX->fishy>FBH) return -1; // Fish is back in the sea.
-  if (CTX->fishdy<=0.0) return -2; // Still rising.
-  if ((CTX->fishy>=GROUNDY-32.0)&&(CTX->fishy<=GROUNDY-8.0)) { // Catchy vertical range...
-    double dx=CTX->fishx-CTX->dotx;
+static int redfish_check_termination(struct battle *battle) {
+  if (BATTLE->fishy>FBH) return -1; // Fish is back in the sea.
+  if (BATTLE->fishdy<=0.0) return -2; // Still rising.
+  if ((BATTLE->fishy>=GROUNDY-32.0)&&(BATTLE->fishy<=GROUNDY-8.0)) { // Catchy vertical range...
+    double dx=BATTLE->fishx-BATTLE->dotx;
     if (dx<0.0) dx=-dx;
     if (dx<=25.0) return 1; // Caught!
   }
@@ -135,53 +118,45 @@ static int redfish_check_termination(void *ctx) {
 /* Update.
  */
  
-static void _redfish_update(void *ctx,double elapsed) {
+static void _redfish_update(struct battle *battle,double elapsed) {
   
   // Animate water.
-  if ((CTX->wanimclock-=elapsed)<=0.0) {
-    CTX->wanimclock+=0.150;
-    if (++(CTX->wanimframe)>=6) CTX->wanimframe=0; // 4 frames, pingponging
+  if ((BATTLE->wanimclock-=elapsed)<=0.0) {
+    BATTLE->wanimclock+=0.150;
+    if (++(BATTLE->wanimframe)>=6) BATTLE->wanimframe=0; // 4 frames, pingponging
   }
   
   // Finished? Tick the cooldown, but no further model activity.
-  if (CTX->outcome!=-2) {
-    if (CTX->cb_end) {
-      if ((CTX->cooldown-=elapsed)<=0.0) {
-        CTX->cb_end(CTX->outcome,CTX->userdata);
-        CTX->cb_end=0;
-      }
-    }
-    return;
-  }
+  if (battle->outcome!=-2) return;
   
   // Dot's motion.
   switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
-    case EGG_BTN_LEFT: redfish_walk(ctx,elapsed,-1); break;
-    case EGG_BTN_RIGHT: redfish_walk(ctx,elapsed,1); break;
-    default: redfish_walk_none(ctx,elapsed); break;
+    case EGG_BTN_LEFT: redfish_walk(battle,elapsed,-1); break;
+    case EGG_BTN_RIGHT: redfish_walk(battle,elapsed,1); break;
+    default: redfish_walk_none(battle,elapsed); break;
   }
   
   // Fish's motion.
-  redfish_move_fish(ctx,elapsed);
+  redfish_move_fish(battle,elapsed);
   
   // Termination.
-  CTX->outcome=redfish_check_termination(ctx);
-  if (CTX->outcome!=-2) {
-    CTX->cooldown=END_COOLDOWN;
-    if (CTX->outcome>0) {
-      CTX->dotframe=3;
-      CTX->fishx=CTX->dotx;
-      CTX->fishy=GROUNDY-14.0;
-      CTX->fishtileid=0x1d;
-      if (CTX->dotxform) {
-        CTX->fishxform=EGG_XFORM_XREV;
-        CTX->fishx-=19.0;
+  battle->outcome=redfish_check_termination(battle);
+  if (battle->outcome!=-2) {
+    BATTLE->cooldown=END_COOLDOWN;
+    if (battle->outcome>0) {
+      BATTLE->dotframe=3;
+      BATTLE->fishx=BATTLE->dotx;
+      BATTLE->fishy=GROUNDY-14.0;
+      BATTLE->fishtileid=0x1d;
+      if (BATTLE->dotxform) {
+        BATTLE->fishxform=EGG_XFORM_XREV;
+        BATTLE->fishx-=19.0;
       } else {
-        CTX->fishxform=0;
-        CTX->fishx+=19.0;
+        BATTLE->fishxform=0;
+        BATTLE->fishx+=19.0;
       }
     } else {
-      CTX->dotframe=2;
+      BATTLE->dotframe=2;
     }
   }
 }
@@ -189,7 +164,7 @@ static void _redfish_update(void *ctx,double elapsed) {
 /* Render.
  */
  
-static void _redfish_render(void *ctx) {
+static void _redfish_render(struct battle *battle) {
 
   // Sky, earth, and horizon. Then everything comes off RID_image_battle_fishing.
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
@@ -198,20 +173,20 @@ static void _redfish_render(void *ctx) {
   graf_set_image(&g.graf,RID_image_battle_fishing);
   
   // Dot.
-  int dotdstx=(int)CTX->dotx-24;
+  int dotdstx=(int)BATTLE->dotx-24;
   int dotdsty=GROUNDY-47;
-  int dotsrcx=48*CTX->dotframe;
+  int dotsrcx=48*BATTLE->dotframe;
   int dotsrcy=64;
-  graf_decal_xform(&g.graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,CTX->dotxform);
+  graf_decal_xform(&g.graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,BATTLE->dotxform);
   
   // Fish.
-  int fishdstx=(int)CTX->fishx;
-  int fishdsty=(int)CTX->fishy;
-  graf_tile(&g.graf,fishdstx,fishdsty,CTX->fishtileid,CTX->fishxform);
+  int fishdstx=(int)BATTLE->fishx;
+  int fishdsty=(int)BATTLE->fishy;
+  graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
   
   // Animated row of water at the bottom.
   uint8_t watertileid=0x3a;
-  switch (CTX->wanimframe) {
+  switch (BATTLE->wanimframe) {
     case 1: watertileid+=1; break;
     case 2: watertileid+=2; break;
     case 3: watertileid+=3; break;
@@ -228,10 +203,12 @@ static void _redfish_render(void *ctx) {
  
 const struct battle_type battle_type_redfish={
   .name="redfish",
+  .objlen=sizeof(struct battle_redfish),
   .strix_name=0,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_man_cpu),
+  .support_pvp=0,
+  .support_cvc=0,
   .del=_redfish_del,
   .init=_redfish_init,
   .update=_redfish_update,

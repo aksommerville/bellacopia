@@ -12,11 +12,7 @@
 #define CPU_HEADSTART_FAST 0.250
 
 struct battle_cobbling {
-  uint8_t handicap;
-  uint8_t players;
-  void (*cb_end)(int outcome,void *userdata);
-  void *userdata;
-  int outcome;
+  struct battle hdr;
   double end_cooldown;
   
   struct player {
@@ -37,28 +33,27 @@ struct battle_cobbling {
   } playerv[2];
 };
 
-#define CTX ((struct battle_cobbling*)ctx)
+#define BATTLE ((struct battle_cobbling*)battle)
 
 /* Delete.
  */
  
-static void _cobbling_del(void *ctx) {
-  free(ctx);
+static void _cobbling_del(struct battle *battle) {
 }
 
 /* Init player.
  */
  
-static void player_init(void *ctx,struct player *player,int human,int appearance) {
-  if (player==CTX->playerv) {
+static void player_init(struct battle *battle,struct player *player,int human,int appearance) {
+  if (player==BATTLE->playerv) {
     player->who=0;
     player->x=FBW/3;
-    player->skill=1.0-CTX->handicap/255.0;
+    player->skill=1.0-battle->args.bias/255.0;
   } else {
     player->who=1;
     player->x=(FBW*2)/3;
     player->xform=EGG_XFORM_XREV;
-    player->skill=CTX->handicap/255.0;
+    player->skill=battle->args.bias/255.0;
   }
   if (player->human=human) {
     player->pvinput=EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH;
@@ -85,48 +80,17 @@ static void player_init(void *ctx,struct player *player,int human,int appearance
 
 /* New.
  */
- 
-static void *_cobbling_init(
-  uint8_t handicap,
-  uint8_t players,
-  void (*cb_end)(int outcome,void *userdata),
-  void *userdata
-) {
-  void *ctx=calloc(1,sizeof(struct battle_cobbling));
-  if (!ctx) return 0;
-  CTX->handicap=handicap;
-  CTX->players=players;
-  CTX->cb_end=cb_end;
-  CTX->userdata=userdata;
-  CTX->outcome=-2;
-  
-  switch (CTX->players) {
-    case NS_players_cpu_cpu: {
-        player_init(ctx,CTX->playerv+0,0,2);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_cpu_man: {
-        player_init(ctx,CTX->playerv+0,0,0);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    case NS_players_man_cpu: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,0,0);
-      } break;
-    case NS_players_man_man: {
-        player_init(ctx,CTX->playerv+0,1,1);
-        player_init(ctx,CTX->playerv+1,2,2);
-      } break;
-    default: _cobbling_del(ctx); return 0;
-  }
-  
-  return ctx;
+
+static int _cobbling_init(struct battle *battle) {
+  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
+  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
+  return 0;
 }
 
 /* Add something to the stage.
  */
  
-static void player_add_stage(void *ctx,struct player *player,uint8_t tileid) {
+static void player_add_stage(struct battle *battle,struct player *player,uint8_t tileid) {
   if (player->stagec>=STAGE_LIMIT) {
     bm_sound(RID_sound_reject);
     return;
@@ -138,7 +102,7 @@ static void player_add_stage(void *ctx,struct player *player,uint8_t tileid) {
 /* Whack the stage.
  */
  
-static void player_whack(void *ctx,struct player *player) {
+static void player_whack(struct battle *battle,struct player *player) {
   int valid=0;
   if (player->stagec==2) {
     int leatherc=0,solec=0,otherc=0;
@@ -165,11 +129,11 @@ static void player_whack(void *ctx,struct player *player) {
 /* Update human player.
  */
  
-static void player_update_man(void *ctx,struct player *player,double elapsed,int input) {
+static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   if (input!=player->pvinput) {
-    if ((input&EGG_BTN_UP)&&!(player->pvinput&EGG_BTN_UP)) player_add_stage(ctx,player,0xb3); // Up for leather.
-    if ((input&EGG_BTN_DOWN)&&!(player->pvinput&EGG_BTN_DOWN)) player_add_stage(ctx,player,0xc3); // Down for sole.
-    if ((input&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_whack(ctx,player); // And South to whack them together.
+    if ((input&EGG_BTN_UP)&&!(player->pvinput&EGG_BTN_UP)) player_add_stage(battle,player,0xb3); // Up for leather.
+    if ((input&EGG_BTN_DOWN)&&!(player->pvinput&EGG_BTN_DOWN)) player_add_stage(battle,player,0xc3); // Down for sole.
+    if ((input&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_whack(battle,player); // And South to whack them together.
     player->pvinput=input;
   }
 }
@@ -177,13 +141,13 @@ static void player_update_man(void *ctx,struct player *player,double elapsed,int
 /* Update CPU player.
  */
 
-static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
   if ((player->moveclock-=elapsed)<=0.0) {
     player->moveclock+=player->movetimelo+((rand()&0xffff)*(player->movetimehi-player->movetimelo))/65535.0;
     switch (player->stagec) {
-      case 0: player_add_stage(ctx,player,0xb3); break;
-      case 1: player_add_stage(ctx,player,0xc3); break;
-      case 2: player_whack(ctx,player); break;
+      case 0: player_add_stage(battle,player,0xb3); break;
+      case 1: player_add_stage(battle,player,0xc3); break;
+      case 2: player_whack(battle,player); break;
     }
   }
 }
@@ -191,45 +155,37 @@ static void player_update_cpu(void *ctx,struct player *player,double elapsed) {
 /* Update.
  */
  
-static void _cobbling_update(void *ctx,double elapsed) {
+static void _cobbling_update(struct battle *battle,double elapsed) {
 
-  if (CTX->outcome>-2) {
-    if (CTX->end_cooldown>0.0) {
-      CTX->end_cooldown-=elapsed;
-    } else if (CTX->cb_end) {
-      CTX->cb_end(CTX->outcome,CTX->userdata);
-      CTX->cb_end=0;
-    }
-    return;
-  }
+  if (battle->outcome>-2) return;
   
-  struct player *player=CTX->playerv;
+  struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
     if (player->hammerclock>0.0) {
       player->hammerclock-=elapsed;
       continue;
     }
-    if (player->human) player_update_man(ctx,player,elapsed,g.input[player->human]);
-    else player_update_cpu(ctx,player,elapsed);
+    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    else player_update_cpu(battle,player,elapsed);
   }
   
   // First to three wins, because shoes always come in threes.
   // Ties are technically possible.
-  if (CTX->playerv[0].shoec>=3) {
-    CTX->end_cooldown=END_COOLDOWN;
-    if (CTX->playerv[1].shoec>=3) CTX->outcome=0;
-    else CTX->outcome=1;
-  } else if (CTX->playerv[1].shoec>=3) {
-    CTX->end_cooldown=END_COOLDOWN;
-    CTX->outcome=-1;
+  if (BATTLE->playerv[0].shoec>=3) {
+    BATTLE->end_cooldown=END_COOLDOWN;
+    if (BATTLE->playerv[1].shoec>=3) battle->outcome=0;
+    else battle->outcome=1;
+  } else if (BATTLE->playerv[1].shoec>=3) {
+    BATTLE->end_cooldown=END_COOLDOWN;
+    battle->outcome=-1;
   }
 }
 
 /* Render player.
  */
  
-static void player_render(void *ctx,struct player *player) {
+static void player_render(struct battle *battle,struct player *player) {
   if (player->hammerclock>0.0) {
     graf_tile(&g.graf,player->x,player->y,player->tileid+1,player->xform);
     int hx=player->x;
@@ -255,7 +211,7 @@ static void player_render(void *ctx,struct player *player) {
 /* Render.
  */
  
-static void _cobbling_render(void *ctx) {
+static void _cobbling_render(struct battle *battle) {
 
   // Background.
   const uint32_t light=0xa09080ff;
@@ -265,8 +221,8 @@ static void _cobbling_render(void *ctx) {
   graf_gradient_rect(&g.graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
   
   graf_set_image(&g.graf,RID_image_battle_goblins);
-  player_render(ctx,CTX->playerv+0);
-  player_render(ctx,CTX->playerv+1);
+  player_render(battle,BATTLE->playerv+0);
+  player_render(battle,BATTLE->playerv+1);
   
   // I made graphics imaging this whole supply-chain decoration.
   // Cows slide into the factory and hides slide out, sliding all the way to above the heroes. Mutatis mutandi trees to soles.
@@ -278,10 +234,12 @@ static void _cobbling_render(void *ctx) {
  
 const struct battle_type battle_type_cobbling={
   .name="cobbling",
+  .objlen=sizeof(struct battle_cobbling),
   .strix_name=57,
   .no_article=0,
   .no_contest=0,
-  .supported_players=(1<<NS_players_cpu_cpu)|(1<<NS_players_cpu_man)|(1<<NS_players_man_cpu)|(1<<NS_players_man_man),
+  .support_pvp=1,
+  .support_cvc=1,
   .del=_cobbling_del,
   .init=_cobbling_init,
   .update=_cobbling_update,
