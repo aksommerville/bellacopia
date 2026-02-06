@@ -608,6 +608,56 @@ static void begin_escape() {
   store_set_fld(NS_fld_escaped,1);
 }
 
+/* Cryptmsg: One of the seven obelisks giving encrypted clues in the goblins' cave.
+ */
+ 
+static void begin_cryptmsg(int which) {
+  fprintf(stderr,"TODO %s(%d) [%s:%d] darkness=%.03f lightc=%d\n",__func__,which,__FILE__,__LINE__,g.camera.darkness,GRP(light)->sprc);
+  
+  /* If we're in a dark room -- they all are -- require a nearby light source.
+   * Camera figures out its lights on the fly and doesn't leave any useful residue for us.
+   * Cryptmsg 3, north center of Skull Lake, is 103 m**2, and to my eye should be just barely outside.
+   * Perfect! Let's call the threshold 100.
+   */
+  if (g.camera.darkness>0.0) {
+    int lit=0;
+    if (GRP(hero)->sprc>=1) {
+      struct sprite *hero=GRP(hero)->sprv[0];
+      struct sprite *nearlight=0;
+      double neard2=999.999;
+      struct sprite **qp=GRP(light)->sprv;
+      int i=GRP(light)->sprc;
+      for (;i-->0;qp++) {
+        struct sprite *q=*qp;
+        if (q->defunct) continue;
+        double dx=q->x-hero->x;
+        double dy=q->y-hero->y;
+        double d2=dx*dx+dy*dy;
+        if (d2<neard2) {
+          nearlight=q;
+          neard2=d2;
+          if (d2<1.0) break;
+        }
+      }
+      if (neard2<100.0) lit=1;
+    }
+    if (!lit) {
+      begin_dialogue(45,0); // "Too dark"
+      return;
+    }
+  }
+  
+  char msg[256];
+  int msgc=cryptmsg_get(msg,sizeof(msg),which);
+  if ((msgc<1)||(msgc>sizeof(msg))) return;
+  
+  struct modal_args_cryptmsg args={
+    .src=msg,
+    .srcc=msgc,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cryptmsg,&args,sizeof(args));
+}
+
 /* Begin activity.
  */
  
@@ -628,6 +678,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_jaildoor: begin_jaildoor(); break;
     case NS_activity_kidnap: begin_kidnap(initiator); break;
     case NS_activity_escape: begin_escape(); break;
+    case NS_activity_cryptmsg: begin_cryptmsg(arg); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

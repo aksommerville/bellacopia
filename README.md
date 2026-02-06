@@ -84,6 +84,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
+- [ ] We could offer two levels of cheating thru the crypto side quest: Show you the alphabet key, or set a flag that suppresses encryption. Maybe offer somewhere at a high price?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

@@ -176,6 +176,7 @@
 #define NS_activity_jaildoor 13
 #define NS_activity_kidnap 14
 #define NS_activity_escape 15
+#define NS_activity_cryptmsg 16 /* (u16)which: 1,2,3,4,5,6,7: Bone Room, Leaf Room, 5x Skull Lake */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -310,6 +311,7 @@
 #define NS_fld16_bluefish 6
 #define NS_fld16_redfish 7
 #define NS_fld16_compassoption 8
+#define NS_fld16_cryptmsg_seed 9
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

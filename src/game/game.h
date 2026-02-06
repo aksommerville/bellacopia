@@ -139,4 +139,10 @@ int game_get_completion();
 
 void game_get_sidequests(int *done,int *total);
 
+/* Get an encrypted message (in Old Goblish) for the crypto sidequest.
+ * Punctuation is all ASCII G0, and letters are all 0xc1..0xda (ie ASCII uppercase + 0x80).
+ * image:fonttiles is equipped to display this.
+ */
+int cryptmsg_get(char *dst,int dsta,int which);
+
 #endif

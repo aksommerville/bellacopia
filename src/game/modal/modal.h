@@ -90,6 +90,7 @@ extern const struct modal_type modal_type_battle; // Story or Arcade Mode.
 extern const struct modal_type modal_type_pause; // Story Mode.
 extern const struct modal_type modal_type_dialogue; // Any mode.
 extern const struct modal_type modal_type_shop; // Story Mode. Basically dialogue, with shopping-specific extras.
+extern const struct modal_type modal_type_cryptmsg; // Special type of dialogue in Story Mode.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -130,6 +131,11 @@ struct modal_args_shop {
   int (*cb)(int itemid,int quantity,void *userdata); // Return >0 to acknowledge, suppresses ordinary purchasing reaction. (itemid) zero if cancelled.
   int (*cb_validated)(int itemid,int quantity,int price,void *userdata); // Do the quantity and price validation, and call just before committing. Nonzero to abort purchase. Quantity and price are the real final values.
   void *userdata;
+};
+
+struct modal_args_cryptmsg {
+  const char *src; // G0 + 0xc1..0xda are Old Goblish.
+  int srcc;
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
