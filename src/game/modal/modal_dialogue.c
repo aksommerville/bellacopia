@@ -374,3 +374,14 @@ void modal_dialogue_set_callback(struct modal *modal,int (*cb)(int optionid,void
   MODAL->cb=cb;
   MODAL->userdata=userdata;
 }
+
+/* Convenience.
+ */
+ 
+struct modal *modal_dialogue_simple(int rid,int strix) {
+  struct modal_args_dialogue args={
+    .rid=rid,
+    .strix=strix,
+  };
+  return modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}

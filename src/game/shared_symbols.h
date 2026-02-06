@@ -180,6 +180,7 @@
 #define NS_activity_kidnap 14
 #define NS_activity_escape 15
 #define NS_activity_cryptmsg 16 /* (u16)which: 1,2,3,4,5,6,7: Bone Room, Leaf Room, 5x Skull Lake */
+#define NS_activity_linguist 17
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -303,6 +304,8 @@
 #define NS_fld_leafdoor 41
 #define NS_fld_stardoor 42
 #define NS_fld_no_encryption 43 /* Not for production. */
+#define NS_fld_bought_alphabet 44
+#define NS_fld_bought_translation 45
 
 /* "fld16" are 16 unsigned bits each.
  */

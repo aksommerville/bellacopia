@@ -612,7 +612,6 @@ static void begin_escape() {
  */
  
 static void begin_cryptmsg(int which) {
-  fprintf(stderr,"TODO %s(%d) [%s:%d] darkness=%.03f lightc=%d\n",__func__,which,__FILE__,__LINE__,g.camera.darkness,GRP(light)->sprc);
   
   /* If we're in a dark room -- they all are -- require a nearby light source.
    * Camera figures out its lights on the fly and doesn't leave any useful residue for us.
@@ -658,6 +657,17 @@ static void begin_cryptmsg(int which) {
   struct modal *modal=modal_spawn(&modal_type_cryptmsg,&args,sizeof(args));
 }
 
+/* Linguist: Offer help with translating Old Goblish, or show the things already purchased.
+ * There's a special modal for the whole interaction; all we do is spawn it.
+ */
+ 
+static void begin_linguist(struct sprite *sprite) {
+  struct modal_args_linguist args={
+    .speaker=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_linguist,&args,sizeof(args));
+}
+
 /* Begin activity.
  */
  
@@ -679,6 +689,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_kidnap: begin_kidnap(initiator); break;
     case NS_activity_escape: begin_escape(); break;
     case NS_activity_cryptmsg: begin_cryptmsg(arg); break;
+    case NS_activity_linguist: begin_linguist(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

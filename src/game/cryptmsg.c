@@ -7,6 +7,7 @@
  */
  
 #define CRYPTMSGC 7
+#define SPELL_LENGTH 6
  
 static struct {
   int seed; // If zero, we are not initialized.
@@ -20,6 +21,8 @@ static struct {
   int itemseal; // (1,2)=(bone,leaf), when an item has been played upon the seal.
   int itemsealc; // How many of them?
   int itemseal_framec; // (g.framec) at the last play.
+  char spell[SPELL_LENGTH];
+  int translate_time; // If nonzero, global frame count the last time the Spell of Translating was cast.
 } cryptmsg={0};
 
 /* Build the initial state if needed.
@@ -150,20 +153,59 @@ static void cryptmsg_require() {
   const int *v=cryptmsg.msgtmpl;
   //fprintf(stderr,"Chose message templates: %d,%d,%d,%d,%d,%d,%d,%d\n",v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7]);
   
+  // Generate the Spell of Translating.
+  // It only takes 12 bits: 2 per stroke, and 6 strokes.
+  // But we digest, and force it to contain each direction at least once.
+  // That "every direction" rule is important; it's how we ensure that this won't collide with static spells.
+  int prespell=RAND(0x1000);
+  int count_by_direction[4]={0};
+  int shift=0;
+  for (;shift<12;shift+=2) {
+    int direction=(prespell>>shift)&3;
+    count_by_direction[direction]++;
+  }
+  for (i=0;i<4;i++) {
+    if (count_by_direction[i]) continue;
+    int j=0;
+    for (;j<4;j++) {
+      if (count_by_direction[j]<2) continue;
+      count_by_direction[j]--;
+      count_by_direction[i]++;
+      for (shift=0;shift<12;shift+=2) {
+        if (((prespell>>shift)&3)==j) {
+          prespell=((prespell&~(3<<shift))|(i<<shift));
+          break;
+        }
+      }
+    }
+  }
+  for (i=0,shift=0;i<SPELL_LENGTH;i++,shift+=2) {
+    cryptmsg.spell[i]="LRUD"[(prespell>>shift)&3];
+  }
+  
   #undef RAND
 }
 
 /* Apply encryption in place.
  */
  
-static int cryptmsg_encrypt(char *v,int c) {
-  if (store_get_fld(NS_fld_no_encryption)) return c;
-  int i=c;
-  for (;i-->0;v++) {
+void cryptmsg_encrypt_in_place(char *v,int c) {
+  cryptmsg_require();
+  for (;c-->0;v++) {
          if ((*v>=0x41)&&(*v<=0x5a)) *v=0xc1+cryptmsg.alphabet[(*v)-0x41];
     else if ((*v>=0x61)&&(*v<=0x7a)) *v=0xc1+cryptmsg.alphabet[(*v)-0x61];
     // else keep it
   }
+}
+ 
+static int cryptmsg_encrypt(char *v,int c) {
+  if (store_get_fld(NS_fld_no_encryption)) return c;
+  int tclock=g.framec-cryptmsg.translate_time;
+  if (cryptmsg.translate_time) {
+    cryptmsg.translate_time=0;
+    if (tclock<30*60) return c;
+  }
+  cryptmsg_encrypt_in_place(v,c);
   return c;
 }
 
@@ -338,4 +380,17 @@ int cryptmsg_check_star_door(int battle,int itemid) {
   store_set_fld(NS_fld_stardoor,1);
   g.camera.mapsdirty=1;
   return 1;
+}
+
+/* Get the Spell of Translating.
+ */
+ 
+int cryptmsg_get_spell(char *dst,int dsta,int require) {
+  if (require) cryptmsg_require();
+  if (dsta>=SPELL_LENGTH) memcpy(dst,cryptmsg.spell,SPELL_LENGTH);
+  return SPELL_LENGTH;
+}
+
+void cryptmsg_translate_next() {
+  cryptmsg.translate_time=g.framec;
 }

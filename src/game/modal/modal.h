@@ -91,6 +91,7 @@ extern const struct modal_type modal_type_pause; // Story Mode.
 extern const struct modal_type modal_type_dialogue; // Any mode.
 extern const struct modal_type modal_type_shop; // Story Mode. Basically dialogue, with shopping-specific extras.
 extern const struct modal_type modal_type_cryptmsg; // Special type of dialogue in Story Mode.
+extern const struct modal_type modal_type_linguist; // ''
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -138,6 +139,10 @@ struct modal_args_cryptmsg {
   int srcc;
 };
 
+struct modal_args_linguist {
+  struct sprite *speaker;
+};
+
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
  * If you win a no-quantity item from battle (are we doing that?), use (d==0).
  * This does not effect any changes, it only talks about them.
@@ -150,6 +155,7 @@ int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,i
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.
 void modal_dialogue_set_default(struct modal *modal,int optionid); // Must add the option first.
 void modal_dialogue_set_callback(struct modal *modal,int (*cb)(int optionid,void *userdata),void *userdata);
+struct modal *modal_dialogue_simple(int rid,int strix); // Convenience for static text.
 
 /* Fails on invalid itemid.
  * (quantity) zero to permit any quantity, in which case (price) is per-unit.

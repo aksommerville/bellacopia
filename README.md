@@ -65,7 +65,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Can we just mark her as "never delete due to distance"?
 - [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
 
-- [ ] Crypto side quest.
+- [x] Crypto side quest.
 - - Clues to the Bone and Leaf rooms are by Skull Lake. Encrypted, plus you can't read them in the dark.
 - - Bone and Leaf tasks should both be "Use item X twice while standing on the seal.".
 - - - Depletable items only, to discourage guessing. Potion, match, candy, bugspray, vanishing cream.
@@ -73,9 +73,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Arrange dynamically for that goblin species not to spawn in the seal room.
 - - Express the random parts in 16 bits exactly, so we can store as fld16 and regenerate on demand. Alphabet order, Bone task, Leaf task, Star goblin, Star item.
 - - [x] Seal triggers.
-- - [ ] Dead-languages scholar offering two things for sale:
-- - - [ ] Alphabet key
-- - - [ ] Spell of Translation
+- - [x] Dead-languages scholar offering two things for sale:
+- - - [x] Alphabet key
+- - - [x] Spell of Translation
 - - - Because I'm sure most users will balk at deciphering even this basic cipher by hand.
 - - - Put him in the castle, so you meet him when returning the Princess.
 

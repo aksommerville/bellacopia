@@ -157,4 +157,18 @@ void cryptmsg_notify_item(int itemid);
  */
 int cryptmsg_check_star_door(int battle,int itemid);
 
+/* Overwrites (v), replacing G0 letters with [A-Z]+0x80.
+ * This always encrypts; it doesn't check NS_fld_no_encryption or any other business logic.
+ */
+void cryptmsg_encrypt_in_place(char *v,int c);
+
+/* Write the Spell of Translating into (dst) and return its length.
+ * Output undefined if return >dsta. The length is always 6, but you can pretend not to know that.
+ * Content is some combination of [LRUD].
+ * If (require), we may initialize the cryptmsg innards.
+ */
+int cryptmsg_get_spell(char *dst,int dsta,int require);
+
+void cryptmsg_translate_next();
+
 #endif
