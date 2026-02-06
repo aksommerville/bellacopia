@@ -306,6 +306,12 @@
 #define NS_fld_no_encryption 43 /* Not for production. */
 #define NS_fld_bought_alphabet 44
 #define NS_fld_bought_translation 45
+#define NS_fld_endorse_food 44
+#define NS_fld_endorse_public 45
+#define NS_fld_endorse_athlete 46
+#define NS_fld_endorse_hospital 47
+#define NS_fld_endorse_casino 48
+#define NS_fld_endorse_labor 49
 
 /* "fld16" are 16 unsigned bits each.
  */

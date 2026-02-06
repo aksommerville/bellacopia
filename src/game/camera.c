@@ -242,6 +242,7 @@ static void camera_check_exposures(int ox,int oy) {
     struct map *map=scope->map;
     if (!map) continue;
     if (
+      (map->z!=g.camera.z)||
       (map->lng<lnga)||
       (map->lng>lngz)||
       (map->lat<lata)||

@@ -23,6 +23,40 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Election
+- - [x] How many guilds and what are they? ...6
+- - - 10 Available houses in Fractia.
+- - - Food Service Guild
+- - - - Watching (Cook,2)
+- - - - Topping (HotDogVendor,2)
+- - - - Stacking (Waiter,2)
+- - - - Shaking (Bartender,2)
+- - - - Flapjack (Cook,2)
+- - - - CakeCarrying (Baker,2)
+- - - Public Sector Employee's Union
+- - - - Traffic (Cop,2)
+- - - - CheeseCutting (Executioner,2)
+- - - Athlete's Guild
+- - - - SumoHorse (Wrestler,2)
+- - - - Fencing (Samurai,2)
+- - - - Jeter (Dancer,2)
+- - - Hospital. Throwing clerical jobs in here too...
+- - - - Dissection (Doctor,2)
+- - - - CPR (Nurse,2)
+- - - - Stenography (Secretary,2)
+- - - - Sorting (Clerk,2)
+- - - Casino
+- - - - Slapping (Gambler,2)
+- - - - Shuffling (Dealer,2)
+- - - - Cheating (Hustler,1)
+- - - Journeymans' Guild
+- - - - Plumbing (Plumber,2)
+- - - - Building (Contractor,2)
+- - - - Sawing (Carpenter,2)
+- - - - Lawnmowing (Gardener,2)
+  
+
+
 - [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
 - - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".
