@@ -18,3 +18,5 @@ song song:bone_soup
 sprite @6,2 sprite:jigpiece (u32)0
 bump @9,4 (u16)0 strings:dialogue (u16)44
 triggeronce @9,8 (u16:fld)escaped (u16:activity)escape (u16)0
+sprite @11,2 sprite:firepot (u8:radius_m)3 (u24)0
+dark
