@@ -349,6 +349,9 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
   } else if (outcome<0) {
     game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+    if (cryptmsg_check_star_door(SPRITE->battle,g.store.invstorev[0].itemid)) {
+      modal_battle_add_consequence(modal,NS_itemid_text,109);
+    }
   }
 }
 

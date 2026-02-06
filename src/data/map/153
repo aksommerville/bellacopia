@@ -29,3 +29,12 @@ rsprite sprite:boblin (u8:weight)3 (u8:limit)1 (u32)0
 sprite @9,3 sprite:wolfhead (u32)0
 switchable @9,4 (u16:fld)bonedoor
 stompbox @12,10 (u16:fld)bonedoor
+seal @10,8 (u16)1
+seal @8,6 (u16)1
+seal @9,6 (u16)1
+seal @10,6 (u16)1
+seal @10,7 (u16)1
+seal @9,7 (u16)1
+seal @8,7 (u16)1
+seal @8,8 (u16)1
+seal @9,8 (u16)1

@@ -16,6 +16,10 @@ static struct {
   int staritem; // NS_itemid-*
   int starbattle; // NS_battle_*
   int msgtmpl[1+CRYPTMSGC]; // strix in strings:dialogue, indexed by (which). [0] unused.
+  int sealcv[4]; // Count of feet per seal.
+  int itemseal; // (1,2)=(bone,leaf), when an item has been played upon the seal.
+  int itemsealc; // How many of them?
+  int itemseal_framec; // (g.framec) at the last play.
 } cryptmsg={0};
 
 /* Build the initial state if needed.
@@ -60,11 +64,11 @@ static void cryptmsg_require() {
   // Choose the items that open the Bone Room and Leaf Room.
   uint8_t itemidv[]={
     NS_itemid_match,
-    NS_itemid_potion,
     NS_itemid_candy,
     NS_itemid_bugspray,
     NS_itemid_vanishing,
     //NS_itemid_pepper, //TODO pepper isn't implemented yet, but should be a choice here
+    // Can't use potion, because it's not possible to use it twice.
   };
   cryptmsg.boneitem=RAND(sizeof(itemidv));
   cryptmsg.leafitem=RAND(sizeof(itemidv)-1);
@@ -153,7 +157,7 @@ static void cryptmsg_require() {
  */
  
 static int cryptmsg_encrypt(char *v,int c) {
-  //return c; // XXX Enable this line to show Old Goblish in legible English.
+  if (store_get_fld(NS_fld_no_encryption)) return c;
   int i=c;
   for (;i-->0;v++) {
          if ((*v>=0x41)&&(*v<=0x5a)) *v=0xc1+cryptmsg.alphabet[(*v)-0x41];
@@ -245,4 +249,93 @@ int cryptmsg_get(char *dst,int dsta,int which) {
     default: dstc=srcc; memcpy(dst,src,srcc); break;
   }
   return cryptmsg_encrypt(dst,dstc);
+}
+
+/* Notify of entering or leaving a seal.
+ */
+ 
+void cryptmsg_press_seal(int id) {
+  if ((id>=1)&&(id<=3)) {
+    cryptmsg.sealcv[id]++;
+  }
+}
+
+void cryptmsg_release_seal(int id) {
+  if ((id>=1)&&(id<=3)) {
+    if (cryptmsg.sealcv[id]<1) {
+    } else {
+      cryptmsg.sealcv[id]--;
+    }
+  }
+}
+
+/* An item has been used.
+ * Check the seal sequences.
+ */
+ 
+void cryptmsg_notify_item(int itemid) {
+  // Don't require just yet. We get called every time any item is used.
+  
+  int nseal=0; // Nonzero if this is a valid play for the given seal 1,2,3.
+  if (cryptmsg.sealcv[1]&&!cryptmsg.sealcv[2]&&!cryptmsg.sealcv[3]) {
+    cryptmsg_require();
+    if (itemid==cryptmsg.boneitem) nseal=1;
+  } else if (!cryptmsg.sealcv[1]&&cryptmsg.sealcv[2]&&!cryptmsg.sealcv[3]) {
+    cryptmsg_require();
+    if (itemid==cryptmsg.leafitem) nseal=2;
+  } else if (!cryptmsg.sealcv[1]&&!cryptmsg.sealcv[2]&&cryptmsg.sealcv[3]) {
+    // Star seal doesn't matter; you only have to equip the item here, not use it.
+  }
+  
+  if (!nseal) {
+    cryptmsg.itemseal=0;
+    cryptmsg.itemsealc=0;
+    cryptmsg.itemseal_framec=0;
+  } else {
+    if (cryptmsg.itemsealc&&(cryptmsg.itemseal!=nseal)) {
+      cryptmsg.itemseal=0;
+      cryptmsg.itemsealc=0;
+      cryptmsg.itemseal_framec=0;
+    }
+    const int EXPIRY=60*10;
+    if (cryptmsg.itemsealc&&(cryptmsg.itemseal==nseal)&&(g.framec<=cryptmsg.itemseal_framec+EXPIRY)) {
+      cryptmsg.itemsealc++;
+    } else {
+      cryptmsg.itemseal=nseal;
+      cryptmsg.itemsealc=1;
+    }
+    cryptmsg.itemseal_framec=g.framec;
+  }
+  
+  if (cryptmsg.itemsealc>=2) {
+    switch (cryptmsg.itemseal) {
+      case 1: {
+          if (store_set_fld(NS_fld_bonedoor,1)) {
+            bm_sound(RID_sound_secret);
+            g.camera.mapsdirty=1;
+          }
+        } break;
+      case 2: {
+          if (store_set_fld(NS_fld_leafdoor,1)) {
+            bm_sound(RID_sound_secret);
+            g.camera.mapsdirty=1;
+          }
+        } break;
+    }
+  }
+}
+
+/* Check the star door, after losing a battle.
+ */
+
+int cryptmsg_check_star_door(int battle,int itemid) {
+  if (!cryptmsg.seed&&!store_get_fld(NS_fld_kidnapped)) return 0; // Don't initialize cryptmsg if you haven't been to the caves yet. (optimization only)
+  if (store_get_fld(NS_fld_stardoor)) return 0;
+  cryptmsg_require();
+  if (battle!=cryptmsg.starbattle) return 0;
+  if (itemid!=cryptmsg.staritem) return 0;
+  bm_sound(RID_sound_secret);
+  store_set_fld(NS_fld_stardoor,1);
+  g.camera.mapsdirty=1;
+  return 1;
 }

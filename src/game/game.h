@@ -145,4 +145,16 @@ void game_get_sidequests(int *done,int *total);
  */
 int cryptmsg_get(char *dst,int dsta,int which);
 
+/* Notify that a seal is being stood on, or exitted.
+ */
+void cryptmsg_press_seal(int id);
+void cryptmsg_release_seal(int id);
+
+void cryptmsg_notify_item(int itemid);
+
+/* If (battle,itemid) is the key to the star door, effect the change and return nonzero.
+ * Monster should call whenever the hero loses.
+ */
+int cryptmsg_check_star_door(int battle,int itemid);
+
 #endif

@@ -162,7 +162,11 @@ static int battle_generate_report_text(char *dst,int dsta,struct modal *modal) {
     if (!detail) continue;
     struct text_insertion insv[2];
     int insc=0,strix_template;
-    if (consequence->d<0) {
+    if (consequence->itemid==NS_itemid_text) {
+      dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,consequence->d,0,0);
+      if (dstc<dsta) dst[dstc++]=0x0a;
+      continue;
+    } else if (consequence->d<0) {
       strix_template=46;
       insv[insc++]=(struct text_insertion){.mode='i',.i=-consequence->d};
       insv[insc++]=(struct text_insertion){.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};

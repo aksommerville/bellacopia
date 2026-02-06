@@ -72,6 +72,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Opening the Star room requires losing a battle, to a specific goblin, with a specific item equipped, while standing on the seal.
 - - Arrange dynamically for that goblin species not to spawn in the seal room.
 - - Express the random parts in 16 bits exactly, so we can store as fld16 and regenerate on demand. Alphabet order, Bone task, Leaf task, Star goblin, Star item.
+- - [x] Seal triggers.
+- - [ ] Dead-languages scholar offering two things for sale:
+- - - [ ] Alphabet key
+- - - [ ] Spell of Translation
+- - - Because I'm sure most users will balk at deciphering even this basic cipher by hand.
+- - - Put him in the castle, so you meet him when returning the Princess.
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
@@ -84,7 +90,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
-- [ ] We could offer two levels of cheating thru the crypto side quest: Show you the alphabet key, or set a flag that suppresses encryption. Maybe offer somewhere at a high price?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

@@ -5,9 +5,9 @@
 2200020702010602070403070404050101000020
 2200e607e706e802e907ea05eb04ec00ed00f720
 2203000103020401020506000601000604020020
-2201000302020202030400010106000603060420
-22060007ee07ef02f000f105f205f304f403f620
-2200000001000100030505070305050606000120
+2200020402020202030400010106000603060420
+22021d00ee07ef02f000f105f205f304f403f620
+2200090701000100030505070305050606000120
 2311111111111111111111111111111111111124
 2121212121212121212121212121212121212121
 
@@ -19,17 +19,17 @@ sprite @12,3 sprite:treasure (u8:itemid)broom (u8:quantity)0 (u16:fld)0
 sprite @14,3 sprite:treasure (u8:itemid)divining (u8:quantity)0 (u16:fld)0
 sprite @16,3 sprite:treasure (u8:itemid)hookshot (u8:quantity)0 (u16:fld)0
 sprite @2,6 sprite:treasure (u8:itemid)fishpole (u8:quantity)0 (u16:fld)0
-sprite @4,6 sprite:treasure (u8:itemid)match (u8:quantity)99 (u16:fld)0
-sprite @6,6 sprite:treasure (u8:itemid)bugspray (u8:quantity)10 (u16:fld)0
-sprite @8,6 sprite:treasure (u8:itemid)candy (u8:quantity)10 (u16:fld)0
+sprite @4,6 sprite:treasure (u8:itemid)match (u8:quantity)99 (u16:fld)alsozero
+sprite @6,6 sprite:treasure (u8:itemid)bugspray (u8:quantity)10 (u16:fld)alsozero
+sprite @8,6 sprite:treasure (u8:itemid)candy (u8:quantity)10 (u16:fld)alsozero
 sprite @10,6 sprite:treasure (u8:itemid)wand (u8:quantity)0 (u16:fld)0
 sprite @12,6 sprite:treasure (u8:itemid)magnifier (u8:quantity)0 (u16:fld)0
 sprite @14,6 sprite:treasure (u8:itemid)stick (u8:quantity)0 (u16:fld)0
 sprite @16,6 sprite:treasure (u8:itemid)compass (u8:quantity)0 (u16:fld)0
-sprite @4,9 sprite:treasure (u8:itemid)vanishing (u8:quantity)10 (u16:fld)0
-sprite @6,9 sprite:treasure (u8:itemid)potion (u8:quantity)1 (u16:fld)0
-sprite @8,9 sprite:treasure (u8:itemid)heart (u8:quantity)1 (u16:fld)0
-sprite @10,9 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)0
+sprite @4,9 sprite:treasure (u8:itemid)vanishing (u8:quantity)10 (u16:fld)alsozero
+sprite @6,9 sprite:treasure (u8:itemid)potion (u8:quantity)1 (u16:fld)alsozero
+sprite @8,9 sprite:treasure (u8:itemid)heart (u8:quantity)1 (u16:fld)alsozero
+sprite @10,9 sprite:treasure (u8:itemid)gold (u8:quantity)10 (u16:fld)alsozero
 sprite @12,9 sprite:treasure (u8:itemid)greenfish (u8:quantity)1 (u16:fld)0
 sprite @14,9 sprite:treasure (u8:itemid)bluefish (u8:quantity)1 (u16:fld)0
 sprite @16,9 sprite:treasure (u8:itemid)redfish (u8:quantity)1 (u16:fld)0
@@ -38,3 +38,4 @@ sprite @18,9 sprite:treasure (u8:itemid)bell (u8:quantity)0 (u16:fld)0
 sprite @18,3 sprite:treasure (u8:itemid)heartcontainer (u8:quantity)1 (u16:fld)hc1
 sprite @18,6 sprite:treasure (u8:itemid)telescope (u8:quantity)0 (u16:fld)0
 sprite @10,3 sprite:treasure (u8:itemid)shovel (u8:quantity)0 (u16:fld)0
+stompbox @2,9 (u16:fld)no_encryption

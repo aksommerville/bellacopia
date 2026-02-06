@@ -892,6 +892,8 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     }
     if (!result) {
       bm_sound(RID_sound_reject);
+    } else {
+      cryptmsg_notify_item(g.store.invstorev[0].itemid);
     }
   }
 }

@@ -33,6 +33,7 @@
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
 #define CMD_map_stompbox        0x43 /* u16:pos u16:fld ; tileid+1 if fld set, toggles when touched */
 #define CMD_map_root            0x44 /* u16:pos u16:fld */
+#define CMD_map_seal            0x46 /* u16:pos u16:id ; For crypto puzzle, but can be a generic "standing on something" poi. (1,2,3)=(bone,leaf,star) */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
@@ -132,6 +133,7 @@
 #define NS_itemid_telescope 23
 #define NS_itemid_shovel 24
 #define NS_itemid_pepper 25
+#define NS_itemid_text 26 /* Not a real item. For modal_battle_add_consequence, with a strix in strings:battle. */
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -157,7 +159,8 @@
   _(barrelhat) \
   _(telescope) \
   _(shovel) \
-  _(pepper)
+  _(pepper) \
+  _(text)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -299,6 +302,7 @@
 #define NS_fld_bonedoor 40
 #define NS_fld_leafdoor 41
 #define NS_fld_stardoor 42
+#define NS_fld_no_encryption 43 /* Not for production. */
 
 /* "fld16" are 16 unsigned bits each.
  */

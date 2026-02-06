@@ -33,7 +33,6 @@ static int _cryptmsg_init(struct modal *modal,const void *arg,int argc) {
   
   if (arg&&(argc==sizeof(struct modal_args_cryptmsg))) {
     const struct modal_args_cryptmsg *args=arg;
-    fprintf(stderr,"%s: Got msg %p, c=%d\n",__func__,args->src,args->srcc);
     if (args->src) {
       if (args->srcc>MSG_LIMIT) MODAL->msgc=MSG_LIMIT;
       else MODAL->msgc=args->srcc;

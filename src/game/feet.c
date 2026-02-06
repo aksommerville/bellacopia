@@ -33,6 +33,9 @@ static void foot_press_poi(const struct poi *poi,struct sprite *sprite) {
         store_set_fld(fld,1);
         game_begin_activity(activity,arg,sprite);
       } break;
+    case CMD_map_seal: {
+        cryptmsg_press_seal((poi->arg[2]<<8)|poi->arg[3]);
+      } break;
   }
   if (sprite&&sprite->type->tread_poi) sprite->type->tread_poi(sprite,poi->opcode,poi->arg,poi->argc);
 }
@@ -50,6 +53,9 @@ static void foot_release_poi(const struct poi *poi) {
     case CMD_map_stompbox: {
         bm_sound(RID_sound_untreadle);
       } break;
+    case CMD_map_seal: {
+        cryptmsg_release_seal((poi->arg[2]<<8)|poi->arg[3]);
+      } break;
   }
 }
 
@@ -62,6 +68,7 @@ static int poi_interesting_opcode(uint8_t opcode) {
     //case CMD_map_root: // Since there aren't release events, this is unwieldly. Have the hero poll for it.
     case CMD_map_door:
     case CMD_map_triggeronce:
+    case CMD_map_seal:
       return 1;
   }
   return 0;
