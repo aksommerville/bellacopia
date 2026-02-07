@@ -54,8 +54,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - - Building (Contractor,2)
 - - - - Sawing (Carpenter,2)
 - - - - Lawnmowing (Gardener,2)
-  
-
 
 - [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
@@ -99,6 +97,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
 - [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
+- [ ] Suspend pumpkin's movement while hookshotted.
+- [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
+- [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.

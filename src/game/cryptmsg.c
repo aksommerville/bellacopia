@@ -240,7 +240,7 @@ static int dress_battle(char *dst,int dsta,const char *name,int namec,const stru
  
 static int cryptmsg_fmt_battle(char *dst,int dsta,const char *src,int srcc,int battle) {
   char name[256];
-  int namec=battle_type_describe_long(dst,dsta,battle_type_by_id(battle));
+  int namec=battle_type_describe_long(name,sizeof(name),battle_type_by_id(battle));
   if ((namec<0)||(namec>sizeof(name))) namec=0;
   struct text_insertion ins={.mode='s',.s={.v=name,.c=namec}};
   return text_format(dst,dsta,src,srcc,&ins,1);
