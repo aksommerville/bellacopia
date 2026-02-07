@@ -182,6 +182,9 @@
 #define NS_activity_escape 15
 #define NS_activity_cryptmsg 16 /* (u16)which: 1,2,3,4,5,6,7: Bone Room, Leaf Room, 5x Skull Lake */
 #define NS_activity_linguist 17
+#define NS_activity_logproblem1 18
+#define NS_activity_logproblem2 19
+#define NS_activity_board_of_elections 20
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */

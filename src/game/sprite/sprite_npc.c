@@ -18,6 +18,14 @@ static int _npc_init(struct sprite *sprite) {
   SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
   if (game_activity_sprite_should_abort(SPRITE->activity,sprite->type)) return -1;
+  
+  /* Certain activities imply tileid+1 when some flag is set, or a similar change.
+   */
+  switch (SPRITE->activity) {
+    case NS_activity_logproblem1: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
+    case NS_activity_logproblem2: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
+  }
+  
   return 0;
 }
 

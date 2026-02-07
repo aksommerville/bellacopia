@@ -60,6 +60,8 @@ static void _tvnews_update(struct sprite *sprite,double elapsed) {
   // But if there's no election underway, just ads.
   if ((SPRITE->stageclock-=elapsed)<=0.0) {
     SPRITE->stageclock+=STAGE_TIME;
+    // Both of these flags can change while you're in the Board of Elections, so we have to check them dynamically after all.
+    SPRITE->polls_available=(store_get_fld(NS_fld_election_start)&&!store_get_fld(NS_fld_mayor));
     if ((SPRITE->stage==STAGE_POLLS)||!SPRITE->polls_available) {
       SPRITE->stage=1+rand()%(STAGE_COUNT-1);
     } else {

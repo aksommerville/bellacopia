@@ -25,4 +25,4 @@ switchable @3,6 (u16:fld)barrelhat8
 barrelhat @3,6
 switchable @10,6 (u16:fld)endorse_food
 door @9,6 map:164 @9,8 0x0000
-door @18,6 map:170 @10,6 0x0000
+door @18,6 map:170 @12,6 0x0000
