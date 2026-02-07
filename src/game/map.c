@@ -2,6 +2,38 @@
 
 static const uint8_t map_default_cells[NS_sys_mapw*NS_sys_maph]={0};
 
+/* Freshen tiles for one map.
+ */
+ 
+void map_freshen_tiles(struct map *map,struct map_extras *extras) {
+  if (!map) return;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_switchable:
+      case CMD_map_stompbox:
+      case CMD_map_treadle:
+      case CMD_map_switchable2: {
+          int d=(cmd.opcode==CMD_map_switchable2)?2:1;
+          int x=cmd.arg[0],y=cmd.arg[1];
+          if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
+            int p=y*NS_sys_mapw+x;
+            if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
+              map->v[p]=map->rov[p]+d;
+            } else {
+              map->v[p]=map->rov[p];
+            }
+          }
+        } break;
+      case CMD_map_debugmsg: if (extras) {
+          extras->debugmsg=(const char*)cmd.arg;
+          extras->debugmsgc=cmd.argc;
+        } break;
+    }
+  }
+}
+
 /* Reset store.
  */
  

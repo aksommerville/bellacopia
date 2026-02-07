@@ -200,6 +200,7 @@ static int jigsaw_generate_puzzle(struct jigsaw *jigsaw) {
     uint32_t *dstp=dstrow;
     int xi=jigsaw->plane->w;
     for (;xi-->0;mapp++,dstp+=JTILESIZE) {
+      map_freshen_tiles(mapp,0);
       jigsaw_draw_map(dstp,mapp);
     }
   }

@@ -21,12 +21,20 @@ struct sprite_tvnews {
   double stageclock;
   int barw_dot;
   int barw_cat;
+  int polls_available;
 };
 
 #define SPRITE ((struct sprite_tvnews*)sprite)
 
 static int _tvnews_init(struct sprite *sprite) {
-  SPRITE->stage=rand()%STAGE_COUNT;
+
+  // When the election quest is underway, we show polls interleaved with ads. Otherwise just ads.
+  if (store_get_fld(NS_fld_election_start)&&!store_get_fld(NS_fld_mayor)) {
+    SPRITE->stage=rand()%STAGE_COUNT;
+    SPRITE->polls_available=1;
+  } else {
+    SPRITE->stage=1+rand()%(STAGE_COUNT-1);
+  }
   SPRITE->stageclock=((rand()&0xffff)*STAGE_TIME)/65535.0;
   
   // Gather numbers for the infographic. They can't change while you're inside the BoE.
@@ -49,9 +57,10 @@ static int _tvnews_init(struct sprite *sprite) {
 static void _tvnews_update(struct sprite *sprite,double elapsed) {
   // When stageclock expires, alternate between polls and a random ad.
   // Polls are stage zero; all nonzeroes are ads.
+  // But if there's no election underway, just ads.
   if ((SPRITE->stageclock-=elapsed)<=0.0) {
     SPRITE->stageclock+=STAGE_TIME;
-    if (SPRITE->stage==STAGE_POLLS) {
+    if ((SPRITE->stage==STAGE_POLLS)||!SPRITE->polls_available) {
       SPRITE->stage=1+rand()%(STAGE_COUNT-1);
     } else {
       SPRITE->stage=STAGE_POLLS;
@@ -61,11 +70,8 @@ static void _tvnews_update(struct sprite *sprite,double elapsed) {
 
 static uint8_t tvnews_get_tile_POLLS(struct sprite *sprite) {
   // 0x00,0x10,0x20 = "latest polls", blank, infographic
-  if (SPRITE->stageclock>=4.0) {
-    int frame=((int)((SPRITE->stageclock-4.0)*6.0))&1;
-    if (frame) return 0x10;
-    return 0x00;
-  }
+  if (SPRITE->stageclock>=5.0) return 0x10;
+  if (SPRITE->stageclock>=4.0) return 0x00;
   return 0x20;
 }
 

@@ -125,28 +125,8 @@ static void camera_render_scope(struct scope *scope,int loading) {
   graf_set_output(&g.graf,scope->texid);
   if (scope->map&&scope->map->imageid) {
   
-    const char *debugmsg=0;
-    int debugmsgc=0;
-    struct cmdlist_reader reader={.v=scope->map->cmd,.c=scope->map->cmdc};
-    struct cmdlist_entry cmd;
-    while (cmdlist_reader_next(&cmd,&reader)>0) {
-      switch (cmd.opcode) {
-        case CMD_map_switchable:
-        case CMD_map_stompbox:
-        case CMD_map_treadle: {
-            int x=cmd.arg[0],y=cmd.arg[1];
-            if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
-              int p=y*NS_sys_mapw+x;
-              if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
-                scope->map->v[p]=scope->map->rov[p]+1;
-              } else {
-                scope->map->v[p]=scope->map->rov[p];
-              }
-            }
-          } break;
-        case CMD_map_debugmsg: debugmsg=(char*)cmd.arg; debugmsgc=cmd.argc; break;
-      }
-    }
+    struct map_extras extras={0};
+    map_freshen_tiles(scope->map,&extras);
   
     graf_set_image(&g.graf,scope->map->imageid);
     int dsty=NS_sys_tilesize>>1;
@@ -160,8 +140,8 @@ static void camera_render_scope(struct scope *scope,int loading) {
       }
     }
     
-    if (debugmsgc) {
-      int texid=font_render_to_texture(0,g.font,debugmsg,debugmsgc,w,h,0xffffffff);
+    if (extras.debugmsgc) {
+      int texid=font_render_to_texture(0,g.font,extras.debugmsg,extras.debugmsgc,w,h,0xffffffff);
       if (texid>0) {
         int texw=0,texh=0;
         egg_texture_get_size(&texw,&texh,texid);

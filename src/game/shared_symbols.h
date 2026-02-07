@@ -34,6 +34,7 @@
 #define CMD_map_stompbox        0x43 /* u16:pos u16:fld ; tileid+1 if fld set, toggles when touched */
 #define CMD_map_root            0x44 /* u16:pos u16:fld */
 #define CMD_map_seal            0x46 /* u16:pos u16:id ; For crypto puzzle, but can be a generic "standing on something" poi. (1,2,3)=(bone,leaf,star) */
+#define CMD_map_switchable2     0x47 /* u16:pos u16:fld ; Same as `switchable` but tileid+2 if set, for double-wide features. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
@@ -314,6 +315,7 @@
 #define NS_fld_endorse_hospital 49
 #define NS_fld_endorse_casino 50
 #define NS_fld_endorse_labor 51
+#define NS_fld_election_start 52 /* Set when the election quest begins, and stays on forever. At the end, `mayor` is also set. */
 
 /* "fld16" are 16 unsigned bits each.
  */

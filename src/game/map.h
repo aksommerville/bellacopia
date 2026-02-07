@@ -24,6 +24,16 @@ struct map {
   uint8_t dark,wind;
 };
 
+/* Run thru (map)'s commands and update its (v) against (rov) and current state.
+ * eg switchable cells.
+ * Since we're in there anyway, we can also grab some (extras) for you, optionally.
+ */
+struct map_extras {
+  const char *debugmsg;
+  int debugmsgc;
+};
+void map_freshen_tiles(struct map *map,struct map_extras *extras);
+
 /* Store.
  *********************************************************************************/
 
