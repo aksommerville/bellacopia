@@ -130,6 +130,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Plane edges must be solid, or have wind if we add that.
 - [ ] Map edges on plane zero must be solid.
 - [ ] Continuous root paths leading to each root devil.
+- [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - - [ ] Pins, buttons, stickers.

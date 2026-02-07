@@ -24,3 +24,4 @@ switchable @10,0 (u16:fld)endorse_public
 switchable @16,6 (u16:fld)endorse_casino
 door @8,0 map:165 @9,7 0x0000
 door @14,6 map:166 @9,9 0x0000
+door @15,0 map:170 @3,10 0x0000

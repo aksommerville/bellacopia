@@ -1,0 +1,4 @@
+image image:fractia_sprites
+type (u16:sprtype)tvnews
+groups (b32:sprgrp)visible,update
+tile 0 0

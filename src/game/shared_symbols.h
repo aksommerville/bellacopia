@@ -198,6 +198,7 @@
 #define NS_sprtype_princess    13 /* (u32)0 */
 #define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
 #define NS_sprtype_ornament2x2 15 /* (u32)0 */
+#define NS_sprtype_tvnews      16 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -214,7 +215,8 @@
   _(toast) \
   _(princess) \
   _(setfld) \
-  _(ornament2x2)
+  _(ornament2x2) \
+  _(tvnews)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -306,12 +308,12 @@
 #define NS_fld_no_encryption 43 /* Not for production. */
 #define NS_fld_bought_alphabet 44
 #define NS_fld_bought_translation 45
-#define NS_fld_endorse_food 44
-#define NS_fld_endorse_public 45
-#define NS_fld_endorse_athlete 46
-#define NS_fld_endorse_hospital 47
-#define NS_fld_endorse_casino 48
-#define NS_fld_endorse_labor 49
+#define NS_fld_endorse_food 46
+#define NS_fld_endorse_public 47
+#define NS_fld_endorse_athlete 48
+#define NS_fld_endorse_hospital 49
+#define NS_fld_endorse_casino 50
+#define NS_fld_endorse_labor 51
 
 /* "fld16" are 16 unsigned bits each.
  */
