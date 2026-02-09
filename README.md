@@ -20,6 +20,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-27: Last features of mark 1 implemented in mark 2, and a bunch of other stuff. Looking good.
 - 2026-01-29: Added some shops and placeholder King. Should be possible to do everything except Magnifier and Telescope now without cheating. ...confirmed. Done in about 22 minutes.
 - 2026-01-31: On track I think. Starting monthly reports.
+- 2026-02-07: Fed up with GIMP 3, so me and Alex are taking a brief aside to write a new text editor and image editor. How hard could that be?
 
 ## TODO
 
@@ -100,6 +101,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
+- [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
+- [x] Star Seal: Reduce the set of candidate battles, 11 is ridiculous. Make it like 4, then change the nearby rsprite to just those 4.
+- [ ] After the battles refactor, we're now incorrectly placing an article in the Princess's prompt. ("an Erudition Contest: Princess vs Snoblin", shouldn't be any "an")
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
@@ -112,6 +116,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
+- [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

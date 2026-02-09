@@ -106,14 +106,14 @@ static void cryptmsg_require() {
   uint8_t starbattlev[]={
     NS_battle_throwing,
     NS_battle_stealing,
-    NS_battle_regex,
-    NS_battle_racketeering,
-    NS_battle_laziness,
-    NS_battle_hiring,
-    NS_battle_gobbling,
+    //NS_battle_regex,
+    //NS_battle_racketeering,
+    //NS_battle_laziness,
+    //NS_battle_hiring,
+    //NS_battle_gobbling,
     NS_battle_erudition,
-    NS_battle_crying,
-    NS_battle_cobbling,
+    //NS_battle_crying,
+    //NS_battle_cobbling,
     NS_battle_apples,
   };
   cryptmsg.staritem=staritemidv[RAND(sizeof(staritemidv))];
