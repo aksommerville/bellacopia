@@ -7,6 +7,7 @@ static int broom_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_broom;
   sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
   sprite_group_add(GRP(floating),sprite);
+  bm_sound(RID_sound_mount);
   return 1;
 }
 
@@ -24,6 +25,7 @@ static void broom_end(struct sprite *sprite) {
       return;
     }
   }
+  bm_sound(RID_sound_unmount);
   SPRITE->itemid_in_progress=0;
   sprite_group_remove(GRP(floating),sprite);
 }
