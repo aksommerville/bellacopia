@@ -21,6 +21,19 @@ void begin_logproblem2(struct sprite *sprite) {
 /* Board of Elections.
  */
 
+// Dismissing battle.
+static void cb_board_of_elections_dismiss(struct modal *modal,int outcome,void *userdata) {
+  //TODO I'd like a cutscene of Dot's inaugural address, and she goes like "First order of business is removing that log!"
+}
+
+// Battle complete. Report consequences.
+static void cb_board_of_elections_consequences(struct modal *modal,int outcome,void *userdata) {
+  if (outcome>0) {
+    store_set_fld(NS_fld_mayor,1);
+    modal_battle_add_consequence(modal,NS_itemid_text,110);
+  }
+}
+
 // Callback when asking do you want to run for mayor.
 static int cb_board_of_elections_register(int optionid,void *userdata) {
   if (optionid==4) { // "yes"
@@ -35,8 +48,23 @@ static int cb_board_of_elections_register(int optionid,void *userdata) {
 static int cb_board_of_elections_vote(int optionid,void *userdata) {
   if (optionid==4) { // "yes"
     bm_sound(RID_sound_uiactivate);
-    fprintf(stderr,"*** %s:%d:%s:TODO: Begin election battle ***\n",__FILE__,__LINE__,__func__);
-    store_set_fld(NS_fld_mayor,1);//XXX
+    struct modal_args_battle args={
+      .battle=NS_battle_election,
+      .args={
+        // The actual bias will be determined by the battle itself.
+        // It needs fine-grained knowledge of the bias's constituents for presentation purposes.
+        .difficulty=0x80,
+        .bias=0x80,
+        .lctl=1,
+        .rctl=0,
+        .lface=NS_face_dot,
+        .rface=NS_face_monster,
+      },
+      .cb=cb_board_of_elections_consequences,
+      .cb_final=cb_board_of_elections_dismiss,
+      .right_name=111,
+    };
+    struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
     return 1;
   }
   return 0;

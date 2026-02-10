@@ -145,7 +145,7 @@ struct modal_args_linguist {
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
  * If you win a no-quantity item from battle (are we doing that?), use (d==0).
- * Use NS_itemid_string with (d) a strix in RID_strings_battle.
+ * Use NS_itemid_text with (d) a strix in RID_strings_battle, for loose text.
  * This does not effect any changes, it only talks about them.
  */
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d);
