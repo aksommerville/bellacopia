@@ -103,7 +103,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [x] Star Seal: Reduce the set of candidate battles, 11 is ridiculous. Make it like 4, then change the nearby rsprite to just those 4.
-- [ ] After the battles refactor, we're now incorrectly placing an article in the Princess's prompt. ("an Erudition Contest: Princess vs Snoblin", shouldn't be any "an")
+- [x] After the battles refactor, we're now incorrectly placing an article in the Princess's prompt. ("an Erudition Contest: Princess vs Snoblin", shouldn't be any "an")
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.

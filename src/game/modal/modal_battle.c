@@ -58,16 +58,6 @@ static int battle_generate_prompt(struct modal *modal) {
   char msg[1024];
   int msgc=0;
   
-  /* Get the title and participant names.
-   */
-  char title[256];
-  int titlec=battle_type_describe_long(title,sizeof(title),MODAL->type);
-  if ((titlec<0)||(titlec>sizeof(title))) titlec=0;
-  const char *lname=0;
-  int lnamec=text_get_string(&lname,RID_strings_battle,MODAL->left_name);
-  const char *rname=0;
-  int rnamec=text_get_string(&rname,RID_strings_battle,MODAL->right_name);
-  
   /* Choose the right template.
    */
   int templateid;
@@ -76,6 +66,21 @@ static int battle_generate_prompt(struct modal *modal) {
   } else { // Player-vs-player, CPU-vs-CPU, or who knows what.
     templateid=3; // The more generic one: "%0: %1 vs %2"
   }
+  
+  /* Get the title and participant names.
+   */
+  char title[256];
+  int titlec=0;
+  if (templateid==2) {
+    titlec=battle_type_describe_long(title,sizeof(title),MODAL->type);
+  } else {
+    titlec=battle_type_describe_short(title,sizeof(title),MODAL->type);
+  }
+  if ((titlec<0)||(titlec>sizeof(title))) titlec=0;
+  const char *lname=0;
+  int lnamec=text_get_string(&lname,RID_strings_battle,MODAL->left_name);
+  const char *rname=0;
+  int rnamec=text_get_string(&rname,RID_strings_battle,MODAL->right_name);
   
   /* Get the template, populate insertions, and generate the final text.
    */
