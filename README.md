@@ -55,7 +55,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - - Building (Contractor,2)
 - - - - Sawing (Carpenter,2)
 - - - - Lawnmowing (Gardener,2)
+- - [ ] Battle against Mayor Cat, with our endorsers helping.
+- - [ ] Populate guilds and award endorsements correctly. Make placeholders for each guild game.
+- - - [ ] Food Service
+- - - [ ] Public Employees
+- - - [ ] Athletes
+- - - [ ] Hospital
+- - - [ ] Casino
+- - - [ ] Labor
 
+- `activity.c` is going to keep growing. Split it out across several files.
 - [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
 - - Ultimately I'd like 2-player mode to let you choose your hero.
 - - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".

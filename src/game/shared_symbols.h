@@ -242,6 +242,7 @@
 #define NS_battle_crying 18
 #define NS_battle_cobbling 19
 #define NS_battle_apples 20
+#define NS_battle_election 21
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -262,7 +263,8 @@
   _(erudition) \
   _(crying) \
   _(cobbling) \
-  _(apples)
+  _(apples) \
+  _(election)
 
 /* "fld" are single bits.
  */

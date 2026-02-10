@@ -1,12 +1,10 @@
-/* battle_placeholder.c
- * We can use this battle when a real one is missing, during development.
- * User picks the outcome.
- * Remove before production!
+/* battle_election.c
+ * Stuff a ballot box against Mayor Cat, with help from your endorsers.
  */
 
 #include "game/bellacopia.h"
 
-struct battle_placeholder {
+struct battle_election {
   struct battle hdr;
   int choice;
   
@@ -17,12 +15,12 @@ struct battle_placeholder {
   } playerv[2];
 };
 
-#define BATTLE ((struct battle_placeholder*)battle)
+#define BATTLE ((struct battle_election*)battle)
 
 /* Delete.
  */
  
-static void _placeholder_del(struct battle *battle) {
+static void _election_del(struct battle *battle) {
 }
 
 /* Init player.
@@ -50,9 +48,8 @@ static void player_init(struct battle *battle,struct player *player,int human,in
 /* New.
  */
  
-static int _placeholder_init(struct battle *battle) {
+static int _election_init(struct battle *battle) {
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
-  // or in simpler cases: BATTLE->difficulty=battle_scalar_difficulty(battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   return 0;
@@ -82,7 +79,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
 /* Update.
  */
  
-static void _placeholder_update(struct battle *battle,double elapsed) {
+static void _election_update(struct battle *battle,double elapsed) {
   if (battle->outcome>-2) return;
   
   struct player *player=BATTLE->playerv;
@@ -111,7 +108,7 @@ static void player_render(struct battle *battle,struct player *player) {
 /* Render.
  */
  
-static void _placeholder_render(struct battle *battle) {
+static void _election_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
   
   // XXX Placeholder UI.
@@ -140,16 +137,16 @@ static void _placeholder_render(struct battle *battle) {
 /* Type definition.
  */
  
-const struct battle_type battle_type_placeholder={
-  .name="placeholder",
-  .objlen=sizeof(struct battle_placeholder),
+const struct battle_type battle_type_election={
+  .name="election",
+  .objlen=sizeof(struct battle_election),
   .strix_name=20,
   .no_article=0,
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
-  .del=_placeholder_del,
-  .init=_placeholder_init,
-  .update=_placeholder_update,
-  .render=_placeholder_render,
+  .del=_election_del,
+  .init=_election_init,
+  .update=_election_update,
+  .render=_election_render,
 };
