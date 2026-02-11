@@ -39,7 +39,7 @@
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
   2____D Erudition         Snoblin            Cave
-  2____D Exterminating     Solider            Battlefield
+  2____D Exterminating     Soldier            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
   2      Fencing           Samurai            Farm
@@ -56,7 +56,7 @@
   2      Golf              Unicorn            Labyrinth
   2      Harvesting        Picker             Farm
   2____D Hiring            Joblin             Cave
-  2      HomeRunDerby      Bat                Cave
+  2      HomeRunDerby      Ballplayer         City
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
   2      Imitation         Monkey             Jungle
@@ -66,7 +66,7 @@
   2      Juggling          Octopus            Jungle
  R2      Jumprope          Joey               Desert
  R2      KarateChop        Sensei             Battlefield
-  2      Latin             Naturalist         Jungle
+  2      Latin             Teacher            City
   2      Lawnmowing        Gardener           Farm
   2____D Laziness          Sloblin            Cave
  R2      Levitation        Monk               Desert
@@ -96,6 +96,7 @@
   2      Rebounding        Hoplite            Battlefield
   2____D Regex             Globlin            Cave
   2      Remembering       Elephant           Jungle
+  2      Rescuing          Firefighter        City
   2      Robohorse         Cavalier           Battlefield
   2      Rodeo             Cowpoke            Desert
  R2      Rollerskates      Rabbit             Woodland

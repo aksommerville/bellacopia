@@ -52,6 +52,7 @@
 #define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups       0x42 /* b32:sprgrp */
 #define CMD_sprite_monster      0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
+#define CMD_sprite_guild        0x61 /* u16:battle u16:name(RID_strings_battle) u16:fld u16:reserved ; NS_sprtype_guild */
 
 #define NS_tilesheet_physics 1
 #define NS_tilesheet_jigctab 2 /* rgb332 */
@@ -203,6 +204,7 @@
 #define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
 #define NS_sprtype_ornament2x2 15 /* (u32)0 */
 #define NS_sprtype_tvnews      16 /* (u32)0 */
+#define NS_sprtype_guild       17 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -220,7 +222,8 @@
   _(princess) \
   _(setfld) \
   _(ornament2x2) \
-  _(tvnews)
+  _(tvnews) \
+  _(guild)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

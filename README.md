@@ -24,7 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Election
+- [x] Election
 - - [x] How many guilds and what are they? ...6
 - - - 10 Available houses in Fractia.
 - - - Food Service Guild
@@ -37,10 +37,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - Public Sector Employee's Union
 - - - - Traffic (Cop,2)
 - - - - CheeseCutting (Executioner,2)
+- - - - Latin (Teacher)
+- - - - Rescuing (Firefighter)
 - - - Athlete's Guild
 - - - - SumoHorse (Wrestler,2)
 - - - - Fencing (Samurai,2)
 - - - - Jeter (Dancer,2)
+- - - - HomeRunDerby (Ballplayer)
 - - - Hospital. Throwing clerical jobs in here too...
 - - - - Dissection (Doctor,2)
 - - - - CPR (Nurse,2)
@@ -55,14 +58,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - - Building (Contractor,2)
 - - - - Sawing (Carpenter,2)
 - - - - Lawnmowing (Gardener,2)
-- - [ ] Battle against Mayor Cat, with our endorsers helping.
-- - [ ] Populate guilds and award endorsements correctly. Make placeholders for each guild game.
-- - - [ ] Food Service
-- - - [ ] Public Employees
-- - - [ ] Athletes
-- - - [ ] Hospital
-- - - [ ] Casino
-- - - [ ] Labor
+- - [x] Battle against Mayor Cat, with our endorsers helping.
+- - [x] Populate guilds and award endorsements correctly. Make placeholders for each guild game.
+- - - [x] Food Service
+- - - [x] Public Employees
+- - - [x] Athletes
+- - - [x] Hospital
+- - - [x] Casino
+- - - [x] Labor
 
 - [x] `activity.c` is going to keep growing. Split it out across several files.
 - [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
@@ -126,6 +129,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
+- [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -191,3 +195,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] hc4
 - [ ] hc5
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
+
+## Sprites with placeholder battle
+
+- cook1: Watching
+- cook2: Flapjack
+- hotdog: Topping
+- waiter: Stacking
+- bartender: Shaking
+- baker: CakeCarrying
+- cop: Traffic
+- executioner: CheeseCutting
+- teacher: Latin
+- firefighter: Rescuing

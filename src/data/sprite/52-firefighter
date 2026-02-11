@@ -1,0 +1,5 @@
+image image:fractia_sprites
+tile 178 0
+type (u16:sprtype)guild
+groups (b32:sprgrp)visible,update,solid,grabbable
+guild (u16:battle)placeholder (u16)123 (u16:fld)endorse_public (u16)0

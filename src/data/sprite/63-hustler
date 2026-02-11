@@ -1,0 +1,5 @@
+image image:fractia_sprites
+tile 100 0
+type (u16:sprtype)guild
+groups (b32:sprgrp)visible,update,solid,grabbable
+guild (u16:battle)placeholder (u16)134 (u16:fld)endorse_casino (u16)0
