@@ -24,58 +24,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Election
-- - [x] How many guilds and what are they? ...6
-- - - 10 Available houses in Fractia.
-- - - Food Service Guild
-- - - - Watching (Cook,2)
-- - - - Topping (HotDogVendor,2)
-- - - - Stacking (Waiter,2)
-- - - - Shaking (Bartender,2)
-- - - - Flapjack (Cook,2)
-- - - - CakeCarrying (Baker,2)
-- - - Public Sector Employee's Union
-- - - - Traffic (Cop,2)
-- - - - CheeseCutting (Executioner,2)
-- - - - Latin (Teacher)
-- - - - Rescuing (Firefighter)
-- - - Athlete's Guild
-- - - - SumoHorse (Wrestler,2)
-- - - - Fencing (Samurai,2)
-- - - - Jeter (Dancer,2)
-- - - - HomeRunDerby (Ballplayer)
-- - - Hospital. Throwing clerical jobs in here too...
-- - - - Dissection (Doctor,2)
-- - - - CPR (Nurse,2)
-- - - - Stenography (Secretary,2)
-- - - - Sorting (Clerk,2)
-- - - Casino
-- - - - Slapping (Gambler,2)
-- - - - Shuffling (Dealer,2)
-- - - - Cheating (Hustler,1)
-- - - Journeymans' Guild
-- - - - Plumbing (Plumber,2)
-- - - - Building (Contractor,2)
-- - - - Sawing (Carpenter,2)
-- - - - Lawnmowing (Gardener,2)
-- - [x] Battle against Mayor Cat, with our endorsers helping.
-- - [x] Populate guilds and award endorsements correctly. Make placeholders for each guild game.
-- - - [x] Food Service
-- - - [x] Public Employees
-- - - [x] Athletes
-- - - [x] Hospital
-- - - [x] Casino
-- - - [x] Labor
-
-- [x] `activity.c` is going to keep growing. Split it out across several files.
-- [x] Refactor the battle mode to orthogonalize skin and control: Skin is (Monster,Dot,Princess) for each side, and Control is (Man,CPU) for each side.
-- - Ultimately I'd like 2-player mode to let you choose your hero.
-- - And might like to add a Dot-vs-(CPU)Princess side quest after rescuing her. "Hey let's play that one game again".
-- - [x] Distinguish "difficulty" from "handicap". How hard is the game, and how skilled the players, these are orthogonal concerns.
-- - Do finish the goblin games first as is, then update.
-- - [x] After this refactor, rewrite the placeholder and incorporate all the boilerplate I've been repeating on each goblin game.
-- - [x] Ensure that we're preventing the Princess from entering battles that don't support cpu-vs-cpu. The battles between the jail and the castle must support cpu-vs-cpu.
-- - - It should reach `battle_new` and fail validation with some logging, shouldn't be any harm. (everything currently reachable does support cvc)
 - [ ] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [ ] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
@@ -114,8 +62,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [x] Star Seal: Reduce the set of candidate battles, 11 is ridiculous. Make it like 4, then change the nearby rsprite to just those 4.
-- [x] After the battles refactor, we're now incorrectly placing an article in the Princess's prompt. ("an Erudition Contest: Princess vs Snoblin", shouldn't be any "an")
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
@@ -208,3 +154,18 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - executioner: CheeseCutting
 - teacher: Latin
 - firefighter: Rescuing
+- wrestler: SumoHorse
+- samurai: Fencing
+- dancer: Jeter
+- ballplayer: HomeRunDerby
+- doctor: Dissection
+- fractia_nurse: CPR
+- secretary: Stenography
+- clerk: Sorting
+- gambler: Slapping
+- dealer: Shuffling
+- hustler: Cheating
+- plumber: Plumbing
+- contractor: Building
+- fractia_carpenter: Sawing
+- gardener: Lawnmowing

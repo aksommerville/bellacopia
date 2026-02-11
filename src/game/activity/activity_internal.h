@@ -41,4 +41,8 @@ void begin_logproblem1(struct sprite *initiator);
 void begin_logproblem2(struct sprite *initiator);
 void begin_board_of_elections(struct sprite *initiator);
 
+// activity_cheat.c
+void begin_cheat_store(struct sprite *initiator,int arg);
+void begin_cheat_giveaway(struct sprite *initiator,int arg);
+
 #endif

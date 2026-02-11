@@ -502,7 +502,7 @@ static const struct item_detail item_detailv[]={
     .hand_tileid=0,
     .strix_name=36,
     .strix_help=37,
-    .initial_limit=0,
+    .initial_limit=12,
     .inventoriable=0,
     .fld16=NS_fld16_hpmax,
   },

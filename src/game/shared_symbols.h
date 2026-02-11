@@ -186,6 +186,8 @@
 #define NS_activity_logproblem1 18
 #define NS_activity_logproblem2 19
 #define NS_activity_board_of_elections 20
+#define NS_activity_cheat_store 21 /* (u16)which: 1,2,3 */
+#define NS_activity_cheat_giveaway 22
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */

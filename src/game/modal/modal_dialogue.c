@@ -140,24 +140,25 @@ static int _dialogue_init(struct modal *modal,const void *arg,int argc) {
   
   if (arg&&(argc==sizeof(struct modal_args_dialogue))) {
     const struct modal_args_dialogue *args=arg;
+    const char *text=0;
+    int textc=0;
     if (args->text) {
-      if (dialogue_set_text(modal,args->text,args->textc)<0) return -1;
+      text=args->text;
+      textc=args->textc;
     } else if (args->rid&&args->strix) {
-      const char *text=0;
-      int textc=text_get_string(&text,args->rid,args->strix);
-      if (textc>0) {
-        if (args->insv&&args->insc) {
-          char tmp[1024];
-          int tmpc=text_format(tmp,sizeof(tmp),text,textc,args->insv,args->insc);
-          if ((tmpc<0)||(tmpc>sizeof(tmp))) {
-            fprintf(stderr,"WARNING: strings:%d:%d yielded %d bytes. (lang=%d)\n",args->rid,args->strix,tmpc,egg_prefs_get(EGG_PREF_LANG));
-            tmpc=0;
-          }
-          if (dialogue_set_text(modal,tmp,tmpc)<0) return -1;
-        } else {
-          if (dialogue_set_text(modal,text,textc)<0) return -1;
-        }
+      textc=text_get_string(&text,args->rid,args->strix);
+    }
+    if (!text) textc=0; else if (textc<0) { textc=0; while (text[textc]) textc++; }
+    if (args->insv&&args->insc) {
+      char tmp[1024];
+      int tmpc=text_format(tmp,sizeof(tmp),text,textc,args->insv,args->insc);
+      if ((tmpc<0)||(tmpc>sizeof(tmp))) {
+        fprintf(stderr,"WARNING: strings:%d:%d yielded %d bytes. (lang=%d)\n",args->rid,args->strix,tmpc,egg_prefs_get(EGG_PREF_LANG));
+        tmpc=0;
       }
+      if (dialogue_set_text(modal,tmp,tmpc)<0) return -1;
+    } else {
+      if (dialogue_set_text(modal,text,textc)<0) return -1;
     }
     if (args->speaker) {
       dialogue_origin_sprite(modal,args->speaker);

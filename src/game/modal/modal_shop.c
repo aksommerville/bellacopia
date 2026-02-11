@@ -250,15 +250,18 @@ static void shop_purchase(struct modal *modal,const struct option *option) {
   if (MODAL->cb_validated&&MODAL->cb_validated(option->itemid,quantity,price,MODAL->userdata)) {
     return;
   }
+  int jingle=1;
   if (detail->inventoriable) {
     if (!store_add_itemid(option->itemid,quantity)) return;
   } else {
-    fprintf(stderr,"%s:%d: Purchase non-inventory item %d\n",__FILE__,__LINE__,option->itemid);//TODO should have some helper here, like possessed_quantity_for_itemid()
+    game_get_item(option->itemid,quantity);
+    jingle=0;
   }
-  store_set_fld16(NS_fld16_gold,gold-price);
+  // Update gold in store. It shouldn't happen in the real game, but our Cave of Cheating has a store where you can buy gold for free. Don't update in that case; we'd overwrite it.
+  if (option->itemid!=NS_itemid_gold) store_set_fld16(NS_fld16_gold,gold-price);
   
   // Dismiss.
-  bm_sound(RID_sound_uiactivate);
+  if (jingle) bm_sound(RID_sound_uiactivate);
   MODAL->stage=STAGE_FAREWELL;
 }
 
@@ -473,14 +476,17 @@ static void _shop_render(struct modal *modal) {
     const uint32_t maxcolor=0x00ff00ff;
     const uint32_t somecolor=0xf08040ff;
     const uint32_t nonecolor=0xb0b0b0ff;
+    int q,limit;
     if (invstore) {
-      if (invstore->limit==0) shop_small_decuint(modal,auxx+auxw-15,auxy+15,1,maxcolor); // Not quantity-bearing, so we have 1.
-      else if (invstore->quantity>=invstore->limit) shop_small_decuint(modal,auxx+auxw-15,auxy+15,invstore->quantity,maxcolor);
-      else if (invstore->quantity) shop_small_decuint(modal,auxx+auxw-15,auxy+15,invstore->quantity,somecolor);
-      else shop_small_decuint(modal,auxx+auxw-15,auxy+15,invstore->quantity,nonecolor);
+      q=invstore->quantity;
+      limit=invstore->limit;
     } else {
-      shop_small_decuint(modal,auxx+auxw-15,auxy+15,0,nonecolor);
+      q=possessed_quantity_for_itemid(option->itemid,&limit);
     }
+    if (limit==0) shop_small_decuint(modal,auxx+auxw-15,auxy+15,1,maxcolor); // Not quantity-bearing, so we have 1.
+    else if (q>=limit) shop_small_decuint(modal,auxx+auxw-15,auxy+15,q,maxcolor);
+    else if (q) shop_small_decuint(modal,auxx+auxw-15,auxy+15,q,somecolor);
+    else shop_small_decuint(modal,auxx+auxw-15,auxy+15,q,nonecolor);
     int price=option->price;
     if (option->quantity&&!option->force_quantity) price*=option->quantity;
     int gold=store_get_fld16(NS_fld16_gold);
