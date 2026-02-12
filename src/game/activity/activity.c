@@ -39,6 +39,9 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_board_of_elections: begin_board_of_elections(initiator); break;
     case NS_activity_cheat_store: begin_cheat_store(initiator,arg); break;
     case NS_activity_cheat_giveaway: begin_cheat_giveaway(initiator,arg); break;
+    case NS_activity_capnred: begin_capnred(initiator); break;
+    case NS_activity_capnblue: begin_capnblue(initiator); break;
+    case NS_activity_poet: begin_poet(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

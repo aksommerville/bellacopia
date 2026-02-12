@@ -45,4 +45,9 @@ void begin_board_of_elections(struct sprite *initiator);
 void begin_cheat_store(struct sprite *initiator,int arg);
 void begin_cheat_giveaway(struct sprite *initiator,int arg);
 
+// activity_war.c
+void begin_capnred(struct sprite *initiator);
+void begin_capnblue(struct sprite *initiator);
+void begin_poet(struct sprite *initiator);
+
 #endif

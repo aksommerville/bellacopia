@@ -309,7 +309,7 @@ static void _inventory_render(struct vellum *vellum,int x,int y,int w,int h) {
   /* One more inventory slot showing the equipped item.
    * Right of the backpack and alignedish to its top.
    */
-  inventory_render_hand(vellum,bpx+bpw+10,bpy);
+  inventory_render_hand(vellum,bpx+bpw+4,bpy);
   
   /* Gold, fish, and badges are static; they can't change while paused.
    * So we rendered them at the start and it's ready to copy dumbly, right below the equipped item.
@@ -397,7 +397,7 @@ struct vellum *vellum_new_inventory(struct modal *parent) {
   
   struct label *label;
   if (label=inventory_add_label(vellum,LBLID_EQUIPPED_NAME)) {
-    label->x=196;
+    label->x=190;
     label->y=18;
   }
   if (label=inventory_add_label(vellum,LBLID_EQUIPPED_DESC)) {

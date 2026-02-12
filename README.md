@@ -62,6 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
+- [ ] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.
@@ -76,6 +77,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
+- [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

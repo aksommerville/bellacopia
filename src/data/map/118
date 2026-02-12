@@ -16,3 +16,4 @@ door @9,8 map:57 @4,6 0x0000
 parent map:57
 position 0 3 0 0
 sprite @7,6 sprite:jigpiece (u32)0
+sprite @10,5 sprite:capnblue (u16:activity)capnblue (u16:activity_arg)0

@@ -39,5 +39,5 @@ Goals:
 - [ ] 10 other battles.
 - [x] Crypto puzzle in the goblins' cave.
 - [ ] Generate the labyrinth. Do the layout around it but needn't be final.
-- [ ] Letter exchange at battlefield.
+- [x] Letter exchange at battlefield.
 - [x] Election. Just the battle and the broad framework. Not expecting all the guilds' battles yet.

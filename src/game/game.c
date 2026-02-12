@@ -551,6 +551,42 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0,
   },
+  [NS_itemid_letter1]={
+    .tileid=0x4f,
+    .hand_tileid=0x94,
+    .strix_name=58,
+    .strix_help=62,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
+  [NS_itemid_letter2]={
+    .tileid=0x5f,
+    .hand_tileid=0x95,
+    .strix_name=59,
+    .strix_help=63,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
+  [NS_itemid_letter3]={
+    .tileid=0x4f,
+    .hand_tileid=0x94,
+    .strix_name=60,
+    .strix_help=64,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
+  [NS_itemid_letter4]={
+    .tileid=0x5f,
+    .hand_tileid=0x95,
+    .strix_name=61,
+    .strix_help=65,
+    .initial_limit=0,
+    .inventoriable=1,
+    .fld16=0,
+  },
 };
  
 const struct item_detail *item_detail_for_itemid(int itemid) {

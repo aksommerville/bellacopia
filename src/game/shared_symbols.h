@@ -136,6 +136,10 @@
 #define NS_itemid_shovel 24
 #define NS_itemid_pepper 25
 #define NS_itemid_text 26 /* Not a real item. For modal_battle_add_consequence, with a strix in strings:battle. */
+#define NS_itemid_letter1 27 /* blue to red */
+#define NS_itemid_letter2 28 /* ...improved */
+#define NS_itemid_letter3 29 /* red to blue */
+#define NS_itemid_letter4 30 /* ...improved */
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -162,7 +166,11 @@
   _(telescope) \
   _(shovel) \
   _(pepper) \
-  _(text)
+  _(text) \
+  _(letter1) \
+  _(letter2) \
+  _(letter3) \
+  _(letter4)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -188,6 +196,9 @@
 #define NS_activity_board_of_elections 20
 #define NS_activity_cheat_store 21 /* (u16)which: 1,2,3 */
 #define NS_activity_cheat_giveaway 22
+#define NS_activity_capnred 23
+#define NS_activity_capnblue 24
+#define NS_activity_poet 25
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -326,6 +337,7 @@
 #define NS_fld_endorse_casino 50
 #define NS_fld_endorse_labor 51
 #define NS_fld_election_start 52 /* Set when the election quest begins, and stays on forever. At the end, `mayor` is also set. */
+#define NS_fld_capnred_happy 53 /* Midway thru the war. */
 
 /* "fld16" are 16 unsigned bits each.
  */
