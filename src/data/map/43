@@ -1,11 +1,11 @@
-3135252535252341414141414141414141414290
-41414141414142cacbcbcbcbcbcbcbcbcbdc4590
-c7c7c7c7c7c7c7c8b6b6b6b6b6b6b6b6b6e98094
-d7d7d7d7d7d7b2d8b6b6b6dddedededfb6e99091
-d7d7d7d7d7d7d7d8b6b6b6edeeeeeeefb6e99091
+3135252535252535234141414141414141414290
+414141414141414142cacbcbcbcbcbcbcbdc4590
+c7c7c7c7c7c7c7c8858687b6b6b6b6b6b6e98094
+d7d7d7d7d7d7b2d8959697dddedededfb6e99091
+d7d7d7d7d7d7d7d8a5a6a7edeeeeeeefb6e99091
 b1b1b1b1b1b1b1b5b6b6b6edeeeeeeefb6e99091
 c3c3c3c1c2c3c4c5b6b6b6fdfefefeffb6e99091
-d3d3d3d1d2d3d4d5b2b6b6b6b6b6b6b6b6e99091
+d3d3d3d1d2d3d4d5b6b6b6b6b6b6b6b6b6e99091
 e6e7e8e1e2e3e4e5cacbcbcbcbcbcbcbcbfc9091
 f6f7f8f1f2f3f4f5040200010202045551579091
 0502040206050303000000010503056a6b6c9091
@@ -14,15 +14,12 @@ f6f7f8f1f2f3f4f5040200010202045551579091
 image image:temple
 position 1 2 1 *
 sprite @3,4 sprite:jigpiece (u32)0
-root @9,3 (u16:fld)root4
 root @3,11 (u16:fld)root4
 root @3,10 (u16:fld)root4
 root @4,10 (u16:fld)root4
 root @9,7 (u16:fld)root4
 root @9,6 (u16:fld)root4
-root @9,5 (u16:fld)root4
-root @9,4 (u16:fld)root4
-sprite @9,3 sprite:rootdevil (u16:fld)root4 (u16)0
+sprite @9,6 sprite:rootdevil (u16:fld)root4 (u16)0
 root @9,8 (u16:fld)root4
 root @9,9 (u16:fld)root4
 root @9,10 (u16:fld)root4
@@ -30,3 +27,5 @@ root @8,10 (u16:fld)root4
 root @7,10 (u16:fld)root4
 root @6,10 (u16:fld)root4
 root @5,10 (u16:fld)root4
+door @1,9 map:171 @10,10 0x0000
+door @9,4 map:173 @16,4 0x0000

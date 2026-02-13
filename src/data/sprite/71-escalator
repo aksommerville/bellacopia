@@ -1,0 +1,5 @@
+image image:temple_sprites
+type (u16:sprtype)escalator
+groups (b32:sprgrp)visible,update
+layer (u16)10
+tile 0 0
