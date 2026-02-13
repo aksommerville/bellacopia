@@ -44,6 +44,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Stopwatch
 - [ ] Portable Bus Stop
 - [ ] Snowglobe
+- [ ] Five more items...
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.

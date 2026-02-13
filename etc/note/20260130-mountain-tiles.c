@@ -30,8 +30,11 @@ void egg_client_render() { // XXX Highly temporary: Generate my mountain tiles.
       // Stop here at the bottom row.
       if (!yi) break;
       // Then a row offset by a half-tile, using the mergeable tiles 0x66..0x69.
+      // Skip every fourth column and every fourth row, so we get lots of edges.
+      if (!(yi%4)) { y+=NS_sys_tilesize; continue; }
       y+=halftile;
       for (xi=NS_sys_mapw-1,x=NS_sys_tilesize;xi-->0;x+=NS_sys_tilesize) {
+        if (!(xi%4)) continue;
         struct egg_render_tile *tile=tilev+tilec++;
         tile->tileid=0x66+rand()%4;
         tile->x=x;
@@ -44,6 +47,22 @@ void egg_client_render() { // XXX Highly temporary: Generate my mountain tiles.
   
   // Load the texture.
   if (!texid) egg_texture_load_image(texid=egg_texture_new(),RID_image_mountains);
+  
+  // Fill background with a color we can easily pick off. Not black.
+  {
+    struct egg_render_uniform un={
+      .dsttexid=1,
+      .mode=EGG_RENDER_TRIANGLE_STRIP,
+      .alpha=0xff,
+    };
+    struct egg_render_raw vtxv[]={
+      {0  ,0  ,0,0,0x00,0xff,0x00,0xff},
+      {FBW,0  ,0,0,0x00,0xff,0x00,0xff},
+      {0  ,FBH,0,0,0x00,0xff,0x00,0xff},
+      {FBW,FBH,0,0,0x00,0xff,0x00,0xff},
+    };
+    egg_render(&un,vtxv,sizeof(vtxv));
+  }
 
   // Draw it.
   struct egg_render_uniform un={

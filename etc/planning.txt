@@ -81,10 +81,10 @@ We'll group minigames by Zone.
 - [ ] Gyms a la Pokemon with much harder minigames, but entirely optional.
 - [ ] A town where everyone is sick and you need to raise money for medicine. Just money. Incrementally heal them, but the last few will be outrageously expensive.
 - - There are going to be purse upgrades. Make the final healing only affordable with the final purse.
-- [ ] Get a Broom for flying. Require a few main quests first, not sure how to gate that.
+- [x] Get a Broom for flying. Require a few main quests first, not sure how to gate that.
 - [ ] Races across the world, once you have a Broom.
-- [ ] In the goblins' cave, a substitution cipher a la Mysteries of the Crypt.
-- [ ] Rescue the princess and escort her home a la Dead Weight.
+- [x] In the goblins' cave, a substitution cipher a la Mysteries of the Crypt.
+- [x] Rescue the princess and escort her home a la Dead Weight.
 - - Monsters are drawn to her instead of you, and you get to watch her play and lose the minigames.
 - - Combine the cipher and the Princess, it all goes in the goblins' cave.
 - - One more joke in that cave: All the monsters' names are plays on "goblin", with a related contest:
@@ -138,7 +138,7 @@ Ought to have seven distinct narrative quests, one guarding each Root Devil.
 - Root devils 1 and 5 are available immediately. 1 has no further prereqs, just take it. 5 gives you the hookshot. Most places right off the center require a hookshot to cross.
 - Broom: Require 100 gold (initial purse is 99). Can be multiple ways to grow the purse. They all should be pretty heavily-guarded, and none mandatory.
 - - Rescue princess. King says "that purse isn't big enough for the reward I want to give you" :)
-- - Hat the barrels. Requires travel all over the world, not trivial (esp without a broom!)
+- - XXX Hat the barrels. Requires travel all over the world, not trivial (esp without a broom!). Giving Bell for this instead; it has to be an item.
 - - Labyrinth sea monster. You'd have to reach the labyrinth to get it.
 
 1 open
@@ -154,12 +154,12 @@ Ought to have seven distinct narrative quests, one guarding each Root Devil.
 Ideally they all have simple one-word names for our refrain: "RABBIT challenges you to a ROLLERSKATES contest!"
 [*] Implemented in 2023/bcpoc or cherteau.
 
-- [ ]   Apples. Tap A to bob for an apple.
+- [x]   Apples. Tap A to bob for an apple.
 - [ ]   Arm Wrestling. Tap A, hold your power meter high.
 - [ ] * Balancing. Walk to the goal with a tomato on your head.
 - [ ]   Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 - [ ]   Bombing. Mini Super Bomberman?
-- [ ]   Boomerang. Jump then duck, or duck then jump as the kangaroo throws a boomerang at you.
+- [x]   Boomerang. Jump then duck, or duck then jump as the kangaroo throws a boomerang at you.
 - [ ]   Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 - [ ]   Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
 - [ ]   Broom Race. See `apothecary`.
@@ -172,16 +172,16 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
 - [ ]   Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)
 - [ ]   Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
-- [ ]   Chopping. Tap A as a vegetable passes on your conveyor belt.
+- [x]   Chopping. Tap A as a vegetable passes on your conveyor belt.
 - [ ]   Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
 - [ ]   Clam Baking. Hold A to engage flamethrower, only when the clam is open.
 - [ ]   Climbing. L/R and A/B, maintaining one "point of contact" at all times.
-- [ ]   Cobbling. Tap A to hammer nails into a shoe.
+- [x]   Cobbling. Tap A to hammer nails into a shoe.
 - [ ]   Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
 - [ ]   Counting. Lots of moving things and you have to count one class of them.
 - [ ]   CPR. Down to compress chest, A to breathe, against the rhythm.
 - [ ]   Crossing. Frogger.
-- [ ]   Crying. Tap Down repeatedly.
+- [x]   Crying. Tap Down repeatedly.
 - [ ]   Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
 - [ ] * Dance Off. Tiny rhythm game on the dpad.
 - [ ]   Dissection. Dpad to place scalpel, then hold A to select a direction, then tap A to select length. Cut the arteries but don't touch the organs.
@@ -189,13 +189,13 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Diving. R/L to move, hold A to jump. Easier to move before releasing A.
 - [ ] * Dodging. Bullet hell.
 - [ ]   Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
-- [ ]   Erudition. Tap a given pattern repeatedly to make canned art criticism appear word by word.
-- [ ]   Exterminating. 5x5 grid with random bugs. Whack a 3x3 section to XOR it, win when all the bugs are gone. Or fewest bugs when time runs out.
+- [x]   Erudition. Tap a given pattern repeatedly to make canned art criticism appear word by word.
+- [x]   Exterminating. 5x5 grid with random bugs. Whack a 3x3 section to XOR it, win when all the bugs are gone. Or fewest bugs when time runs out.
 - [ ]   Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
 - [ ]   Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
 - [ ]   Fencing. Tap A at optimal rhythm to add planks to a fence.
 - [ ]   Fire. L/R fast to fill a bar and start the fire. (rubbing sticks)
-- [ ]   Fishing. Fish fall to your left and right. L/R to change side and catch the bigger ones. Break ties by lowest interaction time.
+- [x]   Fishing. Fish fall to your left and right. L/R to change side and catch the bigger ones. Break ties by lowest interaction time.
 - [ ]   Fission. Tap A until the atom splits.
 - [ ]   Flapjack. A to flip your pancake. Aim to cook both sides evenly.
 - [ ] * Flapping. Tap A.
@@ -203,10 +203,10 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 - [ ]   Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
 - [ ]   Frog Eating. A to grab and eat a frog, when it hops near.
-- [ ]   Gobbling. A to grab and eat, L to pull the tablecloth closer.
+- [x]   Gobbling. A to grab and eat, L to pull the tablecloth closer.
 - [ ]   Golf. Whack the ball in a closed room, it bounces off all the walls, try to land as far away as possible.
 - [ ]   Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
-- [ ]   Hiring. Given a job description, pick the best of three applicants, repeatedly. eg "Carpenter", pick the guy holding a saw.
+- [x]   Hiring. Given a job description, pick the best of three applicants, repeatedly. eg "Carpenter", pick the guy holding a saw.
 - [ ]   Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
 - [ ]   Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
 - [ ]   Hurdles. Track and Field. Tap A to run, and Up to jump.
@@ -218,7 +218,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ] * Jumprope.
 - [ ] * Karate Chop. Tap A until time expires.
 - [ ]   Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
-- [ ]   Laziness. Dodge falling eggs, points for least motion.
+- [x]   Laziness. Dodge falling eggs, points for least motion.
 - [ ]   Lawnmowing. Visit as much of a grid as possible without retracing any steps.
 - [ ] * Levitation. Keep an indicator balanced.
 - [ ]   Licking. Hold A when the giant moving ice cream cone is in range.
@@ -241,11 +241,11 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Pouring. Once chance to hold A and release. Speeds up as it goes. Disqualify if any overflow.
 - [ ]   Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
 - [ ]   Pushing. Push a statue to the target cell. Sokoban-ish.
-- [ ]   Racketeering. Racquetball. Take turns whacking the ball.
+- [x]   Racketeering. Racquetball. Take turns whacking the ball.
 - [ ]   Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
 - [ ]   Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
 - [ ]   Rebounding. Pong. First miss loses.
-- [ ]   Regex. No idea how it should work and will probably be super painful for users, we can have a "Globlin"!
+- [x]   Regex. No idea how it should work and will probably be super painful for users, we can have a "Globlin"!
 - [ ]   Remembering. Shown 9 cards, then they flip and you have to pick a given one.
 - [ ]   Robohorse. L/R control the horse's two legs. QWOP-ish.
 - [ ]   Rodeo. L/R to balance on the bull or hold A to brace.
@@ -272,11 +272,11 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Sparing. Bowling, second throw only.
 - [ ]   Stacking. L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
 - [ ]   Staring. Dpad to keep your eyes on the foe's.
-- [ ]   Stealing. Approach the center, yoink a thing when the owner is not looking.
+- [x]   Stealing. Approach the center, yoink a thing when the owner is not looking.
 - [ ]   Steering. Drag race with only L/R, dodging critters etc.
 - [ ]   Stenography. Tap all the buttons in order, following a sheet.
 - [ ] * Stirring. Circle the dpad.
-- [ ]   Strangling. Against the Root Devil. Fight to the death.
+- [x]   Strangling. Against the Root Devil. Fight to the death.
 - [ ]   Sumo Horse. Metronome. One player dances with only Left and Right, then the other player must repeat it.
 - [ ]   Surrounding. Snake.
 - [ ] * Swearing. Press the button for a word bubble like "$#@!", last word wins.
@@ -284,7 +284,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
 - [ ]   Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
 - [ ]   Tic Tac Toe. The whole game.
-- [ ]   Throwing. Hold and release to toss a bone onto the target.
+- [x]   Throwing. Hold and release to toss a bone onto the target.
 - [ ]   Topping. Hold A to pour ketchup on a giant moving hotdog.
 - [ ] * Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
 - [ ] * Umbrella. Hold A while raining, release while not.
