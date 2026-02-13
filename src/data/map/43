@@ -29,3 +29,5 @@ root @6,10 (u16:fld)root4
 root @5,10 (u16:fld)root4
 door @1,9 map:171 @10,10 0x0000
 door @9,4 map:173 @16,4 0x0000
+song song:barrel_of_salt
+door @6,3 map:174 @15,8 0x0000
