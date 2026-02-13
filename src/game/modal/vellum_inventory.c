@@ -418,3 +418,14 @@ struct vellum *vellum_new_inventory(struct modal *parent) {
   
   return vellum;
 }
+
+/* Public: Get highlighted item.
+ */
+
+struct invstore *modal_pause_get_highlighted_item() {
+  if ((invcolp>=0)&&(invrowp>=0)&&(invcolp<BPCOLC)&&(invrowp<BPROWC)) {
+    return g.store.invstorev+1+invrowp*BPCOLC+invcolp;
+  }
+  // Something wrong. Say it's the equipped item.
+  return g.store.invstorev;
+}

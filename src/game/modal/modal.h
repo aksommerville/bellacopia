@@ -151,6 +151,7 @@ struct modal_args_linguist {
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d);
 
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
+struct invstore *modal_pause_get_highlighted_item(); // The inventory vellum persists its position across modals. You can query that.
 
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.

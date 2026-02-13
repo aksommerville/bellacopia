@@ -62,7 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [ ] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
+- [x] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
 
 - For exploration some time in the uncertain future.
 - [ ] Usable IP for the erudition contest.

@@ -838,6 +838,19 @@ static int magnifier_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Swap items with inventory.
+ */
+ 
+static void hero_swap_items(struct sprite *sprite) {
+  bm_sound(RID_sound_uimotion);
+  struct invstore *hl=modal_pause_get_highlighted_item();
+  struct invstore *eq=g.store.invstorev;
+  struct invstore tmp;
+  memcpy(&tmp,hl,sizeof(struct invstore));
+  memcpy(hl,eq,sizeof(struct invstore));
+  memcpy(eq,&tmp,sizeof(struct invstore));
+}
+
 /* Update items, main entry point.
  */
  
@@ -866,6 +879,10 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     case NS_itemid_shovel: shovel_update(sprite,elapsed); break;
     case NS_itemid_magnifier: magnifier_update(sprite,elapsed); break;
   }
+  
+  /* East to swap with the most recent item (or whatever's highlighted in the pause menu).
+   */
+  if ((g.input[0]&EGG_BTN_EAST)&&!(g.pvinput[0]&EGG_BTN_EAST)) hero_swap_items(sprite);
   
   // No starting items if injured.
   if (SPRITE->hurt>0.0) return;
