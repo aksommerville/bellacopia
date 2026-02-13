@@ -38,13 +38,7 @@ void game_update(double elapsed) {
   }
   
   if (g.vanishing>0.0) {
-    if ((g.vanishing-=elapsed)<=0.0) {
-      // It would really suck to miss this event, so be extra careful and accomodate oddball cases where there could be multiple heroes.
-      //struct sprite **herop=GRP(hero)->sprv;
-      //int i=GRP(hero)->sprc;
-      //for (;i-->0;herop++) sprite_hero_unvanish(*herop);
-      //XXX hero takes care of it now
-    }
+    g.vanishing-=elapsed;
   }
 }
 
@@ -111,9 +105,9 @@ int game_focus_map(struct map *map) {
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
-      case CMD_map_dark: break;//TODO weather
+      case CMD_map_dark: break;
       case CMD_map_song: bm_song_gently((cmd.arg[0]<<8)|cmd.arg[1]); break;
-      case CMD_map_wind: break;//TODO weather
+      case CMD_map_wind: break;
       //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
     }
   }

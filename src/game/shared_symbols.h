@@ -23,6 +23,7 @@
 #define NS_dir_se  0x01
 
 #define CMD_map_dark            0x01 /* --- */
+#define CMD_map_cameralock      0x02 /* --- */
 #define CMD_map_image           0x20 /* u16:rid */
 #define CMD_map_song            0x21 /* u16:rid */
 #define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */
@@ -220,6 +221,8 @@
 #define NS_sprtype_tvnews      16 /* (u32)0 */
 #define NS_sprtype_guild       17 /* (u32)0 */
 #define NS_sprtype_escalator   18 /* (u8)h (u24)0 */
+#define NS_sprtype_statue      19 /* (u32)0 */
+#define NS_sprtype_statuemaze  20 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -239,7 +242,9 @@
   _(ornament2x2) \
   _(tvnews) \
   _(guild) \
-  _(escalator)
+  _(escalator) \
+  _(statue) \
+  _(statuemaze)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

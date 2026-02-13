@@ -105,6 +105,7 @@ static int map_decode(struct map *dst,const void *src,int srcc) {
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
       case CMD_map_dark: dst->dark=1; break;
+      case CMD_map_cameralock: dst->cameralock=1; break;
       case CMD_map_image: dst->imageid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_song: dst->songid=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_wind: dst->wind=cmd.arg[0]; break;

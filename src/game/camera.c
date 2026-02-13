@@ -400,8 +400,14 @@ void camera_update(double elapsed) {
       }
     }
   }
-  idealx+=g.camera.teledx;
-  idealy+=g.camera.teledy;
+  struct map *heromap=map_by_sprite_position(idealx,idealy,g.camera.z);
+  if (heromap&&heromap->cameralock) {
+    idealx=heromap->lng*NS_sys_mapw+NS_sys_mapw*0.5;
+    idealy=heromap->lat*NS_sys_maph+NS_sys_maph*0.5;
+  } else {
+    idealx+=g.camera.teledx;
+    idealy+=g.camera.teledy;
+  }
   
   /* Advance (fx,fy) toward (idealx,idealy) at a global speed limit.
    * If we're within a pixel of it, just snap. (bear in mind this is running always).

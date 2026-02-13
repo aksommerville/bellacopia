@@ -98,7 +98,6 @@ struct sprite *sprite_new(
   const struct sprite_type *type,
   const void *cmd,int cmdc
 ) {
-  //fprintf(stderr,"%s(%f,%f,rid=%d,argc=%d,type=%s,cmdc=%d)\n",__func__,x,y,rid,argc,type?type->name:"NULL",cmdc);
   if (!arg||!argc) {
     arg=default_sprite_arg;
     argc=4;

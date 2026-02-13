@@ -1,0 +1,4 @@
+image image:temple_sprites
+tile 26 0
+type (u16:sprtype)statue
+groups (b32:sprgrp)visible,solid

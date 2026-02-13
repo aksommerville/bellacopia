@@ -21,7 +21,7 @@ struct map {
   const uint8_t *jigctab; // ''
   int imageid,songid;
   int parent; // Zero or map rid.
-  uint8_t dark,wind;
+  uint8_t dark,wind,cameralock;
 };
 
 /* Run thru (map)'s commands and update its (v) against (rov) and current state.

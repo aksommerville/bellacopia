@@ -14,3 +14,5 @@
 image image:temple_int
 position 1 0 5 *
 parent map:43
+sprite @8,4 sprite:monk4 (u16:activity)dialogue (u16:activity_arg)88
+sprite @13,4 sprite:monk3 (u16:activity)dialogue (u16:activity_arg)89

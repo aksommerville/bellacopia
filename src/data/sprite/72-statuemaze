@@ -1,0 +1,4 @@
+image image:temple_sprites
+tile 22 0
+type (u16:sprtype)statuemaze
+groups (b32:sprgrp)visible,update
