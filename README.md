@@ -66,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
 
 - For exploration some time in the uncertain future.
+- [ ] Can we randomize the statuemaze like we did cryptmsg?
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?

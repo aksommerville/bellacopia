@@ -5,6 +5,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+/* Top-level global events: game.c
+ **************************************************************************************/
+
 /* Resets all the loose globals.
  * Store, camera, etc.
  */
@@ -25,6 +28,16 @@ int game_welcome_map(struct map *map);
  * Change song, apply weather, etc.
  */
 int game_focus_map(struct map *map);
+
+/* (mapid) must contain a hero spawn point, we fail immediately if not.
+ * Does not move immediately. We negatiate a transition with camera, and move the hero when it takes effect.
+ */
+int game_warp(int mapid,int transition);
+
+void game_hurt_hero();
+
+/* Inventory: inventory.c
+ *********************************************************************************/
 
 /* Does all the bells and whistles.
  * Returns nonzero if anything collected.
@@ -51,6 +64,22 @@ const struct item_detail *item_detail_for_equipped();
  */
 int possessed_quantity_for_itemid(int itemid,int *limit);
 
+/* Return zero or itemid, something you caught around the given cell.
+ */
+int game_choose_fish(int x,int y,int z);
+
+/* Decide what should be awarded for winning some battle, accounting for current state.
+ * (monsterarg) is the 4-byte argument to a monster sprite, or null.
+ * Never returns more than (a).
+ */
+struct prize {
+  int itemid,quantity;
+};
+int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg);
+
+/* Activities: activity/*.c
+ ********************************************************************************/
+
 /* (initiator) is optional. Typically an npc.
  */
 void game_begin_activity(int activity,int arg,struct sprite *initiator);
@@ -67,10 +96,8 @@ int tolltroll_get_appearance();
  */
 int game_cast_spell(const char *src,int srcc);
 
-/* (mapid) must contain a hero spawn point, we fail immediately if not.
- * Does not move immediately. We negatiate a transition with camera, and move the hero when it takes effect.
- */
-int game_warp(int mapid,int transition);
+/* Compass targets: targets.c
+ ********************************************************************************/
 
 /* Generate a list of things the compass can target.
  * Never more than (dsta).
@@ -100,21 +127,6 @@ int game_init_targets();
 void game_disable_all_targets();
 void game_enable_target(int strix);
 
-/* Return zero or itemid, something you caught around the given cell.
- */
-int game_choose_fish(int x,int y,int z);
-
-/* Decide what should be awarded for winning some battle, accounting for current state.
- * (monsterarg) is the 4-byte argument to a monster sprite, or null.
- * Never returns more than (a).
- */
-struct prize {
-  int itemid,quantity;
-};
-int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg);
-
-void game_hurt_hero();
-
 /* Generate a list of select POI within a given radius of a point on one plane.
  * Never returns more than (dsta). Stops searching when full, so it doesn't necessarily return the closest.
  * Will not return secrets already got.
@@ -127,12 +139,18 @@ struct secret {
 };
 int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius);
 
+/* Completion: completion.c
+ **************************************************************************************/
+
 /* Percentage of things done, accounting for everything.
  * Zero only for a fresh session, and 100 only if everything is actually done.
  */
 int game_get_completion();
 
 void game_get_sidequests(int *done,int *total);
+
+/* Encryption puzzle: cryptmsg.c
+ *******************************************************************************/
 
 /* Get an encrypted message (in Old Goblish) for the crypto sidequest.
  * Punctuation is all ASCII G0, and letters are all 0xc1..0xda (ie ASCII uppercase + 0x80).
