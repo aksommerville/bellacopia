@@ -29,6 +29,7 @@
 #define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */
 #define CMD_map_parent          0x23 /* u16:rid ; For jigsaw purposes, I belong to this other map. One level of redirection only, please. */
 #define CMD_map_barrelhat       0x24 /* u16:pos ; Must also be switchable */
+#define CMD_map_pylon           0x25 /* u16:pos ; Used only by labyrinth, marks the top-left pylon so we can infer the rest. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
