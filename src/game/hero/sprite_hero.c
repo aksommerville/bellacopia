@@ -197,7 +197,7 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
         int rid=(arg[2]<<8)|arg[3];
         int dstx=arg[4];
         int dsty=arg[5];
-        // (6,7) exist but we're not using yet.
+        int activity=(arg[6]<<8)|arg[7];
         struct map *map=map_by_id(rid);
         if (!map) { // grrr
           fprintf(stderr,"%s:%d: map:%d not found\n",__FILE__,__LINE__,rid);
@@ -229,6 +229,9 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
         
         int transition=NS_transition_spotlight;
         camera_cut(rid,dstx,dsty,transition);
+        
+        // If there's an activity, trigger it now.
+        if (activity) game_begin_activity(activity,0,0);
       } break;
   }
 }

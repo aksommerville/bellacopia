@@ -184,4 +184,17 @@ int cryptmsg_get_spell(char *dst,int dsta,int require);
 
 void cryptmsg_translate_next();
 
+/* The Labyrinth: labyrinth.c
+ **************************************************************************/
+
+/* Call when descending into the labyrinth.
+ * This generates a new seed and hence a whole new maze.
+ */
+void labyrinth_reset();
+
+/* Call for any map with (z==NS_plane_labyrinth1), to replace its moveable walls.
+ * If we don't have a seed yet, this generates one. But won't replace an existing seed.
+ */
+void labyrinth_freshen_map(struct map *map);
+
 #endif

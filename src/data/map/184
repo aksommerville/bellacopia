@@ -14,4 +14,4 @@
 image image:temple_int
 position 0 1 5 *
 parent map:43
-door @10,6 map:187 @10,6 0x0000
+door @10,6 map:187 @10,6 (u16:activity)enter_labyrinth

@@ -32,6 +32,9 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
         } break;
     }
   }
+  if (map->z==NS_plane_labyrinth1) {
+    labyrinth_freshen_map(map);
+  }
 }
 
 /* Reset store.

@@ -38,7 +38,7 @@
 #define CMD_map_switchable2     0x47 /* u16:pos u16:fld ; Same as `switchable` but tileid+2 if set, for double-wide features. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
-#define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:reserved */
+#define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
 #define CMD_map_bump            0x65 /* u16:pos u16:activity u16:arg_or_stringsid u16:strix ; Trigger static text or activity when colliding with a solid. For signs and such. */
@@ -201,6 +201,7 @@
 #define NS_activity_capnred 23
 #define NS_activity_capnblue 24
 #define NS_activity_poet 25
+#define NS_activity_enter_labyrinth 26
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -359,6 +360,7 @@
 #define NS_fld16_redfish 7
 #define NS_fld16_compassoption 8
 #define NS_fld16_cryptmsg_seed 9
+#define NS_fld16_labyrinth_seed 10
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
