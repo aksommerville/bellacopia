@@ -6,6 +6,8 @@
  
 import { Dom } from "../js/Dom.js";
 import { Data } from "../js/Data.js";
+import { Actions } from "../js/Actions.js";
+import { SharedSymbols } from "../js/SharedSymbols.js";
 import { MapService } from "../js/map/MapService.js";
 
 const HIGHLIGHT_COLORS = [
@@ -25,17 +27,19 @@ const HIGHLIGHT_COLORS = [
 
 export class EditWorldModal {
   static getDependencies() {
-    return [HTMLDialogElement, Dom, Data, Window, MapService];
+    return [HTMLDialogElement, Dom, Data, Window, MapService, SharedSymbols, Actions];
   }
-  constructor(element, dom, data, window, mapService) {
+  constructor(element, dom, data, window, mapService, sharedSymbols, actions) {
     this.element = element;
     this.dom = dom;
     this.data = data;
     this.window = window;
     this.mapService = mapService;
+    this.sharedSymbols = sharedSymbols;
+    this.actions = actions;
     
     this.renderTimeout = null;
-    this.layers = this.mapService.layout.map(v => v.crop());
+    this.layers = this.mapService.layout.map(v => v.crop()).sort((a, b) => (a.z - b.z));
     this.layer = null;
     this.mapw = 1; // Render geometry only reliable if (this.layer) set.
     this.maph = 1; // Map size in canvas pixels. Includes a wee margin.
@@ -66,7 +70,11 @@ export class EditWorldModal {
     }
     Promise.all(promises).then(() => this.renderSoon());
     
-    this.buildUi();
+    // Don't build UI until SharedSymbols are populated (should already be, but do it right).
+    // We need them when populating the static layer select.
+    this.sharedSymbols.whenLoaded().then(() => {
+      this.buildUi();
+    });
   }
   
   onRemoveFromDom() {
@@ -103,19 +111,21 @@ export class EditWorldModal {
     );
     
     this.dom.spawn(topRow, "INPUT", { type: "button", value: "Printable...", "on-click": () => this.onPrintable() });
+    this.dom.spawn(topRow, "DIV", ["advice"], "Shift-click to dismiss and edit.");
     
     this.dom.spawn(topRow, "DIV", ["spacer"]);
     this.dom.spawn(topRow, "DIV", ["tattle"]);
     
     this.dom.spawn(this.element, "CANVAS", ["visual"], {
-      "on-click": e => this.onVisualClick(e),
+      "on-mousedown": e => this.onVisualClick(e),
       "on-mousemove": e => this.onMotion(e),
       "on-mouseleave": e => this.setTattle(null),
     });
   }
   
   reprLayer(layer) {
-    return `${layer.z} (${layer.w}x${layer.h})`;
+    const name = this.sharedSymbols.getName("NS", "plane", layer.z);
+    return `${layer.z} ${name} (${layer.w}x${layer.h})`;
   }
   
   // Multiple "NAME*WEIGHT", delimited by commas.
@@ -437,6 +447,16 @@ export class EditWorldModal {
     const res = this.layer.v[row * this.layer.w + col];
     const map = res?.map;
     if (!map) return;
+    
+    // Shift-click to dismiss this modal and edit this map.
+    if (event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
+      this.element.remove();
+      this.actions.editResource(res.path);
+      return;
+    }
+    
     const op = this.element.querySelector("select[name='op']")?.value;
     const options = this.collectOptions(map, op);
     if (options.length < 1) return;

@@ -26,6 +26,8 @@
 .EditWorldModal .topRow {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  gap: 5px;
 }
 .EditWorldModal .topRow .spacer {
   flex: 1;
