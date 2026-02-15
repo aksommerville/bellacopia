@@ -38,6 +38,6 @@ Goals:
 - [x] Finish the 10 outstanding goblin battles. ...5 feb
 - [ ] 10 other battles.
 - [x] Crypto puzzle in the goblins' cave.
-- [ ] Generate the labyrinth. Do the layout around it but needn't be final.
+- [x] Generate the labyrinth. Do the layout around it but needn't be final. ...14 feb
 - [x] Letter exchange at battlefield. ...12 feb
 - [x] Election. Just the battle and the broad framework. Not expecting all the guilds' battles yet.
