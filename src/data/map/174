@@ -15,4 +15,4 @@ image image:temple_int
 position 3 1 5 *
 parent map:43
 door @15,8 map:43 @6,3 0x0000
-song song:feet_to_the_fire
+song song:minotaur

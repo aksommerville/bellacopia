@@ -18,4 +18,4 @@ door @16,4 map:43 @9,4 0x0000
 sprite @9,4 sprite:escalator (u8)3 (u24)0
 bump @7,6 (u16)0 strings:dialogue (u16)85
 door @8,2 map:192 @7,6 (u16:activity)enter_labyrinth
-song song:feet_to_the_fire
+song song:minotaur
