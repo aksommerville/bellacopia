@@ -27,7 +27,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Edit World Modal: We do have `NS_plane_*` with names. Try to use those instead of the numeric plane ID.
 - [x] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] `modal_story.c:story_render_overlay()`: Cache overlay texture.
-- [ ] Also in the overlay, show diminishing bars for match, bugspray, translating, any other highly transient state.
+- [x] Also in the overlay, show diminishing bars for match, bugspray, translating, any other highly transient state.
 - [ ] Friendly UI for editing saved games. (non-public, obviously)
 - [ ] More spells. Not sure what...
 - [ ] Invalid spell, should we do a head-shake like in Full Moon?
@@ -67,6 +67,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [x] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
 - [ ] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
+- [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

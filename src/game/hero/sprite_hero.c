@@ -257,3 +257,8 @@ void sprite_hero_unanimate(struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return;
   SPRITE->walkanimframe=0;
 }
+
+double sprite_hero_get_match_time(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0.0;
+  return SPRITE->matchclock;
+}

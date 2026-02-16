@@ -50,7 +50,6 @@ static void story_cb_cell_exposure(int x,int y,int w,int h,void *userdata) {
  
 static void story_cb_store(char type,int id,int value,void *userdata) {
   struct modal *modal=userdata;
-  fprintf(stderr,"%s type='%c' id=%d value=%d\n",__func__,type,id,value);
   // Refresh the overlay any time anything at all changes in the store.
   // That's more than strictly necessary, but it's not worth burning a lot of cycles to figure out which changes matter.
   // (and the truth is, we probably will miss some broadcasts, so it's good to sync up before too much time passes).
@@ -131,8 +130,8 @@ static void story_refresh_overlay(struct modal *modal) {
   graf_flush(&g.graf);
 
   if (!MODAL->overlay.texid) {
-    MODAL->overlay.w=60;
-    MODAL->overlay.h=40;
+    MODAL->overlay.w=50;
+    MODAL->overlay.h=25;
     MODAL->overlay.texid=egg_texture_new();
     egg_texture_load_raw(MODAL->overlay.texid,MODAL->overlay.w,MODAL->overlay.h,MODAL->overlay.w<<2,0,0);
   }
@@ -210,7 +209,24 @@ static void story_render_overlay(struct modal *modal) {
   graf_set_input(&g.graf,MODAL->overlay.texid);
   graf_decal(&g.graf,1,1,0,0,MODAL->overlay.w,MODAL->overlay.h);
   
-  // TODO Other highly transient things, eg matches lit.
+  /* Indicators for highly-transient state. Not part of the cached image.
+   */
+  int barw=40;
+  int y=g.store.invstorev[0].limit?26:19;
+  #define BAR(v,limit,color) { \
+    int w=((v)*barw)/(limit); \
+    if (w<0) w=0; else if (w>barw) w=barw; \
+    graf_fill_rect(&g.graf,1,y,barw,4,0x80808080); \
+    graf_fill_rect(&g.graf,1,y,w,4,color); \
+    y+=5; \
+  }
+  double matchtime=0.0;
+  if (GRP(hero)->sprc>=1) matchtime=sprite_hero_get_match_time(GRP(hero)->sprv[0]);
+  if (matchtime>0.0) BAR(matchtime,10.0,0xff0000ff)
+  if (g.bugspray>0.0) BAR(g.bugspray,10.0,0x00ffffff)
+  if (g.vanishing>0.0) BAR(g.vanishing,10.0,0xff00ffff)
+  //TODO I'd like to indicate that the Spell of Translating is in play but it's a little complicated. Also I don't know what it should look like. Probably not a bar.
+  #undef BAR
 }
 
 /* Render.
