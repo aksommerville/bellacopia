@@ -39,6 +39,7 @@ void begin_tolltroll(struct sprite *sprite,int appearance) {
     } else {
       invstore->itemid=invstore->limit=invstore->quantity=0;
     }
+    store_broadcast('i',appearance,0);
     struct text_insertion ins={.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
     struct modal_args_dialogue args={
       .rid=RID_strings_dialogue,

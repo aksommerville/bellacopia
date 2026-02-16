@@ -11,6 +11,7 @@ static int cb_carpenter(int itemid,int quantity,int price,void *userdata) {
   struct invstore *invstore=store_get_itemid(NS_itemid_stick);
   if (!invstore) return -1; // Where'd the stick go?
   invstore->itemid=invstore->quantity=invstore->limit=0;
+  store_broadcast('i',NS_itemid_stick,0);
   return 0; // Proceed with purchase. And if the stick was equipped, its replacement should go in the same slot, which is nice.
 }
  
@@ -53,6 +54,7 @@ static int cb_brewer_fill(int option,void *userdata) {
   gold-=10;
   store_set_fld16(NS_fld16_gold,gold);
   bm_sound(RID_sound_collect);
+  store_broadcast('i',NS_itemid_potion,0);
   return 1;
 }
 

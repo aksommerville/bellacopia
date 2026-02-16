@@ -165,6 +165,7 @@ static void inventory_swap(struct vellum *vellum) {
   g.store.dirty=1;
   bm_sound(RID_sound_uiactivate);
   inventory_rebuild_labels(vellum);
+  store_broadcast('i',a->itemid,0);
 }
 
 /* Update.

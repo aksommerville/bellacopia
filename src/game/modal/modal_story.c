@@ -9,6 +9,11 @@ struct modal_story {
   struct modal hdr;
   int map_listener;
   int cell_listener;
+  int store_listener;
+  struct {
+    int texid,w,h;
+    int dirty;
+  } overlay;
 };
 
 #define MODAL ((struct modal_story*)modal)
@@ -19,6 +24,8 @@ struct modal_story {
 static void _story_del(struct modal *modal) {
   camera_unlisten(MODAL->map_listener);
   camera_unlisten(MODAL->cell_listener);
+  store_unlisten(MODAL->store_listener);
+  egg_texture_del(MODAL->overlay.texid);
 }
 
 /* Map exposure callbacks.
@@ -38,12 +45,26 @@ static void story_cb_cell_exposure(int x,int y,int w,int h,void *userdata) {
   spawner_expose(x,y,w,h);
 }
 
+/* Store change callback.
+ */
+ 
+static void story_cb_store(char type,int id,int value,void *userdata) {
+  struct modal *modal=userdata;
+  fprintf(stderr,"%s type='%c' id=%d value=%d\n",__func__,type,id,value);
+  // Refresh the overlay any time anything at all changes in the store.
+  // That's more than strictly necessary, but it's not worth burning a lot of cycles to figure out which changes matter.
+  // (and the truth is, we probably will miss some broadcasts, so it's good to sync up before too much time passes).
+  // The point of caching the overlay is just to prevent redrawing 60 times every second. Once per second is perfectly fine.
+  MODAL->overlay.dirty=1;
+}
+
 /* Init.
  */
  
 static int _story_init(struct modal *modal,const void *arg,int argc) {
   modal->opaque=1;
   modal->interactive=1;
+  MODAL->overlay.dirty=1;
   
   int use_save=1;
   if (arg&&(argc==sizeof(struct modal_args_story))) {
@@ -54,6 +75,7 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
   
   if ((MODAL->map_listener=camera_listen_map(story_cb_map_exposure,modal))<0) return -1;
   if ((MODAL->cell_listener=camera_listen_cell(story_cb_cell_exposure,modal))<0) return -1;
+  if ((MODAL->store_listener=store_listen(0,story_cb_store,modal))<0) return -1;
   
   int mapid,col,row;
   if (maps_get_start_position(&mapid,&col,&row)<0) return -1;
@@ -102,18 +124,29 @@ static void _story_update(struct modal *modal,double elapsed) {
   }
 }
 
-/* Overlay with HP and gold.
- * TODO It's a fair bit of work to render and won't change often. Cache this into a temporary texture and redraw that on changes.
+/* Redraw the overlay bits.
  */
  
-static void story_render_overlay(struct modal *modal) {
+static void story_refresh_overlay(struct modal *modal) {
+  graf_flush(&g.graf);
+
+  if (!MODAL->overlay.texid) {
+    MODAL->overlay.w=60;
+    MODAL->overlay.h=40;
+    MODAL->overlay.texid=egg_texture_new();
+    egg_texture_load_raw(MODAL->overlay.texid,MODAL->overlay.w,MODAL->overlay.h,MODAL->overlay.w<<2,0,0);
+  }
+  
+  egg_texture_clear(MODAL->overlay.texid);
+  graf_set_output(&g.graf,MODAL->overlay.texid);
+  
   int hp=store_get_fld16(NS_fld16_hp);
   int hpmax=store_get_fld16(NS_fld16_hpmax);
   int gold=store_get_fld16(NS_fld16_gold);
   int goldmax=store_get_fld16(NS_fld16_goldmax);
   graf_set_image(&g.graf,RID_image_pause);
   
-  graf_tile(&g.graf,9,9,0x17,0);
+  graf_tile(&g.graf,8,8,0x17,0);
   const struct invstore *invstore=g.store.invstorev;
   int itemid=invstore->itemid;
   if (itemid) {
@@ -128,11 +161,11 @@ static void story_render_overlay(struct modal *modal) {
             case 3: tileid=0x4c; break;
           } break;
       }
-      if (tileid) graf_tile(&g.graf,9,9,tileid,0);
+      if (tileid) graf_tile(&g.graf,8,8,tileid,0);
     }
   }
   
-  int x=23,y=5;
+  int x=22,y=4;
   int i=0;
   for (;i<hp;i++,x+=8) graf_tile(&g.graf,x,y,0x28,0);
   for (;i<hpmax;i++,x+=8) graf_tile(&g.graf,x,y,0x27,0);
@@ -142,10 +175,10 @@ static void story_render_overlay(struct modal *modal) {
   else if (gold>=goldmax) color=0x00ff00ff;
   else color=0xf08040ff;
   int digitc=(gold>=10000)?5:(gold>=1000)?4:(gold>=100)?3:(gold>=10)?2:1;
-  x=22;
-  y=14;
-  graf_tile(&g.graf,x,y,0x29,0);
+  x=21;
   y=13;
+  graf_tile(&g.graf,x,y,0x29,0);
+  y=12;
   x+=7+4*(digitc-1);
   for (i=digitc;i-->0;x-=4,gold/=10) graf_fancy(&g.graf,x,y,0x40+gold%10,0,0,NS_sys_tilesize,0,color);
   
@@ -157,10 +190,27 @@ static void story_render_overlay(struct modal *modal) {
     else if (v>=invstore->limit) color=0x00ff00ff;
     else color=0xf08040ff;
     int digitc=(v>=100)?3:(v>=10)?2:1;
-    x=14;
-    y=21;
+    x=13;
+    y=20;
     for (i=digitc;i-->0;x-=4,v/=10) graf_fancy(&g.graf,x,y,0x40+v%10,0,0,NS_sys_tilesize,0,color);
   }
+  
+  graf_set_output(&g.graf,1);
+  graf_flush(&g.graf);
+}
+
+/* Overlay with HP, gold, etc.
+ */
+ 
+static void story_render_overlay(struct modal *modal) {
+  if (MODAL->overlay.dirty) {
+    MODAL->overlay.dirty=0;
+    story_refresh_overlay(modal);
+  }
+  graf_set_input(&g.graf,MODAL->overlay.texid);
+  graf_decal(&g.graf,1,1,0,0,MODAL->overlay.w,MODAL->overlay.h);
+  
+  // TODO Other highly transient things, eg matches lit.
 }
 
 /* Render.

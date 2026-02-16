@@ -36,6 +36,8 @@ int store_clear() {
   g.store.clockc=0;
   g.store.jigstorec=0;
   memset(g.store.invstorev,0,sizeof(g.store.invstorev));
+  g.store.listenerc=0;
+  g.store.listenerid_next=1;
   
   // Those fld16 that hold initial limits must get populated.
   store_set_fld16(NS_fld16_hpmax,3);
@@ -250,6 +252,8 @@ static int store_load_fail() {
 
 int store_load(const char *k,int kc) {
   if (!k) kc=0; else if (kc<0) { kc=0; while (k[kc]) kc++; }
+  g.store.listenerc=0;
+  g.store.listenerid_next=1;
   
   // Acquire the Base64-ish encoded game.
   uint8_t src[STORE_MAX_ENCODED_SIZE];
@@ -516,11 +520,13 @@ int store_set_fld(int fld,int value) {
     g.store.fldv[p]&=~mask;
   }
   g.store.dirty=1;
+  store_broadcast('f',fld,value?1:0);
   return 1;
 }
 
 int store_set_fld16(int fld,int value) {
   if (fld<0) return -1;
+  value&=0xffff;
   if (fld>=g.store.fld16c) {
     if (!value) return 0;
     if (store_require_fld16v(fld+1)<0) return -1;
@@ -529,6 +535,7 @@ int store_set_fld16(int fld,int value) {
   if (g.store.fld16v[fld]==value) return 0;
   g.store.fld16v[fld]=value;
   g.store.dirty=1;
+  store_broadcast('6',fld,value);
   return 1;
 }
 
@@ -620,6 +627,7 @@ struct jigstore *store_add_jigstore(int mapid) {
   store_choose_jigstore_position(jigstore);
   g.store.jigstorec++;
   g.store.dirty=1;
+  store_broadcast('j',mapid,0);
   return jigstore;
 }
 
@@ -638,6 +646,7 @@ struct invstore *store_add_itemid(int itemid,int quantity) {
         if (nq>invstore->limit) invstore->quantity=invstore->limit;
         else invstore->quantity=nq;
         g.store.dirty=1;
+        store_broadcast('i',itemid,0);
       }
       return invstore;
     } else if (!invstore->itemid&&!blank) {
@@ -653,6 +662,7 @@ struct invstore *store_add_itemid(int itemid,int quantity) {
     else blank->limit=quantity;
   }
   g.store.dirty=1;
+  store_broadcast('i',itemid,0);
   return blank;
 }
 
@@ -742,5 +752,49 @@ void jigstore_progress_tabulate(struct jigstore_progress *progress) {
         return;
       }
     }
+  }
+}
+
+/* Listeners.
+ */
+ 
+int store_listen(char type,void (*cb)(char type,int id,int value,void *userdata),void *userdata) {
+  if (!cb) return -1;
+  if (g.store.listenerc>=g.store.listenera) {
+    int na=g.store.listenera+16;
+    if (na>INT_MAX/sizeof(struct store_listener)) return -1;
+    void *nv=realloc(g.store.listenerv,sizeof(struct store_listener)*na);
+    if (!nv) return -1;
+    g.store.listenerv=nv;
+    g.store.listenera=na;
+  }
+  struct store_listener *listener=g.store.listenerv+g.store.listenerc++;
+  listener->type=type;
+  listener->cb=cb;
+  listener->userdata=userdata;
+  if (g.store.listenerid_next<1) g.store.listenerid_next=1;
+  listener->listenerid=g.store.listenerid_next++;
+  return listener->listenerid;
+}
+
+void store_unlisten(int listenerid) {
+  if (listenerid<1) return;
+  int i=g.store.listenerc;
+  struct store_listener *listener=g.store.listenerv+i-1;
+  for (;i-->0;listener--) {
+    if (listener->listenerid!=listenerid) continue;
+    g.store.listenerc--;
+    memmove(listener,listener+1,sizeof(struct store_listener)*(g.store.listenerc-i));
+    return;
+  }
+}
+
+void store_broadcast(char type,int id,int value) {
+  // Don't keep a pointer to (listenerv) across callbacks.
+  int i=g.store.listenerc;
+  while (i-->0) {
+    struct store_listener *listener=g.store.listenerv+i;
+    if (listener->type&&(listener->type!=type)) continue;
+    listener->cb(type,id,value,listener->userdata);
   }
 }

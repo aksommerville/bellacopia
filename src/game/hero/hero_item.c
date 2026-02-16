@@ -138,6 +138,7 @@ static int match_begin(struct sprite *sprite) {
   bm_sound(RID_sound_match);
   SPRITE->matchclock+=8.000;
   sprite_group_add(GRP(light),sprite);
+  store_broadcast('i',NS_itemid_match,0);
   return 1;
 }
 
@@ -295,6 +296,7 @@ static int bugspray_begin(struct sprite *sprite) {
   g.store.dirty=1;
   g.bugspray+=5.000;
   bm_sound(RID_sound_bugspray);
+  store_broadcast('i',NS_itemid_bugspray,0);
   return 1;
 }
 
@@ -322,6 +324,7 @@ static void potion_update(struct sprite *sprite,double elapsed) {
     if (invstore&&(invstore->quantity>0)) {
       invstore->quantity--;
       g.store.dirty=1;
+      store_broadcast('i',NS_itemid_potion,0);
     }
     // If the item disappeared or zeroed out, heal anyway i guess? We made the sound.
     store_set_fld16(NS_fld16_hp,store_get_fld16(NS_fld16_hpmax));
@@ -539,6 +542,7 @@ static int candy_begin(struct sprite *sprite) {
   g.store.invstorev[0].quantity--;
   g.store.dirty=1;
   bm_sound(RID_sound_deploy);
+  store_broadcast('i',NS_itemid_candy,0);
   return 1;
 }
 
@@ -552,6 +556,7 @@ static int vanishing_begin(struct sprite *sprite) {
   g.vanishing+=5.000;
   sprite->physics&=~(1<<NS_physics_vanishable);
   bm_sound(RID_sound_vanishing);
+  store_broadcast('i',NS_itemid_vanishing,0);
   return 1;
 }
 
@@ -673,6 +678,7 @@ static int barrelhat_begin(struct sprite *sprite) {
   store_set_fld(fld,1);
   g.camera.mapsdirty=1;
   bm_sound(RID_sound_presto);
+  store_broadcast('i',NS_itemid_barrelhat,0);
   return 1;
 }
 
@@ -849,6 +855,7 @@ static void hero_swap_items(struct sprite *sprite) {
   memcpy(&tmp,hl,sizeof(struct invstore));
   memcpy(hl,eq,sizeof(struct invstore));
   memcpy(eq,&tmp,sizeof(struct invstore));
+  store_broadcast('i',eq->itemid,0);
 }
 
 /* Update items, main entry point.

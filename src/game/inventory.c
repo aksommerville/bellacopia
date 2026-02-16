@@ -388,6 +388,7 @@ int game_get_item(int itemid,int quantity) {
     g.store.dirty=1;
     bm_sound(RID_sound_collect);
     game_report_item_quantity_add(itemid,quantity);
+    store_broadcast('i',itemid,0);
     return 1;
   }
   

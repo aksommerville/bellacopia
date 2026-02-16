@@ -8,12 +8,14 @@ static int cb_capnred_rcv(int optionid,void *userdata) {
   if (letter->itemid==NS_itemid_letter1) { // Unimproved!
     letter->itemid=0;
     begin_dialogue(80,0);
+    store_broadcast('i',NS_itemid_letter1,0);
     return 0;
   }
   if (letter->itemid==NS_itemid_letter2) { // Improved.
     letter->itemid=NS_itemid_letter3;
     begin_dialogue(81,0);
     bm_sound(RID_sound_treasure);
+    store_broadcast('i',NS_itemid_letter3,0);
     return 1;
   }
   return 0;
@@ -51,6 +53,7 @@ static int cb_capnblue_rcv(int optionid,void *userdata) {
   if (letter->itemid==NS_itemid_letter3) { // Unimproved!
     letter->itemid=0;
     begin_dialogue(76,0);
+    store_broadcast('i',NS_itemid_letter3,0);
     return 0;
   }
   if (letter->itemid==NS_itemid_letter4) { // Improved.
@@ -58,6 +61,7 @@ static int cb_capnblue_rcv(int optionid,void *userdata) {
     begin_dialogue(77,0);
     store_set_fld(NS_fld_war_over,1);
     bm_sound(RID_sound_secret);
+    store_broadcast('i',NS_itemid_letter4,0);
     return 1;
   }
   return 0;
@@ -101,6 +105,7 @@ static int cb_poet_improved(int optionid,void *userdata) {
   struct invstore *invstore=userdata;
   if (invstore->itemid==NS_itemid_letter1) invstore->itemid=NS_itemid_letter2;
   else if (invstore->itemid==NS_itemid_letter3) invstore->itemid=NS_itemid_letter4;
+    store_broadcast('i',invstore->itemid,0);
   bm_sound(RID_sound_treasure);
   return 1;
 }

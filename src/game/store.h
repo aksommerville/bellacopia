@@ -37,6 +37,15 @@ struct store {
   
   int dirty; // Outsiders may set, if you change something.
   double savedebounce;
+  
+  struct store_listener {
+    int listenerid;
+    char type; // Zero for everything, or one of: f6ji
+    void (*cb)(char type,int id,int value,void *userdata);
+    void *userdata;
+  } *listenerv;
+  int listenerc,listenera;
+  int listenerid_next;
 };
 
 /* These are both fallible, but missing or invalid data is not an error.
@@ -54,6 +63,24 @@ int store_load(const char *k,int kc);
  * Trivial things like moving a jigpiece can cause repetitive store changes, so we prefer to space them out a bit.
  */
 void store_save_if_dirty(const char *k,int kc,int now);
+
+/* Anyone can listen for changes to the store.
+ * If you modify the store directly, broadcast it.
+ * Do not remove listeners during your callback, except yourself.
+ * Clock changes do not broadcast.
+ * All listeners are dropped at clear and load.
+ *
+ * | type | id              | value |
+ * +------+-----------------+-------+
+ * | (0)  | Subscribes to all changes.
+ * | 'f'  | fld             | 0,1   |
+ * | '6'  | fld16           | 0..0xffff |
+ * | 'j'  | mapid(jigstore) | unused |
+ * | 'i'  | itemid          | unused |
+ */
+int store_listen(char type,void (*cb)(char type,int id,int value,void *userdata),void *userdata);
+void store_unlisten(int listenerid);
+void store_broadcast(char type,int id,int value);
 
 int store_get_fld(int fld);
 int store_get_fld16(int fld16);
