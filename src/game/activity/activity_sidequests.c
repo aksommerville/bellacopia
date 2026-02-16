@@ -152,3 +152,14 @@ void begin_knitter(struct sprite *sprite) {
     modal_dialogue_set_callback(dialogue,knitter_cb,0);
   }
 }
+
+/* Tree: Either complain about being bored, or thank Dot for telling us a story.
+ */
+ 
+void begin_tree(struct sprite *initiator,int arg) {
+  if (store_get_fld(arg)) {
+    begin_dialogue(92,initiator);
+  } else {
+    begin_dialogue(91,initiator);
+  }
+}

@@ -92,6 +92,7 @@ extern const struct modal_type modal_type_dialogue; // Any mode.
 extern const struct modal_type modal_type_shop; // Story Mode. Basically dialogue, with shopping-specific extras.
 extern const struct modal_type modal_type_cryptmsg; // Special type of dialogue in Story Mode.
 extern const struct modal_type modal_type_linguist; // ''
+extern const struct modal_type modal_type_cutscene; // Any of several enumerated non-interactive cutscenes.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -141,6 +142,12 @@ struct modal_args_cryptmsg {
 
 struct modal_args_linguist {
   struct sprite *speaker;
+};
+
+struct modal_args_cutscene {
+  int strix_title; // Identifier, from the story.
+  void (*cb)(void *userdata);
+  void *userdata;
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

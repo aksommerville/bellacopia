@@ -203,6 +203,7 @@
 #define NS_activity_capnblue 24
 #define NS_activity_poet 25
 #define NS_activity_enter_labyrinth 26
+#define NS_activity_tree 27 /* (u16)fld */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -348,6 +349,38 @@
 #define NS_fld_endorse_labor 51
 #define NS_fld_election_start 52 /* Set when the election quest begins, and stays on forever. At the end, `mayor` is also set. */
 #define NS_fld_capnred_happy 53 /* Midway thru the war. */
+#define NS_fld_tree1 54
+#define NS_fld_tree2 55
+#define NS_fld_tree3 56
+#define NS_fld_tree4 57
+#define NS_fld_tree5 58
+#define NS_fld_tree6 59
+#define NS_fld_tree7 60
+#define NS_fld_tree8 61
+#define NS_fld_tree9 62
+#define NS_fld_tree10 63
+#define NS_fld_tree11 64
+#define NS_fld_tree12 65
+#define NS_fld_tree13 66
+#define NS_fld_tree14 67
+#define NS_fld_tree15 68
+#define NS_fld_tree16 69
+#define NS_fld_story1 70
+#define NS_fld_story2 71
+#define NS_fld_story3 72
+#define NS_fld_story4 73
+#define NS_fld_story5 74
+#define NS_fld_story6 75
+#define NS_fld_story7 76
+#define NS_fld_story8 77
+#define NS_fld_story9 78
+#define NS_fld_story10 79
+#define NS_fld_story11 80
+#define NS_fld_story12 81
+#define NS_fld_story13 82
+#define NS_fld_story14 83
+#define NS_fld_story15 84
+#define NS_fld_story16 85
 
 /* "fld16" are 16 unsigned bits each.
  */

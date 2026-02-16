@@ -128,6 +128,7 @@ static int _pause_init(struct modal *modal,const void *arg,int argc) {
   
   if (!pause_add_vellum(modal,vellum_new_inventory)) return -1;
   if (!pause_add_vellum(modal,vellum_new_map)) return -1;
+  if (!pause_add_vellum(modal,vellum_new_stories)) return -1;
   if (!pause_add_vellum(modal,vellum_new_stats)) return -1;
   if (!pause_add_vellum(modal,vellum_new_system)) return -1;
   

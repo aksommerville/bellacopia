@@ -42,6 +42,7 @@ void vellum_del(struct vellum *vellum);
 
 struct vellum *vellum_new_inventory(struct modal *parent);
 struct vellum *vellum_new_map(struct modal *parent);
+struct vellum *vellum_new_stories(struct modal *parent);
 struct vellum *vellum_new_stats(struct modal *parent);
 struct vellum *vellum_new_system(struct modal *parent);
 

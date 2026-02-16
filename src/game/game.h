@@ -197,4 +197,23 @@ void labyrinth_reset();
  */
 void labyrinth_freshen_map(struct map *map);
 
+/* Stories: stories/stories.c
+ **************************************************************************/
+ 
+struct story {
+  uint8_t tileid_small; // 0x10..0x1f, in image:stories, to go on the shelf.
+  uint8_t tileid_large; // 2x2 tiles, this is the top left. image:stories.
+  int strix_title; // strings:stories
+  int strix_desc; // strings:stories
+  int fld_present; // Typically some other business-level field, what makes the story available.
+  int fld_told; // Specific to this story, whether we've told it to a tree.
+};
+
+const struct story *story_by_index(int p);
+const struct story *story_by_index_present(int p); // Contiguous (p) but only returns present stories.
+
+/* Run the cutscene or whatever, and if there's an unsatisfied tree nearby, mark both tree and story satisfied.
+ */
+void game_tell_story(const struct story *story);
+
 #endif

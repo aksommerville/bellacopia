@@ -27,6 +27,7 @@ void begin_fishprocessor(struct sprite *initiator);
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);
 void begin_knitter(struct sprite *initiator);
+void begin_tree(struct sprite *initiator,int arg);
 
 // activity_princess.c
 void begin_king(struct sprite *initiator);
