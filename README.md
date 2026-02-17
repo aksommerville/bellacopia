@@ -38,7 +38,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Handicap for monster and fishpole.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [x] Poke jigsaw after rotating a piece in case it's positioned to join.
-- [ ] Have monsters consume the candy; it only lasts so long.
+- [x] Have monsters consume the candy; it only lasts so long.
 - [ ] Pepper
 - [ ] Bomb
 - [ ] Stopwatch
@@ -58,7 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
 - [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
-- [ ] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
+- [x] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
 - [ ] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
