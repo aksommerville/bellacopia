@@ -30,7 +30,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Also in the overlay, show diminishing bars for match, bugspray, translating, any other highly transient state.
 - [ ] More spells. Not sure what...
 - [x] Invalid spell, should we do a head-shake like in Full Moon?
-- [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
@@ -38,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Handicap for monster and fishpole.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
-- [ ] Poke jigsaw after rotating a piece in case it's positioned to join.
+- [x] Poke jigsaw after rotating a piece in case it's positioned to join.
 - [ ] Have monsters consume the candy; it only lasts so long.
 - [ ] Pepper
 - [ ] Bomb
@@ -84,6 +83,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
+- [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

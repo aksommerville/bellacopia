@@ -839,7 +839,11 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
       jigsaw_dirty(jigsaw,other);
     }
   }
-  bm_sound(RID_sound_jigsaw_rotate);
+  if (jigsaw_check_connections_all(jigsaw,jigpiece)) {
+    bm_sound(RID_sound_jigsaw_connect);
+  } else {
+    bm_sound(RID_sound_jigsaw_rotate);
+  }
 }
 
 /* Motion.
