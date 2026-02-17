@@ -28,9 +28,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
 - [x] `modal_story.c:story_render_overlay()`: Cache overlay texture.
 - [x] Also in the overlay, show diminishing bars for match, bugspray, translating, any other highly transient state.
-- [ ] Friendly UI for editing saved games. (non-public, obviously)
 - [ ] More spells. Not sure what...
-- [ ] Invalid spell, should we do a head-shake like in Full Moon?
+- [x] Invalid spell, should we do a head-shake like in Full Moon?
 - [ ] Should firepot be switchable?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
@@ -84,6 +83,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
+- [ ] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

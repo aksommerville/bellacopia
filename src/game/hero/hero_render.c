@@ -74,7 +74,9 @@ static void hero_render_wand(struct sprite *sprite,int x,int y) {
   uint8_t tileid=0x40;
   uint8_t wtileid=0;
   int wdx=0,wdy=0;
-  switch (SPRITE->wanddir) {
+  if (SPRITE->spellrejectclock>0.0) {
+    tileid+=5;
+  } else switch (SPRITE->wanddir) {
     case 'U': tileid+=3; wtileid=tileid+0x10; wdy=-NS_sys_tilesize; break;
     case 'L': tileid+=1; wtileid=tileid+0x10; wdx=-NS_sys_tilesize; break;
     case 'R': tileid+=2; wtileid=tileid+0x10; wdx=NS_sys_tilesize; break;

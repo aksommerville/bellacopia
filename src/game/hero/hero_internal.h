@@ -26,6 +26,7 @@ struct sprite_hero {
   char wanddir; // 0,'LRUD'
   char spell[SPELL_LIMIT]; // 'LRUD.'
   int spellc;
+  double spellrejectclock;
   double matchclock; // Add to GRP(light) when increasing. Removal is automatic.
   int compassz; // <0 to refresh lazily
   double compassx,compassy; // <0 if not found.

@@ -153,14 +153,24 @@ static int wand_begin(struct sprite *sprite) {
 }
 
 static void wand_end(struct sprite *sprite) {
-  SPRITE->itemid_in_progress=0;
   if (game_cast_spell(SPRITE->spell,SPRITE->spellc)) {
-  } else {
+    SPRITE->itemid_in_progress=0;
+  } else if (SPRITE->spellc) {
     bm_sound(RID_sound_reject);
+    SPRITE->spellrejectclock=1.000;
+  } else {
+    // Ended with nothing encoded, don't bother rejecting it.
+    SPRITE->itemid_in_progress=0;
   }
 }
 
 static void wand_update(struct sprite *sprite,double elapsed) {
+  if (SPRITE->spellrejectclock>0.0) {
+    if ((SPRITE->spellrejectclock-=elapsed)<=0.0) {
+      SPRITE->itemid_in_progress=0;
+    }
+    return;
+  }
   if (!(g.input[0]&EGG_BTN_SOUTH)) {
     wand_end(sprite);
     return;
