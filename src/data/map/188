@@ -14,3 +14,13 @@
 image image:labyrinth
 position 1 0 4 *
 sprite @14,7 sprite:jigpiece (u32)0
+rsprite sprite:psychic 5 1 (u32)0
+rsprite sprite:ogre 5 1 (u32)0
+rsprite sprite:golem 5 1 (u32)0
+rsprite sprite:medusa 5 1 (u32)0
+rsprite sprite:nyarlathotep 5 1 (u32)0
+rsprite sprite:unicorn 5 1 (u32)0
+rsprite sprite:vampire 5 1 (u32)0
+rsprite sprite:sage 5 1 (u32)0
+rsprite sprite:witch 5 1 (u32)0
+rsprite sprite:minotaur 5 1 (u32)0

@@ -1,0 +1,7 @@
+image image:temple_sprites
+tile 44 0
+type (u16:sprtype)monster
+groups (b32:sprgrp)visible,update,solid,grabbable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+hitbox -7 7 -7 7
+monster (u16:battle)placeholder (u8:radius)0x30 (u8:speed)0x40 (u16)145 (u16)0
