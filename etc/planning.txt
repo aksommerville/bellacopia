@@ -247,6 +247,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Rebounding. Pong. First miss loses.
 - [x]   Regex. No idea how it should work and will probably be super painful for users, we can have a "Globlin"!
 - [ ]   Remembering. Shown 9 cards, then they flip and you have to pick a given one.
+- [ ]   Rescuing. Something the firefighter does. Not sure.
 - [ ]   Robohorse. L/R control the horse's two legs. QWOP-ish.
 - [ ]   Rodeo. L/R to balance on the bull or hold A to brace.
 - [ ] * Rollerskates. Jump and brake. Gets too fast if you don't brake.

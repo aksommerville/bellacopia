@@ -2,4 +2,4 @@ image image:fractia_sprites
 tile 226 0
 type (u16:sprtype)guild
 groups (b32:sprgrp)visible,update,solid,grabbable
-guild (u16:battle)placeholder (u16)126 (u16:fld)endorse_athlete (u16)0
+guild (u16:battle)jeter (u16)126 (u16:fld)endorse_athlete (u16)0

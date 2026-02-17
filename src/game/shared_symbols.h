@@ -270,6 +270,41 @@
 #define NS_battle_cobbling 19
 #define NS_battle_apples 20
 #define NS_battle_election 21
+#define NS_battle_watching 22
+#define NS_battle_flapjack 23
+#define NS_battle_topping 24
+#define NS_battle_stacking 25
+#define NS_battle_shaking 26
+#define NS_battle_cakecarrying 27
+#define NS_battle_traffic 28
+#define NS_battle_cheesecutting 29
+#define NS_battle_latin 30
+#define NS_battle_rescuing 31
+#define NS_battle_sumohorse 32
+#define NS_battle_fencing 33
+#define NS_battle_jeter 34
+#define NS_battle_homerunderby 35
+#define NS_battle_dissection 36
+#define NS_battle_cpr 37
+#define NS_battle_stenography 38
+#define NS_battle_sorting 39
+#define NS_battle_slapping 40
+#define NS_battle_shuffling 41
+#define NS_battle_cheating 42
+#define NS_battle_plumbing 43
+#define NS_battle_building 44
+#define NS_battle_sawing 45
+#define NS_battle_lawnmowing 46
+#define NS_battle_telekinesis 47
+#define NS_battle_smashing 48
+#define NS_battle_pushing 49
+#define NS_battle_petrifying 50
+#define NS_battle_mindcontrol 51
+#define NS_battle_golf 52
+#define NS_battle_counting 53
+#define NS_battle_chess 54
+#define NS_battle_broomrace 55
+#define NS_battle_armwrestling 56
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -291,7 +326,42 @@
   _(crying) \
   _(cobbling) \
   _(apples) \
-  _(election)
+  _(election) \
+  _(watching) \
+  _(flapjack) \
+  _(topping) \
+  _(stacking) \
+  _(shaking) \
+  _(cakecarrying) \
+  _(traffic) \
+  _(cheesecutting) \
+  _(latin) \
+  _(rescuing) \
+  _(sumohorse) \
+  _(fencing) \
+  _(jeter) \
+  _(homerunderby) \
+  _(dissection) \
+  _(cpr) \
+  _(stenography) \
+  _(sorting) \
+  _(slapping) \
+  _(shuffling) \
+  _(cheating) \
+  _(plumbing) \
+  _(building) \
+  _(sawing) \
+  _(lawnmowing) \
+  _(telekinesis) \
+  _(smashing) \
+  _(pushing) \
+  _(petrifying) \
+  _(mindcontrol) \
+  _(golf) \
+  _(counting) \
+  _(chess) \
+  _(broomrace) \
+  _(armwrestling)
 
 /* "fld" are single bits.
  */

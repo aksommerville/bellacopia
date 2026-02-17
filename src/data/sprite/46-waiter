@@ -2,4 +2,4 @@ image image:fractia_sprites
 tile 82 0
 type (u16:sprtype)guild
 groups (b32:sprgrp)visible,update,solid,grabbable
-guild (u16:battle)placeholder (u16)117 (u16:fld)endorse_food (u16)0
+guild (u16:battle)stacking (u16)117 (u16:fld)endorse_food (u16)0

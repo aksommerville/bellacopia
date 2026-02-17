@@ -181,3 +181,4 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - sage: Chess
 - witch: BroomRace
 - minotaur: ArmWrestling
+
