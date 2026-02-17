@@ -24,12 +24,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Edit World Modal: We do have `NS_plane_*` with names. Try to use those instead of the numeric plane ID.
-- [x] Tree stories. These don't go in regular inventory. Need a list of them somewhere in the pause modal, where you can replay.
-- [x] `modal_story.c:story_render_overlay()`: Cache overlay texture.
-- [x] Also in the overlay, show diminishing bars for match, bugspray, translating, any other highly transient state.
+- [x] Web: Fancy rotation seems broken. Plainly visible in the election, Dot's power regulator. ...just a matter of casting to `int8_t` instead of `uint8_t`, I guess Wasm clamps those casts.
 - [ ] More spells. Not sure what...
-- [x] Invalid spell, should we do a head-shake like in Full Moon?
 - [ ] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
@@ -37,8 +33,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Story modal overlay: Highlight HP and gold briefly when they change.
 - [ ] Handicap for monster and fishpole.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
-- [x] Poke jigsaw after rotating a piece in case it's positioned to join.
-- [x] Have monsters consume the candy; it only lasts so long.
 - [ ] Pepper
 - [ ] Bomb
 - [ ] Stopwatch
@@ -58,12 +52,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
 - [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
-- [x] Toll Troll and the Mayor's Bridge should be passes thru a solid mass, so you can't broom over them.
 - [ ] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [x] Consider East button to toggle equipped item with the pause menu's focus (typically the most recently equipped thing).
 - [ ] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
 
@@ -124,13 +116,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## Quests and Prizes
 
 - Don't delete finished items.
-- [ ] End the war => Hookshot
+- [x] End the war => Hookshot
 - [ ] Run for mayor => no prize
 - [x] Hat the barrels => Bell
 - [ ] Catch em all => (incremental)
 - [x] Rescue the Princess => purse+100
 - [x] Decipher the goblins' text => Shovel
-- [ ] Escape the labyrinth => no prize?
+- [x] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?
 - [ ] Inventory critic => ? obvs not an item

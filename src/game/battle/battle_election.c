@@ -382,7 +382,7 @@ static void spinner_render(struct battle *battle,struct player *player) {
     thumbprimary=0xffff00ff;
   }
   graf_fancy(&g.graf,x,y,0x2a,0,0,NS_sys_tilesize,bgtint,bgprimary);
-  graf_fancy(&g.graf,x,y,0x2b,0,(uint8_t)((player->spinnert*128.0)/M_PI),NS_sys_tilesize,0,thumbprimary);
+  graf_fancy(&g.graf,x,y,0x2b,0,(int8_t)((player->spinnert*128.0)/M_PI),NS_sys_tilesize,0,thumbprimary);
 }
 
 /* One flying ballot.
