@@ -197,7 +197,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Fire. L/R fast to fill a bar and start the fire. (rubbing sticks)
 - [x]   Fishing. Fish fall to your left and right. L/R to change side and catch the bigger ones. Break ties by lowest interaction time.
 - [ ]   Fission. Tap A until the atom splits.
-- [ ]   Flapjack. A to flip your pancake. Aim to cook both sides evenly.
+- [x]   Flapjack. A to flip your pancake. Aim to cook both sides evenly.
 - [ ] * Flapping. Tap A.
 - [ ]   Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
 - [ ]   Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
@@ -286,10 +286,10 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
 - [ ]   Tic Tac Toe. The whole game.
 - [x]   Throwing. Hold and release to toss a bone onto the target.
-- [ ]   Topping. Hold A to pour ketchup on a giant moving hotdog.
+- [x]   Topping. Hold A to pour ketchup on a giant moving hotdog.
 - [ ] * Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
 - [ ] * Umbrella. Hold A while raining, release while not.
-- [ ]   Watching. Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
+- [x]   Watching. Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
 - [ ]   Watermelon. Hold A to charge and release to spit a seed, going for distance.
 - [ ]   Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
 - [ ]   Whining. Get mama bear's attention by tapping U when she's looking and A when not.
