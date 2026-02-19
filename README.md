@@ -152,7 +152,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- bartender: Shaking
 - baker: CakeCarrying
 - cop: Traffic
 - executioner: CheeseCutting

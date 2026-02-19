@@ -255,7 +255,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Sawing. L/R, and there's an ideal rhythm.
 - [ ]   Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
 - [ ]   Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
-- [ ]   Shaking. U/D to shake your bottle, then the cork flies off when time expires. Highest cork wins.
+- [x]   Shaking. U/D to shake your bottle, then the cork flies off when time expires. Highest cork wins.
 - [ ]   Sharing. Dpad around the crowd, touch somebody to give them a berry.
 - [ ]   Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
 - [ ]   Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
