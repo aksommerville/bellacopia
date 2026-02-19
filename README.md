@@ -58,6 +58,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [ ] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
+- [ ] Sprites have been observed stuck in the Labyrinth wall. Probably walked into the wall space before my first visit to the map and happened to be there.
+- - I think the right mitigation is in `sprite_monster`, have them detect stuck-in-wall and force themselves out.
+- - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
+- [ ] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -74,6 +78,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
+- [ ] ^ Actually do allow endorse battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
+- - And if you do that before the election, you already have the endorsement.
 - [ ] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
@@ -146,8 +152,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- cook1: Watching
-- cook2: Flapjack
 - hotdog: Topping
 - waiter: Stacking
 - bartender: Shaking
