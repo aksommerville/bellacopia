@@ -271,7 +271,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
 - [ ]   Sorting. Columns-ish, put falling things in like piles.
 - [ ]   Sparing. Bowling, second throw only.
-- [ ]   Stacking. L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
+- [x]   Stacking. L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
 - [ ]   Staring. Dpad to keep your eyes on the foe's.
 - [x]   Stealing. Approach the center, yoink a thing when the owner is not looking.
 - [ ]   Steering. Drag race with only L/R, dodging critters etc.
