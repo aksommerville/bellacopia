@@ -155,7 +155,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 [*] Implemented in 2023/bcpoc or cherteau.
 
 - [x]   Apples. Tap A to bob for an apple.
-- [ ]   Arm Wrestling. Tap A, hold your power meter high.
+- [x]   Arm Wrestling. Tap A, hold your power meter high.
 - [ ] * Balancing. Walk to the goal with a tomato on your head.
 - [ ]   Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 - [ ]   Bombing. Mini Super Bomberman?

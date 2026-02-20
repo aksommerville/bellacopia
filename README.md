@@ -24,6 +24,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
+- - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [x] Web: Fancy rotation seems broken. Plainly visible in the election, Dot's power regulator. ...just a matter of casting to `int8_t` instead of `uint8_t`, I guess Wasm clamps those casts.
 - [ ] More spells. Not sure what...
 - [ ] Poke compass after you get the thing. Tricky...
@@ -181,5 +183,3 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - vampire: Counting
 - sage: Chess
 - witch: BroomRace
-- minotaur: ArmWrestling
-

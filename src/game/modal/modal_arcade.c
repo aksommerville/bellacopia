@@ -9,6 +9,8 @@
 #include "game/bellacopia.h"
 #include "game/battle/battle.h"
 
+#define PRESELECT_BATTLE NS_battle_armwrestling
+
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
 #define KEY_REPEAT_ONGOING 0.080
@@ -195,6 +197,12 @@ static int _arcade_init(struct modal *modal,const void *arg,int argc) {
   
   // Count the battles. Assume that they are id'd contiguously.
   while (battle_type_by_id(MODAL->battlec+1)) MODAL->battlec++;
+  
+  // Let us appoint one battle as starting point, for when I'm developing a new battle dozens of spaces into the list.
+  if (PRESELECT_BATTLE) {
+    MODAL->battle=PRESELECT_BATTLE;
+    MODAL->scroll=(PRESELECT_BATTLE/ROWC)*ROWC;
+  }
   
   arcade_rebuild_labels(modal);
   

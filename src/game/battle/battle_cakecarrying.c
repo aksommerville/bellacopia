@@ -1,9 +1,10 @@
 /* battle_cakecarrying.c
  * Balance a cake while standing on a train that's stopping.
- * TODO placeholder
  */
 
 #include "game/bellacopia.h"
+
+#define LAYERC 4
 
 struct battle_cakecarrying {
   struct battle hdr;
@@ -13,6 +14,14 @@ struct battle_cakecarrying {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
     double skill; // 0..1, reverse of each other.
+    uint8_t tileid;
+    int x,y; // Middle of head, in framebuffer pixels.
+    struct layer {
+      double x,y; // Position relative to the stack. First, bottom, is always (0,0).
+      double t; // Radians clockwise.
+      double w,h;
+      uint8_t tileid;
+    } layerv[LAYERC];
   } playerv[2];
 };
 
@@ -28,22 +37,32 @@ static void _cakecarrying_del(struct battle *battle) {
  */
  
 static void player_init(struct battle *battle,struct player *player,int human,int face) {
+  player->y=100;
   if (player==BATTLE->playerv) { // Left.
     player->who=0;
+    player->x=FBW/3;
   } else { // Right.
     player->who=1;
+    player->x=(FBW*2)/3;
   }
   if (player->human=human) { // Human.
   } else { // CPU.
   }
   switch (face) {
     case NS_face_monster: {
+        player->tileid=0x74;
       } break;
     case NS_face_dot: {
+        player->tileid=0x34;
       } break;
     case NS_face_princess: {
+        player->tileid=0x54;
       } break;
   }
+  player->layerv[0]=(struct layer){0.0,  0.0,0.0,12.0,8.0,0xb9};
+  player->layerv[1]=(struct layer){0.0, -7.0,0.0,10.0,6.0,0xba};
+  player->layerv[2]=(struct layer){0.0,-13.0,0.0, 8.0,6.0,0xbb};
+  player->layerv[3]=(struct layer){0.0,-19.0,0.0, 6.0,6.0,0xbc};
 }
 
 /* New.
@@ -93,18 +112,27 @@ static void _cakecarrying_update(struct battle *battle,double elapsed) {
   }
 
   //XXX Placeholder UI.
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(BATTLE->choice)<-1) BATTLE->choice=1; }
-  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(BATTLE->choice)>1) BATTLE->choice=-1; }
-  if ((battle->outcome<-1)&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    bm_sound(RID_sound_uiactivate);
-    battle->outcome=BATTLE->choice;
-  }
+  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.
+ * The body and the cake are separate to promote batching, because they'll use tiles and fancies respectively.
  */
  
 static void player_render(struct battle *battle,struct player *player) {
+  graf_tile(&g.graf,player->x,player->y,player->tileid,0);
+  graf_tile(&g.graf,player->x,player->y+NS_sys_tilesize,player->tileid+0x10,0);
+}
+
+static void cake_render(struct battle *battle,struct player *player) {
+  double x=player->x+4.0;
+  double y=player->y+13.0;
+  struct layer *layer=player->layerv;
+  int i=LAYERC;
+  for (;i-->0;layer++) {
+    uint8_t ti=(int8_t)((layer->t*128.0)/M_PI);
+    graf_fancy(&g.graf,(int)(x+layer->x),(int)(y+layer->y),layer->tileid,0,ti,NS_sys_tilesize,0,0x808080ff);
+  }
 }
 
 /* Render.
@@ -112,28 +140,11 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _cakecarrying_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  
-  // XXX Placeholder UI.
-  int y=FBH/3;
-  int boxh=20;
-  int boxw=20;
-  int y1=y+boxh+1;
-  int xv[3]={
-    (FBW>>2)-(boxw>>1),
-    (FBW>>1)-(boxw>>1),
-    ((FBW*3)>>2)-(boxw>>1),
-  };
-  graf_fill_rect(&g.graf,xv[0],y,boxw,boxh,0xff0000ff);
-  graf_fill_rect(&g.graf,xv[1],y,boxw,boxh,0x404040ff);
-  graf_fill_rect(&g.graf,xv[2],y,boxw,boxh,0x00ff00ff);
-  switch (BATTLE->choice) {
-    case -1: graf_fill_rect(&g.graf,xv[0],y1,boxw,boxh,0xffffffff); break;
-    case  0: graf_fill_rect(&g.graf,xv[1],y1,boxw,boxh,0xffffffff); break;
-    case  1: graf_fill_rect(&g.graf,xv[2],y1,boxw,boxh,0xffffffff); break;
-  }
-  
+  graf_set_image(&g.graf,RID_image_battle_fractia);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
+  cake_render(battle,BATTLE->playerv+0);
+  cake_render(battle,BATTLE->playerv+1);
 }
 
 /* Type definition.
