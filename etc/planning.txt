@@ -170,7 +170,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Cartography. Pick a color for all the regions of a map, 4 choices, no going back.
 - [ ]   Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
 - [ ]   Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
-- [ ]   Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)
+- [x]   Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)
 - [ ]   Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
 - [x]   Chopping. Tap A as a vegetable passes on your conveyor belt.
 - [ ]   Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.

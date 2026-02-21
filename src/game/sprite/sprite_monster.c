@@ -384,6 +384,8 @@ static void monster_cb_princess(struct modal *modal,int outcome,void *userdata) 
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->spent) return;
+  const struct battle_type *type=battle_type_by_id(SPRITE->battle);
+  if (!type) return;
   struct modal_args_battle args={
     .battle=SPRITE->battle,
     .args={
@@ -406,6 +408,10 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
     //TODO difficulty and bias
     args.cb=monster_cb_battle;
   } else if (other->type==&sprite_type_princess) {
+    if (!type->support_cvc) {
+      fprintf(stderr,"%s: Princess tried to enter battle '%s', which does not support cpu-vs-cpu.\n",__func__,type->name);
+      return;
+    }
     args.args.lctl=0;
     args.args.lface=NS_face_princess;
     args.args.bias=0xa0;

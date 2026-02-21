@@ -182,4 +182,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - nyarlathotep: MindControl
 - unicorn: Golf
 - vampire: Counting
-- sage: Chess
+
+## Acknowledgements
+
+Unofficially collecting things I've borrowed or referred to.
+Before the first release, validate and clean up this list. And if in-game credits are warranted, do that.
+
+- Chess checkmate scenarios: https://www.chess.com/terms/checkmate-chess
+- Erudition Contest paintings, copied from Wikipedia. TODO Determine license terms.
+- - The Art of Painting; by Johannes Vermeer; 1666–1668; oil on canvas; 1.3 × 1.1 m; Kunsthistorisches Museum (Vienna, Austria)
+- - A Sunday Afternoon on the Island of La Grande Jatte, 1884–1886, oil on canvas, 207.5 × 308.1 cm, Art Institute of Chicago
+- - The Swing; by Jean-Honoré Fragonard; 1767–1768; oil on canvas; Wallace Collection
+- - The Garden of Earthly Delights; by Hieronymus Bosch; c. 1504; oil on panel, Museo del Prado
+- Erudition Contest text. TODO Not acquired yet.
+
