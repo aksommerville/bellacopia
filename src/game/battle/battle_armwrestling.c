@@ -12,6 +12,7 @@
 #define CPUTIME_BEST    0.080
 #define CPU_HEADSTART   0.500
 #define CPU_WEAR_OUT    0.003 /* CPU's tap clock increases continuously. If you last long enough, you can win. */
+#define CPUTIME_LIMIT   0.130
 
 struct battle_armwrestling {
   struct battle hdr;
@@ -104,7 +105,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
  */
  
 static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
-  player->cputime+=CPU_WEAR_OUT*elapsed;
+  if ((player->cputime+=CPU_WEAR_OUT*elapsed)>CPUTIME_LIMIT) player->cputime=CPUTIME_LIMIT;
   if ((player->cpuclock-=elapsed)>0.0) return;
   player->cpuclock+=player->cputime+((rand()&0xffff)*player->cputime)/65535.0;
   player_strike(battle,player,elapsed);
@@ -141,9 +142,6 @@ static void _armwrestling_update(struct battle *battle,double elapsed) {
   } else if (BATTLE->balance>=1.0) {
     battle->outcome=1;
   }
-
-  //XXX Placeholder UI.
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render a player: Just a 2x3 grid of tiles.
@@ -207,8 +205,19 @@ static void _armwrestling_render(struct battle *battle) {
   uint8_t armtile=BATTLE->playerv[0].tileid+0x0a+ibalance;
   actionx+=NS_sys_tilesize>>1;
   actiony+=NS_sys_tilesize>>1;
-  render2x3(actionx,actiony,BATTLE->playerv[0].tileid);
-  render2x3(actionx+NS_sys_tilesize*3,actiony,BATTLE->playerv[1].tileid);
+  uint8_t ltile=BATTLE->playerv[0].tileid;
+  uint8_t rtile=BATTLE->playerv[1].tileid;
+  if (battle->outcome>-2) {
+    if (battle->outcome<0) {
+      ltile+=4;
+      rtile+=2;
+    } else if (battle->outcome>0) {
+      ltile+=2;
+      rtile+=4;
+    }
+  }
+  render2x3(actionx,actiony,ltile);
+  render2x3(actionx+NS_sys_tilesize*3,actiony,rtile);
   graf_tile(&g.graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize,armtile,0);
   graf_tile(&g.graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize*2,0x16,0);
   

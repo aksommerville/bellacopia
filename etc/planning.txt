@@ -162,7 +162,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [x]   Boomerang. Jump then duck, or duck then jump as the kangaroo throws a boomerang at you.
 - [ ]   Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 - [ ]   Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
-- [ ]   Broom Race. See `apothecary`.
+- [x]   Broom Race. See `apothecary`.
 - [ ]   Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
 - [ ]   Burrowing. Right to move, A to dig. Dig thru the dirt.
 - [ ]   Cake Carrying. On a train that stops suddenly. L/R to balance.

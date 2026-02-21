@@ -64,6 +64,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - I think the right mitigation is in `sprite_monster`, have them detect stuck-in-wall and force themselves out.
 - - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
 - [ ] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
+- [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -182,4 +183,3 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - unicorn: Golf
 - vampire: Counting
 - sage: Chess
-- witch: BroomRace
