@@ -5,8 +5,6 @@
  * But no real man-vs-cpu mode, just those canned scenarios.
  * Chess is traditionally presented with the players separated vertically, where Bellacopia's general preference is horizontal.
  * We'll go vertical. Player zero, usually Left, is Bottom. Player one, usually Right, is Top.
- *
- * TODO I'm not going to detect stalemate but that doesn't mean it's impossible. Add a manual "declare stalemate" option.
  */
 
 #include "game/bellacopia.h"
@@ -18,11 +16,16 @@
 #define TILEID_QUEEN 0x06
 #define TILEID_KING 0x07
 
+#define CLOCK_WORST 20.0
+#define CLOCK_BEST  45.0
+
 struct battle_chess {
   struct battle hdr;
   int turn; // (-1,0,1)=waiting,player0,player1. Only names a player if they are human.
   double animclock;
   int animframe;
+  int use_clock; // For 1-player mode only.
+  double clock;
   
   struct player {
     int who; // My index in this list.
@@ -555,7 +558,7 @@ static int chess_is_one_move_from_mate(struct battle *battle) {
     step->piece->x=x0;
     step->piece->y=y0;
     if (mate>=2) {
-      //fprintf(stderr,"%s: Mate if piece 0x%02x at (%d,%d) moves to (%d,%d)\n",__func__,step->piece->tileid,step->piece->x,step->piece->y,step->prop>>4,step->prop&15);
+      fprintf(stderr,"%s: Mate if piece 0x%02x at (%d,%d) moves to (%d,%d)\n",__func__,step->piece->tileid,step->piece->x,step->piece->y,step->prop>>4,step->prop&15);
       return 1;
     }
   }
@@ -1248,8 +1251,14 @@ static int _chess_init(struct battle *battle) {
   
   if (battle->args.lctl&&battle->args.rctl) {
     chess_init_clean(battle);
+    BATTLE->use_clock=0;
   } else {
-    chess_init_onemove(battle,BATTLE->playerv[1].skill);
+    srand(0x51c030e1); r->skill=1.0; // <-- This produces an incorrect board where it wants to use a pawn but the pawn could be captured by the enemy queen.
+    // ...even if you do what it says, once running it correctly recognizes that it's not mate.
+    fprintf(stderr,"%s 1-player, seed = 0x%08x\n",__func__,get_rand_seed());
+    chess_init_onemove(battle,r->skill);
+    BATTLE->use_clock=1;
+    BATTLE->clock=CLOCK_WORST*(1.0-l->skill)+CLOCK_BEST*l->skill;
   }
   
   // Dot's turn initially.
@@ -1358,13 +1367,37 @@ static void _chess_update(struct battle *battle,double elapsed) {
       player_update_cpu(battle,player,elapsed);
     }
   }
+  
+  if (BATTLE->use_clock&&(battle->outcome<=-2)) {
+    if ((BATTLE->clock-=elapsed)<=0.0) {
+      battle->outcome=-1;
+    }
+  }
 }
 
 /* Render.
  */
  
 static void _chess_render(struct battle *battle) {
+
+  /* Background.
+   * If the clock is in play, blink at the last 5 seconds.
+   */
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x304060ff);
+  int sec=0;
+  if (BATTLE->use_clock&&(BATTLE->clock>0.0)) {
+    int ms=(int)(BATTLE->clock*1000.0);
+    sec=ms/1000+1;
+    if (sec<1) sec=1;
+    if (sec<=5) {
+      ms%=1000;
+      if (ms>750) {
+        int alpha=ms-750;
+        uint32_t rgb=(sec==1)?0xff000000:0xe0a00000;
+        graf_fill_rect(&g.graf,0,0,FBW,FBH,rgb|alpha);
+      }
+    }
+  }
   graf_set_image(&g.graf,RID_image_battle_labyrinth2);
   
   // The 8x8 board.
@@ -1419,6 +1452,15 @@ static void _chess_render(struct battle *battle) {
     dstx=((*prop)>>4)*NS_sys_tilesize+dstx0;
     dsty=((*prop)&15)*NS_sys_tilesize+dsty0;
     graf_tile(&g.graf,dstx,dsty,0x0a,0);
+  }
+  
+  // Clock, optionally.
+  if (sec>0) {
+    int cx=(FBW>>1)-4;
+    int cy=dsty0-20;
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    if (sec>=10) graf_tile(&g.graf,cx,cy,'0'+sec/10,0); cx+=8;
+    graf_tile(&g.graf,cx,cy,'0'+sec%10,0);
   }
 }
 
