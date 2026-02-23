@@ -1,4 +1,346 @@
 /* battle_chess.c
+ * All the interesting stuff lives in the dedicated "chess" unit.
+ * Our concern is just setup and presentation, mostly.
+ */
+ 
+//TODO When losing the minigame, can we discover and highlight the reason you lose?
+// ...If the Black King is not in check, highlight him.
+// ...If he is in check, highlight any of the Black pieces that could move to escape it. Oooh and also show the proposal indicator, for the cell it would move to.
+ 
+#include "game/bellacopia.h"
+#include "game/chess/chess.h"
+
+#define CLOCK_EASY 45.0
+#define CLOCK_HARD 20.0
+
+struct battle_chess {
+  struct battle hdr;
+  struct chess_game chess_game;
+  int use_clock;
+  double clock;
+  double animclock;
+  int animframe;
+  
+  // Our player[0] is white and player[1] is black, which is reverse of chess_game's convention.
+  struct player {
+    int who,human;
+    uint32_t color;
+  } playerv[2];
+};
+
+#define BATTLE ((struct battle_chess*)battle)
+
+/* Cleanup.
+ */
+ 
+static void _chess_del(struct battle *battle) {
+}
+
+/* Player params.
+ */
+ 
+static uint32_t chess_color(int face) {
+  switch (face) {
+    case NS_face_monster: return 0xd9d1c6ff;
+    case NS_face_princess: return 0x0d3ac1ff;
+    case NS_face_dot: default: return 0x411775ff;
+  }
+}
+
+/* Init.
+ */
+ 
+static int _chess_init(struct battle *battle) {
+  //srand(0x82b83fcd); // Generates an impossible minigame. They want us to check with the upper Rook, but it's blocked by one of our Pawns. ...fixed
+  //srand(0x2845eb57); // Proposes checkmating the Black King with our own King. ...fixed
+  fprintf(stderr,"%s: seed 0x%08x\n",__func__,get_rand_seed());
+
+  BATTLE->playerv[0].who=0;
+  BATTLE->playerv[1].who=1;
+  
+  // The two players must not use the same face. Most games it wouldn't matter, but for us it would render the board incomprehensible.
+  if (battle->args.lface==battle->args.rface) {
+    if (battle->args.lface==NS_face_dot) battle->args.rface=NS_face_princess; // Both Dot, make black player Princess.
+    else battle->args.lface=NS_face_dot; // Any other duplication, make white player Dot.
+  }
+  BATTLE->playerv[0].color=chess_color(battle->args.lface);
+  BATTLE->playerv[1].color=chess_color(battle->args.rface);
+  
+  // We support (man,man), (man,cpu), and (cpu,cpu). The (cpu,cpu) mode is asymmetric like (man,cpu).
+  // So if they requested (cpu,man), swap them.
+  if (!battle->args.lctl&&battle->args.rctl) {
+    battle->args.lctl=battle->args.rctl;
+    battle->args.rctl=0;
+    battle->args.bias=0xff-battle->args.bias;
+  }
+  BATTLE->playerv[0].human=battle->args.lctl;
+  BATTLE->playerv[1].human=battle->args.rctl;
+  
+  if (battle->args.lctl&&battle->args.rctl) { // Man vs Man.
+    chess_game_init(&BATTLE->chess_game,'2',0.5); // Difficulty not relevant.
+    BATTLE->use_clock=0;
+    
+  } else { // Man vs CPU or CPU vs CPU.
+    double difficulty=battle_scalar_difficulty(battle);
+    chess_game_init(&BATTLE->chess_game,'1',difficulty);
+    BATTLE->use_clock=1;
+    BATTLE->clock=CLOCK_HARD*difficulty+CLOCK_EASY*(1.0-difficulty);
+  }
+  
+  return 0;
+}
+
+/* Update player. Both man and CPU.
+ * This is only called for the player whose turn it is right now.
+ */
+ 
+static void chess_update_player(struct battle *battle,struct player *player,double elapsed) {
+  if (player->human) {
+    int input=g.input[player->human];
+    int pvinput=g.pvinput[player->human];
+    
+    // Motion.
+    int dx=0,dy=0;
+    if ((input&EGG_BTN_LEFT)&&!(pvinput&EGG_BTN_LEFT)) dx=-1;
+    else if ((input&EGG_BTN_RIGHT)&&!(pvinput&EGG_BTN_RIGHT)) dx=1;
+    if ((input&EGG_BTN_UP)&&!(pvinput&EGG_BTN_UP)) dy=-1;
+    else if ((input&EGG_BTN_DOWN)&&!(pvinput&EGG_BTN_DOWN)) dy=1;
+    if (dx||dy) {
+      if (chess_game_move(&BATTLE->chess_game,dx,dy)<0) {
+        bm_sound(RID_sound_reject);
+      } else {
+        bm_sound(RID_sound_uimotion);
+      }
+    }
+    
+    // Cancellation.
+    if ((input&EGG_BTN_WEST)&&!(pvinput&EGG_BTN_WEST)) {
+      if (chess_game_cancel(&BATTLE->chess_game)<0) {
+        bm_sound(RID_sound_reject);
+      } else {
+        bm_sound(RID_sound_uicancel);
+      }
+    }
+    
+    // Activation.
+    if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) {
+      int err=chess_game_activate(&BATTLE->chess_game);
+      if (err<0) {
+        bm_sound(RID_sound_reject);
+      } else if (err>0) {
+        bm_sound(RID_sound_collect);
+      } else {
+        bm_sound(RID_sound_uiactivate);
+      }
+    }
+    
+  // Black CPU player. He doesn't play. If his turn arises it means the white player failed to achieve checkmate.
+  } else if (player->who) {
+    fprintf(stderr,"%s:%d: Player reached the dummy CPU player. Assume the human failed to achieve checkmate as required.\n",__FILE__,__LINE__);
+    battle->outcome=-1;
+    
+  // White CPU player. ie the Princess, playing like a human.
+  } else {
+    fprintf(stderr,"%s:%d: TODO: Princess playing chess. For now let's just assume she loses.\n",__FILE__,__LINE__);
+    battle->outcome=-1;
+  }
+}
+
+/* Update.
+ */
+ 
+static void _chess_update(struct battle *battle,double elapsed) {
+  if (battle->outcome>-2) return;
+  
+  // Time up?
+  if (BATTLE->use_clock) {
+    if (BATTLE->clock>0.0) {
+      if ((BATTLE->clock-=elapsed)<=0.0) {
+        battle->outcome=-1;
+        return;
+      }
+    }
+  }
+  
+  // Game over?
+  if (!(BATTLE->chess_game.assess&CHESS_ASSESS_RUNNING)) {
+    if (BATTLE->chess_game.assess&CHESS_ASSESS_CHECK) {
+      if (BATTLE->chess_game.assess&CHESS_ASSESS_WHO) { // Black wins.
+        battle->outcome=-1;
+      } else { // White wins.
+        battle->outcome=1;
+      }
+    } else { // Stalemate or invalid game.
+      battle->outcome=0;
+    }
+    return;
+  }
+  
+  // Animate cursor.
+  if ((BATTLE->animclock-=elapsed)<=0.0) {
+    BATTLE->animclock+=0.200;
+    if (++(BATTLE->animframe)>=2) BATTLE->animframe=0;
+  }
+  
+  // Update the appropriate player.
+  struct player *white=BATTLE->playerv;
+  struct player *black=white+1;
+  if (BATTLE->chess_game.turn) { // White's turn.
+    chess_update_player(battle,white,elapsed);
+  } else {
+    chess_update_player(battle,black,elapsed);
+  }
+  
+  // AUX1 for a modal to declare stalemate or forfeit.
+  //TODO
+  
+  //XXX
+  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
+}
+
+/* Render.
+ */
+ 
+static void _chess_render(struct battle *battle) {
+
+  /* Background.
+   * If the clock is in play, blink at the last 5 seconds.
+   */
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x304060ff);
+  int sec=0;
+  if (BATTLE->use_clock&&(BATTLE->clock>0.0)) {
+    int ms=(int)(BATTLE->clock*1000.0);
+    sec=ms/1000+1;
+    if (sec<1) sec=1;
+    if (sec<=5) {
+      ms%=1000;
+      if (ms>750) {
+        int alpha=ms-750;
+        uint32_t rgb=(sec==1)?0xff000000:0xe0a00000;
+        graf_fill_rect(&g.graf,0,0,FBW,FBH,rgb|alpha);
+      }
+    }
+  }
+  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
+  
+  // The 8x8 board.
+  int boardw=NS_sys_tilesize*8;
+  int boardh=NS_sys_tilesize*8;
+  int boardx=(FBW>>1)-(boardw>>1);
+  int boardy=(FBH>>1)-(boardh>>1);
+  int dstx0=boardx+(NS_sys_tilesize>>1);
+  int dsty0=boardy+(NS_sys_tilesize>>1);
+  int dsty=dsty0,dstx;
+  int yi=8;
+  for (;yi-->0;dsty+=NS_sys_tilesize) {
+    dstx=dstx0;
+    int xi=8;
+    for (;xi-->0;dstx+=NS_sys_tilesize) {
+      graf_tile(&g.graf,dstx,dsty,((xi&1)==(yi&1))?0x01:0x00,0);
+    }
+  }
+  
+  // A tasteful boarder.
+  graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty0-NS_sys_tilesize,0x10,0);
+  graf_tile(&g.graf,dstx0+boardw         ,dsty0-NS_sys_tilesize,0x12,0);
+  graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty0+boardh         ,0x30,0);
+  graf_tile(&g.graf,dstx0+boardw         ,dsty0+boardh         ,0x32,0);
+  for (yi=8,dstx=dstx0,dsty=dsty0;yi-->0;dstx+=NS_sys_tilesize,dsty+=NS_sys_tilesize) {
+    graf_tile(&g.graf,dstx,dsty0-NS_sys_tilesize,0x11,0);
+    graf_tile(&g.graf,dstx,dsty0+boardh         ,0x31,0);
+    graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty,0x20,0);
+    graf_tile(&g.graf,dstx0+boardw         ,dsty,0x22,0);
+  }
+  
+  // Pieces. Not interleaved with the board, because those are tiles and these are fancies.
+  const uint8_t *boardp=BATTLE->chess_game.board;
+  for (yi=8,dsty=dsty0;yi-->0;dsty+=NS_sys_tilesize) {
+    dstx=dstx0;
+    int xi=8;
+    for (;xi-->0;dstx+=NS_sys_tilesize,boardp++) {
+      uint8_t tileid=(*boardp)&PIECE_ROLE_MASK;
+      if (tileid) {
+        tileid+=1;
+        uint8_t xform=0;
+        if ((((*boardp)&PIECE_ROLE_MASK)==PIECE_KING)&&(battle->outcome>-2)) {
+          if ((*boardp)&PIECE_WHITE) { // White King. Is he surrendered?
+            if (battle->outcome<=0) xform=EGG_XFORM_SWAP;
+          } else { // Black King. Is he surrendered?
+            if (battle->outcome>=0) xform=EGG_XFORM_SWAP;
+          }
+        }
+        uint32_t color=((*boardp)&PIECE_WHITE)?BATTLE->playerv[0].color:BATTLE->playerv[1].color;
+        graf_fancy(&g.graf,dstx,dsty,tileid,xform,0,NS_sys_tilesize,0,color);
+      }
+    }
+  }
+  
+  // Cursor.
+  if (BATTLE->chess_game.assess&CHESS_ASSESS_RUNNING) {
+    struct player *player=BATTLE->playerv+(BATTLE->chess_game.turn?0:1);
+    if (player->who&&!player->human) {
+      // Don't draw the dummy CPU player's cursor. It does appear active for exactly one frame every time.
+    } else {
+      int x,y;
+      if (player->who) {
+        x=BATTLE->chess_game.bx;
+        y=BATTLE->chess_game.by;
+      } else {
+        x=BATTLE->chess_game.wx;
+        y=BATTLE->chess_game.wy;
+      }
+      graf_fancy(&g.graf,
+        dstx0+x*NS_sys_tilesize,dsty0+y*NS_sys_tilesize,
+        0x08+BATTLE->animframe,0,
+        0,NS_sys_tilesize,0,player->color
+      );
+    }
+  }
+  
+  // Proposals. Should go before cursor, but they won't overlap, so let cursor join the pieces' batch.
+  if (BATTLE->chess_game.fmovec) {
+    uint16_t *move=BATTLE->chess_game.fmovev;
+    int i=BATTLE->chess_game.fmovec;
+    for (;i-->0;move++) {
+      int x=CHESS_MOVE_TO_COL(*move);
+      int y=CHESS_MOVE_TO_ROW(*move);
+      x=dstx0+x*NS_sys_tilesize;
+      y=dsty0+y*NS_sys_tilesize;
+      graf_tile(&g.graf,x,y,0x0a,0);
+    }
+  }
+  
+  // Clock, optionally.
+  if (sec>0) {
+    int cx=(FBW>>1)-4;
+    int cy=dsty0-20;
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    if (sec>=10) graf_tile(&g.graf,cx,cy,'0'+sec/10,0); cx+=8;
+    graf_tile(&g.graf,cx,cy,'0'+sec%10,0);
+  }
+}
+
+/* Type definition.
+ */
+ 
+const struct battle_type battle_type_chess={
+  .name="chess",
+  .objlen=sizeof(struct battle_chess),
+  .strix_name=180,
+  .no_article=0,
+  .no_contest=0,
+  .support_pvp=1,
+  .support_cvc=1,
+  .no_timeout=1, // For 2-player mode. Don't expect them to finish in 60 seconds :D
+  .del=_chess_del,
+  .init=_chess_init,
+  .update=_chess_update,
+  .render=_chess_render,
+};
+
+#if 0 /* XXX First attempt. Mostly works but some fatal flaws. */
+//XXX Rip this out, replace with a dedicated model unit. battle_chess should ultimately be lean, just presentation and config concerns.
+/* battle_chess.c
  * Canned chess scenarios where the player is one move away from checkmate, and they have to find that move.
  * Piece movements should be modelled generically against the real rules of chess.
  * Do allow a 2-player mode, which is actually just chess.
@@ -1481,3 +1823,4 @@ const struct battle_type battle_type_chess={
   .update=_chess_update,
   .render=_chess_render,
 };
+#endif
