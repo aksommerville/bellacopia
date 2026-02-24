@@ -281,8 +281,8 @@ int chess_list_moves(uint16_t *dstv,int dsta,const uint8_t *board,int x,int y,in
         int y1=y+dy,y2=y+dy*2;
         if ((y1>=0)&&(y1<8)) { // Advance one cardinally or capture diagonally.
           if (!board[y1*8+x]) APPEND(x,y1)
-          if ((x>0)&&((board[y1*8+x-1]&PIECE_WHITE)!=color)) APPEND(x-1,y1)
-          if ((x<7)&&((board[y1*8+x+1]&PIECE_WHITE)!=color)) APPEND(x+1,y1)
+          if ((x>0)&&board[y1*8+x-1]&&((board[y1*8+x-1]&PIECE_WHITE)!=color)) APPEND(x-1,y1)
+          if ((x<7)&&board[y1*8+x+1]&&((board[y1*8+x+1]&PIECE_WHITE)!=color)) APPEND(x+1,y1)
         }
         int y0=color?6:1;
         if (y==y0) { // On starting row, allow to advance by two, if vacant.
@@ -593,6 +593,7 @@ int chess_one_move_from_mate(const uint8_t *board) {
    */
   uint16_t movev[CHESS_MOVES_LIMIT_ALL];
   int movec=chess_list_team_moves(movev,CHESS_MOVES_LIMIT_ALL,board,1,0);
+  //fprintf(stderr,"%s: Considering %d White moves...\n",__func__,movec);
   
   /* Now the expensive part.
    * Examine every White move.
@@ -623,11 +624,11 @@ int chess_one_move_from_mate(const uint8_t *board) {
     }
     
     if (chess_is_mate(tmp,kingx,kingy)) {
-      //fprintf(stderr,"%s: (%d,%d)=>(%d,%d) yields mate.\n",__func__,fromx,fromy,tox,toy);
+      //fprintf(stderr,"%s: 0x%02x@(%d,%d)=>0x%02x@(%d,%d) yields mate.\n",__func__,fromprev,fromx,fromy,toprev,tox,toy);
       int wx,wy;
       if (chess_find_piece(&wx,&wy,board,PIECE_WHITE|PIECE_KING)<0) return 1; // No White King? Well, um, I guess it's still mate.
       if (!chess_is_check(tmp,wx,wy)) { // Black is mated and White is not in check. Gotcha!
-        //fprintf(stderr,"%s: ...mate by moving 0x%02x from (%d,%d) to (%d,%d)\n",__func__,fromprev,fromx,fromy,tox,toy);
+        fprintf(stderr,"%s: ...mate by moving 0x%02x from (%d,%d) to (%d,%d)\n",__func__,fromprev,fromx,fromy,tox,toy);
         return 1;
       }
       //fprintf(stderr,"%s: ...but it checks the White King so never mind.\n",__func__);

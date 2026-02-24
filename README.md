@@ -87,6 +87,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
+- [ ] Some king of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

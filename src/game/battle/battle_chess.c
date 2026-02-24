@@ -41,18 +41,31 @@ static void _chess_del(struct battle *battle) {
  
 static uint32_t chess_color(int face) {
   switch (face) {
-    case NS_face_monster: return 0xd9d1c6ff;
+    case NS_face_monster: return 0x5a432aff;
     case NS_face_princess: return 0x0d3ac1ff;
-    case NS_face_dot: default: return 0x411775ff;
+    case NS_face_dot: default: return 0x9c6fd2ff; // Her usual color is a bit dark for this, we want the outlines to show.
   }
 }
 
 /* Init.
  */
  
+//static const uint32_t seedv[3]={0x699d0422,0x8e0751b0,0xcd5c5304};
+//static int seedp=0;
+ 
 static int _chess_init(struct battle *battle) {
   //srand(0x82b83fcd); // Generates an impossible minigame. They want us to check with the upper Rook, but it's blocked by one of our Pawns. ...fixed
   //srand(0x2845eb57); // Proposes checkmating the Black King with our own King. ...fixed
+  //srand(0x699ceab4); // kingnrook generates a scenario with a Queen who is initially checking the Black King. ...fixed
+  //srand(0x04fbfc0f); // corneredking produces a Black King already in check. By a Pawn, no less. ...fixed
+  //srand(0xca4b2a37); // corneredking with no mate, not sure what it intended. ...Pawn blocks, and Queen was the original agent. ...It wants us to move a Pawn diagonally without capturing. ...fixed
+  //srand(0x3a46f0d2); // corneredking: Agent Knight cuts off the Holder Bishop's line of sight. ...fixed
+  //srand(0xcd5c5304); // foolsmate: My Queen is not given all of her options. What the hell? ...on retry, it does offer all the options.
+  //if (seedp>=3) seedp=0; // ...even repeating the 3 games from that session, it didn't happen again.
+  //srand(seedv[seedp++]); // ...i bet i selected the King instead of the Queen by accident. Move along.
+  //srand(0x2ec926c0); // nope, yep, my bad
+  //srand(0x699d15ed); // scholarsmate: Unexpected blocking Black Pawn. Not mateable. ...fixed
+  //srand(0x9075c213); // ...my bad
   fprintf(stderr,"%s: seed 0x%08x\n",__func__,get_rand_seed());
 
   BATTLE->playerv[0].who=0;
@@ -236,7 +249,7 @@ static void _chess_render(struct battle *battle) {
     dstx=dstx0;
     int xi=8;
     for (;xi-->0;dstx+=NS_sys_tilesize) {
-      graf_tile(&g.graf,dstx,dsty,((xi&1)==(yi&1))?0x01:0x00,0);
+      graf_tile(&g.graf,dstx,dsty,((xi&1)==(yi&1))?0x00:0x01,0);
     }
   }
   

@@ -82,12 +82,24 @@ void chess_board_transform(uint8_t *dst,const uint8_t *src,uint8_t xform) {
  */
  
 void chess_board_transform_in_place(uint8_t *board) {
+
+  // If at least half of the royalty are in their natural position, assume we're close to the initial layout and don't change anything.
+  // There are scenarios that are just a few moves away from start, and if we flip them it's obvious the Queens are on the wrong color.
+  // The non-opening-gambit scenarios, Kings will never be in their starting positions, they all involve some kind of edge trap.
+  int lazyroyalc=0;
+  if (board[0*8+3]==(PIECE_BLACK|PIECE_QUEEN)) lazyroyalc++;
+  if (board[0*8+4]==(PIECE_BLACK|PIECE_KING)) lazyroyalc++;
+  if (board[7*8+3]==(PIECE_WHITE|PIECE_QUEEN)) lazyroyalc++;
+  if (board[7*8+4]==(PIECE_WHITE|PIECE_KING)) lazyroyalc++;
+  if (lazyroyalc>=2) return;
+
+  // If there's a Pawn, we can only flip horizontally. Otherwise, all 8 transforms are valid.
   int have_pawn=0,have_anything=0,i=64;
   const uint8_t *p=board;
   for (;i-->0;p++) {
     int role=(*p)&PIECE_ROLE_MASK;
-    if (role==PIECE_PAWN) have_pawn=have_anything=1;
-    else if (role) have_anything=1;
+    if (role==PIECE_PAWN) { have_pawn=have_anything=1; break; }
+    if (role) have_anything=1;
   }
   if (!have_anything) return;
   uint8_t xform=rand()&(have_pawn?EGG_XFORM_XREV:7);
@@ -172,6 +184,18 @@ int chess_board_generate_distractions_carefully(uint8_t *board,int addc) {
     // There are other Pawn patterns that also couldn't happen, but we'll leave it at just this obvious one.
     if ((piece&PIECE_ROLE_MASK)==PIECE_PAWN) {
       if ((y==0)||(y==7)) continue;
+    }
+    
+    // Don't put a Bishop on the same color as its partner.
+    if ((piece&PIECE_ROLE_MASK)==PIECE_BISHOP) {
+      int otherx,othery;
+      if (chess_find_piece(&otherx,&othery,board,piece)>=0) {
+        if ((x&1)==(y&1)) {
+          if ((otherx&1)==(othery&1)) continue;
+        } else {
+          if ((otherx&1)!=(othery&1)) continue;
+        }
+      }
     }
     
     // Put the piece there, then test whether we're still one move from mate.

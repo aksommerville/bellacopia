@@ -86,6 +86,7 @@ static int _hello_init(struct modal *modal,const void *arg,int argc) {
  
 static void _hello_focus(struct modal *modal,int focus) {
   bm_song_force(RID_song_bloomful_rejoicement);
+  //bm_song_force(RID_song_feet_to_the_fire);
 }
 
 /* Notify.
