@@ -156,3 +156,33 @@ void chess_game_rebuild_fmovev(struct chess_game *game) {
     }
   }
 }
+
+/* Dump a board to stderr. (XXX TEMP)
+ */
+ 
+void chess_log_board(const uint8_t *board) {
+  fprintf(stderr,"%s:\n",__func__);
+  int yi=8; for (;yi-->0;) {
+    char line[16];
+    char *dst=line;
+    int xi=8; for (;xi-->0;dst+=2,board++) {
+      if (!*board) {
+        if ((xi&1)==(yi&1)) memcpy(dst,"..",2);
+        else memcpy(dst,"  ",2);
+      } else {
+        char id='x';
+        switch ((*board)&PIECE_ROLE_MASK) {
+          case PIECE_PAWN: id='p'; break;
+          case PIECE_ROOK: id='r'; break;
+          case PIECE_KNIGHT: id='n'; break;
+          case PIECE_BISHOP: id='b'; break;
+          case PIECE_QUEEN: id='q'; break;
+          case PIECE_KING: id='k'; break;
+        }
+        if ((*board)&PIECE_WHITE) id-=0x20;
+        dst[0]=dst[1]=id;
+      }
+    }
+    fprintf(stderr,"  %.16s\n",line);
+  }
+}

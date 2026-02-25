@@ -416,9 +416,13 @@ int chess_list_checkers(uint16_t *dstv,int dsta,const uint8_t *board,int attacki
  */
  
 int chess_is_check(const uint8_t *board,int kingx,int kingy) {
+
+  // Must be a valid position with a piece on it.
+  // We don't need to care whether it really is a King.
   if (!board||(kingx<0)||(kingy<0)||(kingx>=8)||(kingy>=8)) return 0;
   uint8_t kingpiece=board[kingy*8+kingx];
-  if ((kingpiece&PIECE_ROLE_MASK)!=PIECE_KING) return 0;
+  if (!kingpiece) return 0;
+  //if ((kingpiece&PIECE_ROLE_MASK)!=PIECE_KING) return 0;
   uint8_t attackcolor=(kingpiece&PIECE_WHITE)?PIECE_BLACK:PIECE_WHITE;
   
   #define IFKNIGHT(dx,dy) { \

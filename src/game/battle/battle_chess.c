@@ -66,6 +66,11 @@ static int _chess_init(struct battle *battle) {
   //srand(0x2ec926c0); // nope, yep, my bad
   //srand(0x699d15ed); // scholarsmate: Unexpected blocking Black Pawn. Not mateable. ...fixed
   //srand(0x9075c213); // ...my bad
+  //srand(0x3ea122c2); // boden: Illegal setboard, then a divide-by-zero. ...fixed
+  //srand(0xe871542c); // dovetail: Protector Bishop in the wrong place. ...fixed
+  //srand(0xbce80232); // dovetail: Zero Queen candidates. ...fixed
+  //srand(0xb7c59d6d); // swallowtail: White King starts in check. ...fixed
+  //srand(0x699f6438); // morphy: Infinite loop while generating.
   fprintf(stderr,"%s: seed 0x%08x\n",__func__,get_rand_seed());
 
   BATTLE->playerv[0].who=0;

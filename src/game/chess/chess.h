@@ -146,6 +146,7 @@ int chess_list_checkers(uint16_t *dstv,int dsta,const uint8_t *board,int attacki
 /* (kingx,kingy) must point to a King on this board.
  * Returns nonzero if any opponent piece can reach it.
  * We do not consider pinning of those opponent pieces, and the consensus I've seen online that we're not supposed to, either.
+ * Update: The piece pointed to doesn't have to be a King. Maybe I should have called it "is_threatened", more general.
  */
 int chess_is_check(const uint8_t *board,int kingx,int kingy);
 

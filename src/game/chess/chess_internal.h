@@ -11,4 +11,6 @@ struct chesspiece {
 int chesspiecev_search(struct chesspiece *v,int c,uint8_t piece);
 struct chesspiece *chesspiece_get(struct chesspiece *v,int c,uint8_t piece);
 
+void chess_log_board(const uint8_t *board);
+
 #endif
