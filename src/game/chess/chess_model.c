@@ -632,7 +632,7 @@ int chess_one_move_from_mate(const uint8_t *board) {
       int wx,wy;
       if (chess_find_piece(&wx,&wy,board,PIECE_WHITE|PIECE_KING)<0) return 1; // No White King? Well, um, I guess it's still mate.
       if (!chess_is_check(tmp,wx,wy)) { // Black is mated and White is not in check. Gotcha!
-        fprintf(stderr,"%s: ...mate by moving 0x%02x from (%d,%d) to (%d,%d)\n",__func__,fromprev,fromx,fromy,tox,toy);
+        //fprintf(stderr,"%s: Mate by moving 0x%02x from (%d,%d) to (%d,%d)\n",__func__,fromprev,fromx,fromy,tox,toy);
         return 1;
       }
       //fprintf(stderr,"%s: ...but it checks the White King so never mind.\n",__func__);

@@ -47,7 +47,6 @@ static void setboard(uint8_t *board,int x,int y,uint8_t v) {
  */
  
 static void gen_rookroll(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Choose 3 distinct columns, and the Rooks are not in the columns adjacent to the Black King.
   // Actually make it 4. Let's put White King in his own column so we don't have to worry about blocking.
   int colv[8]={0,1,2,3,4,5,6,7};
@@ -73,7 +72,6 @@ static void gen_rookroll(uint8_t *board) {
  */
  
 static void gen_kingnrook(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Random column for the two Kings, then the agent goes at least 2 away from there.
   int colv[8]={0,1,2,3,4,5,6,7};
   int colc=8,kingx,agentx;
@@ -95,7 +93,6 @@ static void gen_kingnrook(uint8_t *board) {
  */
  
 static void gen_corneredking(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   int wkingx=rand()&1;
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   setboard(board,wkingx,2,PIECE_WHITE|PIECE_KING);
@@ -191,7 +188,6 @@ static void gen_corneredking(uint8_t *board) {
  */
  
 static void gen_arabian(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   setboard(board,2,2,PIECE_WHITE|PIECE_KNIGHT);
   setboard(board,1,2+rand()%6,PIECE_WHITE|((rand()&1)?PIECE_ROOK:PIECE_QUEEN));
@@ -202,7 +198,6 @@ static void gen_arabian(uint8_t *board) {
  */
  
 static void gen_foolsmate(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Black back row is always its initial state. Some things could be moved decoratively, but meh, it's complicated.
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -245,7 +240,6 @@ static void gen_foolsmate(uint8_t *board) {
  */
  
 static void gen_scholarsmate(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Black back row is always its initial state.
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -293,7 +287,6 @@ static void gen_scholarsmate(uint8_t *board) {
  */
  
 static void gen_legalsmate(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // We're seven moves in. On the Black side, they're mostly dummy Pawn moves, one King move, and one unfortunate Pawn move that matters (column 3).
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -335,7 +328,6 @@ static void gen_legalsmate(uint8_t *board) {
  */
  
 static void gen_backrank(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   int colv[8]={0,1,2,3,4,5,6,7};
   int kingx;
   int colc=pickone(&kingx,colv,8);
@@ -356,7 +348,6 @@ static void gen_backrank(uint8_t *board) {
  */
  
 static void gen_smother(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   // The two pieces in front of the Black King are Bishop, Rook, or Knight. Rook can't be adjacent to the threatening position.
   // Not using Pawn for these, because those would prevent the board from transforming.
@@ -390,7 +381,6 @@ static void gen_smother(uint8_t *board) {
  */
  
 static void gen_anastasia(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Use a Black Rook for the blocker.
   // Pawn would prevent transform, Knight would extend the blackout range, and Bishop or Queen could block the agent.
   int kingx=rand()&7;
@@ -423,7 +413,6 @@ static void gen_anastasia(uint8_t *board) {
  */
  
 static void gen_epaulette(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   int kingx=rand()&7;
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   if (kingx>0) setboard(board,kingx-1,0,PIECE_BLACK|PIECE_ROOK);
@@ -487,7 +476,6 @@ static void gen_epaulette(uint8_t *board) {
  */
  
 static void gen_boden(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   int kingx=2+rand()%5; // Leave at least one free column on the right, and two on the left.
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   uint8_t backblockpiece;
@@ -645,7 +633,6 @@ static void protected_white_queen(uint8_t *board,int atkx,int atky,int kingx,int
  */
  
 static void gen_dovetail(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Black King goes anywhere but the edges.
   int kingx=1+rand()%6;
   int kingy=1+rand()%6;
@@ -664,7 +651,6 @@ static void gen_dovetail(uint8_t *board) {
  */
  
 static void gen_swallowtail(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Black King goes anywhere except the edges.
   int kingx=1+rand()%6;
   int kingy=1+rand()%6;
@@ -686,7 +672,6 @@ static void gen_swallowtail(uint8_t *board) {
  */
  
 static void gen_opera(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   int kingx=1+rand()%6; // Needs one column left and right.
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   // Rear bodyguard can be Rook, Bishop, Knight, or Queen.
@@ -724,7 +709,6 @@ static void gen_opera(uint8_t *board) {
  */
  
 static void gen_blackburn(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   setboard(board,0,1,PIECE_WHITE|PIECE_BISHOP);
   setboard(board,1,0,PIECE_WHITE|PIECE_KNIGHT);
@@ -759,7 +743,6 @@ static void gen_blackburn(uint8_t *board) {
  */
  
 static void gen_damiano(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   // Black King, his coterie, and a White Bishop holding them in.
   int kingx=rand()%7;
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
@@ -814,7 +797,6 @@ static void gen_damiano(uint8_t *board) {
  */
  
 static void gen_morphy(uint8_t *board) {
-  fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   // On the King's right, either his Bishop, or a White Rook guarding the column.
   if (rand()&1) {
@@ -862,7 +844,7 @@ static void gen_morphy(uint8_t *board) {
   setboard(board,bishopx,bishopy,PIECE_WHITE|PIECE_BISHOP);
   // Then the White King wherever he won't get in the way.
   if (!chess_one_move_from_mate(board)) { // Pretty confident that this can't happen anymore but leaving just in case.
-    fprintf(stderr,"!!!!! Morphy board is not one move from mate, before placing the White King.\n");
+    //fprintf(stderr,"!!!!! Morphy board is not one move from mate, before placing the White King.\n");
     memset(board,0,64);
     gen_backrank(board);
     return;
@@ -874,7 +856,6 @@ static void gen_morphy(uint8_t *board) {
     if (board[wp]) continue;
     board[wp]=PIECE_WHITE|PIECE_KING;
     if (!chess_is_check(board,wx,wy)&&chess_one_move_from_mate(board)) return;
-    //fprintf(stderr,"%d,%d? no. is_check?%d one_move_from_mate?%d\n",wx,wy,chess_is_check(board,wx,wy),chess_one_move_from_mate(board));
     board[wp]=0;
   }
 }
@@ -883,30 +864,29 @@ static void gen_morphy(uint8_t *board) {
  */
  
 static struct gendesc {
+  int weight;
   double mindiff;
   double maxdiff;
   chess_generate_fn fn;
 } generatorv[]={
-  //TODO Set difficulty ranges.
-  //TODO Also include an arbitrary weight. The more randomizable ones should have higher weights, and eg scholarsmate, due to its fixedness, should be rare.
-  {0.000,0.999,gen_rookroll},
-  {0.000,0.999,gen_kingnrook},
-  {0.000,0.999,gen_corneredking},
-  {0.000,0.999,gen_arabian},
-  {0.000,0.999,gen_foolsmate},
-  {0.000,0.999,gen_scholarsmate},
-  {0.000,0.999,gen_legalsmate},
-  {0.000,0.999,gen_backrank},
-  {0.000,0.999,gen_smother},
-  {0.000,0.999,gen_anastasia},
-  {0.000,0.999,gen_epaulette},
-  {0.000,0.999,gen_boden},
-  {0.000,0.999,gen_dovetail},
-  {0.000,0.999,gen_swallowtail},
-  {0.000,0.999,gen_opera},
-  {0.000,0.999,gen_blackburn},
-  {0.000,0.999,gen_damiano},
-  {0.000,0.999,gen_morphy},
+  {500,0.000,0.999,gen_rookroll},
+  {500,0.000,0.999,gen_kingnrook},
+  {500,0.000,0.999,gen_corneredking},
+  {500,0.100,0.999,gen_arabian},
+  {100,0.000,0.800,gen_foolsmate},
+  {100,0.000,0.800,gen_scholarsmate},
+  {200,0.000,0.800,gen_legalsmate},
+  {500,0.000,0.800,gen_backrank},
+  {500,0.000,0.800,gen_smother},
+  {300,0.000,0.999,gen_anastasia},
+  {500,0.000,0.999,gen_epaulette},
+  {500,0.000,0.999,gen_boden},
+  {500,0.000,0.999,gen_dovetail},
+  {500,0.000,0.999,gen_swallowtail},
+  {500,0.000,0.999,gen_opera},
+  {500,0.000,0.999,gen_blackburn},
+  {500,0.000,0.999,gen_damiano},
+  {300,0.000,0.800,gen_morphy},
 };
 
 int chess_count_generators() {
@@ -922,23 +902,28 @@ chess_generate_fn chess_get_generator(int p) {
 
 /* Choose a generator, opinionated and random.
  */
- 
+
+// rookroll is a common mating pattern, one I personally use a lot. It's not complicated or peculiar, a fair default.
 #define FALLBACK gen_rookroll
 
 chess_generate_fn chess_choose_generator(double difficulty) {
   if (difficulty<0.0) difficulty=0.0;
   else if (difficulty>0.999) difficulty=0.999;
-  int candidatec=0;
+  int candidatec=0,wsum=0;
   int i=sizeof(generatorv)/sizeof(generatorv[0]);
   const struct gendesc *gendesc=generatorv;
   for (;i-->0;gendesc++) {
-    if ((difficulty>=gendesc->mindiff)&&(difficulty<=gendesc->maxdiff)) candidatec++;
+    if ((difficulty>=gendesc->mindiff)&&(difficulty<=gendesc->maxdiff)) {
+      candidatec++;
+      wsum+=gendesc->weight;
+    }
   }
   if (candidatec<1) return FALLBACK;
-  int candidatep=rand()%candidatec;
+  int choice=rand()%wsum;
   for (i=sizeof(generatorv)/sizeof(generatorv[0]),gendesc=generatorv;i-->0;gendesc++) {
     if ((difficulty>=gendesc->mindiff)&&(difficulty<=gendesc->maxdiff)) {
-      if (!candidatep--) return gendesc->fn;
+      choice-=gendesc->weight;
+      if (choice<0) return gendesc->fn;
     }
   }
   return FALLBACK;
