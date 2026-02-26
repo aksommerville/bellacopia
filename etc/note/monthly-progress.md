@@ -36,7 +36,7 @@ Stats as of d4930d199ba4b436a82694e9111a7476dac323b6, 2026-01-31:
 
 Goals:
 - [x] Finish the 10 outstanding goblin battles. ...5 feb
-- [ ] 10 other battles.
+- [x] 10 other battles. ...26 feb
 - [x] Crypto puzzle in the goblins' cave.
 - [x] Generate the labyrinth. Do the layout around it but needn't be final. ...14 feb
 - [x] Letter exchange at battlefield. ...12 feb

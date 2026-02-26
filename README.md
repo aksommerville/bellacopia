@@ -65,6 +65,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
 - [ ] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
+- [ ] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
+- [ ] Catch a sea monster in the Labyrinth.
+- [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
+- [ ] racketeering: Ball can get stuck at the floor, and make obnoxious repetitive sound effects. Playwise, sticking on the floor doesn't seem so bad.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -87,7 +91,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
-- [ ] Some king of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
+- [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -181,7 +185,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - golem: Pushing
 - medusa: Petrifying
 - nyarlathotep: MindControl
-- unicorn: Golf
 
 ## Acknowledgements
 

@@ -204,7 +204,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
 - [ ]   Frog Eating. A to grab and eat a frog, when it hops near.
 - [x]   Gobbling. A to grab and eat, L to pull the tablecloth closer.
-- [ ]   Golf. Whack the ball in a closed room, it bounces off all the walls, try to land as far away as possible.
+- [x]   Golf. Whack the ball in a closed room, it bounces off all the walls, try to land as far away as possible.
 - [ ]   Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
 - [x]   Hiring. Given a job description, pick the best of three applicants, repeatedly. eg "Carpenter", pick the guy holding a saw.
 - [ ]   Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
