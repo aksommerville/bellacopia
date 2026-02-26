@@ -337,11 +337,19 @@ static void gen_backrank(uint8_t *board) {
   if (kingx<7) { setboard(board,kingx+1,1,PIECE_BLACK|PIECE_PAWN); colc=rmvalue(colv,colc,kingx+1); }
   int agentx,agenty,wx,wy;
   colc=pickone(&agentx,colv,colc);
-  agenty=2+rand()%6;
   colc=pickone(&wx,colv,colc); // Put the White King in an occupied column. Not really necessary, but keeps it simple.
-  wy=2+rand()%6;
-  setboard(board,agentx,agenty,PIECE_WHITE|((rand()&1)?PIECE_ROOK:PIECE_QUEEN));
-  setboard(board,wx,wy,PIECE_WHITE|PIECE_KING);
+  for (;;) {
+    agenty=2+rand()%6;
+    wy=2+rand()%6;
+    setboard(board,agentx,agenty,PIECE_WHITE|((rand()&1)?PIECE_ROOK:PIECE_QUEEN));
+    setboard(board,wx,wy,PIECE_WHITE|PIECE_KING);
+    if (chess_is_check(board,wx,wy)||!chess_one_move_from_mate(board)) {
+      setboard(board,agentx,agenty,0);
+      setboard(board,wx,wy,0);
+    } else {
+      return;
+    }
+  }
 }
 
 /* smother: Black King is cornered and surrounded by his own men, and a White Knight is positioned to check him.

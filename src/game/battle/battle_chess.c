@@ -9,6 +9,8 @@
 #define CLOCK_EASY 45.0
 #define CLOCK_HARD 20.0
 
+#define CPU_STROKE_TIME 0.300 /* Time between motions from the Princess, ie every step of the cursor. */
+
 #define LABEL_LIMIT 3
 #define LABEL_RESUME 184
 #define LABEL_STALEMATE 185
@@ -30,6 +32,8 @@ struct battle_chess {
   struct player {
     int who,human;
     uint32_t color;
+    uint16_t cpumove;
+    double cpuclock;
   } playerv[2];
   
   struct label {
@@ -74,6 +78,8 @@ static int _chess_init(struct battle *battle) {
 
   BATTLE->playerv[0].who=0;
   BATTLE->playerv[1].who=1;
+  BATTLE->playerv[0].cpuclock=CPU_STROKE_TIME;
+  BATTLE->playerv[1].cpuclock=CPU_STROKE_TIME;
   
   // The two players must not use the same face. Most games it wouldn't matter, but for us it would render the board incomprehensible.
   if (battle->args.lface==battle->args.rface) {
@@ -335,6 +341,105 @@ static void chess_check_promotion(struct battle *battle) {
   }
 }
 
+/* Select a move for the Princess.
+ * This is our whole Chess-Playing AI, if one deigns to call it such.
+ * Since it's just one move, it would actually be very easy to write a perfect player, or one with tunable odds of winning.
+ * As is, she will pretty much never win.
+ */
+ 
+static uint16_t chess_select_princess_move(struct battle *battle,struct player *player) {
+
+  // First get all the valid moves.
+  uint16_t movev[CHESS_MOVES_LIMIT_ALL];
+  int movec=chess_list_team_moves(movev,CHESS_MOVES_LIMIT_ALL,BATTLE->chess_game.board,player->who?0:1,1);
+  
+  // There should always be at least one, but if not, declare a stalemate.
+  if (movec<1) {
+    battle->outcome=0;
+    return 1;
+  }
+  
+  /* List the high bytes of (movev), that's the "from" half.
+   * Queens can have 20 times as many moves as Pawns, so it feels imbalanced if we select uniformly across (movev).
+   * This way, every moveable piece is equally likely.
+   * Assume that (movev) is sorted by "from" half; it is.
+   */
+  uint8_t fromv[CHESS_MOVES_LIMIT_ALL];
+  int fromc=0;
+  int i=movec;
+  while (i-->0) {
+    uint8_t from=movev[i]>>8;
+    if (!fromc||(fromv[fromc-1]!=from)) fromv[fromc++]=from;
+  }
+  
+  // And then, Fancy AI!
+  int fromp=rand()%fromc;
+  uint8_t from=fromv[fromp];
+  
+  // Then the same idea, pick randomly among the "to" halves.
+  uint16_t tov[CHESS_MOVES_LIMIT_ONE];
+  int toc=0;
+  for (i=movec;i-->0;) {
+    uint8_t qfrom=movev[i]>>8;
+    if (qfrom==from) {
+      tov[toc++]=movev[i];
+      if (toc>=CHESS_MOVES_LIMIT_ONE) break;
+    }
+  }
+  int top=rand()%toc;
+  return tov[top];
+}
+
+/* Advance the Princess toward her selected move, and update state accordingly.
+ */
+ 
+static void chess_advance_princess(struct battle *battle,struct player *player) {
+  int cursorx,cursory;
+  if (player->who) {
+    cursorx=BATTLE->chess_game.bx;
+    cursory=BATTLE->chess_game.by;
+  } else {
+    cursorx=BATTLE->chess_game.wx;
+    cursory=BATTLE->chess_game.wy;
+  }
+  int dstx,dsty,tofinish;
+  if (BATTLE->chess_game.fmovec) {
+    dstx=CHESS_MOVE_TO_COL(player->cpumove);
+    dsty=CHESS_MOVE_TO_ROW(player->cpumove);
+    tofinish=1;
+  } else {
+    dstx=CHESS_MOVE_FROM_COL(player->cpumove);
+    dsty=CHESS_MOVE_FROM_ROW(player->cpumove);
+    tofinish=0;
+  }
+  //fprintf(stderr,"%s From (%d,%d) toward (%d,%d). %s.\n",__func__,cursorx,cursory,dstx,dsty,tofinish?"picking move":"picking piece");
+  int dx=dstx-cursorx;
+  int dy=dsty-cursory;
+  int adx=(dx<0)?-dx:dx;
+  int ady=(dy<0)?-dy:dy;
+  if (adx>ady) {
+    chess_game_move(&BATTLE->chess_game,(dx<0)?-1:1,0);
+    bm_sound(RID_sound_uimotion);
+  } else if (ady) {
+    chess_game_move(&BATTLE->chess_game,0,(dy<0)?-1:1);
+    bm_sound(RID_sound_uimotion);
+  } else {
+    int err=chess_game_activate(&BATTLE->chess_game);
+    if (err<0) {
+      fprintf(stderr,"%s:%d: Princess's move activation failed!\n",__FILE__,__LINE__);
+      battle->outcome=player->who?1:-1;
+    } else {
+      if (err>0) bm_sound(RID_sound_collect);
+      else bm_sound(RID_sound_uiactivate);
+      if (tofinish) {
+        chess_check_promotion(battle);
+        BATTLE->playerv[0].cpumove=0;
+        BATTLE->playerv[1].cpumove=0;
+      }
+    }
+  }
+}
+
 /* Update player. Both man and CPU.
  * This is only called for the player whose turn it is right now.
  */
@@ -372,12 +477,12 @@ static void chess_update_player(struct battle *battle,struct player *player,doub
       int err=chess_game_activate(&BATTLE->chess_game);
       if (err<0) {
         bm_sound(RID_sound_reject);
-      } else if (err>0) {
-        bm_sound(RID_sound_collect);
-        chess_check_promotion(battle);
       } else {
-        bm_sound(RID_sound_uiactivate);
+        if (err>0) bm_sound(RID_sound_collect);
+        else bm_sound(RID_sound_uiactivate);
         chess_check_promotion(battle);
+        BATTLE->playerv[0].cpumove=0;
+        BATTLE->playerv[1].cpumove=0;
       }
     }
     
@@ -394,8 +499,24 @@ static void chess_update_player(struct battle *battle,struct player *player,doub
     
   // White CPU player. ie the Princess, playing like a human.
   } else {
-    fprintf(stderr,"%s:%d: TODO: Princess playing chess. For now let's just assume she loses.\n",__FILE__,__LINE__);
-    battle->outcome=-1;
+    if (!player->cpumove) {
+      if (!(player->cpumove=chess_select_princess_move(battle,player))) {
+        fprintf(stderr,"%s:%d: Failed to select a move for the Princess. Forfeiting.\n",__FILE__,__LINE__);
+        battle->outcome=-1;
+        return;
+      }
+      fprintf(stderr,
+        "Selected Princess move. From (%d,%d) to (%d,%d).\n",
+        CHESS_MOVE_FROM_COL(player->cpumove),
+        CHESS_MOVE_FROM_ROW(player->cpumove),
+        CHESS_MOVE_TO_COL(player->cpumove),
+        CHESS_MOVE_TO_ROW(player->cpumove)
+      );
+    }
+    if ((player->cpuclock-=elapsed)<=0.0) {
+      player->cpuclock+=CPU_STROKE_TIME;
+      chess_advance_princess(battle,player);
+    }
   }
 }
 
