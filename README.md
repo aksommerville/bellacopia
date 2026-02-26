@@ -182,7 +182,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - medusa: Petrifying
 - nyarlathotep: MindControl
 - unicorn: Golf
-- vampire: Counting
 
 ## Acknowledgements
 
