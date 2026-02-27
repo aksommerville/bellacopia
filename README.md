@@ -30,7 +30,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [x] Story modal overlay: Highlight HP and gold briefly when they change. ...nix this. Usually they change due to a battle or dialogue.
 - [ ] Handicap for monster and fishpole.
-- [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
+- [x] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Pepper
 - [ ] Bomb
 - [ ] Stopwatch

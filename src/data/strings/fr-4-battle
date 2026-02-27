@@ -1,0 +1,212 @@
+1
+2 %0 challenges you to %1!
+3 %0: %1 vs %2!
+4 Dot
+5 Monster
+6 Princess
+7 %0 wins!
+8 Tie!
+
+10 Koala
+11 Boomerang
+12 Leopard
+13 Fishing
+14 Goat
+15 Chopping
+16 Soldier
+17 Exterminating
+18 Root Devil
+19 Strangling
+20 Placeholder
+
+# Strangling Contest.
+21 Hold: Left
+22 Hold: Right
+23 Hold: Up
+24 Hold: Down
+25 Hold: Negative Horizontal
+26 Hold: Positive Horizontal
+27 Hold: Skyward
+28 Hold: Earthward
+29 Hold: Clockwise from Down
+30 Hold: Clockwise from Up
+31 Hold: Clockwise from Left
+32 Hold: Clockwise from Right
+33 Tap: A
+34 Tap: B
+35 Tap: The Primary Button
+36 Tap: The Secondary Button
+
+37 Goblin
+38 Loblin
+39 Roblin
+40 Globlin
+41 Moblin
+42 Sloblin
+43 Joblin
+44 Snoblin
+45 Soblin
+46 Coblin
+47 Boblin
+48 Gobbling
+49 Throwing
+50 Stealing
+51 Regex
+52 Racketeering
+53 Laziness
+54 Hiring
+55 Erudition
+56 Crying
+57 Cobbling
+58 Apples
+
+59 Not food!
+60 "Vermeer: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+61 "Seurat: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+62 "Fragonard: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+63 "Bosch: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+
+# Regex Contest. First the plaintext, then the regex. Regex must contain '@' once to mark the error position.
+64 Find the typo!
+65 "expect(\n  \"%\"\n).toMatch(\n  %\n);"
+66 "Break all their bones!"
+67 "/^Break all their bon@us!$/"
+68 "Kidnap the Princess!"
+69 "/^.* the Princess@?$/"
+70 "Vegetable soup."
+71 "/^Vegetable @po.p\\.$/"
+72 "Rip flesh off a shattered bone."
+73 "/^Rip .+ off( (a|an) .+)? bon@d.$/"
+74 "The lurking terror awaits."
+75 "/^The ([d-z]+) ([c-z]+) ([@b-z]+)\\.$/"
+76 "Grumble, grumble."
+77 "/^[a-zA-@z]+, [a-z]+\\.$/"
+78 "The 7 unspeakable curses."
+79 "/^\\w+ \\@n+ \\w+ \\w+\\.$/"
+
+# Hiring Contest.
+80 Which one is lying?
+81 Glorbax Ripper
+82 glorbax@example.com (614) 555-0987
+83 Krugh Krughovich
+84 krucrew42@example.com (614) 555-0123
+85 Uli Impalinator
+86 Tel. 614-555-0321, Email: stabby22@example.com
+87 Frrrng Nrglatxo
+88 frrrngwith3rs@example.com 614-555-0456
+89 Charn Durgesberg
+90 cidurgesberg@example.com 614-555-0654
+91 Orfa Stilt
+92 (614) 555-0878, brownsfan33@example.com
+93 Tapered tail.
+94 Forked tail.
+95 Skinny.
+96 Fat.
+97 Perfect vision.
+98 Wears glasses.
+99 Just one tooth.
+100 At least two teeth.
+101 No necktie.
+102 Wears a necktie.
+103 No hat.
+104 Wears a hat.
+105 Qualifications:
+106 Key Skills
+107 Vital Stats:
+108 - About Me -
+
+109 The door opened!
+
+110 Now you're the mayor!
+111 Mayor Cat
+112 Election
+113 You won an endorsement!
+114 Cook
+115 Cook
+116 Hot Dog Vendor
+117 Waiter
+118 Bartender
+119 Baker
+120 Cop
+121 Executioner
+122 Teacher
+123 Firefighter
+124 Wrestler
+125 Samurai
+126 Dancer
+127 Ballplayer
+128 Doctor
+129 Nurse
+130 Secretary
+131 Clerk
+132 Gambler
+133 Dealer
+134 Hustler
+135 Plumber
+136 Contractor
+137 Carpenter
+138 Gardener
+
+139 Psychic
+140 Ogre
+141 Golem
+142 Medusa
+143 Nyarlathotep
+144 Unicorn
+145 Vampire
+146 Sage
+147 Witch
+148 Minotaur
+
+# Battle names for Fractia and Labyrinth.
+149 Watching
+150 Flapjack
+151 Topping
+152 Stacking
+153 Shaking
+154 Cake Carrying
+155 Cheese Cutting
+156 Latin
+157 Rescuing
+158 Sumo Horse
+159 Fencing
+160 Jeter
+161 Home Run Derby
+162 Dissection
+163 CPR
+164 Stenography
+165 Sorting
+166 Slapping
+167 Shuffling
+168 Cheating
+169 Plumbing
+170 Building
+171 Sawing
+172 Lawnmowing
+173 Telekinesis
+174 Smashing
+175 Pushing
+176 Petrifying
+177 Mind Control
+178 Golf
+179 Counting
+180 Chess
+181 Broom Race
+182 Arm Wrestling
+183 Traffic
+
+184 Resume
+185 Stalemate
+186 Rater
+187 Stalemate?
+188 Oui
+189 Non
+
+190 How many %0 %1?
+191 rouge
+192 vert
+193 bleu
+194 chats
+195 mouches
+196 porcs
+197 oiseaux

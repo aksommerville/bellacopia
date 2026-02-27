@@ -23,5 +23,12 @@
 22 Mappes: %0%%
 
 # System vellum.
-23 Main Menu
-24 Quit
+23 Menu d'Main
+24 Rater
+25 Langue
+26 Inputte
+27 Musique
+28 Son
+
+# Stories vellum.
+29 Histoires

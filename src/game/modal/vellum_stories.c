@@ -217,7 +217,7 @@ struct vellum *vellum_new_stories(struct modal *parent) {
   struct vellum *vellum=calloc(1,sizeof(struct vellum_stories));
   if (!vellum) return 0;
   vellum->parent=parent;
-  vellum->lblstrix=25;
+  vellum->lblstrix=29;
   vellum->del=_stories_del;
   vellum->focus=_stories_focus;
   vellum->updatebg=_stories_updatebg;
