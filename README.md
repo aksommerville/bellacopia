@@ -48,7 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
 - [ ] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
-- [ ] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
+- [x] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
 - [ ] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.

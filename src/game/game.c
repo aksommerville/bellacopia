@@ -50,21 +50,23 @@ int game_welcome_map(struct map *map) {
   
   /* It's not relevant to welcoming the new map, really, but take this occasion to cull far-offscreen sprites.
    */
-  struct sprite **p=GRP(keepalive)->sprv;
-  int i=GRP(keepalive)->sprc;
-  for (;i-->0;p++) {
-    struct sprite *sprite=*p;
-    if (sprite->defunct) continue;
-    if (sprite->type==&sprite_type_hero) continue; // never her
-    if (sprite->z!=g.camera.z) {
+  if (!g.telescoping) {
+    struct sprite **p=GRP(keepalive)->sprv;
+    int i=GRP(keepalive)->sprc;
+    for (;i-->0;p++) {
+      struct sprite *sprite=*p;
+      if (sprite->defunct) continue;
+      if (sprite->type==&sprite_type_hero) continue; // never her
+      if (sprite->z!=g.camera.z) {
+        sprite_kill_soon(sprite);
+        continue;
+      }
+      double dx=sprite->x-g.camera.fx;
+      double dy=sprite->y-g.camera.fy;
+      double d2=dx*dx+dy*dy;
+      if (d2<SPRITE_CULL_DISTANCE2) continue;
       sprite_kill_soon(sprite);
-      continue;
     }
-    double dx=sprite->x-g.camera.fx;
-    double dy=sprite->y-g.camera.fy;
-    double d2=dx*dx+dy*dy;
-    if (d2<SPRITE_CULL_DISTANCE2) continue;
-    sprite_kill_soon(sprite);
   }
   
   // And on with the show...
@@ -106,7 +108,7 @@ int game_focus_map(struct map *map) {
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
       case CMD_map_dark: break;
-      case CMD_map_song: bm_song_gently((cmd.arg[0]<<8)|cmd.arg[1]); break;
+      case CMD_map_song: if (!g.telescoping) bm_song_gently((cmd.arg[0]<<8)|cmd.arg[1]); break;
       case CMD_map_wind: break;
       //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
     }

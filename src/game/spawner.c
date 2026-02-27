@@ -251,7 +251,7 @@ void spawner_expose(int x,int y,int w,int h) {
 
   // Too many afield, no worries, we're not making more.
   if (g.spawner.rsprites.sprc>RSPRITE_CULL_START) {
-    spawner_drop_oobs();
+    if (!g.telescoping) spawner_drop_oobs();
     if (g.spawner.rsprites.sprc>=RSPRITE_LIMIT) return;
   }
   

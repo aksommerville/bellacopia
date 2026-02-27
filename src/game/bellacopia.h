@@ -75,6 +75,7 @@ extern struct g {
   double flash; // ''
   int warp_listener;
   int gameover; // Set nonzero to end story-mode play.
+  int telescoping; // Telescope in use. Some viewport-sensitive ops get suspended.
 } g;
 
 /* Misc global API.

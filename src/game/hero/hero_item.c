@@ -705,11 +705,13 @@ static int barrelhat_begin(struct sprite *sprite) {
  
 static int telescope_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_telescope;
+  g.telescoping=1;
   return 1;
 }
 
 static void telescope_update(struct sprite *sprite,double elapsed) {
   if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    g.telescoping=0;
     g.camera.teledx=0.0;
     g.camera.teledy=0.0;
     g.camera.cut=1;
