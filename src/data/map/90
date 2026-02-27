@@ -16,3 +16,4 @@ position 5 8 1 *
 sprite @14,5 sprite:jigpiece (u32)0
 sprite @1,10 sprite:king (u16:activity)king (u16:activity_arg)0
 sprite @4,10 sprite:linguist (u16:activity)linguist (u16:activity_arg)0
+target @1,10 (u16:compass)castle

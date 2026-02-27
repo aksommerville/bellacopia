@@ -7,6 +7,8 @@ struct sprite_princess {
   int animframe;
   uint8_t tileid0;
   int recheck_solid;
+  double armt;
+  int targetx,targety,targetz;
 };
 
 #define SPRITE ((struct sprite_princess*)sprite)
@@ -22,6 +24,7 @@ static void _princess_del(struct sprite *sprite) {
  
 static int _princess_init(struct sprite *sprite) {
   SPRITE->tileid0=sprite->tileid;
+  SPRITE->targetz=-1;
 
   /* Already rescued? I will never exist anymore.
    */
@@ -120,7 +123,25 @@ static void _princess_update(struct sprite *sprite,double elapsed) {
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
   }
-  if (!store_get_fld(NS_fld_jailopen)) return;
+  if (!store_get_fld(NS_fld_jailopen)) {
+    SPRITE->targetz=-1;
+    return;
+  }
+  
+  // Refresh target if necessary.
+  if ((SPRITE->targetz!=sprite->z)&&(SPRITE->targetz!=-2)) {
+    SPRITE->targetz=sprite->z;
+    if (game_get_target_position(&SPRITE->targetx,&SPRITE->targety,sprite->x,sprite->y,sprite->z,NS_compass_castle)<0) {
+      SPRITE->targetz=-2; // Error, poison it.
+    }
+  }
+  
+  // Update arm if pointing.
+  if (SPRITE->targetz>=0) {
+    double dx=sprite->x-(SPRITE->targetx+0.5);
+    double dy=SPRITE->targety+0.5-sprite->y;
+    SPRITE->armt=atan2(dx,dy);
+  }
   
   // Jail is open, now things get interesting.
   int walking=0;
@@ -202,6 +223,21 @@ static void _princess_collide(struct sprite *sprite,struct sprite *other) {
   }
 }
 
+/* Render.
+ */
+ 
+static void _princess_render(struct sprite *sprite,int x,int y) {
+  graf_set_image(&g.graf,sprite->imageid);
+  graf_tile(&g.graf,x,y,sprite->tileid,sprite->xform);
+  if (SPRITE->targetz>=0) {
+    int armx=x;
+    if (sprite->xform&EGG_XFORM_XREV) armx-=3; else armx+=3;
+    int army=y+2;
+    int8_t armrot=(int8_t)((SPRITE->armt*128.0)/M_PI);
+    graf_fancy(&g.graf,armx,army,SPRITE->tileid0+3,0,armrot,NS_sys_tilesize,0,0);
+  }
+}
+
 /* Type definition.
  */
  
@@ -212,4 +248,5 @@ const struct sprite_type sprite_type_princess={
   .init=_princess_init,
   .update=_princess_update,
   .collide=_princess_collide,
+  .render=_princess_render,
 };

@@ -37,6 +37,7 @@
 #define CMD_map_root            0x44 /* u16:pos u16:fld */
 #define CMD_map_seal            0x46 /* u16:pos u16:id ; For crypto puzzle, but can be a generic "standing on something" poi. (1,2,3)=(bone,leaf,star) */
 #define CMD_map_switchable2     0x47 /* u16:pos u16:fld ; Same as `switchable` but tileid+2 if set, for double-wide features. */
+#define CMD_map_target          0x48 /* u16:pos u16:strix ; strings:item, loose unflagged targets for compass and princess. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
@@ -104,6 +105,7 @@
 #define NS_compass_heartcontainer 36
 #define NS_compass_gold 27
 #define NS_compass_auto 41
+#define NS_compass_castle 66
 
 // Face choices for battle.
 #define NS_face_monster 0 /* "The monster", whatever the game prefers. */

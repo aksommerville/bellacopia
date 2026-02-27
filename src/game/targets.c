@@ -69,6 +69,17 @@ static int targets_scan_map(const struct map *map) {
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
     
+      case CMD_map_target: {
+          int strix=(cmd.arg[2]<<8)|cmd.arg[3];
+          struct target *target=targets_add();
+          if (!target) return -1;
+          target->compass=strix;
+          target->fld=0;
+          target->x=map->lng*NS_sys_mapw+cmd.arg[0];
+          target->y=map->lat*NS_sys_maph+cmd.arg[1];
+          target->z=map->z;
+        } break;
+    
       case CMD_map_sprite: {
           int compass=0,fld=0;
           int rid=(cmd.arg[2]<<8)|cmd.arg[3];
@@ -332,6 +343,7 @@ int game_list_targets(int *dstv,int dsta,int mode) {
         target++; \
       } \
     }
+    if (target->compass==NS_compass_castle) continue;
     // Don't include the same thing twice, of course.
     if (int_present(dstv,dstc,target->compass)) {
       NEXTCOMPASS
@@ -375,6 +387,7 @@ static int game_autochoose_target(int px,int py,int z) {
       // Don't suggest these.
       case NS_compass_north:
       case NS_compass_home:
+      case NS_compass_castle:
         break;
       // First other thing with an unset flag, that's our answer.
       default: if (!store_get_fld(target->fld)) return target->compass;
