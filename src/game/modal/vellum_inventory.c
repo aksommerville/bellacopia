@@ -430,3 +430,16 @@ struct invstore *modal_pause_get_highlighted_item() {
   // Something wrong. Say it's the equipped item.
   return g.store.invstorev;
 }
+
+int modal_pause_get_inventory_position() {
+  return 1+invrowp*BPCOLC+invcolp;
+}
+
+void modal_pause_set_inventory_position(int p) {
+  if ((p<=0)||(p>=INVSTORE_SIZE)) return;
+  int col=(p-1)%BPCOLC;
+  int row=(p-1)/BPCOLC;
+  if ((col<0)||(row<0)||(col>=BPCOLC)||(row>=BPROWC)) return;
+  invcolp=col;
+  invrowp=row;
+}

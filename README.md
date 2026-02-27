@@ -54,7 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [ ] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
+- [x] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
 - [ ] Sprites have been observed stuck in the Labyrinth wall. Probably walked into the wall space before my first visit to the map and happened to be there.
 - - I think the right mitigation is in `sprite_monster`, have them detect stuck-in-wall and force themselves out.

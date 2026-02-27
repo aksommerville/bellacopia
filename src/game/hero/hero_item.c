@@ -863,15 +863,47 @@ static int magnifier_begin(struct sprite *sprite) {
 /* Swap items with inventory.
  */
  
-static void hero_swap_items(struct sprite *sprite) {
-  bm_sound(RID_sound_uimotion);
-  struct invstore *hl=modal_pause_get_highlighted_item();
+static int hero_swap_if_present(int p) {
+  if ((p<1)||(p>=INVSTORE_SIZE)) return 0;
+  struct invstore *hl=g.store.invstorev+p;
+  if (!hl->itemid) return 0;
   struct invstore *eq=g.store.invstorev;
   struct invstore tmp;
   memcpy(&tmp,hl,sizeof(struct invstore));
   memcpy(hl,eq,sizeof(struct invstore));
   memcpy(eq,&tmp,sizeof(struct invstore));
   store_broadcast('i',eq->itemid,0);
+  return 1;
+}
+
+static int invp_step(int invp,int d) {
+  int panic=INVSTORE_SIZE;
+  for (;;) {
+    invp+=d;
+    if (invp<1) invp=INVSTORE_SIZE-1;
+    else if (invp>=INVSTORE_SIZE) invp=1;
+    if (g.store.invstorev[invp].itemid) return invp;
+    if (panic--<0) return invp;
+  }
+}
+ 
+static void hero_change_item(struct sprite *sprite,int d) {
+  bm_sound(RID_sound_uimotion);
+  int invp=modal_pause_get_inventory_position();
+  if (invp<1) invp=1; else if (invp>=INVSTORE_SIZE) invp=INVSTORE_SIZE-1;
+  if (d>0) {
+    if (!g.store.invstorev[invp].itemid) {
+      invp=invp_step(invp,1);
+      if (!g.store.invstorev[invp].itemid) return;
+    }
+    hero_swap_if_present(invp);
+    invp=invp_step(invp,1);
+  } else {
+    invp=invp_step(invp,-1);
+    if (!g.store.invstorev[invp].itemid) return;
+    hero_swap_if_present(invp);
+  }
+  modal_pause_set_inventory_position(invp);
 }
 
 /* Update items, main entry point.
@@ -903,9 +935,10 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     case NS_itemid_magnifier: magnifier_update(sprite,elapsed); break;
   }
   
-  /* East to swap with the most recent item (or whatever's highlighted in the pause menu).
+  /* L1/R2 to change equipped item.
    */
-  if ((g.input[0]&EGG_BTN_EAST)&&!(g.pvinput[0]&EGG_BTN_EAST)) hero_swap_items(sprite);
+  if ((g.input[0]&EGG_BTN_L1)&&!(g.pvinput[0]&EGG_BTN_L1)) hero_change_item(sprite,-1);
+  else if ((g.input[0]&EGG_BTN_R1)&&!(g.pvinput[0]&EGG_BTN_R1)) hero_change_item(sprite,1);
   
   // No starting items if injured.
   if (SPRITE->hurt>0.0) return;
