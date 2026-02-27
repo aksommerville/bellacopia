@@ -85,8 +85,20 @@ static int princess_walk_naive(struct sprite *sprite,struct sprite *hero,double 
   double distance=sqrt(d2);
   double ndx=dx/distance;
   double ndy=dy/distance;
-  if (!sprite_move(sprite,ndx*elapsed*SPEED,ndy*elapsed*SPEED)) return 0;
-  return 1;
+  double x0=sprite->x;
+  double y0=sprite->y;
+  int result=sprite_move(sprite,ndx*elapsed*SPEED,ndy*elapsed*SPEED);
+  
+  // Check actual motion, to see if we're caught on a corner or something. Happens all the time.
+  double postdx=sprite->x-x0;
+  double postdy=sprite->y-y0;
+  double actual=sqrt(postdx*postdx+postdy*postdy)/elapsed;
+  if ((actual>0.0)&&(actual<SPEED*0.250)) {
+    if (sprite_move(sprite,((dx<0.0)?-SPEED:SPEED)*elapsed,0.0)) result=1;
+    if (sprite_move(sprite,0.0,((dy<0.0)?-SPEED:SPEED)*elapsed)) result=1;
+  }
+  
+  return result;
 }
 
 /* When walking the same direction as a monster -- likely -- it often doesn't detect a collision.
