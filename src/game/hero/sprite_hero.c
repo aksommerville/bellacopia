@@ -5,6 +5,7 @@
  
 static void _hero_del(struct sprite *sprite) {
   camera_unlisten(SPRITE->door_listener);
+  store_unlisten(SPRITE->store_listener);
   if (SPRITE->pumpkin) {
     sprite_group_clear(SPRITE->pumpkin);
     sprite_group_del(SPRITE->pumpkin);
@@ -22,6 +23,7 @@ static int _hero_init(struct sprite *sprite) {
   SPRITE->qy=-1;
   SPRITE->compassx=SPRITE->compassy=-1.0;
   SPRITE->compassz=-1;
+  SPRITE->store_listener=store_listen('f',hero_cb_store,sprite);
   return 0;
 }
 

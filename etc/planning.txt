@@ -112,7 +112,7 @@ We'll group minigames by Zone.
 - - Can we do a complex animation for the water, with subtle hints toward the fish density there? Something hard to explain but easy to detect once you've learned how.
 - - [ ] Catch a mythical sea monster in the labyrinth.
 - [x] Barrel decorating. Cities have barrels everywhere, nothing apparently special. But somebody gives you Barrel Hats, one at a time, until you eventually hat every barrel in the world, with incremental prizes.
-- [ ] Talking trees that are bored and want you to tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
+- [x] Talking trees that are bored and want you to tell them a story. Collect stories from the elderly, all over the world. One story per tree, but it doesn't matter which.
 - [ ] Scattered statues, you can move them with the hookshot. Bring them all to the town square. Think backward-Sokoban kind of puzzles.
 - xxx Circumnavigate the globe. Since it's possible, there ought to be some fanfare the first time you do it.
 - - 2026-01-19: That's not possible anymore.
@@ -142,7 +142,7 @@ Ought to have seven distinct narrative quests, one guarding each Root Devil.
 - - Labyrinth sea monster. You'd have to reach the labyrinth to get it.
 
 1 open
-2 hookshot, voting contest
+2 voting contest
 3 hookshot, trolls' fetch quest
 4 hookshot or war, labyrinth, wand
 5 war

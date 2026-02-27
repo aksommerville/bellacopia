@@ -31,6 +31,7 @@ struct sprite_hero {
   int compassz; // <0 to refresh lazily
   double compassx,compassy; // <0 if not found.
   double compasst; // Angle for the visual indicator. Only relevant if (x,y,z)>=0.
+  int compass_dirty;
   int hookstage;
   double hookdistance;
   double hookclock; // For the ticking sound effect.
@@ -49,6 +50,8 @@ struct sprite_hero {
   double door_clock; // If this reaches zero, assume the transition failed and abort.
   double doorx,doory; // Warp me here when the transition takes effect.
   int ignoreqx,ignoreqy; // My quantized position *in just one map* immediately after a door transition. Ignore any POI that arrive here, until we've moved some.
+  
+  int store_listener;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)
@@ -61,5 +64,6 @@ void hero_motion_update(struct sprite *sprite,double elapsed);
 // hero_item.c
 void hero_item_update(struct sprite *sprite,double elapsed);
 void hero_unvanish(struct sprite *sprite);
+void hero_cb_store(char type,int id,int value,void *userdata);
 
 #endif

@@ -625,7 +625,8 @@ static void compass_update(struct sprite *sprite,double elapsed) {
   
   /* Do we need to refresh?
    */
-  if (SPRITE->compassz!=sprite->z) {
+  if ((SPRITE->compassz!=sprite->z)||SPRITE->compass_dirty) {
+    SPRITE->compass_dirty=0;
     SPRITE->compassz=sprite->z;
     int srcx=(int)sprite->x,srcy=(int)sprite->y,dstx=-1,dsty=-1;
     int compass=store_get_fld16(NS_fld16_compassoption);
@@ -647,6 +648,11 @@ static void compass_update(struct sprite *sprite,double elapsed) {
   // At first I was thinking of spinning and slowing down near the target, a la Full Moon and Arrautza.
   // But I kind of like this simplistic locked-on approach.
   // Anyhoo, we can change minds at any time in the future. (compasst) should be the after-animation position, where it should render.
+}
+
+void hero_cb_store(char type,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  SPRITE->compass_dirty=1;
 }
 
 /* Barrel Hat.

@@ -27,7 +27,7 @@ Maybe more like end of year.
 I am feeling really good about the progress so far, and the feasibility of the project as a whole.
 
 Stats as of d4930d199ba4b436a82694e9111a7476dac323b6, 2026-01-31:
- - Code: 18760 lines. (`src/game/**.[ch]`, naive count)
+ - Code: 18760 lines. (`src/**.[ch]`, naive count)
  - ROM size: 413151
  - Non-placeholder battles: 7 (bluefish, redfish, and all the goblins except Laziness are placeholders)
  - Casual full-clear time, no cheating: 38:25. 91% (only 14/26 items currently reachable without cheating; 16 if you cheat).
@@ -41,3 +41,24 @@ Goals:
 - [x] Generate the labyrinth. Do the layout around it but needn't be final. ...14 feb
 - [x] Letter exchange at battlefield. ...12 feb
 - [x] Election. Just the battle and the broad framework. Not expecting all the guilds' battles yet.
+
+GDEX will be mid-October. I'm confident we can finish before that.
+Most of the minigames are simple and only take a couple hours, now that I've got the hang of it.
+
+Went from 6 to 29 battles. Made the Goblins, Fractia, Battlefield, and Labyrinth quests mostly work.
+We're now the largest Egg game by every metric except song count and songs length.
+
+I'm particularly proud of the Chess battle, it's real Chess.
+
+Stats as of 1ae80f8053c74b6a6addf0eeca1990ffd5475b14, 2026-02-26:
+ - Code: 37253 lines.
+ - ROM size: 857067
+ - Non-palceholder battles: 29
+ - Casual full-clear time, no cheating: 59:44. (that was a poor session: I lost the Princess twice and died once)
+
+## March 2026
+
+Goals:
+- [ ] Finish placeholder battles (redfish+bluefish+fractia+labyrinth: 26).
+- [ ] Clear the short-term TODO list or punt to long-term.
+- [ ] Make 100% completion reachable. Not the final 100% of course, but let me see that number. I guess it's mostly by making the remaining items.

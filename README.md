@@ -24,15 +24,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
-- - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
-- [x] Web: Fancy rotation seems broken. Plainly visible in the election, Dot's power regulator. ...just a matter of casting to `int8_t` instead of `uint8_t`, I guess Wasm clamps those casts.
-- [ ] More spells. Not sure what...
-- [ ] Poke compass after you get the thing. Tricky...
+- [x] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
-- [ ] Story modal overlay: Highlight HP and gold briefly when they change.
+- [x] Story modal overlay: Highlight HP and gold briefly when they change. ...nix this. Usually they change due to a battle or dialogue.
 - [ ] Handicap for monster and fishpole.
 - [ ] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Pepper
@@ -92,6 +88,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
+- [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
+- - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
+- [ ] More spells. Not sure what...
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
