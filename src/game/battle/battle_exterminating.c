@@ -4,7 +4,9 @@
 #define FLDH 5
 #define END_COOLDOWN_TIME 1.0
 #define THINKYTIME_MIN 0.128
-#define THINKYTIME_MAX 0.500
+#define THINKYTIME_MAX 0.450
+#define THINKYTIME_FUZZ 0.050 /* Add up to so much to each cycle, randomly. */
+#define THINKYTIME_POSTMOVE 0.100 /* Extra delay after each play, makes it feel more human. */
 
 struct battle_exterminating {
   struct battle hdr;
@@ -22,7 +24,8 @@ struct battle_exterminating {
     int clear;
     double thinkyclock; // Counts down, for CPU player cycles.
     double thinkytime; // Constant interval between cycles, determined by handicap.
-    int lastx,lasty;
+    int targetx,targety; // For CPU.
+    int target_acquired;
   } playerv[2];
 };
 
@@ -62,11 +65,12 @@ static int _exterminating_init(struct battle *battle) {
   BATTLE->playerv[1].human=battle->args.rctl;
   BATTLE->playerv[0].who=0;
   BATTLE->playerv[1].who=1;
-  BATTLE->playerv[0].lastx=BATTLE->playerv[1].lastx=BATTLE->playerv[0].lasty=BATTLE->playerv[1].lasty=-2;
   // (thinkytime) only matters for CPU players, but no harm setting it in both.
   // Note that (handicap) is not used in man-vs-man mode.
   BATTLE->playerv[0].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*(0xff-battle->args.bias))/255.0;
   BATTLE->playerv[1].thinkytime=THINKYTIME_MAX+((THINKYTIME_MIN-THINKYTIME_MAX)*battle->args.bias)/255.0;
+  BATTLE->playerv[0].targetx=BATTLE->playerv[0].targety=-1;
+  BATTLE->playerv[1].targetx=BATTLE->playerv[1].targety=-1;
   
   return 0;
 }
@@ -116,124 +120,264 @@ static void player_update_human(struct battle *battle,struct player *player,doub
   if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) player_swap(battle,player);
 }
 
-/* Update CPU player.
+/* Search and filter ops for CPU player.
  */
- 
-static int bugs_exist_in_middle(const uint8_t *v) {
-  const uint8_t *row=v+FLDW+1;
-  int yi=FLDH-2;
-  for (;yi-->0;row+=FLDW) {
-    const uint8_t *p=row;
-    int xi=FLDW-2;
-    for (;xi-->0;p++) if (*p) return 1;
+
+struct target {
+  int8_t x,y; // NB can be negative!
+  uint8_t cellc; // How many real cells does it touch, 0..5. Doesn't depend on field state.
+  uint8_t addmidc,rmmidc; // How many bugs added or removed at the center, 0..1.
+  uint8_t addinc,rminc; // How many bugs added or removed in the inner 3x3 ring, 0..4.
+  uint8_t addoutc,rmoutc; // How many bugs added or removed in the outer 5x5 ring, 0..3.
+}; // (any)'s fields are nonzero if there's at least one target with a nonzero value there.
+
+static int targets_has_rmmidc1(const struct target *targetv,int targetc) {
+  for (;targetc-->0;targetv++) {
+    if (targetv->rmmidc) return 1;
   }
   return 0;
 }
 
-static void assess_candidate_1(int *bugc,int *expc,const uint8_t *fld,int x,int y) {
-  if ((x<0)||(y<0)||(x>=FLDW)||(y>=FLDH)) return;
-  (*expc)++;
-  if (fld[y*FLDW+x]) (*bugc)++;
+static int targets_filter_rmmidc1(struct target *targetv,int targetc) {
+  int i=targetc;
+  struct target *target=targetv+targetc-1;
+  for (;i-->0;target--) {
+    if (!target->rmmidc) {
+      targetc--;
+      memmove(target,target+1,sizeof(struct target)*(targetc-i));
+    }
+  }
+  return targetc;
 }
 
-static void assess_candidate(int *bugc,int *expc,const uint8_t *fld,int x,int y) {
-  *bugc=*expc=0;
-  assess_candidate_1(bugc,expc,fld,x  ,y-1);
-  assess_candidate_1(bugc,expc,fld,x-1,y);
-  assess_candidate_1(bugc,expc,fld,x  ,y);
-  assess_candidate_1(bugc,expc,fld,x+1,y);
-  assess_candidate_1(bugc,expc,fld,x  ,y+1);
+static int targets_filter_addmidc0(struct target *targetv,int targetc) {
+  int i=targetc;
+  struct target *target=targetv+targetc-1;
+  for (;i-->0;target--) {
+    if (target->addmidc) {
+      targetc--;
+      memmove(target,target+1,sizeof(struct target)*(targetc-i));
+    }
+  }
+  return targetc;
 }
- 
-static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
-  if ((player->thinkyclock-=elapsed)>0.0) return;
-  player->thinkyclock+=player->thinkytime;
-  
-  /* We're not going to be super smart, but we will execute a strategy that wins eventually.
-   *  - If any bugs remain off the edge, do not play far outside. ie toggle at least 3 cells.
-   *  - Scan all possible moves exhaustively (there's only 25 or 49 of them) and take whichever yields the highest bug/empty ratio.
-   *  - That's likely to be more than one, so select the one nearest my cursor.
-   * We run that whole algorithm every cycle, even when the ultimate decision is just "move toward it".
-   * *** It's not perfect! ***
-   * He'll avoid the most trivial loops, won't touch the same cell twice in a row.
-   * But he does fall into multistage loops sometimes.
-   */
-  struct candidate { int x,y; } candidatev[49];
-  int candidatec=0;
-  int can_bugc=0;
-  int can_expc=0;
-  double can_ratio=0.0;
-  int xa=0,xz=FLDW-1,ya=0,yz=FLDH-1;
-  int edge_only=0;
-  if (!bugs_exist_in_middle(player->fld)) {
-    xa--; ya--; xz++; yz++;
-    edge_only=1;
+
+static int targets_rminc_best(const struct target *targetv,int targetc) {
+  int best=0;
+  for (;targetc-->0;targetv++) {
+    int score=targetv->rminc;
+    if (score>best) best=score;
   }
-  int y=ya; for (;y<=yz;y++) {
-    int x=xa; for (;x<=xz;x++) {
-      if (edge_only) {
-        if ((y==-1)||(y==FLDH)||(x==-1)||(x==FLDW)) ;
-        else continue;
-      }
-      if ((x==player->lastx)&&(y==player->lasty)) {
-        // Don't toggle the same cell twice in a row!
-        continue;
-      }
-      int bugc=0,expc=0;
-      assess_candidate(&bugc,&expc,player->fld,x,y);
-      if (expc<1) continue; // Impossible but play it safe.
-      if ((bugc==can_bugc)&&(expc==can_expc)) { // If it's the same as our current candidates, append to the list.
-        candidatev[candidatec++]=(struct candidate){x,y};
-        continue;
-      }
-      double ratio=(double)bugc/(double)expc;
-      if (ratio<can_ratio) continue;
-      if ((ratio>can_ratio)||(bugc>can_bugc)) { // If it's better than our current candidates, clear the list then append.
-        can_bugc=bugc;
-        can_expc=expc;
-        can_ratio=ratio;
-        candidatec=0;
-        candidatev[candidatec++]=(struct candidate){x,y};
-      }
+  return best;
+}
+
+static int targets_filter_rminc(struct target *targetv,int targetc,int best) {
+  int i=targetc;
+  struct target *target=targetv+targetc-1;
+  for (;i-->0;target--) {
+    int score=target->rminc;
+    if (score<best) {
+      targetc--;
+      memmove(target,target+1,sizeof(struct target)*(targetc-i));
     }
   }
-  if (candidatec<1) return;
-  // Pick the nearest candidate by Manhattan distance.
-  int bestx=candidatev[0].x;
-  int besty=candidatev[0].y;
-  int bestscore=999;
-  struct candidate *candidate=candidatev;
-  int i=candidatec;
-  for (;i-->0;candidate++) {
-    int dx=candidate->x-player->cx; if (dx<0) dx=-dx;
-    int dy=candidate->y-player->cy; if (dy<0) dy=-dy;
+  return targetc;
+}
+
+static int targets_rmtotal_best(const struct target *targetv,int targetc) {
+  int best=-5;
+  for (;targetc-->0;targetv++) {
+    int score=targetv->rminc+targetv->rmmidc+targetv->rmoutc-targetv->addinc-targetv->addmidc-targetv->addoutc;
+    if (score>best) best=score;
+  }
+  return best;
+}
+
+static int targets_filter_rmtotal(struct target *targetv,int targetc,int best) {
+  int i=targetc;
+  struct target *target=targetv+targetc-1;
+  for (;i-->0;target--) {
+    int score=target->rminc+target->rmmidc+target->rmoutc-target->addinc-target->addmidc-target->addoutc;
+    if (score<best) {
+      targetc--;
+      memmove(target,target+1,sizeof(struct target)*(targetc-i));
+    }
+  }
+  return targetc;
+}
+
+static int targets_mdist_best(const struct target *targetv,int targetc,int x,int y) {
+  int best=100;
+  for (;targetc-->0;targetv++) {
+    int dx=targetv->x-x; if (dx<0) dx=-dx;
+    int dy=targetv->y-y; if (dy<0) dy=-dy;
     int score=dx+dy;
-    if (score<bestscore) {
-      bestx=candidate->x;
-      besty=candidate->y;
-      bestscore=score;
+    if (!score) return 0;
+    if (score<best) best=score;
+  }
+  return best;
+}
+
+static int targets_filter_mdist(struct target *targetv,int targetc,int x,int y,int best) {
+  int i=targetc;
+  struct target *target=targetv+targetc-1;
+  for (;i-->0;target--) {
+    int dx=target->x-x; if (dx<0) dx=-dx;
+    int dy=target->y-y; if (dy<0) dy=-dy;
+    int score=dx+dy;
+    if (score>best) {
+      targetc--;
+      memmove(target,target+1,sizeof(struct target)*(targetc-i));
+    }
+  }
+  return targetc;
+}
+
+/* Choose next target for CPU player.
+ * I'm using a strategy the works inside-out. Clear the middle cell, then the intermediate layer, then the outer layer.
+ * That's probably not the mathematical ideal in every case, and that's OK.
+ */
+ 
+static void player_choose_target(struct battle *battle,struct player *player) {
+  #define MW (FLDW+2)
+  #define MH (FLDH+2)
+  struct target targetv[MW*MH];
+  int targetc=0;
+  
+  /* Tally the bugs by ring.
+   * There are three rings, and once a ring is cleared, we will only touch those outside it.
+   * ie we'll never create a bug on the inside of the current set.
+   */
+  int midc=0,inc=0,outc=0;
+  const uint8_t *src=player->fld;
+  int y=0; for (;y<FLDH;y++) {
+    int x=0; for (;x<FLDW;x++,src++) {
+      if (!*src) continue;
+      if (!x||!y||(x==FLDW-1)||(y==FLDH-1)) outc++;
+      else if ((x==1)||(y==1)||(x==FLDW-2)||(y==FLDH-2)) inc++;
+      else midc++;
     }
   }
   
-  // If we're already at the best cell, toggle it.
-  if ((player->cx==bestx)&&(player->cy==besty)) {
-    player_swap(battle,player);
-    player->lastx=player->cx;
-    player->lasty=player->cy;
+  /* Assess every possible position, all 49 of them.
+   */
+  for (y=-1;y<6;y++) {
+    int x=-1; for (;x<6;x++) {
+      struct target *target=targetv+targetc++;
+      memset(target,0,sizeof(struct target)); // Must zero each time, since we might have backed out a prior step.
+      target->x=x;
+      target->y=y;
+      #define CHECK1(_x,_y) { \
+        int cx=(_x),cy=(_y); \
+        if ((cx>=0)&&(cy>=0)&&(cx<FLDW)&&(cy<FLDH)) { \
+          target->cellc++; \
+          int isbug=player->fld[cy*FLDW+cx]; \
+          int depth; \
+          if ((cx==2)&&(cy==2)) depth=3; \
+          else if ((cx>=1)&&(cy>=1)&&(cx<=3)&&(cy<=3)) depth=2; \
+          else depth=1; \
+          if (isbug) switch (depth) { \
+            case 1: target->rmoutc++; break; \
+            case 2: target->rminc++; break; \
+            case 3: target->rmmidc++; break; \
+          } else switch (depth) { \
+            case 1: target->addoutc++; break; \
+            case 2: target->addinc++; break; \
+            case 3: target->addmidc++; break; \
+          } \
+        } \
+      }
+      CHECK1(x,y)
+      CHECK1(x-1,y)
+      CHECK1(x+1,y)
+      CHECK1(x,y-1)
+      CHECK1(x,y+1)
+      #undef CHECK1
+      // Discard any target that adds more than it removes at the inner ring.
+      if (target->addinc>target->rminc) { targetc--; continue; }
+      // Discard any targets that don't remove bugs, or that add bugs to a cleared ring.
+      if (!(target->rmoutc+target->rminc+target->rmmidc)) { // Doesn't kill any bugs.
+        targetc--;
+      } else if (midc) { // There's a bug in the middle. We only want targets that remove it.
+        if (!target->rmmidc) targetc--;
+      } else if (target->addmidc) { // Forbid adding to middle if it was clear.
+        targetc--;
+      } else if (inc) { // There's a bug in the inner ring. We only want targets that remove it.
+        if (!target->rminc) targetc--;
+      } else if (target->addinc) { // Forbid adding to inner ring if it was clear.
+        targetc--;
+      }
+    }
+  }
+  
+  /* If anything removes from the middle, filter to just those.
+   * Otherwise, filter out those that add to the middle.
+   */
+  if (targets_has_rmmidc1(targetv,targetc)) targetc=targets_filter_rmmidc1(targetv,targetc);
+  else targetc=targets_filter_addmidc0(targetv,targetc);
+  
+  /* Find the best-case of removals from the intermediate ring, and filter to those.
+   */
+  int rminc_best=targets_rminc_best(targetv,targetc);
+  targetc=targets_filter_rminc(targetv,targetc,rminc_best);
+  
+  /* Find the best-case of total removals, and filter to those.
+   */
+  int rmtotal_best=targets_rmtotal_best(targetv,targetc);
+  targetc=targets_filter_rmtotal(targetv,targetc,rmtotal_best);
+  
+  /* Filter by Manhattan distance to current cursor.
+   */
+  int mdist_best=targets_mdist_best(targetv,targetc,player->cx,player->cy);
+  targetc=targets_filter_mdist(targetv,targetc,player->cx,player->cy,mdist_best);
+  
+  /* Did I mess this up?
+   * If there's no targets remaining, go to dead center and toggle away, so I notice.
+   */
+  if (targetc<1) {
+    fprintf(stderr,"***** %s:%d: No targets! *****\n",__FILE__,__LINE__);
+    player->targetx=2;
+    player->targety=2;
     return;
   }
   
-  // If we're diagonal, prefer the nearer axis. (that leads us to move manhattanly rather than approximating the diagonal, which I think looks more human).
-  int dx=bestx-player->cx;
-  int dy=besty-player->cy;
-  if (dx&&dy) {
-    int adx=(dx<0)?-dx:dx;
-    int ady=(dy<0)?-dy:dy;
-    if (adx<ady) dy=0; else dx=0;
+  /* The remaining targets are equally good. Pick at random.
+   * There's usually just one, so only call rand() if we actually need to.
+   */
+  struct target *target=targetv;
+  if (targetc>1) target+=rand()%targetc;
+  player->targetx=target->x;
+  player->targety=target->y;
+  
+  #undef MW
+  #undef MH
+}
+
+/* Update CPU player.
+ */
+ 
+static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
+  if ((player->thinkyclock-=elapsed)>0.0) return;
+  player->thinkyclock+=player->thinkytime+((rand()&0xffff)*THINKYTIME_FUZZ)/65535.0;
+  
+  if (!player->target_acquired) {
+    player->target_acquired=1;
+    player_choose_target(battle,player);
+    player->thinkyclock+=THINKYTIME_POSTMOVE;
+    return;
   }
-  if (dx<0) dx=-1; else if (dx>0) dx=1;
-  if (dy<0) dy=-1; else if (dy>0) dy=1;
-  player_move(battle,player,dx,dy);
+  
+  int dx=player->targetx-player->cx;
+  int dy=player->targety-player->cy;
+  if (!dx&&!dy) {
+    player_swap(battle,player);
+    player->target_acquired=0;
+  } else {
+    int adx=dx; if (adx<0) adx=-adx;
+    int ady=dy; if (ady<0) ady=-ady;
+    if (dx&&((adx<=ady)||!dy)) player_move(battle,player,(dx<0)?-1:1,0);
+    else player_move(battle,player,0,(dy<0)?-1:1);
+  }
 }
 
 /* Update.
