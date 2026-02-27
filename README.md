@@ -61,7 +61,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
 - - Need a better way to surface the bug. It's random, so maybe not an exact repro, but can we thumb the rsprite generator to make it likelier?
 - - Use a manual trap, a giant floor with a treadle that we can make it solid on demand. ...repro'd, easy.
-- [ ] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
+- [x] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
 - [ ] Catch a sea monster in the Labyrinth.

@@ -31,6 +31,7 @@ static int _escalator_init(struct sprite *sprite) {
 }
 
 static void escalator_move_pumpkins(struct sprite *sprite,double dy) {
+  const double taper_distance=1.0;
   double l=sprite->x-0.5;
   double r=sprite->x+0.5;
   double t=sprite->y-0.5;
@@ -46,7 +47,12 @@ static void escalator_move_pumpkins(struct sprite *sprite,double dy) {
     if (other->y<=t) continue;
     if (other->y>=b) continue;
     if (sprite_group_has(GRP(floating),other)) continue;
-    sprite_move(other,0.0,dy);
+    double db=b-other->y;
+    if (db<taper_distance) {
+      sprite_move(other,0.0,(dy*db)/taper_distance);
+    } else {
+      sprite_move(other,0.0,dy);
+    }
   }
 }
 
@@ -84,7 +90,7 @@ static void _escalator_update(struct sprite *sprite,double elapsed) {
       SPRITE->animframe++;
       SPRITE->subanim-=1.0;
     }
-    SPRITE->animframe&=7;
+    SPRITE->animframe&=15;
   }
 }
 
