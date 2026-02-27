@@ -7,15 +7,16 @@
 #define XEND 180 /* Right edge of the conveyor belts. */
 #define PLEFTX 140
 #define PKNIFEX 146 /* PLEFTX+offset to knife -- must agree with graphics. */
+#define PREPOPULATE_X 80
 #define ANIMINTERVAL_MIN 0.015 /* It's OK to go faster than 60 hz; the clock is able to step multiple frames at once. */
 #define ANIMINTERVAL_MAX 0.030
 #define VEG_INTERVAL_MIN 0.500
 #define VEG_INTERVAL_MAX 1.250
 #define VEG_COUNT 10
-#define CPU_COOLDOWN_MIN 0.080
-#define CPU_COOLDOWN_MAX 0.150
-#define CPU_COOLUP_MIN   0.080
-#define CPU_COOLUP_MAX   0.150
+#define CPU_COOLDOWN_MIN 0.060
+#define CPU_COOLDOWN_MAX 0.120
+#define CPU_COOLUP_MIN   0.060
+#define CPU_COOLUP_MAX   0.120
 
 struct battle_chopping {
   struct battle hdr;
@@ -39,6 +40,7 @@ struct battle_chopping {
     int score;
     double cooldown; // CPU only; holds knife down for a fixed interval.
     double kcooldown,kcoolup; // CPU only; cooldown and coolup times per handicap.
+    double kcooldownextra,kcoolupextra;
   } playerv[2];
   
   struct veg {
@@ -55,6 +57,8 @@ struct battle_chopping {
 };
 
 #define BATTLE ((struct battle_chopping*)battle)
+
+static void veg_init(struct battle *battle,struct veg *veg,struct player *player);
 
 /* Delete.
  */
@@ -92,7 +96,45 @@ static void player_init(struct battle *battle,struct player *player,int y,int hu
     player->cooldown=0.0;
     player->kcooldown=CPU_COOLDOWN_MAX-(battle->args.bias*(CPU_COOLDOWN_MAX-CPU_COOLDOWN_MIN))/256.0;
     player->kcoolup=CPU_COOLUP_MAX-(battle->args.bias*(CPU_COOLUP_MAX-CPU_COOLUP_MIN))/256.0;
+    player->kcooldownextra=player->kcooldown;
+    player->kcoolupextra=player->kcoolup;
   }
+}
+
+/* Preupdate.
+ * Advance model state the same way regular update does, to get the initial vegetables belted.
+ * We assume that player knives are up, and they can't come down.
+ */
+ 
+static int chopping_preupdate(struct battle *battle,double elapsed) {
+  int stop=0;
+  struct player *player=BATTLE->playerv;
+  int i=2;
+  for (;i-->0;player++) {
+    int stepc=0;
+    player->animclock-=elapsed;
+    while (player->animclock<=0.0) {
+      stepc++;
+      player->animclock+=player->animinterval;
+    }
+    if (stepc) {
+      struct veg *veg=BATTLE->vegv;
+      int i=BATTLE->vegc;
+      for (;i-->0;veg++) {
+        if (veg->who!=player->who) continue;
+        int pvr=veg->x+veg->w;
+        veg->x+=stepc;
+        if (veg->x>=PREPOPULATE_X) stop=1;
+      }
+    }
+  }
+  if ((BATTLE->vegclock-=elapsed)<=0.0) {
+    BATTLE->vegclock+=VEG_INTERVAL_MIN+((rand()&0xffff)*(VEG_INTERVAL_MAX-VEG_INTERVAL_MIN))/65535.0;
+    BATTLE->remaining--;
+    veg_init(battle,BATTLE->vegv+BATTLE->vegc++,BATTLE->playerv+0);
+    veg_init(battle,BATTLE->vegv+BATTLE->vegc++,BATTLE->playerv+1);
+  }
+  return !stop;
 }
 
 /* New.
@@ -112,7 +154,8 @@ static int _chopping_init(struct battle *battle) {
   BATTLE->playerv[0].animinterval=ANIMINTERVAL_MAX*(1.0-nhc)+ANIMINTERVAL_MIN*nhc;
   BATTLE->playerv[1].animinterval=ANIMINTERVAL_MIN*(1.0-nhc)+ANIMINTERVAL_MAX*nhc;
   
-  //TODO Prepopulate conveyor belts so there's no more than a second of lead-in time. Ensure they're spaced and counted etc as if they'd spawned naturally.
+  // It's a little silly, but get the initial belt population by running fake updates until an arbitrary horizontal threshold is crossed.
+  while (chopping_preupdate(battle,0.020)) ;
 
   return 0;
 }
@@ -210,7 +253,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   if (player->chopping) {
     if ((player->cooldown-=elapsed)<=0.0) {
       player->chopping=0;
-      player->cooldown=player->kcoolup;
+      player->cooldown=player->kcoolup+player->kcoolupextra*((rand()&0xffff)/65535.0);
     }
   } else if (player->cooldown>0.0) {
     player->cooldown-=elapsed;
@@ -223,7 +266,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       if (veg->x>=PKNIFEX) continue;
       if (veg->x+veg->w<=PKNIFEX) continue;
       player->chopping=1;
-      player->cooldown=player->kcooldown;
+      player->cooldown=player->kcooldown+player->kcooldownextra*((rand()&0xffff)/65535.0);
       if (chopping_chop(battle,player)) {
         bm_sound(RID_sound_chop);
       } else {

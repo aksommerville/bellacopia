@@ -42,8 +42,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Boomerang: Drop the other rang after one collides.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
-- [ ] Chopping: Start with the belt populated. Too much lead time as is.
-- [ ] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
+- [x] Chopping: Start with the belt populated. Too much lead time as is.
+- [x] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
 - [ ] Exterminating: AI is really bad, it gets stuck in loops sometimes. Princess shouldn't play this in real life, but still, it's painful to watch.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
