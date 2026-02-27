@@ -102,7 +102,6 @@ static void player_whack(struct battle *battle,struct player *player) {
   player->flying=1;
   double n=player->swing_angle/TMAX;
   double speed=n*SPEED_MAX+(1.0-n)*SPEED_MIN;
-  fprintf(stderr,"%s swing_angle=%f => %f => %f\n",__func__,player->swing_angle,n,speed);
   if (player->xform) {
     player->balldx=-speed;
   } else {

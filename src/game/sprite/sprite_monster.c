@@ -96,15 +96,146 @@ static void monster_idle_end(struct sprite *sprite) {
   monster_walk_begin(sprite);
 }
 
+/* Return any vacant cell in the square ring (radius) cells from (x,y).
+ * Zero radius is perfectly sensible.
+ * Returns nonzero if something found.
+ */
+ 
+static int monster_no_nearby_solids(struct sprite *sprite,double x,double y) {
+  const double threshold=0.950;
+  struct sprite **otherp=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other==sprite) continue;
+    double dx=other->x-x;
+    if ((dx<-threshold)||(dx>threshold)) continue;
+    double dy=other->y-y;
+    if ((dy<-threshold)||(dy>threshold)) continue;
+    return 0;
+  }
+  return 1;
+}
+ 
+static int monster_find_safe_cell_in_rect(int *okx,int *oky,struct sprite *sprite,int x,int y,int w,int h) {
+  if ((w<1)||(h<1)) return 0;
+  
+  // Acquire the plane.
+  struct plane *plane=plane_by_position(sprite->z);
+  if (!plane||(plane->w<1)||(plane->h<1)) return 0;
+  
+  // Determine maps coverage.
+  int mxa=x/NS_sys_mapw; if (mxa<0) mxa=0;
+  int mya=y/NS_sys_maph; if (mya<0) mya=0;
+  int mxz=(x+w-1)/NS_sys_mapw; if (mxz>=plane->w) mxz=plane->w-1;
+  int myz=(y+h-1)/NS_sys_maph; if (myz>=plane->h) myz=plane->h-1;
+  if ((mxa>mxz)||(mya>myz)) return 0;
+  
+  // Iterate maps, then cells in each map.
+  struct map *maprow=plane->v+mya*plane->w+mxa;
+  int my=mya; for (;my<=myz;my++,maprow+=plane->w) {
+    struct map *map=maprow;
+    int mx=mxa; for (;mx<=mxz;mx++,map++) {
+      int subx=x-map->lng*NS_sys_mapw;
+      int suby=y-map->lat*NS_sys_maph;
+      int subw=w;
+      int subh=h;
+      if (subx<0) { subw+=subx; subx=0; }
+      if (suby<0) { subh+=suby; suby=0; }
+      if (subx>NS_sys_mapw-subw) subw=NS_sys_mapw-subx;
+      if (suby>NS_sys_maph-subh) subh=NS_sys_maph-suby;
+      if ((subw<1)||(subh<1)) continue; // oops?
+      int subx0=subx;
+      int subxz=subx+subw;
+      int subyz=suby+subh;
+      const uint8_t *cellrow=map->v+suby*NS_sys_mapw+subx;
+      for (;suby<subyz;suby++,cellrow+=NS_sys_mapw) {
+        const uint8_t *cellp=cellrow;
+        for (subx=subx0;subx<subxz;subx++,cellp++) {
+          switch (map->physics[*cellp]) {
+            case NS_physics_vacant: {
+                *okx=map->lng*NS_sys_mapw+subx;
+                *oky=map->lat*NS_sys_maph+suby;
+                if (monster_no_nearby_solids(sprite,(*okx)+0.5,(*oky)+0.5)) return 1;
+              } break;
+          }
+        }
+      }
+    }
+  }
+  
+  return 0;
+}
+ 
+static int monster_find_safe_cell_in_ring(int *okx,int *oky,struct sprite *sprite,int x,int y,int radius) {
+  if (radius<0) return 0;
+  if (monster_find_safe_cell_in_rect(okx,oky,sprite,x,y,1,1)) return 1;
+  if (radius<1) return 0;
+  if (monster_find_safe_cell_in_rect(okx,oky,sprite,x-radius,y-radius,radius*2+1,1)) return 1;
+  if (monster_find_safe_cell_in_rect(okx,oky,sprite,x-radius,y+radius,radius*2+1,1)) return 1;
+  if (monster_find_safe_cell_in_rect(okx,oky,sprite,x-radius,y-radius+1,1,radius*2-1)) return 1;
+  if (monster_find_safe_cell_in_rect(okx,oky,sprite,x+radius,y-radius+1,1,radius*2-1)) return 1;
+  return 0;
+}
+
+/* Call when we are trapped, no freedom in any cardinal direction.
+ */
+ 
+static void monster_mitigate_trap(struct sprite *sprite) {
+
+  // Monsters are cheap. If I'm outside the camera's view, just kill me.
+  const int ht=NS_sys_tilesize>>1;
+  int x=(int)(sprite->x*NS_sys_tilesize);
+  int y=(int)(sprite->y*NS_sys_tilesize);
+  if ((x<g.camera.rx-ht)||(y<g.camera.ry-ht)||(x>g.camera.rx+FBW+ht)||(y>g.camera.ry+FBH+ht)) {
+    fprintf(stderr,"%s: Killing monster %p due to trapped and offscreen.\n",__func__,sprite);
+    sprite_kill_soon(sprite);
+    return;
+  }
+  
+  /* If there's a safe cell nearby, warp to the center of it.
+   * Hopefully we're just partially clipped by some switchable cell, and there's a safe one at radius zero or one.
+   */
+  int radius=0;
+  x/=NS_sys_tilesize;
+  y/=NS_sys_tilesize;
+  for (;radius<=3;radius++) {
+    int okx,oky;
+    if (monster_find_safe_cell_in_ring(&okx,&oky,sprite,x,y,radius)) {
+      fprintf(stderr,"%s: Moving monster %p from (%.03f,%.03f) to (%d,%d) due to trapped.\n",__func__,sprite,sprite->x,sprite->y,okx,oky);
+      sprite->x=okx+0.5;
+      sprite->y=oky+0.5;
+      monster_idle_begin(sprite);
+      return;
+    }
+  }
+
+  /* Unable to sensibly mitigate.
+   * Enter IDLE and stay there longer than usual.
+   */
+  fprintf(stderr,"%s: Unable to mitigate trapped monster %p at %f,%f. Entering long idle.\n",__func__,sprite,sprite->x,sprite->y);
+  monster_idle_begin(sprite);
+  SPRITE->stageclock+=4.0;
+}
+
 /* STAGE_WALK
  */
  
 static void monster_walk_update(struct sprite *sprite,double elapsed) {
   if (!sprite_move(sprite,SPRITE->dx*elapsed,SPRITE->dy*elapsed)) {
-    // Fully blocked.
+    if ( // If we're blocked in all four directions, it's an emergency requiring special mitigation.
+      (sprite_measure_freedom(sprite,-1.0, 0.0,0)<0.125)&&
+      (sprite_measure_freedom(sprite, 1.0, 0.0,0)<0.125)&&
+      (sprite_measure_freedom(sprite, 0.0,-1.0,0)<0.125)&&
+      (sprite_measure_freedom(sprite, 0.0, 1.0,0)<0.125)
+    ) {
+      monster_mitigate_trap(sprite);
+      return;
+    }
+    // Blocked in the one direction. No worries, just stop here.
     monster_idle_begin(sprite);
   } else {
-    if (!(sprite->physics&(1<<NS_physics_safe))) { // Prior attack ended in a path collision. Can we start apply path collisions yet?
+    if (!(sprite->physics&(1<<NS_physics_safe))) { // Prior attack ended in a path collision. Can we start applying path collisions yet?
       sprite->physics|=(1<<NS_physics_safe);
       if (sprite_test_position(sprite)) {
         // Resuming deferred path collisions.
@@ -131,7 +262,7 @@ static void monster_walk_begin(struct sprite *sprite) {
   if (sprite_measure_freedom(sprite,0.0,-2.0,0)>=1.0) { canyc++; dcanv[dcanc++]=(struct dcan){0.0,-1.0}; }
   if (sprite_measure_freedom(sprite,0.0,2.0,0)>=1.0) { canyc++; dcanv[dcanc++]=(struct dcan){0.0,1.0}; }
   if (dcanc<1) {
-    monster_idle_begin(sprite);
+    monster_mitigate_trap(sprite);
     return;
   }
   

@@ -56,9 +56,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [x] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
-- [ ] Sprites have been observed stuck in the Labyrinth wall. Probably walked into the wall space before my first visit to the map and happened to be there.
+- [x] Sprites have been observed stuck in the Labyrinth wall. Probably walked into the wall space before my first visit to the map and happened to be there.
 - - I think the right mitigation is in `sprite_monster`, have them detect stuck-in-wall and force themselves out.
 - - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
+- - Need a better way to surface the bug. It's random, so maybe not an exact repro, but can we thumb the rsprite generator to make it likelier?
+- - Use a manual trap, a giant floor with a treadle that we can make it solid on demand. ...repro'd, easy.
 - [ ] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
