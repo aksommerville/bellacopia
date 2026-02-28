@@ -21,6 +21,7 @@ int game_reset(int use_save) {
   g.flash=0.0;
   g.warp_listener=0;
   g.gameover=0;
+  g.song_override_outerworld=0;
   return 0;
 }
 
@@ -112,6 +113,9 @@ int game_focus_map(struct map *map) {
       case CMD_map_wind: break;
       //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
     }
+  }
+  if ((map->z==NS_plane_outerworld)&&!g.song_override_outerworld) {
+    bm_song_gently(bm_song_for_outerworld());
   }
   return 0;
 }

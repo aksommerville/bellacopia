@@ -206,6 +206,8 @@
 #define NS_activity_poet 25
 #define NS_activity_enter_labyrinth 26
 #define NS_activity_tree 27 /* (u16)fld */
+#define NS_activity_override_outerworld_song 28
+#define NS_activity_unoverride_outerworld_song 29
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */

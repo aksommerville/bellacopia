@@ -51,6 +51,7 @@ extern struct g {
   int input[3],pvinput[3];
   
   int song_playing;
+  int song_override_outerworld; // When set, we won't engage the outerworld song. eg for the Temple's balcony and pool area.
   struct sound_blackout {
     double when;
     int rid;

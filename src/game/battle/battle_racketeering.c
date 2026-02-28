@@ -428,11 +428,11 @@ static void ball_update(struct battle *battle,struct ball *ball,double elapsed) 
         return; \
       } else { \
         bm_sound(RID_sound_bounce); \
-        ball->d##tag=-ball->d##tag; \
+        if (ball->d##tag<0.0) ball->d##tag=-ball->d##tag; \
       } \
     } else if (ball->tag>limit) { \
       bm_sound(RID_sound_bounce); \
-      ball->d##tag=-ball->d##tag; \
+      if (ball->d##tag>0.0) ball->d##tag=-ball->d##tag; \
     } \
   }
   AXIS(x,FBW,0)

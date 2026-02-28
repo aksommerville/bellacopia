@@ -44,6 +44,8 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_poet: begin_poet(initiator); break;
     case NS_activity_enter_labyrinth: labyrinth_reset(); break;
     case NS_activity_tree: begin_tree(initiator,arg); break;
+    case NS_activity_override_outerworld_song: g.song_override_outerworld=1; break; // These are triggered by doors, so can't use (arg).
+    case NS_activity_unoverride_outerworld_song: g.song_override_outerworld=0; break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

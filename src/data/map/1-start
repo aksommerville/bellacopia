@@ -13,7 +13,6 @@
 
 position 6 6 1 0
 image image:meadow
-song song:pretty_pretty_pickle
 sprite @9,6 sprite:hero (u32)0
 switchable @10,8 (u16:fld)root7
 switchable @8,8 (u16:fld)root1

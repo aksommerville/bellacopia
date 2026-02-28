@@ -88,3 +88,29 @@ void game_get_sidequests(int *done,int *total) {
     store_get_fld(NS_fld_barrelhat9)
   ) (*done)++;
 }
+
+/* Outer world song, depending on context.
+ * We'll change the song each time you bloom a new flower.
+ */
+ 
+int bm_song_for_outerworld() {
+  int flowerc=0;
+  if (store_get_fld(NS_fld_root1)) flowerc++;
+  if (store_get_fld(NS_fld_root2)) flowerc++;
+  if (store_get_fld(NS_fld_root3)) flowerc++;
+  if (store_get_fld(NS_fld_root4)) flowerc++;
+  if (store_get_fld(NS_fld_root5)) flowerc++;
+  if (store_get_fld(NS_fld_root6)) flowerc++;
+  if (store_get_fld(NS_fld_root7)) flowerc++;
+  switch (flowerc) {
+    case 0: return RID_song_pretty_pretty_pickle;
+    case 1: return RID_song_barrel_of_salt;
+    case 2: return RID_song_feet_to_the_fire;//XXX not yet
+    case 3: return RID_song_barrel_of_salt;//TODO
+    case 4: return RID_song_barrel_of_salt;//TODO
+    case 5: return RID_song_barrel_of_salt;//TODO
+    case 6: return RID_song_barrel_of_salt;//TODO
+    case 7: return RID_song_barrel_of_salt;//TODO
+    default: return RID_song_barrel_of_salt;
+  }
+}

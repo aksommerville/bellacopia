@@ -63,10 +63,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Use a manual trap, a giant floor with a treadle that we can make it solid on demand. ...repro'd, easy.
 - [x] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [ ] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
+- [x] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
-- [ ] racketeering: Ball can get stuck at the floor, and make obnoxious repetitive sound effects. Playwise, sticking on the floor doesn't seem so bad.
+- - I swear this is real, but on careful observation I can't reproduce it.
+- [x] racketeering: Ball can get stuck at the floor, and make obnoxious repetitive sound effects. Playwise, sticking on the floor doesn't seem so bad.
+- - Happens often enough if you serve from the very bottom. Tho not every time.
+- - Ha, I'd neglected to check the sign before flipping delta. With that fixed, it can still ride the floor but bounces realistically.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -93,6 +96,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
 - - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [ ] More spells. Not sure what...
+- [ ] 5 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

@@ -149,6 +149,10 @@ int game_get_completion();
 
 void game_get_sidequests(int *done,int *total);
 
+/* Returns a song rid for the outer world, depending on progress.
+ */
+int bm_song_for_outerworld();
+
 /* Encryption puzzle: cryptmsg.c
  *******************************************************************************/
 

@@ -34,6 +34,10 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
   if (outcome>0) {
     store_set_fld(SPRITE->fld,1);
     sprite_kill_soon(sprite);
+    // All Root Devils are in the outer world, and killing one changes the song.
+    if (!g.song_override_outerworld) {
+      bm_song_gently(bm_song_for_outerworld());
+    }
   } else if (outcome<0) {
     game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
