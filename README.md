@@ -66,9 +66,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
-- [ ] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
+- [x] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
-- [ ] ^ Actually do allow endorse battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
+- [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
 - - And if you do that before the election, you already have the endorsement.
 - [ ] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.

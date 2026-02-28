@@ -6,6 +6,7 @@ struct sprite_npc {
   struct sprite hdr;
   int activity;
   int activity_arg;
+  int noxform;
   double cooldown;
 };
 
@@ -26,6 +27,16 @@ static int _npc_init(struct sprite *sprite) {
     case NS_activity_logproblem2: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
   }
   
+  struct cmdlist_reader reader;
+  if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)>0) {
+      switch (cmd.opcode) {
+        case CMD_sprite_noxform: SPRITE->noxform=1; break;
+      }
+    }
+  }
+  
   return 0;
 }
 
@@ -36,11 +47,13 @@ static void _npc_update(struct sprite *sprite,double elapsed) {
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
   }
-  if (GRP(hero)->sprc>0) {
-    struct sprite *hero=GRP(hero)->sprv[0];
-    double dx=hero->x-sprite->x;
-    if (dx<-0.5) sprite->xform=EGG_XFORM_XREV;
-    else if (dx>0.5) sprite->xform=0;
+  if (!SPRITE->noxform) {
+    if (GRP(hero)->sprc>0) {
+      struct sprite *hero=GRP(hero)->sprv[0];
+      double dx=hero->x-sprite->x;
+      if (dx<-0.5) sprite->xform=EGG_XFORM_XREV;
+      else if (dx>0.5) sprite->xform=0;
+    }
   }
 }
 

@@ -48,6 +48,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_unoverride_outerworld_song: g.song_override_outerworld=0; break;
     case NS_activity_castleshop: begin_castleshop(initiator); break;
     case NS_activity_templeshop: begin_templeshop(initiator); break;
+    case NS_activity_generic_tolltroll: begin_generic_tolltroll(initiator,arg); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

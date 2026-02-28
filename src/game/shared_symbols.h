@@ -47,6 +47,7 @@
 #define CMD_map_triggeronce     0x66 /* u16:pos u16:fld u16:activity u16:arg ; Like a treadle, but it will only fire once ever. */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
+#define CMD_sprite_noxform      0x01 /* --- ; npc */
 #define CMD_sprite_image        0x20 /* u16:rid */
 #define CMD_sprite_tile         0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type         0x22 /* u16:sprtype */
@@ -184,7 +185,7 @@
 #define NS_activity_brewer 3
 #define NS_activity_bloodbank 4 /* (u16)price_per_heart */
 #define NS_activity_fishwife 5
-#define NS_activity_tolltroll 6 /* (u16:activity)appearance */
+#define NS_activity_tolltroll 6 /* (u16:itemid)appearance ; The three-part main quest. */
 #define NS_activity_wargate 7 /* (u16)0 ; The guards outside the north tent preventing you from leaving until the war is over. */
 #define NS_activity_knitter 8
 #define NS_activity_magneticnorth 9
@@ -210,6 +211,7 @@
 #define NS_activity_unoverride_outerworld_song 29
 #define NS_activity_castleshop 30
 #define NS_activity_templeshop 31
+#define NS_activity_generic_tolltroll 32 /* (price<<12)|fld */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -222,7 +224,7 @@
 #define NS_sprtype_firepot      8 /* (u8:radius_m)3 (u24)0 */
 #define NS_sprtype_rootdevil    9 /* (u16:fld)root0 (u16)0 */
 #define NS_sprtype_bonfire     10 /* (u32)0 */
-#define NS_sprtype_tolltroll   11 /* (u32)0 */
+#define NS_sprtype_tolltroll   11 /* (u16:cost)0 (u16:fld)0 ; Zeroes for the three-part fetch quest */
 #define NS_sprtype_toast       12 /* (u32)0 */
 #define NS_sprtype_princess    13 /* (u32)0 */
 #define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
@@ -457,6 +459,7 @@
 #define NS_fld_story14 83
 #define NS_fld_story15 84
 #define NS_fld_story16 85
+#define NS_fld_forest_toll 86
 
 /* "fld16" are 16 unsigned bits each.
  */

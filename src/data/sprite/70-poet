@@ -2,3 +2,4 @@ image image:meadow_sprites
 tile 11 0
 type (u16:sprtype)npc
 groups (b32:sprgrp)visible,update,solid,grabbable
+noxform

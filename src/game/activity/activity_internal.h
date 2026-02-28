@@ -30,6 +30,7 @@ void begin_templeshop(struct sprite *initiator);
 void begin_tolltroll(struct sprite *initiator,int arg);
 void begin_knitter(struct sprite *initiator);
 void begin_tree(struct sprite *initiator,int arg);
+void begin_generic_tolltroll(struct sprite *initiator,int arg);
 
 // activity_princess.c
 void begin_king(struct sprite *initiator);

@@ -4,7 +4,7 @@
  
 #include "activity_internal.h"
 
-/* Toll Troll.
+/* Toll Troll (the main quest one).
  */
  
 int tolltroll_get_appearance() {
@@ -107,6 +107,48 @@ void begin_tolltroll(struct sprite *sprite,int appearance) {
     case NS_itemid_compass: store_set_fld(NS_fld_toll_compass_requested,1); break;
     case NS_itemid_candy: store_set_fld(NS_fld_toll_candy_requested,1); break;
   }
+}
+
+/* Toll Troll, generic.
+ */
+ 
+static int cb_generic_tolltroll(int optionid,void *userdata) {
+  if (optionid==97) {
+    int arg=(int)(uintptr_t)userdata;
+    int price=(arg>>12)&0xfff;
+    int fld=arg&0xfff;
+    int gold=store_get_fld16(NS_fld16_gold);
+    if (gold<price) {
+      begin_dialogue(2,0);
+      bm_sound(RID_sound_reject);
+      return 1;
+    }
+    gold-=price;
+    store_set_fld16(NS_fld16_gold,gold);
+    store_set_fld(fld,1);
+  }
+  return 0;
+}
+ 
+void begin_generic_tolltroll(struct sprite *sprite,int arg) {
+  int price=(arg>>12)&0xfff;
+  int fld=arg&0xfff;
+  fprintf(stderr,"%s price=%d fld=%d\n",__func__,price,fld);
+  if (store_get_fld(fld)) return;
+  struct text_insertion ins={.mode='i',.i=price};
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=96,
+    .speaker=sprite,
+    .insv=&ins,
+    .insc=1,
+    .cb=cb_generic_tolltroll,
+    .userdata=(void*)(uintptr_t)arg,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,97);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,98);
 }
 
 /* Knitter: Give you a barrel hat if you don't have one.
