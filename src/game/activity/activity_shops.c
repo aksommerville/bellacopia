@@ -359,3 +359,48 @@ void begin_fishprocessor(struct sprite *sprite) {
   ADD(red,potion,38,3)
   #undef ADD
 }
+
+/* Castleshop. A shop by the castle.
+ */
+ 
+static int cb_castleshop(int itemid,int quantity,int price,void *userdata) {
+  if (itemid==NS_itemid_heartcontainer) {
+    // Generic shop takes care of updating hpmax, but we have to set the guard flag.
+    if ((quantity!=1)||store_get_fld(NS_fld_hc1)) return -1;
+    store_set_fld(NS_fld_hc1,1);
+  }
+  return 0;
+}
+ 
+void begin_castleshop(struct sprite *sprite) {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=94,
+    .speaker=sprite,
+    .cb_validated=cb_castleshop,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_pepper,1,0);
+  modal_shop_add_item(modal,NS_itemid_match,2,0);
+  modal_shop_add_item(modal,NS_itemid_vanishing,4,0);
+  if (!store_get_fld(NS_fld_hc1)) modal_shop_add_item(modal,NS_itemid_heartcontainer,20,1);
+}
+
+/* Templeshop: The Jungle Temple's gift shop.
+ */
+ 
+void begin_templeshop(struct sprite *sprite) {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=95,
+    .speaker=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_heart,3,0);
+  modal_shop_add_item(modal,NS_itemid_bugspray,1,0);
+  modal_shop_add_item(modal,NS_itemid_vanishing,6,0);
+  modal_shop_add_item(modal,NS_itemid_magnifier,10,0);//TODO maybe here?
+  modal_shop_add_item(modal,NS_itemid_telescope,10,0);//TODO maybe here?
+}

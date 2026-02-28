@@ -1,0 +1,4 @@
+image image:temple_sprites
+tile 20 0
+type (u16:sprtype)npc
+groups (b32:sprgrp)visible,update,solid,grabbable

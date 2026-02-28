@@ -14,3 +14,4 @@
 image image:temple_int
 position 3 3 5 *
 parent map:43
+sprite @7,4 sprite:templeshop (u16:activity)templeshop (u16:activity_arg)0

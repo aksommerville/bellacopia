@@ -542,6 +542,12 @@ int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity) {
     quantity=0;
   }
   
+  /* Inventoriable, no quantity, and we already have it, disregard.
+   */
+  if (detail->inventoriable&&!detail->initial_limit) {
+    if (store_get_itemid(itemid)) return 0;
+  }
+  
   /* Add to my list.
    */
   if (MODAL->optionc>=MODAL->optiona) {

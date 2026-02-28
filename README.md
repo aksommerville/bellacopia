@@ -24,6 +24,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] !!! Segfault using magnifier in the gift shop.
+- - Happens reliably when you stand at +4,+2 from the merchant. Not in other places. ...was reading OOB maps at `game_find_secrets()`.
 - [x] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
@@ -52,7 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Can we just mark her as "never delete due to distance"?
 - [x] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
-- [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
+- [x] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [x] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
@@ -154,9 +156,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - This set of quests doesn't feel adequate. Need like a dozen more.
 
 - Prizes unassigned.
-- [ ] Magnifier.
-- [ ] Telescope.
-- [ ] hc1
+- [x] Magnifier. Buy in Temple Gift Shop. Maybe temporary.
+- [x] Telescope. Buy in Temple Gift Shop. Maybe temporary.
+- [x] hc1: castleshop
 - [ ] hc2
 - [ ] hc3
 - [ ] hc4

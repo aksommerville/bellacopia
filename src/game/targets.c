@@ -494,6 +494,10 @@ int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double
   int mw=xz/NS_sys_mapw-mx+1;
   int my=ya/NS_sys_maph;
   int mh=yz/NS_sys_maph-my+1;
+  if (mx<0) { mw+=mx; mx=0; }
+  if (my<0) { mh+=my; my=0; }
+  if (mx>plane->w-mw) mw=plane->w-mx;
+  if (my>plane->h-mh) mh=plane->h-my;
   
   /* Iterate maps.
    */

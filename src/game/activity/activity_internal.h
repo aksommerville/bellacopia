@@ -23,6 +23,8 @@ void begin_fishwife(struct sprite *initiator);
 void begin_magneticnorth(struct sprite *initiator);
 void begin_thingwalla(struct sprite *initiator);
 void begin_fishprocessor(struct sprite *initiator);
+void begin_castleshop(struct sprite *initiator);
+void begin_templeshop(struct sprite *initiator);
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);
