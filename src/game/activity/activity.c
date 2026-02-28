@@ -16,6 +16,7 @@ struct modal *begin_dialogue(int strix,struct sprite *speaker) {
  */
  
 void game_begin_activity(int activity,int arg,struct sprite *initiator) {
+  //fprintf(stderr,"%s activity=%d arg=%d initiator=%p\n",__func__,activity,arg,initiator);
   switch (activity) {
     case NS_activity_dialogue: begin_dialogue(arg,initiator); break;
     case NS_activity_carpenter: begin_carpenter(initiator); break;

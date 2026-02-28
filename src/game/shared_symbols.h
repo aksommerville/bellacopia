@@ -383,7 +383,7 @@
 #define NS_fld_root5 7
 #define NS_fld_root6 8
 #define NS_fld_root7 9
-#define NS_fld_hc1 10 /* heart container, in the cave of cheating (TEMP) */
+#define NS_fld_hc1 10 /* heart container, at castleshop */
 #define NS_fld_toll_stick_requested 11
 #define NS_fld_toll_compass_requested 12
 #define NS_fld_toll_candy_requested 13

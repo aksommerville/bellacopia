@@ -18,3 +18,4 @@ sprite @1,10 sprite:king (u16:activity)king (u16:activity_arg)0
 sprite @4,10 sprite:linguist (u16:activity)linguist (u16:activity_arg)0
 target @1,10 (u16:compass)castle
 sprite @12,8 sprite:castleshop (u16:activity)castleshop (u16:activity_arg)0
+compass @12,8 (u16:compass)heartcontainer (u16:fld)hc1 (u16)0

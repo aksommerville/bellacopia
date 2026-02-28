@@ -2,3 +2,4 @@ image image:fractia_sprites
 tile 18 0
 type (u16:sprtype)npc
 groups (b32:sprgrp)visible,update,solid,grabbable
+noxform

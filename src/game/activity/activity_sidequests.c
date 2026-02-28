@@ -133,7 +133,6 @@ static int cb_generic_tolltroll(int optionid,void *userdata) {
 void begin_generic_tolltroll(struct sprite *sprite,int arg) {
   int price=(arg>>12)&0xfff;
   int fld=arg&0xfff;
-  fprintf(stderr,"%s price=%d fld=%d\n",__func__,price,fld);
   if (store_get_fld(fld)) return;
   struct text_insertion ins={.mode='i',.i=price};
   struct modal_args_dialogue args={

@@ -343,7 +343,10 @@ int game_list_targets(int *dstv,int dsta,int mode) {
         target++; \
       } \
     }
-    if (target->compass==NS_compass_castle) continue;
+    if (target->compass==NS_compass_castle) {
+      NEXTCOMPASS
+      continue;
+    }
     // Don't include the same thing twice, of course.
     if (int_present(dstv,dstc,target->compass)) {
       NEXTCOMPASS

@@ -24,6 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] !!! Freeze talking to compasstech, immediately after getting the compass. ...broke when I added the Princess's arm.
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
