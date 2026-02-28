@@ -355,6 +355,34 @@ static void potion_update(struct sprite *sprite,double elapsed) {
 #define HOOK_DISTANCE_MAX 7.0
 
 #define HOOK_TICK_TIME 0.100
+
+static int hookshot_set_pumpkin(struct sprite *sprite,struct sprite *pumpkin) {
+  if (pumpkin) { // Adding.
+    if (SPRITE->pumpkin) {
+      sprite_group_clear(SPRITE->pumpkin);
+    } else {
+      if (!(SPRITE->pumpkin=sprite_group_new())) return -1;
+      SPRITE->pumpkin->mode=SPRITE_GROUP_MODE_SINGLE;
+    }
+    if (sprite_group_add(SPRITE->pumpkin,pumpkin)<0) return -1;
+    SPRITE->pumpkin_physics=pumpkin->physics;
+    pumpkin->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+    if (sprite_group_has(GRP(update),pumpkin)) {
+      SPRITE->pumpkin_update=1;
+      sprite_group_remove(GRP(update),pumpkin);
+    } else {
+      SPRITE->pumpkin_update=0;
+    }
+  } else { // Removing.
+    if (SPRITE->pumpkin&&SPRITE->pumpkin->sprc) {
+      pumpkin=SPRITE->pumpkin->sprv[0];
+      pumpkin->physics=SPRITE->pumpkin_physics;
+      if (SPRITE->pumpkin_update) sprite_group_add(GRP(update),pumpkin);
+      sprite_group_clear(SPRITE->pumpkin);
+    }
+  }
+  return 0;
+}
  
 static int hookshot_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_hookshot;
@@ -402,16 +430,11 @@ static void hookshot_check_grabbage(struct sprite *sprite) {
     if (hx<=other->x+other->hbl) continue;
     if (hy>=other->y+other->hbb) continue;
     if (hy<=other->y+other->hbt) continue;
-    if (!SPRITE->pumpkin) {
-      if (!(SPRITE->pumpkin=sprite_group_new())) return;
-      SPRITE->pumpkin->mode=SPRITE_GROUP_MODE_SINGLE;
+    if (hookshot_set_pumpkin(sprite,other)>=0) {
+      bm_sound(RID_sound_hookshot_grab);
+      SPRITE->hookstage=HOOKSTAGE_RETURN;
+      return;
     }
-    if (sprite_group_add(SPRITE->pumpkin,other)<0) return;
-    SPRITE->pumpkin_physics=other->physics;
-    other->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
-    bm_sound(RID_sound_hookshot_grab);
-    SPRITE->hookstage=HOOKSTAGE_RETURN;
-    return;
   }
   
   // Check the single cell. If grabbable, enter PULL or if solid enter RETURN.
@@ -459,7 +482,7 @@ static void hookshot_update(struct sprite *sprite,double elapsed) {
   // Use hookshot_end_pull from HOOKSTAGE_PULL because we do want its position corrections.
   // If you get corrected to the launch site, and it no longer collides with the assailant, you still get injured.
   if (SPRITE->hurt>0.0) {
-    if (SPRITE->pumpkin) sprite_group_clear(SPRITE->pumpkin);
+    hookshot_set_pumpkin(sprite,0);
     if (SPRITE->hookstage==HOOKSTAGE_PULL) hookshot_end_pull(sprite);
     else SPRITE->itemid_in_progress=0;
     return;
@@ -495,17 +518,12 @@ static void hookshot_update(struct sprite *sprite,double elapsed) {
           struct sprite *pumpkin=SPRITE->pumpkin->sprv[0];
           if (!sprite_move(pumpkin,-SPRITE->facedx*HOOK_SPEED_RETURN*elapsed,-SPRITE->facedy*HOOK_SPEED_RETURN*elapsed)) {
             // oops it hit a wall or something.
-            pumpkin->physics=SPRITE->pumpkin_physics;
-            sprite_group_clear(SPRITE->pumpkin);
+            hookshot_set_pumpkin(sprite,0);
             //TODO We probably need to check for dropping into water etc, as we do at the end of PULL.
           }
         }
         if ((SPRITE->hookdistance-=HOOK_SPEED_RETURN*elapsed)<=0.0) {
-          if (SPRITE->pumpkin&&SPRITE->pumpkin->sprc) {
-            struct sprite *pumpkin=SPRITE->pumpkin->sprv[0];
-            pumpkin->physics=SPRITE->pumpkin_physics;
-            sprite_group_clear(SPRITE->pumpkin);
-          }
+          hookshot_set_pumpkin(sprite,0);
           SPRITE->itemid_in_progress=0;
         }
       } break;

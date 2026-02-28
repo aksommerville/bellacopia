@@ -38,6 +38,7 @@ struct sprite_hero {
   double safex,safey; // If we hookshot into the water or something, reappear here.
   struct sprite_group *pumpkin; // Null until the first time we need it.
   uint32_t pumpkin_physics;
+  int pumpkin_update;
   int broomdx; // Like (facedx) but never zero.
   int fish; // Nonzero if fishing and the fish has popped out. Can be any itemid, typically greenfish, bluefish, or redfish.
   double fishclock;

@@ -50,7 +50,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
 - [x] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
 - - Can we just mark her as "never delete due to distance"?
-- [ ] Suspend pumpkin's movement while hookshotted.
+- [x] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [ ] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
