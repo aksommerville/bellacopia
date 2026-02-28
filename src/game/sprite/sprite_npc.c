@@ -36,6 +36,12 @@ static void _npc_update(struct sprite *sprite,double elapsed) {
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
   }
+  if (GRP(hero)->sprc>0) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    double dx=hero->x-sprite->x;
+    if (dx<-0.5) sprite->xform=EGG_XFORM_XREV;
+    else if (dx>0.5) sprite->xform=0;
+  }
 }
 
 /* Collide.

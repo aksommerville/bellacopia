@@ -24,15 +24,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] !!! Segfault using magnifier in the gift shop.
-- - Happens reliably when you stand at +4,+2 from the merchant. Not in other places. ...was reading OOB maps at `game_find_secrets()`.
-- [x] Poke compass after you get the thing. Tricky...
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
+- [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
-- [x] Story modal overlay: Highlight HP and gold briefly when they change. ...nix this. Usually they change due to a battle or dialogue.
 - [ ] Handicap for monster and fishpole.
-- [x] Include the Egg Universal Menu stuff in system vellum: Input config, Language, Audio levels.
 - [ ] Pepper
 - [ ] Bomb
 - [ ] Stopwatch
@@ -44,34 +40,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Boomerang: Drop the other rang after one collides.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
-- [x] Chopping: Start with the belt populated. Too much lead time as is.
-- [x] Chopping: Randomize CPU play a little. At middling difficulty, Princess and Goat *always* end in a tie.
-- [x] Exterminating: AI is really bad, it gets stuck in loops sometimes. Princess shouldn't play this in real life, but still, it's painful to watch.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
-- [x] Princess could still use some attention. Sticks too long on corners, and continues moving while hookshotted. (these are tolerable, just not perfect).
-- [x] Princess: Can we give her a rotating arm, and she always points toward the castle? We already have logic like that for the compass.
-- [x] Does using the telescope kill the Princess? I suspect it will. Mitigate. ...it does. It also changes song if you pass over a map with the `song` command.
-- - Can we just mark her as "never delete due to distance"?
-- [x] Suspend pumpkin's movement while hookshotted.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
-- [x] Add a shop near the castle. Because as you're returning the Princess, you probably have lots of gold, but your purse is about to get maxed, great shopping opportunity.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [x] Instead of East to toggle item, use L1/R1 to step one-dimensionally thru the inventory. Since those buttons have to exist anyway.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
-- [x] Sprites have been observed stuck in the Labyrinth wall. Probably walked into the wall space before my first visit to the map and happened to be there.
-- - I think the right mitigation is in `sprite_monster`, have them detect stuck-in-wall and force themselves out.
-- - If not that, we'd have to refresh cells for the entire plane on entry. Which I guess is not too crazy?
-- - Need a better way to surface the bug. It's random, so maybe not an exact repro, but can we thumb the rsprite generator to make it likelier?
-- - Use a manual trap, a giant floor with a treadle that we can make it solid on demand. ...repro'd, easy.
-- [x] escalator: Continuously ramp down the motion for sprites near the bottom to mitigate jitter.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] The two outer world bits attached to the Temple, don't change song when you go outside, keep playing the Temple song.
-- [ ] Catch a sea monster in the Labyrinth.
 - [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
 - - I swear this is real, but on careful observation I can't reproduce it.
-- [x] racketeering: Ball can get stuck at the floor, and make obnoxious repetitive sound effects. Playwise, sticking on the floor doesn't seem so bad.
-- - Happens often enough if you serve from the very bottom. Tho not every time.
-- - Ha, I'd neglected to check the sign before flipping delta. With that fixed, it can still ride the floor but bounces realistically.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
