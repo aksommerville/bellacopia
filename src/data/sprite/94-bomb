@@ -1,4 +1,4 @@
-image image:meadow_sprites
-tile 42 0
-type (u16:sprtype)npc
+image image:hero
+tile 176 0
+type (u16:sprtype)bomb
 groups (b32:sprgrp)visible,update,solid,grabbable,moveable

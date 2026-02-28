@@ -1,5 +1,5 @@
 image image:meadow_sprites
 tile 38 0
 type (u16:sprtype)npc
-groups (b32:sprgrp)visible,solid,grabbable,update
+groups (b32:sprgrp)visible,solid,grabbable,update,moveable
 physics (b32:physics)solid,water,hole,grabbable,vanishable

@@ -63,6 +63,9 @@ struct sprite *sprite_spawn(
  */
 void sprite_kill_soon(struct sprite *sprite);
 
+// Nonzero if we can confirm without dereferencing, that (sprite) is still valid.
+int sprite_is_alive(struct sprite *sprite);
+
 /* Sprite type.
  ***********************************************************************/
  
@@ -87,6 +90,7 @@ void hero_injure(struct sprite *sprite,struct sprite *assailant);
 void sprite_hero_unanimate(struct sprite *sprite); // eg when launching a modal, force Dot to a neutral face.
 void sprite_hero_unvanish(struct sprite *sprite);
 double sprite_hero_get_match_time(struct sprite *sprite);
+int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y);
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

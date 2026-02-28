@@ -740,6 +740,36 @@ static void telescope_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Expose anything buried at this cell.
+ * Shovel uses it, and so does bomb.
+ */
+  
+int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  struct map *map=map_by_sprite_position(x,y,sprite->z);
+  if (!map) return 0;
+  int col=x%NS_sys_mapw;
+  int row=y%NS_sys_maph;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_buriedtreasure: {
+          if (cmd.arg[0]!=col) continue;
+          if (cmd.arg[1]!=row) continue;
+          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (store_get_fld(fld)) continue;
+          store_set_fld(fld,1);
+          int itemid=(cmd.arg[4]<<8)|cmd.arg[5];
+          int quantity=cmd.arg[6];
+          game_get_item(itemid,quantity);
+          return 1;
+        }
+    }
+  }
+  return 0;
+}
+
 /* Shovel. Update is passive.
  */
  
@@ -784,24 +814,7 @@ static int shovel_begin(struct sprite *sprite) {
   if (!hole) return 0;
   //TODO digging animation
   
-  // Scan map's commands for anything buried here.
-  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
-  struct cmdlist_entry cmd;
-  while (cmdlist_reader_next(&cmd,&reader)>0) {
-    switch (cmd.opcode) {
-      case CMD_map_buriedtreasure: {
-          if (cmd.arg[0]!=col) continue;
-          if (cmd.arg[1]!=row) continue;
-          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
-          if (store_get_fld(fld)) continue;
-          store_set_fld(fld,1);
-          int itemid=(cmd.arg[4]<<8)|cmd.arg[5];
-          int quantity=cmd.arg[6];
-          game_get_item(itemid,quantity);
-          return 1;
-        }
-    }
-  }
+  if (sprite_hero_unbury_treasure(sprite,SPRITE->qx,SPRITE->qy)) return 1;
   
   // Nothing buried here, so just make the dig sound and we're done.
   bm_sound(RID_sound_dig);
@@ -877,6 +890,36 @@ static int magnifier_begin(struct sprite *sprite) {
     }
   }
   bm_sound(soundid);
+  return 1;
+}
+
+/* Pepper. Creates a bonfire.
+ */
+ 
+static int pepper_begin(struct sprite *sprite) {
+  if (g.store.invstorev[0].quantity<1) return 0;
+  double x=sprite->x+SPRITE->facedx;
+  double y=sprite->y+SPRITE->facedy;
+  struct sprite *bonfire=sprite_spawn(x,y,RID_sprite_bonfire,0,0,0,0,0);
+  if (!bonfire) return 0;
+  g.store.invstorev[0].quantity--;
+  store_broadcast('i',NS_itemid_pepper,0);
+  bm_sound(RID_sound_pepper);
+  return 1;
+}
+
+/* Bomb. Just make the sprite.
+ */
+ 
+static int bomb_begin(struct sprite *sprite) {
+  if (g.store.invstorev[0].quantity<1) return 0;
+  double x=sprite->x+SPRITE->facedx;
+  double y=sprite->y+SPRITE->facedy;
+  struct sprite *bomb=sprite_spawn(x,y,RID_sprite_bomb,0,0,0,0,0);
+  if (!bomb) return 0;
+  g.store.invstorev[0].quantity--;
+  store_broadcast('i',NS_itemid_bomb,0);
+  bm_sound(RID_sound_bombdrop);
   return 1;
 }
 
@@ -990,6 +1033,8 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_telescope: result=telescope_begin(sprite); break;
       case NS_itemid_shovel: result=shovel_begin(sprite); break;
       case NS_itemid_magnifier: result=magnifier_begin(sprite); break;
+      case NS_itemid_pepper: result=pepper_begin(sprite); break;
+      case NS_itemid_bomb: result=bomb_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

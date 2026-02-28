@@ -198,6 +198,17 @@ void sprite_kill_soon(struct sprite *sprite) {
   sprite_group_add(GRP(deathrow),sprite);
 }
 
+/* Validate sprite without dereferencing.
+ */
+
+int sprite_is_alive(struct sprite *sprite) {
+  if (!sprite) return 0;
+  struct sprite **otherp=GRP(keepalive)->sprv;
+  int otheri=GRP(keepalive)->sprc;
+  for (;otheri-->0;otherp++) if (*otherp==sprite) return 1;
+  return 0;
+}
+
 /* Sprite type by id.
  */
 

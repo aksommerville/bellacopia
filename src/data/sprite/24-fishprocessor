@@ -1,4 +1,4 @@
 image image:meadow_sprites
 tile 46 0
 type (u16:sprtype)npc
-groups (b32:sprgrp)visible,update,solid,grabbable
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable

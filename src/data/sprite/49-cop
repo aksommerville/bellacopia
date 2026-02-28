@@ -1,5 +1,5 @@
 image image:fractia_sprites
 tile 130 0
 type (u16:sprtype)guild
-groups (b32:sprgrp)visible,update,solid,grabbable
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
 guild (u16:battle)traffic (u16)120 (u16:fld)endorse_public (u16)0

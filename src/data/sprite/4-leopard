@@ -1,7 +1,7 @@
 image image:meadow_sprites
 tile 0 0
 type (u16:sprtype)monster
-groups (b32:sprgrp)visible,update,solid,grabbable
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
 physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
 monster (u16:battle)fishing (u8:radius)0x30 (u8:speed)0x40 (u16)12 (u16)0
 hitbox -7 7 -7 7

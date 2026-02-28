@@ -92,6 +92,7 @@
 #define NS_sprgrp_floating     8 /* Presumably solid, but doesn't interact with treadles etc. */
 #define NS_sprgrp_light        9 /* Light source in darkened rooms. */
 #define NS_sprgrp_monsterlike 10 /* Hero, princess, candy, and anything else monsters pay attention to. */
+#define NS_sprgrp_moveable    11 /* Can be moved by external forces like bomb and snowglobe. */
 
 #define NS_transition_cut 0
 #define NS_transition_spotlight 1
@@ -252,6 +253,7 @@
 #define NS_sprtype_escalator   18 /* (u8)h (u24)0 */
 #define NS_sprtype_statue      19 /* (u32)0 */
 #define NS_sprtype_statuemaze  20 /* (u32)0 */
+#define NS_sprtype_bomb        21 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -273,7 +275,8 @@
   _(guild) \
   _(escalator) \
   _(statue) \
-  _(statuemaze)
+  _(statuemaze) \
+  _(bomb)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

@@ -144,7 +144,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
  
 void hero_injure(struct sprite *sprite,struct sprite *assailant) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return;
-  fprintf(stderr,"TODO %s %s:%d\n",__func__,__FILE__,__LINE__);
+  hero_hurt(sprite,assailant);
 }
 
 /* Collide.

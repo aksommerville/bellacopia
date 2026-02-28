@@ -1,5 +1,5 @@
 type (u16:sprtype)hero
-groups (b32:sprgrp)visible,update,hero,solid,monsterlike
+groups (b32:sprgrp)visible,update,hero,solid,monsterlike,moveable
 physics (b32:physics)solid,water,hole,grabbable,vanishable
 image image:hero
 tile 0x10 0

@@ -30,8 +30,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
-- [ ] Pepper
-- [ ] Bomb
+- [x] Pepper
+- [x] Bomb
 - [ ] Stopwatch
 - [ ] Portable Bus Stop
 - [ ] Snowglobe

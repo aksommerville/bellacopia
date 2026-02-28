@@ -1,5 +1,5 @@
 image image:hero
 tile 131 0
 type (u16:sprtype)candy
-groups (b32:sprgrp)visible,monsterlike,update
+groups (b32:sprgrp)visible,monsterlike,update,moveable
 layer (u16)90

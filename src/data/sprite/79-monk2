@@ -1,4 +1,4 @@
 image image:temple_sprites
 tile 17 0
 type (u16:sprtype)npc
-groups (b32:sprgrp)visible,update,solid,grabbable
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
