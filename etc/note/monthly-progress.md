@@ -50,15 +50,38 @@ We're now the largest Egg game by every metric except song count and songs lengt
 
 I'm particularly proud of the Chess battle, it's real Chess.
 
-Stats as of 1ae80f8053c74b6a6addf0eeca1990ffd5475b14, 2026-02-26:
- - Code: 37253 lines.
- - ROM size: 857067
- - Non-palceholder battles: 29
- - Casual full-clear time, no cheating: 59:44. (that was a poor session: I lost the Princess twice and died once)
+Stats as of 7bc584d2c8f33d06a3baa4677ce6a027dd2829c9, 2026-02-28:
+ - Code: 37958 lines.
+ - `rom=879491 code=455801 image=2276076px*38 song=4:29.782*6 sound=0:15.530*51 map=51840m*216`
+ - Non-placeholder battles: 29
+ - Casual full-clear time: 51:02, 93%, 17 items.
 
 ## March 2026
 
 Goals:
 - [ ] Finish placeholder battles (redfish+bluefish+fractia+labyrinth: 26).
 - [ ] Clear the short-term TODO list or punt to long-term.
-- [ ] Make 100% completion reachable. Not the final 100% of course, but let me see that number. I guess it's mostly by making the remaining items.
+- [ ] Make 100% completion reachable. Not the final 100% of course, but let me see that number.
+- [ ] All items working.
+
+## April 2026
+
+Goals:
+- [ ] 30 new battles.
+- [ ] Treasures placed and recorded.
+- [ ] Cutscenes started, finish at least one.
+- [ ] Proper acquisition of stories.
+
+## May 2026
+
+Goals:
+- [ ] 30 new battles.
+- [ ] All cutscenes complete.
+- [ ] Outerworld final. Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
+- [ ] User-friendly Arcade Mode.
+
+## June 2026
+
+Goals:
+- [ ] 30 new battles.
+- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished. Of course, we'll still have touch-up, tuning, and bugs.

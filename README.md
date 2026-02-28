@@ -96,6 +96,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
+- GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.
 - - [ ] Pins, buttons, stickers.
 - - [ ] Homemade stuffed witches, if I can work that out.
 - - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
@@ -105,7 +106,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Witch hats. Same idea as the dolls.
 - - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly (~$30 ea at a glance).
 - - [ ] Mini comic?
-- - [ ] Thumb drives. I still have 20 leftover from Spelling Bee.
+- - [ ] Thumb drives. I still have 20 leftover from Spelling Bee, if we want to make the shell ourselves.
+- - - customusb.com has some gorgeous shells and cases (they did the Plunder Squad bottles). $5-10 ea for the drives and another $5-10 for cases. A bit much.
+- - [ ] Instruction manual + strategy guide, to bundle with thumb drives.
 - - [ ] Book of sheet music.
 - - [ ] Videos.
 - - [ ] Book of Cheating. Maybe a digital edition?
