@@ -34,7 +34,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Stopwatch
 - [ ] Portable Bus Stop
 - [ ] Snowglobe
-- [ ] Five more items...
+- [ ] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
+- [ ] Phonograph. Change the outerworld's music.
+- [ ] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
+- [ ] Power Glove. Push heavy stones while wearing.
+- [ ] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
@@ -47,6 +51,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
 - - I swear this is real, but on careful observation I can't reproduce it.
+- [ ] Drop spell cold if battle begins while encoding.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

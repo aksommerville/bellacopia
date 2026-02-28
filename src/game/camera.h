@@ -11,7 +11,10 @@
  */
 #define CAMERA_SCOPE_LIMIT 4
 
-#define CAMERA_PAN_SPEED 10.0
+/* Dot's walk speed is 6 and broom speed 12.
+ * 12 by root 2 is just under 17. (broom speed is per-axis but camera speed rotates continuously).
+ */
+#define CAMERA_PAN_SPEED 17.0
 #define CAMERA_LOCK_DISTANCE 0.450
 #define CAMERA_TRANSITION_TIME 0.750
 
