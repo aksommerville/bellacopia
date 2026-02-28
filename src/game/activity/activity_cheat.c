@@ -41,11 +41,22 @@ void begin_cheat_store(struct sprite *initiator,int arg) {
         modal_shop_add_item(modal,NS_itemid_redfish,0,10);
         modal_shop_add_item(modal,NS_itemid_heart,0,10);
         modal_shop_add_item(modal,NS_itemid_pepper,0,10);
+        modal_shop_add_item(modal,NS_itemid_bomb,0,10);
       } break;
     case 3: {
         modal_shop_add_item(modal,NS_itemid_stick,0,1);
         modal_shop_add_item(modal,NS_itemid_heartcontainer,0,1);
         modal_shop_add_item(modal,NS_itemid_barrelhat,0,1);
+      } break;
+    case 4: { // Logically these belong in group 1, but there's too many.
+        modal_shop_add_item(modal,NS_itemid_stopwatch,0,1);
+        modal_shop_add_item(modal,NS_itemid_busstop,0,1);
+        modal_shop_add_item(modal,NS_itemid_snowglobe,0,1);
+        modal_shop_add_item(modal,NS_itemid_tapemeasure,0,1);
+        modal_shop_add_item(modal,NS_itemid_phonograph,0,1);
+        modal_shop_add_item(modal,NS_itemid_crystal,0,1);
+        modal_shop_add_item(modal,NS_itemid_glove,0,1);
+        modal_shop_add_item(modal,NS_itemid_marionette,0,1);
       } break;
   }
 }

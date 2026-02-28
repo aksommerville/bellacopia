@@ -146,6 +146,15 @@
 #define NS_itemid_letter2 28 /* ...improved */
 #define NS_itemid_letter3 29 /* red to blue */
 #define NS_itemid_letter4 30 /* ...improved */
+#define NS_itemid_bomb 31
+#define NS_itemid_stopwatch 32
+#define NS_itemid_busstop 33
+#define NS_itemid_snowglobe 34
+#define NS_itemid_tapemeasure 35
+#define NS_itemid_phonograph 36
+#define NS_itemid_crystal 37
+#define NS_itemid_glove 38
+#define NS_itemid_marionette 39
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -176,7 +185,16 @@
   _(letter1) \
   _(letter2) \
   _(letter3) \
-  _(letter4)
+  _(letter4) \
+  _(bomb) \
+  _(stopwatch) \
+  _(busstop) \
+  _(snowglobe) \
+  _(tapemeasure) \
+  _(phonograph) \
+  _(crystal) \
+  _(glove) \
+  _(marionette)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
