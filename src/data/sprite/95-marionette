@@ -1,0 +1,6 @@
+image image:hero
+tile 192 0
+type (u16:sprtype)marionette
+groups (b32:sprgrp)visible,update,solid
+physics (b32:physics)solid,grabbable,vanishable,water,hole
+hitbox -3 3 -4 4

@@ -344,6 +344,19 @@ static void hero_render_tapemeasure(struct sprite *sprite,int x,int y) {
   graf_set_image(&g.graf,sprite->imageid);
 }
 
+/* Marionette. Draw us puppeteering, the marionette itself is its own sprite.
+ */
+ 
+static void hero_render_marionette(struct sprite *sprite,int x,int y) {
+  uint8_t tileid=0x55;
+       if (SPRITE->indx<0) tileid+=3;
+  else if (SPRITE->indx>0) tileid+=4;
+  else if (SPRITE->indy<0) tileid+=2;
+  else if (SPRITE->indy>0) tileid+=1;
+  graf_tile(&g.graf,x,y,tileid,0);
+  hero_render_errata(sprite,x,y);
+}
+
 /* Render, main entry point.
  */
  
@@ -375,6 +388,7 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_telescope: hero_render_telescope(sprite,x,y); return;
     case NS_itemid_busstop: hero_render_busstop(sprite,x,y); return;
     case NS_itemid_tapemeasure: hero_render_tapemeasure(sprite,x,y); break; // And proceed with regular update.
+    case NS_itemid_marionette: hero_render_marionette(sprite,x,y); return;
   }
   
   /* When the shovel is armed, draw a preview square.

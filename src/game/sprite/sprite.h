@@ -95,6 +95,8 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y);
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();
 
+void sprite_marionette_set_input(struct sprite *sprite,int dx,int dy);
+
 /* Sprite group.
  *******************************************************************/
  

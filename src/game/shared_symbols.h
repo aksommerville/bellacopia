@@ -256,6 +256,7 @@
 #define NS_sprtype_statue      19 /* (u32)0 */
 #define NS_sprtype_statuemaze  20 /* (u32)0 */
 #define NS_sprtype_bomb        21 /* (u32)0 */
+#define NS_sprtype_marionette  22 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -278,7 +279,8 @@
   _(escalator) \
   _(statue) \
   _(statuemaze) \
-  _(bomb)
+  _(bomb) \
+  _(marionette)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

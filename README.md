@@ -39,7 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Phonograph. Change the outerworld's music.
 - [x] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
 - [ ] Power Glove. Push heavy stones while wearing.
-- [ ] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.
+- [x] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.

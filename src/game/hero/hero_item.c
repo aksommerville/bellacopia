@@ -997,6 +997,53 @@ static int crystal_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Marionette.
+ */
+ 
+static struct sprite *marionette_find() {
+  struct sprite **p=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;p++) {
+    if ((*p)->type==&sprite_type_marionette) return *p;
+  }
+  return 0;
+}
+ 
+static void marionette_update(struct sprite *sprite,double elapsed) {
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    SPRITE->itemid_in_progress=0;
+    sprite_kill_soon(marionette_find());
+  } else {
+    int nindx=0,nindy=0;
+    switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+      case EGG_BTN_LEFT: nindx=-1; break;
+      case EGG_BTN_RIGHT: nindx=1; break;
+    }
+    switch (g.input[0]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+      case EGG_BTN_UP: nindy=-1; break;
+      case EGG_BTN_DOWN: nindy=1; break;
+    }
+    if ((nindx!=SPRITE->indx)||(nindy!=SPRITE->indy)) {
+      SPRITE->indx=nindx;
+      SPRITE->indy=nindy;
+      sprite_marionette_set_input(marionette_find(),SPRITE->indx,SPRITE->indy);
+    }
+  }
+}
+
+static int marionette_begin(struct sprite *sprite) {
+  struct sprite *marionette=sprite_spawn(sprite->x+SPRITE->facedx,sprite->y+SPRITE->facedy,RID_sprite_marionette,0,0,0,0,0);
+  if (!marionette) return 0;
+  if (!sprite_test_position(marionette)) {
+    sprite_kill_soon(marionette);
+    return 0;
+  }
+  SPRITE->itemid_in_progress=NS_itemid_marionette;
+  SPRITE->indx=0;
+  SPRITE->indy=0;
+  return 1;
+}
+
 /* Swap items with inventory.
  */
  
@@ -1061,6 +1108,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_stopwatch: stopwatch_update(sprite,elapsed); break;
       case NS_itemid_busstop: busstop_update(sprite,elapsed); break;
       case NS_itemid_tapemeasure: tapemeasure_update(sprite,elapsed); break;
+      case NS_itemid_marionette: marionette_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
@@ -1117,6 +1165,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_tapemeasure: result=tapemeasure_begin(sprite); break;
       case NS_itemid_phonograph: result=phonograph_begin(sprite); break;
       case NS_itemid_crystal: result=crystal_begin(sprite); break;
+      case NS_itemid_marionette: result=marionette_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

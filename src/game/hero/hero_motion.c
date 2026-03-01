@@ -12,6 +12,7 @@ static int item_prevents_motion(uint8_t itemid) {
     case NS_itemid_potion:
     case NS_itemid_telescope:
     case NS_itemid_busstop:
+    case NS_itemid_marionette:
       return 1;
   }
   return 0;
