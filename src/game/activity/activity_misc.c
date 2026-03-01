@@ -28,3 +28,10 @@ void begin_phonograph() {
   }
   modal_dialogue_set_default(modal,g.song_playing);
 }
+
+/* Crystal Ball.
+ */
+ 
+void begin_crystal() {
+  modal_spawn(&modal_type_crystal,0,0);
+}

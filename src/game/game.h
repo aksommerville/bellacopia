@@ -130,6 +130,7 @@ void game_enable_target(int strix);
 /* Generate a list of select POI within a given radius of a point on one plane.
  * Never returns more than (dsta). Stops searching when full, so it doesn't necessarily return the closest.
  * Will not return secrets already got.
+ * For Magnifier.
  */
 struct secret {
   struct map *map;
@@ -138,6 +139,10 @@ struct secret {
   double d2; // (sqrt(d2)) if you need the real distance, I figure we don't always need it.
 };
 int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius);
+
+/* Generate textual advice for the Crystal Ball.
+ */
+int game_get_advice(char *dst,int dsta);
 
 /* Completion: completion.c
  **************************************************************************************/

@@ -56,5 +56,6 @@ void begin_poet(struct sprite *initiator);
 
 // activity_misc.c
 void begin_phonograph();
+void begin_crystal();
 
 #endif

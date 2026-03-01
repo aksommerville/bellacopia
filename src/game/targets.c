@@ -518,3 +518,12 @@ int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double
 
   return dstc;
 }
+
+/* General context-sensitive advice.
+ */
+
+int game_get_advice(char *dst,int dsta) {
+  if (!dst||(dsta<0)) dsta=0;
+  //TODO Context-sensitive advice.
+  return text_format_res(dst,dsta,RID_strings_advice,1+rand()%3,0,0);
+}

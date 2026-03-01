@@ -37,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Snowglobe
 - [x] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
 - [x] Phonograph. Change the outerworld's music.
-- [ ] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
+- [x] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
 - [ ] Power Glove. Push heavy stones while wearing.
 - [ ] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
@@ -80,6 +80,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [ ] More spells. Not sure what...
 - [ ] 5 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
+- [ ] Properer graphics for Crystal Ball. Very rough today.
+- [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

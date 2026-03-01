@@ -232,6 +232,7 @@
 #define NS_activity_templeshop 31
 #define NS_activity_generic_tolltroll 32 /* (price<<12)|fld */
 #define NS_activity_phonograph 33
+#define NS_activity_crystal 34
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
