@@ -984,6 +984,14 @@ static int tapemeasure_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Phonograph: Present a modal for changing the background music.
+ */
+ 
+static int phonograph_begin(struct sprite *sprite) {
+  game_begin_activity(NS_activity_phonograph,0,0);
+  return 1;
+}
+
 /* Swap items with inventory.
  */
  
@@ -1102,6 +1110,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_stopwatch: result=stopwatch_begin(sprite); break;
       case NS_itemid_busstop: result=busstop_begin(sprite); break;
       case NS_itemid_tapemeasure: result=tapemeasure_begin(sprite); break;
+      case NS_itemid_phonograph: result=phonograph_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

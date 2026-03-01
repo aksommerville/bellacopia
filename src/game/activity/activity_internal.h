@@ -54,4 +54,7 @@ void begin_capnred(struct sprite *initiator);
 void begin_capnblue(struct sprite *initiator);
 void begin_poet(struct sprite *initiator);
 
+// activity_misc.c
+void begin_phonograph();
+
 #endif

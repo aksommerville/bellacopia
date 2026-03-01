@@ -37,6 +37,21 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
   }
 }
 
+/* Test outerworld.
+ */
+ 
+int map_is_outerworld(const struct map *map) {
+  if (!map) return 0;
+  if (map->z==NS_plane_outerworld) return 1;
+  if (map->parent) {
+    const struct map *parent=map_by_id(map->parent);
+    if (parent) {
+      if (parent->z==NS_plane_outerworld) return 1;
+    }
+  }
+  return 0;
+}
+
 /* Reset store.
  */
  

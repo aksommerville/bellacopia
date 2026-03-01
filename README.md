@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Portable Bus Stop. The trigger is implemented. Need to make the actual bus and the warping.
 - [ ] Snowglobe
 - [x] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
-- [ ] Phonograph. Change the outerworld's music.
+- [x] Phonograph. Change the outerworld's music.
 - [ ] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
 - [ ] Power Glove. Push heavy stones while wearing.
 - [ ] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.

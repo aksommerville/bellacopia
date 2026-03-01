@@ -153,6 +153,16 @@ void game_get_sidequests(int *done,int *total);
  */
 int bm_song_for_outerworld();
 
+/* Fill (ridv) with the list of songs available for the outerworld, if you have a phonograph.
+ */
+struct song_name_and_rid {
+  int name; // RID_strings_item
+  int rid;
+};
+int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta);
+
+int bm_count_flowers(); // => 0..7
+
 /* Encryption puzzle: cryptmsg.c
  *******************************************************************************/
 

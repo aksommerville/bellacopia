@@ -34,6 +34,8 @@ struct map_extras {
 };
 void map_freshen_tiles(struct map *map,struct map_extras *extras);
 
+int map_is_outerworld(const struct map *map);
+
 /* Store.
  *********************************************************************************/
 

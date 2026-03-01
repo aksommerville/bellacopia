@@ -1,5 +1,20 @@
 #include "bellacopia.h"
 
+/* Count flowers.
+ */
+ 
+int bm_count_flowers() {
+  int flowerc=0;
+  if (store_get_fld(NS_fld_root1)) flowerc++;
+  if (store_get_fld(NS_fld_root2)) flowerc++;
+  if (store_get_fld(NS_fld_root3)) flowerc++;
+  if (store_get_fld(NS_fld_root4)) flowerc++;
+  if (store_get_fld(NS_fld_root5)) flowerc++;
+  if (store_get_fld(NS_fld_root6)) flowerc++;
+  if (store_get_fld(NS_fld_root7)) flowerc++;
+  return flowerc;
+}
+
 /* Measure completion.
  */
  
@@ -94,14 +109,11 @@ void game_get_sidequests(int *done,int *total) {
  */
  
 int bm_song_for_outerworld() {
-  int flowerc=0;
-  if (store_get_fld(NS_fld_root1)) flowerc++;
-  if (store_get_fld(NS_fld_root2)) flowerc++;
-  if (store_get_fld(NS_fld_root3)) flowerc++;
-  if (store_get_fld(NS_fld_root4)) flowerc++;
-  if (store_get_fld(NS_fld_root5)) flowerc++;
-  if (store_get_fld(NS_fld_root6)) flowerc++;
-  if (store_get_fld(NS_fld_root7)) flowerc++;
+  // If Dot has the Phonograph and has used it, it overrides the default.
+  int phonograph=store_get_fld16(NS_fld16_phonograph);
+  if (phonograph) return phonograph;
+  // Otherwise, it depends how many Root Devils have been strangled. Order doesn't matter.
+  int flowerc=bm_count_flowers();
   switch (flowerc) {
     case 0: return RID_song_pretty_pretty_pickle;
     case 1: return RID_song_barrel_of_salt;
@@ -111,6 +123,29 @@ int bm_song_for_outerworld() {
     case 5: return RID_song_barrel_of_salt;//TODO
     case 6: return RID_song_barrel_of_salt;//TODO
     case 7: return RID_song_barrel_of_salt;//TODO
-    default: return RID_song_barrel_of_salt;
   }
+  // And our universal fallback (won't happen) is Barrel of Salt.
+  return RID_song_barrel_of_salt;
+}
+
+/* List available outerworld songs.
+ */
+ 
+int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
+  int dstc=0;
+  int flowerc=bm_count_flowers();
+  #define AVAILABLE(strix,tag) { \
+    if (dstc<dsta) dstv[dstc]=(struct song_name_and_rid){strix,RID_song_##tag}; \
+    dstc++; \
+  }
+  AVAILABLE(86,pretty_pretty_pickle)
+  if (flowerc>=1) AVAILABLE(87,barrel_of_salt)
+  if (flowerc>=2) AVAILABLE(88,feet_to_the_fire)
+  if (flowerc>=3) AVAILABLE(89,barrel_of_salt)//TODO
+  if (flowerc>=4) AVAILABLE(90,barrel_of_salt)//TODO
+  if (flowerc>=5) AVAILABLE(91,barrel_of_salt)//TODO
+  if (flowerc>=6) AVAILABLE(92,barrel_of_salt)//TODO
+  if (flowerc>=7) AVAILABLE(93,barrel_of_salt)//TODO
+  #undef AVAILABLE
+  return dstc;
 }

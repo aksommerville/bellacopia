@@ -114,7 +114,7 @@ int game_focus_map(struct map *map) {
       //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
     }
   }
-  if ((map->z==NS_plane_outerworld)&&!g.song_override_outerworld) {
+  if (!g.song_override_outerworld&&map_is_outerworld(map)) {
     bm_song_gently(bm_song_for_outerworld());
   }
   return 0;

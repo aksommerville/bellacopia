@@ -164,6 +164,7 @@ void modal_pause_set_inventory_position(int p);
 
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.
+int modal_dialogue_add_option_string_id(struct modal *modal,int rid,int strix,int optionid); // same, but explicit (optionid)
 void modal_dialogue_set_default(struct modal *modal,int optionid); // Must add the option first.
 void modal_dialogue_set_callback(struct modal *modal,int (*cb)(int optionid,void *userdata),void *userdata);
 struct modal *modal_dialogue_simple(int rid,int strix); // Convenience for static text.

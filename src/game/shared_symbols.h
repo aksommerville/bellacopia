@@ -231,6 +231,7 @@
 #define NS_activity_castleshop 30
 #define NS_activity_templeshop 31
 #define NS_activity_generic_tolltroll 32 /* (price<<12)|fld */
+#define NS_activity_phonograph 33
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -495,6 +496,7 @@
 #define NS_fld16_compassoption 8
 #define NS_fld16_cryptmsg_seed 9
 #define NS_fld16_labyrinth_seed 10
+#define NS_fld16_phonograph 11 /* Zero for default, or explicit song rid for outerworld. */
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
