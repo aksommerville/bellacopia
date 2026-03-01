@@ -923,6 +923,67 @@ static int bomb_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Stopwatch. The real magic happens at the sprites updater, we just turn it on and off.
+ */
+ 
+static void stopwatch_update(struct sprite *sprite,double elapsed) {
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    SPRITE->itemid_in_progress=0;
+    g.stopwatch=0;
+  } else {
+    if ((SPRITE->stopwatchclock-=elapsed)<=0.0) {
+      SPRITE->stopwatchclock+=0.250;
+      bm_sound(RID_sound_tick);
+    }
+  }
+}
+
+static int stopwatch_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_stopwatch;
+  SPRITE->stopwatchclock=0.0;
+  g.stopwatch=1;
+  return 1;
+}
+
+/* Portable Bus Stop.
+ */
+ 
+static void busstop_update(struct sprite *sprite,double elapsed) {
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    SPRITE->itemid_in_progress=0;
+  }
+}
+
+static int busstop_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_busstop;
+  fprintf(stderr,"%s:%d:TODO: Summon bus at %d,%d\n",__FILE__,__LINE__,(int)sprite->x,(int)sprite->y);
+  return 1;
+}
+
+/* Tape Measure.
+ */
+ 
+static void tapemeasure_update(struct sprite *sprite,double elapsed) {
+  if (sprite->z!=SPRITE->tapez) { // Walk thru a door, it aborts.
+    SPRITE->itemid_in_progress=0;
+  } else if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    SPRITE->itemid_in_progress=0;
+  } else {
+    double dx=sprite->x-SPRITE->tapeanchorx;
+    double dy=sprite->y-SPRITE->tapeanchory;
+    SPRITE->tapedistance=sqrt(dx*dx+dy*dy);
+  }
+}
+
+static int tapemeasure_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_tapemeasure;
+  SPRITE->tapeanchorx=sprite->x;
+  SPRITE->tapeanchory=sprite->y;
+  SPRITE->tapedistance=0.0;
+  SPRITE->tapez=sprite->z;
+  return 1;
+}
+
 /* Swap items with inventory.
  */
  
@@ -984,6 +1045,9 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_hookshot: hookshot_update(sprite,elapsed); break;
       case NS_itemid_potion: potion_update(sprite,elapsed); break;
       case NS_itemid_telescope: telescope_update(sprite,elapsed); break;
+      case NS_itemid_stopwatch: stopwatch_update(sprite,elapsed); break;
+      case NS_itemid_busstop: busstop_update(sprite,elapsed); break;
+      case NS_itemid_tapemeasure: tapemeasure_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
@@ -1035,6 +1099,9 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_magnifier: result=magnifier_begin(sprite); break;
       case NS_itemid_pepper: result=pepper_begin(sprite); break;
       case NS_itemid_bomb: result=bomb_begin(sprite); break;
+      case NS_itemid_stopwatch: result=stopwatch_begin(sprite); break;
+      case NS_itemid_busstop: result=busstop_begin(sprite); break;
+      case NS_itemid_tapemeasure: result=tapemeasure_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

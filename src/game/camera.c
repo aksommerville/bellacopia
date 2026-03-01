@@ -603,6 +603,39 @@ static void camera_render_darkness() {
   }
 }
 
+/* Chronflakes: Little sparkles all over the screen, when the stopwatch is being used.
+ * This both renders them and advances by one frame.
+ */
+ 
+#define CHRONFLAKE_TTL 60
+ 
+static void camera_render_chronflakes() {
+  while (g.camera.chronflakec<CHRONFLAKE_LIMIT) {
+    struct chronflake *flake=g.camera.chronflakev+g.camera.chronflakec++;
+    flake->x=rand()%FBW;
+    flake->y=rand()%FBH;
+    flake->ttl=rand()%CHRONFLAKE_TTL;
+  }
+  graf_set_input(&g.graf,0);
+  const int halfttl=CHRONFLAKE_TTL>>1;
+  struct chronflake *flake=g.camera.chronflakev+g.camera.chronflakec-1;
+  int i=g.camera.chronflakec;
+  for (;i-->0;flake--) {
+    if (--(flake->ttl)<=0) {
+      g.camera.chronflakec--;
+      memmove(flake,flake+1,sizeof(struct chronflake)*(g.camera.chronflakec-i));
+    } else {
+      int alpha;
+      if (flake->ttl>=halfttl) alpha=CHRONFLAKE_TTL-flake->ttl;
+      else alpha=flake->ttl;
+      alpha=(flake->ttl*255)/halfttl;
+      if (alpha<=0) continue;
+      if (alpha>0xff) alpha=0xff;
+      graf_point(&g.graf,flake->x,flake->y,0xffffff00|alpha);
+    }
+  }
+}
+
 /* Render.
  */
 
@@ -661,6 +694,12 @@ void camera_render_pretransition(int dsttexid) {
    */
   if ((g.camera.darkness>0.0)||(g.flash>0.0)) {
     camera_render_darkness();
+  }
+  
+  /* Chronflakes, if stopwatch'd.
+   */
+  if (g.stopwatch) {
+    camera_render_chronflakes();
   }
   
   //TODO Weather.

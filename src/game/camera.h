@@ -18,6 +18,8 @@
 #define CAMERA_LOCK_DISTANCE 0.450
 #define CAMERA_TRANSITION_TIME 0.750
 
+#define CHRONFLAKE_LIMIT 120
+
 // Global singleton (g.camera).
 struct camera {
 
@@ -47,7 +49,11 @@ struct camera {
   double lightness;
   double teledx,teledy; // Telescope offset in pixels. We apply it, hero sets it directly.
   
-  //TODO weather
+  struct chronflake {
+    int x,y;
+    int ttl;
+  } chronflakev[CHRONFLAKE_LIMIT];
+  int chronflakec;
   
   int listenerid_next;
   struct map_listener {

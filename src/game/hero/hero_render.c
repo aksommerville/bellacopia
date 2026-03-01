@@ -304,6 +304,46 @@ static void hero_render_telescope(struct sprite *sprite,int x,int y) {
   graf_tile(&g.graf,x+SPRITE->facedx*NS_sys_tilesize,y+SPRITE->facedy*NS_sys_tilesize,scopetile,xform);
 }
 
+/* Bus Stop.
+ */
+ 
+static void hero_render_busstop(struct sprite *sprite,int x,int y) {
+  graf_tile(&g.graf,x,y,0x09,0);
+  graf_tile(&g.graf,x-NS_sys_tilesize,y,0x08,0);
+  hero_render_errata(sprite,x,y);
+}
+
+/* Tape measure, just the extra bits.
+ */
+ 
+static void hero_render_tapemeasure(struct sprite *sprite,int x,int y) {
+  int ax=(int)(SPRITE->tapeanchorx*NS_sys_tilesize)-g.camera.rx;
+  int ay=(int)(SPRITE->tapeanchory*NS_sys_tilesize)-g.camera.ry;
+  graf_set_input(&g.graf,0);
+  graf_line(&g.graf,ax,ay,0xffff00ff,x,y,0xffff00ff);
+  
+  char msg[5];
+  int msgc=0;
+  int m=(int)SPRITE->tapedistance;
+  if (m<0) m=0;
+  else if (m>999) m=999;
+  if (m>=100) msg[msgc++]='0'+m/100;
+  if (m>= 10) msg[msgc++]='0'+(m/10)%10;
+  msg[msgc++]='0'+m%10;
+  msg[msgc++]=' ';
+  msg[msgc++]='m';
+  
+  graf_set_image(&g.graf,RID_image_fonttiles);
+  int texty=y-NS_sys_tilesize;
+  int textx=x-(msgc*4)+4;
+  int i=0;
+  for (;i<msgc;i++,textx+=8) {
+    graf_tile(&g.graf,textx,texty,msg[i],0);
+  }
+  
+  graf_set_image(&g.graf,sprite->imageid);
+}
+
 /* Render, main entry point.
  */
  
@@ -333,6 +373,8 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_hookshot: hero_render_hookshot(sprite,x,y); return;
     case NS_itemid_potion: hero_render_potion(sprite,x,y); return;
     case NS_itemid_telescope: hero_render_telescope(sprite,x,y); return;
+    case NS_itemid_busstop: hero_render_busstop(sprite,x,y); return;
+    case NS_itemid_tapemeasure: hero_render_tapemeasure(sprite,x,y); break; // And proceed with regular update.
   }
   
   /* When the shovel is armed, draw a preview square.

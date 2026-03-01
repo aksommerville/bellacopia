@@ -105,11 +105,16 @@ static void _story_update(struct modal *modal,double elapsed) {
   if (playtime) (*playtime)+=elapsed;
   
   // Update sprites, then kill those that have run out of funk.
+  double elapsed_most=elapsed;
+  if (g.stopwatch) elapsed_most*=0.100;
   int i=GRP(update)->sprc;
   while (i-->0) {
     struct sprite *sprite=GRP(update)->sprv[i];
     if (sprite->defunct) continue;
-    if (sprite->type->update) sprite->type->update(sprite,elapsed);
+    if (sprite->type->update) {
+      if (sprite->type==&sprite_type_hero) sprite->type->update(sprite,elapsed);
+      else sprite->type->update(sprite,elapsed_most);
+    }
   }
   sprite_group_kill_all(GRP(deathrow));
   

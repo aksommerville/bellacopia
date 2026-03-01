@@ -32,10 +32,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Handicap for monster and fishpole.
 - [x] Pepper
 - [x] Bomb
-- [ ] Stopwatch
-- [ ] Portable Bus Stop
+- [x] Stopwatch
+- [ ] Portable Bus Stop. The trigger is implemented. Need to make the actual bus and the warping.
 - [ ] Snowglobe
-- [ ] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
+- [x] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
 - [ ] Phonograph. Change the outerworld's music.
 - [ ] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
 - [ ] Power Glove. Push heavy stones while wearing.
