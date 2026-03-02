@@ -1044,6 +1044,46 @@ static int marionette_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Snowglobe. Dot stands still like encoding with the wand, but every stroke creates an earthquake.
+ */
+ 
+static void snowglobe_update(struct sprite *sprite,double elapsed) {
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    SPRITE->itemid_in_progress=0;
+    return;
+  }
+  // For aesthetic reasons mostly, each stroke has a minimum cooldown time.
+  if (SPRITE->snowglobeclock>0.0) {
+    SPRITE->snowglobeclock-=elapsed;
+    return;
+  }
+  // If we're holding some direction, it must return to neutral before anything else.
+  switch (SPRITE->wanddir) {
+    case 'L': if (g.input[0]&EGG_BTN_LEFT) return; break;
+    case 'R': if (g.input[0]&EGG_BTN_RIGHT) return; break;
+    case 'U': if (g.input[0]&EGG_BTN_UP) return; break;
+    case 'D': if (g.input[0]&EGG_BTN_DOWN) return; break;
+  }
+  char nwanddir=0;
+  if (g.input[0]&EGG_BTN_LEFT) nwanddir='L';
+  else if (g.input[0]&EGG_BTN_RIGHT) nwanddir='R';
+  else if (g.input[0]&EGG_BTN_UP) nwanddir='U';
+  else if (g.input[0]&EGG_BTN_DOWN) nwanddir='D';
+  if (nwanddir==SPRITE->wanddir) return;
+  SPRITE->wanddir=nwanddir;
+  if (nwanddir) {
+    SPRITE->snowglobeclock=0.333;
+    bm_start_earthquake(nwanddir);
+  }
+}
+
+static int snowglobe_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_snowglobe;
+  SPRITE->wanddir=0;
+  SPRITE->snowglobeclock=0.0;
+  return 1;
+}
+
 /* Swap items with inventory.
  */
  
@@ -1109,6 +1149,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_busstop: busstop_update(sprite,elapsed); break;
       case NS_itemid_tapemeasure: tapemeasure_update(sprite,elapsed); break;
       case NS_itemid_marionette: marionette_update(sprite,elapsed); break;
+      case NS_itemid_snowglobe: snowglobe_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
@@ -1166,6 +1207,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_phonograph: result=phonograph_begin(sprite); break;
       case NS_itemid_crystal: result=crystal_begin(sprite); break;
       case NS_itemid_marionette: result=marionette_begin(sprite); break;
+      case NS_itemid_snowglobe: result=snowglobe_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

@@ -37,10 +37,12 @@ void game_update(double elapsed) {
   if (g.flash>0.0) {
     g.flash-=elapsed;
   }
-  
   if (g.vanishing>0.0) {
     g.vanishing-=elapsed;
   }
+  
+  // Weather.
+  if (g.eqclock>0.0) bm_update_earthquake(elapsed);
 }
 
 /* Map becomes visible.

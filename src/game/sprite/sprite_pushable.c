@@ -60,6 +60,7 @@ static void pushable_begin_move(struct sprite *sprite) {
   SPRITE->targetx=tx+0.5;
   SPRITE->targety=ty+0.5;
   SPRITE->moveclock=SLIDE_GIVEUP_TIME; // All motion is much faster than 1 m/s. If we're still trying after so long, give up.
+  bm_sound(RID_sound_push);
 }
 
 static void pushable_end_move(struct sprite *sprite) {

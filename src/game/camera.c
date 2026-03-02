@@ -409,6 +409,14 @@ void camera_update(double elapsed) {
     idealy+=g.camera.teledy;
   }
   
+  /* If an earthquake is going on, effect the shaking by nudging (ideal).
+   */
+  if (g.eqclock>0.0) {
+    double eqd=sin(g.eqclock*22.000)*(2.0/NS_sys_tilesize);
+    if ((g.eqdx<-0.5)||(g.eqdx>0.5)) idealy+=eqd;
+    else idealx+=eqd;
+  }
+  
   /* Advance (fx,fy) toward (idealx,idealy) at a global speed limit.
    * If we're within a pixel of it, just snap. (bear in mind this is running always).
    * Ditto in cut and lock cases.

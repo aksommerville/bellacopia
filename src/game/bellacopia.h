@@ -78,6 +78,7 @@ extern struct g {
   int gameover; // Set nonzero to end story-mode play.
   int telescoping; // Telescope in use. Some viewport-sensitive ops get suspended.
   int stopwatch;
+  double eqclock,eqdx,eqdy; // Earthquake.
 } g;
 
 /* Misc global API.

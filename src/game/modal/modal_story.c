@@ -119,7 +119,7 @@ static void _story_update(struct modal *modal,double elapsed) {
   sprite_group_kill_all(GRP(deathrow));
   
   // Other updatey things.
-  game_update(elapsed);
+  game_update(elapsed_most);
   feet_update();
   camera_update(elapsed);
   

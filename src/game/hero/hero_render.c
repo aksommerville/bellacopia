@@ -357,6 +357,24 @@ static void hero_render_marionette(struct sprite *sprite,int x,int y) {
   hero_render_errata(sprite,x,y);
 }
 
+/* Snowglobe. Same idea and layout as wand. (but no rejection or encoding).
+ */
+ 
+static void hero_render_snowglobe(struct sprite *sprite,int x,int y) {
+  uint8_t tileid=0xd0;
+  uint8_t wtileid=0;
+  int wdx=0,wdy=0;
+  switch (SPRITE->wanddir) { // sic "wanddir"
+    case 'U': tileid+=3; wtileid=tileid+0x10; wdy=-NS_sys_tilesize; break;
+    case 'L': tileid+=1; wtileid=tileid+0x10; wdx=-NS_sys_tilesize; break;
+    case 'R': tileid+=2; wtileid=tileid+0x10; wdx=NS_sys_tilesize; break;
+    case 'D': tileid+=4; wtileid=tileid+0x10; wdy=NS_sys_tilesize; break;
+  }
+  graf_tile(&g.graf,x,y,tileid,0);
+  if (wtileid) graf_tile(&g.graf,x+wdx,y+wdy,wtileid,0);
+  hero_render_errata(sprite,x,y);
+}
+
 /* Render, main entry point.
  */
  
@@ -389,6 +407,7 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_busstop: hero_render_busstop(sprite,x,y); return;
     case NS_itemid_tapemeasure: hero_render_tapemeasure(sprite,x,y); break; // And proceed with regular update.
     case NS_itemid_marionette: hero_render_marionette(sprite,x,y); return;
+    case NS_itemid_snowglobe: hero_render_snowglobe(sprite,x,y); return;
   }
   
   /* When the shovel is armed, draw a preview square.

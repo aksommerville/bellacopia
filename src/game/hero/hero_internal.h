@@ -23,7 +23,7 @@ struct sprite_hero {
     uint8_t tileid;
   } divining_alertv[9];
   double divining_alert_clock;
-  char wanddir; // 0,'LRUD'
+  char wanddir; // 0,'LRUD'. Also used by Snowglobe, for rendering.
   char spell[SPELL_LIMIT]; // 'LRUD.'
   int spellc;
   double spellrejectclock;
@@ -49,6 +49,7 @@ struct sprite_hero {
   double tapeanchorx,tapeanchory;
   double tapedistance;
   int tapez;
+  double snowglobeclock;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

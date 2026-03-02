@@ -235,4 +235,13 @@ const struct story *story_by_index_present(int p); // Contiguous (p) but only re
  */
 void game_tell_story(const struct story *story);
 
+/* Weather and such: weather.c
+ ***********************************************************************/
+ 
+/* (dir) is [LRUD], the direction of the snowglobe stroke.
+ * Loose objects will slide the opposite direction.
+ */
+void bm_start_earthquake(char dir);
+void bm_update_earthquake(double elapsed);
+
 #endif

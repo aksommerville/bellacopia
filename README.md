@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Bomb
 - [x] Stopwatch
 - [ ] Portable Bus Stop. The trigger is implemented. Need to make the actual bus and the warping.
-- [ ] Snowglobe
+- [x] Snowglobe
 - [x] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
 - [x] Phonograph. Change the outerworld's music.
 - [x] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
