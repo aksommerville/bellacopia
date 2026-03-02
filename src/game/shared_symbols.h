@@ -38,6 +38,7 @@
 #define CMD_map_seal            0x46 /* u16:pos u16:id ; For crypto puzzle, but can be a generic "standing on something" poi. (1,2,3)=(bone,leaf,star) */
 #define CMD_map_switchable2     0x47 /* u16:pos u16:fld ; Same as `switchable` but tileid+2 if set, for double-wide features. */
 #define CMD_map_target          0x48 /* u16:pos u16:strix ; strings:item, loose unflagged targets for compass and princess. */
+#define CMD_map_busstop         0x49 /* u16:pos u16:busstop ; Place on the sign itself, should be solid with room below. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
@@ -81,6 +82,13 @@
 #define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
 #define NS_plane_labyrinth1 4 /* jungle */
 #define NS_plane_temple_ground 5
+
+#define NS_busstop_cheapside 1
+#define NS_busstop_fractia 2
+#define NS_busstop_temple 3
+#define NS_busstop_castle 4
+#define NS_busstop_magneticnorth 5
+#define NS_busstop_botire 6
 
 #define NS_sprgrp_keepalive    0 /* All sprites are in this group. */
 #define NS_sprgrp_deathrow     1 /* Everything here gets killed at the end of each update. */
@@ -234,6 +242,7 @@
 #define NS_activity_generic_tolltroll 32 /* (price<<12)|fld */
 #define NS_activity_phonograph 33
 #define NS_activity_crystal 34
+#define NS_activity_busstop 35 /* (u16)busstop */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -259,6 +268,7 @@
 #define NS_sprtype_bomb        21 /* (u32)0 */
 #define NS_sprtype_marionette  22 /* (u32)0 */
 #define NS_sprtype_pushable    23 /* (u32)0 */
+#define NS_sprtype_bus         24 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -283,7 +293,8 @@
   _(statuemaze) \
   _(bomb) \
   _(marionette) \
-  _(pushable)
+  _(pushable) \
+  _(bus)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

@@ -380,6 +380,9 @@ static void hero_render_snowglobe(struct sprite *sprite,int x,int y) {
  
 void hero_render(struct sprite *sprite,int x,int y) {
 
+  // If we got on the bus, don't render anything.
+  if (SPRITE->busstop_clock>0.0) return;
+
   /* When creamed to vanishment, we strobe 1/2.
    */
   if (g.vanishing>0.0) {

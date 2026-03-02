@@ -24,22 +24,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] !!! Freeze talking to compasstech, immediately after getting the compass. ...broke when I added the Princess's arm.
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
-- [x] Pepper
-- [x] Bomb
-- [x] Stopwatch
-- [ ] Portable Bus Stop. The trigger is implemented. Need to make the actual bus and the warping.
-- [x] Snowglobe
-- [x] Tape measure. Hold A and it shows exactly how far to the point where you started. So we can give clues like "43 meters west of the statue".
-- [x] Phonograph. Change the outerworld's music.
-- [x] Crystal Ball. Context-sensitive advice. Make it remniscent of a Magic 8-Ball.
-- [x] Power Glove. Push heavy stones while wearing.
-- [x] Marionette. Move it around while holding A, disappears when you release. Buy upgrades for Fireproof and Waterproof. For throwing remote switches, eg.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.

@@ -35,3 +35,53 @@ void begin_phonograph() {
 void begin_crystal() {
   modal_spawn(&modal_type_crystal,0,0);
 }
+
+/* Bus stop.
+ * This is just when you look at a fixed bus stop, it doesn't do anything but talk.
+ */
+ 
+static const struct busstop_metadata {
+  int busstop;
+  int strix; // RID_strings_item
+} busstop_metadatav[]={
+  {NS_busstop_cheapside,     94},
+  {NS_busstop_fractia,       95},
+  {NS_busstop_temple,        96},
+  {NS_busstop_castle,        97},
+  {NS_busstop_magneticnorth, 98},
+  {NS_busstop_botire,        99},
+};
+ 
+void begin_busstop(int busstop) {
+  int strix=0;
+  const struct busstop_metadata *metadata=busstop_metadatav;
+  int i=sizeof(busstop_metadatav)/sizeof(struct busstop_metadata);
+  for (;i-->0;metadata++) {
+    if (metadata->busstop!=busstop) continue;
+    strix=metadata->strix;
+    break;
+  }
+  if (!strix) {
+    fprintf(stderr,"%s:%d: No metadata for busstop %d.\n",__FILE__,__LINE__,busstop);
+    return;
+  }
+  struct modal_args_dialogue args={
+    .rid=RID_strings_item,
+    .strix=strix,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}
+
+int busstop_by_index(int p) {
+  if (p<0) return 0;
+  int c=sizeof(busstop_metadatav)/sizeof(struct busstop_metadata);
+  if (p>=c) return 0;
+  return busstop_metadatav[p].busstop;
+}
+
+int busstop_name_by_index(int p) {
+  if (p<0) return 0;
+  int c=sizeof(busstop_metadatav)/sizeof(struct busstop_metadata);
+  if (p>=c) return 0;
+  return busstop_metadatav[p].strix;
+}

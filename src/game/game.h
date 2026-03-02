@@ -96,6 +96,9 @@ int tolltroll_get_appearance();
  */
 int game_cast_spell(const char *src,int srcc);
 
+int busstop_by_index(int p);
+int busstop_name_by_index(int p);
+
 /* Compass targets: targets.c
  ********************************************************************************/
 

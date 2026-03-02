@@ -956,7 +956,8 @@ static void busstop_update(struct sprite *sprite,double elapsed) {
 
 static int busstop_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_busstop;
-  fprintf(stderr,"%s:%d:TODO: Summon bus at %d,%d\n",__FILE__,__LINE__,(int)sprite->x,(int)sprite->y);
+  struct sprite *bus=sprite_spawn(sprite->x,sprite->y,RID_sprite_bus,0,0,0,0,0);
+  if (!bus) return 0;
   return 1;
 }
 

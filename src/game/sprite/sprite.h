@@ -91,6 +91,7 @@ void sprite_hero_unanimate(struct sprite *sprite); // eg when launching a modal,
 void sprite_hero_unvanish(struct sprite *sprite);
 double sprite_hero_get_match_time(struct sprite *sprite);
 int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y);
+void sprite_hero_warp_busstop(struct sprite *sprite,int busstop);
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

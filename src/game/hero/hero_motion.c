@@ -174,6 +174,12 @@ static void hero_check_bumps(struct sprite *sprite) {
             modal_spawn(&modal_type_dialogue,&args,sizeof(args));
           }
         } break;
+      case CMD_map_busstop: {
+          if (cmd.arg[0]!=x) break;
+          if (cmd.arg[1]!=y) break;
+          int busstop=(cmd.arg[2]<<8)|cmd.arg[3];
+          game_begin_activity(NS_activity_busstop,busstop,0);
+        } break;
     }
   }
 }

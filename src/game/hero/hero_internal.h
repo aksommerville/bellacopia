@@ -58,6 +58,8 @@ struct sprite_hero {
   int ignoreqx,ignoreqy; // My quantized position *in just one map* immediately after a door transition. Ignore any POI that arrive here, until we've moved some.
   
   int store_listener;
+  double busstop_clock;
+  int busstop_mapid,busstop_col,busstop_row;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)

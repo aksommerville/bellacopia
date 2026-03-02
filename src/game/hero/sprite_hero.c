@@ -99,10 +99,46 @@ static void hero_hazards_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Callback from camera after a door transition.
+ */
+ 
+static void hero_cb_map(struct map *map,int focus,void *userdata) {
+  if (focus!=2) return; // Wait for "gained primary focus".
+  struct sprite *sprite=userdata;
+  camera_unlisten(SPRITE->door_listener);
+  SPRITE->door_listener=0;
+  sprite->x=SPRITE->doorx;
+  sprite->y=SPRITE->doory;
+  sprite->z=map->z;
+  SPRITE->ignoreqx=(int)sprite->x-map->lng*NS_sys_mapw;
+  SPRITE->ignoreqy=(int)sprite->y-map->lat*NS_sys_maph;
+  SPRITE->busstop_clock=0.0;
+  
+  if (SPRITE->respawn_princess) {
+    struct sprite *princess=sprite_spawn(sprite->x,sprite->y+0.125,RID_sprite_princess,0,0,0,0,0);
+    if (princess) {
+      sprite_group_remove(GRP(solid),princess);
+    }
+  }
+}
+
 /* Update.
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
+  
+  if (SPRITE->busstop_clock>0.0) {
+    if ((SPRITE->busstop_clock-=elapsed)<=0.0) {
+      if (!SPRITE->door_listener) {
+        SPRITE->door_listener=camera_listen_map(hero_cb_map,sprite);
+        SPRITE->door_clock=3.000; // Panic if this expires. Must be longer than camera's door transition.
+      }
+      sprite->z=-1; // Poison our plane, so camera doesn't try to outsmart the transition.
+      SPRITE->busstop_clock=10.0;
+      camera_cut(SPRITE->busstop_mapid,SPRITE->busstop_col,SPRITE->busstop_row,NS_transition_fadeblack);
+    }
+    return;
+  }
 
   if (SPRITE->door_listener) {
     if ((SPRITE->door_clock-=elapsed)<=0.0) {
@@ -153,28 +189,6 @@ void hero_injure(struct sprite *sprite,struct sprite *assailant) {
 static void _hero_collide(struct sprite *sprite,struct sprite *other) {
   if (sprite_group_has(GRP(hazard),other)) {
     hero_injure(sprite,other);
-  }
-}
-
-/* Callback from camera after a door transition.
- */
- 
-static void hero_cb_map(struct map *map,int focus,void *userdata) {
-  if (focus!=2) return; // Wait for "gained primary focus".
-  struct sprite *sprite=userdata;
-  camera_unlisten(SPRITE->door_listener);
-  SPRITE->door_listener=0;
-  sprite->x=SPRITE->doorx;
-  sprite->y=SPRITE->doory;
-  sprite->z=map->z;
-  SPRITE->ignoreqx=(int)sprite->x-map->lng*NS_sys_mapw;
-  SPRITE->ignoreqy=(int)sprite->y-map->lat*NS_sys_maph;
-  
-  if (SPRITE->respawn_princess) {
-    struct sprite *princess=sprite_spawn(sprite->x,sprite->y+0.125,RID_sprite_princess,0,0,0,0,0);
-    if (princess) {
-      sprite_group_remove(GRP(solid),princess);
-    }
   }
 }
 
@@ -263,4 +277,43 @@ void sprite_hero_unanimate(struct sprite *sprite) {
 double sprite_hero_get_match_time(struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return 0.0;
   return SPRITE->matchclock;
+}
+
+/* Warp to a bus stop.
+ */
+ 
+static struct map *find_busstop(struct cmdlist_entry *cmd,int busstop) {
+  struct plane *plane=g.mapstore.planev;
+  int planei=g.mapstore.planec;
+  for (;planei-->0;plane++) {
+    struct map *map=plane->v;
+    int mapi=plane->w*plane->h;
+    for (;mapi-->0;map++) {
+      struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+      struct cmdlist_entry entry;
+      while (cmdlist_reader_next(&entry,&reader)>0) {
+        if (entry.opcode==CMD_map_busstop) {
+          int q=(entry.arg[2]<<8)|entry.arg[3];
+          if (q==busstop) {
+            *cmd=entry;
+            return map;
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void sprite_hero_warp_busstop(struct sprite *sprite,int busstop) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  struct cmdlist_entry cmd={0};
+  struct map *map=find_busstop(&cmd,busstop);
+  if (!map) return;
+  SPRITE->busstop_col=cmd.arg[0];
+  SPRITE->busstop_row=cmd.arg[1]+1;
+  SPRITE->doorx=map->lng*NS_sys_mapw+SPRITE->busstop_col+0.5;
+  SPRITE->doory=map->lat*NS_sys_maph+SPRITE->busstop_row+0.5;
+  SPRITE->busstop_mapid=map->rid;
+  SPRITE->busstop_clock=1.0;
 }

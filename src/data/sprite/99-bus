@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 64 0
+type (u16:sprtype)bus
+groups (b32:sprgrp)visible,update,solid
+hitbox -24 24 -16 16
