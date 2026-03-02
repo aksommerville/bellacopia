@@ -52,6 +52,7 @@
 #define CMD_sprite_tile         0x21 /* u8:tileid u8:xform */
 #define CMD_sprite_type         0x22 /* u16:sprtype */
 #define CMD_sprite_layer        0x23 /* u16:layer ; hero at 100 */
+#define CMD_sprite_weight       0x24 /* u16:weight ; NS_sprtype_pushable. 0=always, 1=glove */
 #define CMD_sprite_physics      0x40 /* b32:physics ; which are impassable */
 #define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups       0x42 /* b32:sprgrp */
@@ -257,6 +258,7 @@
 #define NS_sprtype_statuemaze  20 /* (u32)0 */
 #define NS_sprtype_bomb        21 /* (u32)0 */
 #define NS_sprtype_marionette  22 /* (u32)0 */
+#define NS_sprtype_pushable    23 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -280,7 +282,8 @@
   _(statue) \
   _(statuemaze) \
   _(bomb) \
-  _(marionette)
+  _(marionette) \
+  _(pushable)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
