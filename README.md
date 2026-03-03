@@ -21,9 +21,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-01-29: Added some shops and placeholder King. Should be possible to do everything except Magnifier and Telescope now without cheating. ...confirmed. Done in about 22 minutes.
 - 2026-01-31: On track I think. Starting monthly reports.
 - 2026-02-07: Fed up with GIMP 3, so me and Alex are taking a brief aside to write a new text editor and image editor. How hard could that be?
+- - ...well that's kind of back-burnered now, don't worry, i'm on it.
+- 2026-03-02: Dividing time for a while, making a game and judging Uplifting Jam #7.
 
 ## TODO
 
+- [ ] chess: Init in invalid state, not one move from mate. Had a Knight and a Bishop.
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.

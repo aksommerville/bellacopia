@@ -61,8 +61,8 @@ Stats as of 7bc584d2c8f33d06a3baa4677ce6a027dd2829c9, 2026-02-28:
 Goals:
 - [ ] Finish placeholder battles (redfish+bluefish+fractia+labyrinth: 26).
 - [ ] Clear the short-term TODO list or punt to long-term.
-- [ ] Make 100% completion reachable. Not the final 100% of course, but let me see that number.
-- [ ] All items working.
+- [x] Make 100% completion reachable. Not the final 100% of course, but let me see that number. ...2 March
+- [x] All items working. ...2 March
 
 ## April 2026
 
