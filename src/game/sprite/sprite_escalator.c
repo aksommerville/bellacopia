@@ -51,6 +51,11 @@ static void escalator_move_pumpkins(struct sprite *sprite,double dy) {
     if (db<taper_distance) {
       sprite_move(other,0.0,(dy*db)/taper_distance);
     } else {
+      if (other->type==&sprite_type_hero) {
+        if (sprite_hero_is_injured(other)) {
+          continue;
+        }
+      }
       sprite_move(other,0.0,dy);
     }
   }

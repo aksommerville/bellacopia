@@ -317,3 +317,11 @@ void sprite_hero_warp_busstop(struct sprite *sprite,int busstop) {
   SPRITE->busstop_mapid=map->rid;
   SPRITE->busstop_clock=1.0;
 }
+
+/* Trivial accessors.
+ */
+ 
+int sprite_hero_is_injured(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  return (SPRITE->hurt>0.0)?1:0;
+}
