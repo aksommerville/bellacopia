@@ -37,6 +37,7 @@ struct store {
   
   int dirty; // Outsiders may set, if you change something.
   double savedebounce;
+  int loaded;
   
   struct store_listener {
     int listenerid;

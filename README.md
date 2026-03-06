@@ -52,10 +52,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
+- [x] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
 - - I swear this is real, but on careful observation I can't reproduce it.
 - - Looks like we save the store at quit, whether it's been loaded or not.
 - [ ] Drop spell cold if battle begins while encoding.
+- [x] Second heart container doesn't actually add a heart container. Happens regardless of the order you get them.
+- - ...they were present all along, just getting chopped off at the story modal's overlay.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

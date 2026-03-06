@@ -253,7 +253,8 @@ static int store_load_fail() {
 
 int store_load(const char *k,int kc) {
   if (!k) kc=0; else if (kc<0) { kc=0; while (k[kc]) kc++; }
-  fprintf(stderr,"%s '%.*s'...\n",__func__,kc,k);
+  //fprintf(stderr,"%s '%.*s'...\n",__func__,kc,k);
+  g.store.loaded=1;
   g.store.listenerc=0;
   g.store.listenerid_next=1;
   
@@ -339,7 +340,7 @@ int store_load(const char *k,int kc) {
   // Scan for treadles and such.
   store_force_agreement_with_poi();
   
-  fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
+  //fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
   return store_sanitize();
 }
 
@@ -428,7 +429,7 @@ static int store_save_now(const char *k,int kc) {
     fprintf(stderr,"%s: Failed to save store, encoded to %d bytes\n",__func__,serialc);
     return -1;
   } else {
-    fprintf(stderr,"%s: Saved store as '%.*s', %d bytes\n",__func__,kc,k,serialc);
+    //fprintf(stderr,"%s: Saved store as '%.*s', %d bytes\n",__func__,kc,k,serialc);
   }
   return 0;
 }

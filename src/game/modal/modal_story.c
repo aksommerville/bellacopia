@@ -135,7 +135,7 @@ static void story_refresh_overlay(struct modal *modal) {
   graf_flush(&g.graf);
 
   if (!MODAL->overlay.texid) {
-    MODAL->overlay.w=50;
+    MODAL->overlay.w=82;
     MODAL->overlay.h=25;
     MODAL->overlay.texid=egg_texture_new();
     egg_texture_load_raw(MODAL->overlay.texid,MODAL->overlay.w,MODAL->overlay.h,MODAL->overlay.w<<2,0,0);
