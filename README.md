@@ -26,7 +26,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] chess: Init in invalid state, not one move from mate. Had a Knight and a Bishop.
+- [x] chess: Init in invalid state, not one move from mate. Had a Knight and a Bishop.
+- - Repro'd, not necessarily the same case, with 0xd32be63d: Anastasia's Mate, but the White King blocks the White Rook.
+- - Easy fix for that. But now I'm doubtful. Play at least a hundred games randomly.
+- - 0xcbd07419: boden. Probably is mateable but I couldn't see it. ...it's mateable, my bad.
+- - 0xfa516a4d: corneredking. Bails out at init. ...must forbid agent knight when the holder is a queen (already doing that if bishop).
+- - 0xb0cddcd4: corneredking. Bails out at init, Knight's attack position blocks the holder Rook.
+- - 0xdcf79a44: boden. "Illegal setboard 0,-1", and bails out. ...I'd missed a clamping case in gen_boden.
+- [x] Play chess 100 times in a row, confirm no illegal boards. ...87-13 at difficulty 0x80, and feeling pretty good about it.
+- [x] Generate millions of chess boards under automation, confirm no bail-outs.
+- - 0x0000003f ...fixed
+- - ...Generated the first 0x00820000 (~8.5M) with no errors. Let's call it ok.
 - [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.

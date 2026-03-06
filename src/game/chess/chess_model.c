@@ -597,7 +597,6 @@ int chess_one_move_from_mate(const uint8_t *board) {
    */
   uint16_t movev[CHESS_MOVES_LIMIT_ALL];
   int movec=chess_list_team_moves(movev,CHESS_MOVES_LIMIT_ALL,board,1,0);
-  //fprintf(stderr,"%s: Considering %d White moves...\n",__func__,movec);
   
   /* Now the expensive part.
    * Examine every White move.
@@ -621,23 +620,19 @@ int chess_one_move_from_mate(const uint8_t *board) {
     if ((fromx==wx)&&(fromy==wy)) whitecheck=chess_is_check(tmp,tox,toy);
     else whitecheck=chess_is_check(tmp,wx,wy);
     if (whitecheck) {
-      //fprintf(stderr,"%s: Disregarding (%d,%d)=>(%d,%d) because it leaves the White King in check.\n",__func__,fromx,fromy,tox,toy);
       tmp[toy*8+tox]=toprev;
       tmp[fromy*8+fromx]=fromprev;
       continue;
     }
     
     if (chess_is_mate(tmp,kingx,kingy)) {
-      //fprintf(stderr,"%s: 0x%02x@(%d,%d)=>0x%02x@(%d,%d) yields mate.\n",__func__,fromprev,fromx,fromy,toprev,tox,toy);
       int wx,wy;
       if (chess_find_piece(&wx,&wy,board,PIECE_WHITE|PIECE_KING)<0) return 1; // No White King? Well, um, I guess it's still mate.
       if (!chess_is_check(tmp,wx,wy)) { // Black is mated and White is not in check. Gotcha!
+        // This is the log to enable, if you want the generator's opinion of how to solve:
         //fprintf(stderr,"%s: Mate by moving 0x%02x from (%d,%d) to (%d,%d)\n",__func__,fromprev,fromx,fromy,tox,toy);
         return 1;
       }
-      //fprintf(stderr,"%s: ...but it checks the White King so never mind.\n",__func__);
-    } else {
-      //fprintf(stderr,"%s: (%d,%d)=>(%d,%d) does not mate the Black King.\n",__func__,fromx,fromy,tox,toy);
     }
     
     // Back it out and try the next.

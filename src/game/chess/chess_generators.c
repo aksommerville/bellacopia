@@ -47,6 +47,7 @@ static void setboard(uint8_t *board,int x,int y,uint8_t v) {
  */
  
 static void gen_rookroll(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Choose 3 distinct columns, and the Rooks are not in the columns adjacent to the Black King.
   // Actually make it 4. Let's put White King in his own column so we don't have to worry about blocking.
   int colv[8]={0,1,2,3,4,5,6,7};
@@ -72,6 +73,7 @@ static void gen_rookroll(uint8_t *board) {
  */
  
 static void gen_kingnrook(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Random column for the two Kings, then the agent goes at least 2 away from there.
   int colv[8]={0,1,2,3,4,5,6,7};
   int colc=8,kingx,agentx;
@@ -93,101 +95,82 @@ static void gen_kingnrook(uint8_t *board) {
  */
  
 static void gen_corneredking(uint8_t *board) {
-  int wkingx=rand()&1;
-  setboard(board,0,0,PIECE_BLACK|PIECE_KING);
-  setboard(board,wkingx,2,PIECE_WHITE|PIECE_KING);
-  // Holder piece can be Knight(2), Bishop(6), Rook(0|6--don't block the diagonal), Queen(any Bishop or Rook position), or Pawn(1).
-  int holderx,holdery,holderpiece;
-  int candidatec=wkingx?15:27; // Rook or Queen in column 1 is only an option when our King isn't blocking it.
-  int choice=rand()%candidatec;
-       if (!choice--) { holderx=2; holdery=2; holderpiece=PIECE_WHITE|PIECE_KNIGHT; }
-  else if (!choice--) { holderx=3; holdery=1; holderpiece=PIECE_WHITE|PIECE_KNIGHT; }
-  else if (!choice--) { holderx=2; holdery=1; holderpiece=PIECE_WHITE|PIECE_PAWN; }
-  else if (choice<6) { holderx=2+choice; holdery=1+choice; holderpiece=PIECE_WHITE|PIECE_BISHOP; }
-  else if (choice<12) { choice-=6; holderx=2+choice; holdery=1+choice; holderpiece=PIECE_WHITE|PIECE_QUEEN; }
-  else if (choice<18) { choice-=12; holderx=1; holdery=2+choice; holderpiece=PIECE_WHITE|PIECE_ROOK; }
-  else { choice-=18; holderx=1; holdery=2+choice; holderpiece=PIECE_WHITE|PIECE_QUEEN; }
-  setboard(board,holderx,holdery,holderpiece);
-  // Agent can be almost anything. One King position rules out Pawn, and one combination of (King,Holder) rules out Knight.
-  int agentpiecev[5]={PIECE_ROOK,PIECE_BISHOP};
-  int agentpiecec=2;
-  if (holderpiece!=(PIECE_WHITE|PIECE_QUEEN)) agentpiecev[agentpiecec++]=PIECE_QUEEN;
-  if (!wkingx&&(holderx!=1)) agentpiecev[agentpiecec++]=PIECE_PAWN;
-  if (!wkingx||(holderx!=2)||(holdery!=1)) {
-    if (wkingx&&(holderpiece==(PIECE_WHITE|PIECE_BISHOP))) {
-      // Can't use Knight here, because it would cut off the holder's line of sight.
-    } else {
-      agentpiecev[agentpiecec++]=PIECE_KNIGHT;
-    }
-  }
-  uint8_t agentpiece=agentpiecev[rand()%agentpiecec];
-  // Place the agent randomly so it's one move from check. Varies according to role.
-  int agentx,agenty;
-  switch (agentpiece) {
-    case PIECE_PAWN: {
-        agentx=1;
-        agenty=2;
-      } break;
-    case PIECE_ROOK: {
-        // There are more valid positions than this, but whatever this is plenty.
-        int colv[6]={2,3,4,5,6,7};
-        int colc=rmvalue(colv,6,holderx);
-        pickone(&agentx,colv,colc);
-        agenty=1+rand()%7;
-      } break;
-    case PIECE_BISHOP: {
-        // Any unoccupied even cell where (x!=y). (x==y) is the attack line.
-        // I don't like these unbounded loops, but come on, almost all of the board is valid. (we can force evenness)
-        for (;;) {
-          agentx=rand()&7;
-          agenty=(rand()&6)|(agentx&1);
-          if (agentx==agenty) continue;
-          if (board[agenty*8+agentx]) continue;
-          break;
-        }
-      } break;
-    case PIECE_QUEEN: {
-        // Do the same as Rook, but forbid the attack line since that would be an illegal initial check.
-        int colv[6]={2,3,4,5,6,7};
-        int colc=rmvalue(colv,6,holderx);
-        pickone(&agentx,colv,colc);
-        for (;;) { // Again, very unlikely to spend much time in this loop, don't worry about it.
+  //fprintf(stderr,"%s\n",__func__);
+  // The randomization here is riddled with errors. But it does work most of the time.
+  // Rather that solving for real, let's run in a loop until we get a valid arrangement.
+  for (;;) {
+    int wkingx=rand()&1;
+    setboard(board,0,0,PIECE_BLACK|PIECE_KING);
+    setboard(board,wkingx,2,PIECE_WHITE|PIECE_KING);
+    // Holder piece can be Knight(2), Bishop(6), Rook(0|6--don't block the diagonal), Queen(any Bishop or Rook position), or Pawn(1).
+    int holderx,holdery,holderpiece;
+    int candidatec=wkingx?15:27; // Rook or Queen in column 1 is only an option when our King isn't blocking it.
+    int choice=rand()%candidatec;
+         if (!choice--) { holderx=2; holdery=2; holderpiece=PIECE_WHITE|PIECE_KNIGHT; }
+    else if (!choice--) { holderx=3; holdery=1; holderpiece=PIECE_WHITE|PIECE_KNIGHT; }
+    else if (!choice--) { holderx=2; holdery=1; holderpiece=PIECE_WHITE|PIECE_PAWN; }
+    else if (choice<6) { holderx=2+choice; holdery=1+choice; holderpiece=PIECE_WHITE|PIECE_BISHOP; }
+    else if (choice<12) { choice-=6; holderx=2+choice; holdery=1+choice; holderpiece=PIECE_WHITE|PIECE_QUEEN; }
+    else if (choice<18) { choice-=12; holderx=1; holdery=2+choice; holderpiece=PIECE_WHITE|PIECE_ROOK; }
+    else { choice-=18; holderx=1; holdery=2+choice; holderpiece=PIECE_WHITE|PIECE_QUEEN; }
+    setboard(board,holderx,holdery,holderpiece);
+    // Agent can be almost anything. One King position rules out Pawn.
+    // Knights are usable most of the time but they tend to block our holder in hard-to-predict ways.
+    // Since I'm not comfortable actually solving for the Knight, just don't use it.
+    int agentpiecev[5]={PIECE_ROOK,PIECE_BISHOP};
+    int agentpiecec=2;
+    if (holderpiece!=(PIECE_WHITE|PIECE_QUEEN)) agentpiecev[agentpiecec++]=PIECE_QUEEN;
+    if (!wkingx&&(holderx!=1)) agentpiecev[agentpiecec++]=PIECE_PAWN;
+    uint8_t agentpiece=agentpiecev[rand()%agentpiecec];
+    // Place the agent randomly so it's one move from check. Varies according to role.
+    int agentx,agenty;
+    switch (agentpiece) {
+      case PIECE_PAWN: {
+          agentx=1;
+          agenty=2;
+        } break;
+      case PIECE_ROOK: {
+          // There are more valid positions than this, but whatever this is plenty.
+          int colv[6]={2,3,4,5,6,7};
+          int colc=rmvalue(colv,6,holderx);
+          pickone(&agentx,colv,colc);
           agenty=1+rand()%7;
-          if (agentx!=agenty) break;
-        }
-      } break;
-    case PIECE_KNIGHT: {
-        // 8 possible positions. Must check each for both the before and after, both must be vacant. There will always be at least 3 options.
-        uint8_t candidatev[8]; // (x<<4)|y
-        candidatec=0;
-        #define IFVACANT(x,y) if (!board[(y)*8+(x)]) candidatev[candidatec++]=((x)<<4)|(y);
-        if (!board[2*8+1]) { // Four possible ways to approach our King's right hand.
-          IFVACANT(0,4)
-          IFVACANT(2,4)
-          IFVACANT(3,3)
-          IFVACANT(3,1)
-        }
-        if (holderpiece!=(PIECE_WHITE|PIECE_BISHOP)) { // Don't use the far position if a Bishop is holding; we'd cut off his line of sight.
-          if (!board[1*8+2]) { // Four possible ways to the attack position further from our King. Don't block a holding Rook or Queen!
-            IFVACANT(4,0)
-            IFVACANT(4,2)
-            IFVACANT(3,3)
-            if (holderx!=1) { IFVACANT(1,3) }
+        } break;
+      case PIECE_BISHOP: {
+          // Any unoccupied even cell where (x!=y). (x==y) is the attack line.
+          // I don't like these unbounded loops, but come on, almost all of the board is valid. (we can force evenness)
+          for (;;) {
+            agentx=rand()&7;
+            agenty=(rand()&6)|(agentx&1);
+            if (agentx==agenty) continue;
+            if (board[agenty*8+agentx]) continue;
+            break;
           }
-        }
-        #undef IFVACANT
-        int candidatep=rand()%candidatec;
-        agentx=candidatev[candidatep]>>4;
-        agenty=candidatev[candidatep]&7;
-      } break;
+        } break;
+      case PIECE_QUEEN: {
+          // Do the same as Rook, but forbid the attack line since that would be an illegal initial check.
+          int colv[6]={2,3,4,5,6,7};
+          int colc=rmvalue(colv,6,holderx);
+          pickone(&agentx,colv,colc);
+          for (;;) { // Again, very unlikely to spend much time in this loop, don't worry about it.
+            agenty=1+rand()%7;
+            if (agentx!=agenty) break;
+          }
+        } break;
+    }
+    setboard(board,agentx,agenty,PIECE_WHITE|agentpiece);
+    //fprintf(stderr,"%s: holder=%d,%d agent=%d,%d\n",__func__,holderx,holdery,agentx,agenty);
+    if (chess_one_move_from_mate(board)) return;
+    //fprintf(stderr,"%s:%d: corneredking board was not one move from mate. retrying...\n",__FILE__,__LINE__);
+    memset(board,0,64);
   }
-  setboard(board,agentx,agenty,PIECE_WHITE|agentpiece);
 }
 
 /* arabian: Black King is cornered with a White Knight watching both cardinal escapes. White Rook is ready to enter one of those cardinals.
  */
  
 static void gen_arabian(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   setboard(board,2,2,PIECE_WHITE|PIECE_KNIGHT);
   setboard(board,1,2+rand()%6,PIECE_WHITE|((rand()&1)?PIECE_ROOK:PIECE_QUEEN));
@@ -198,6 +181,7 @@ static void gen_arabian(uint8_t *board) {
  */
  
 static void gen_foolsmate(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Black back row is always its initial state. Some things could be moved decoratively, but meh, it's complicated.
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -240,6 +224,7 @@ static void gen_foolsmate(uint8_t *board) {
  */
  
 static void gen_scholarsmate(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Black back row is always its initial state.
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -287,6 +272,7 @@ static void gen_scholarsmate(uint8_t *board) {
  */
  
 static void gen_legalsmate(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // We're seven moves in. On the Black side, they're mostly dummy Pawn moves, one King move, and one unfortunate Pawn move that matters (column 3).
   setboard(board,0,0,PIECE_BLACK|PIECE_ROOK);
   setboard(board,1,0,PIECE_BLACK|PIECE_KNIGHT);
@@ -328,6 +314,7 @@ static void gen_legalsmate(uint8_t *board) {
  */
  
 static void gen_backrank(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   int colv[8]={0,1,2,3,4,5,6,7};
   int kingx;
   int colc=pickone(&kingx,colv,8);
@@ -341,11 +328,12 @@ static void gen_backrank(uint8_t *board) {
   for (;;) {
     agenty=2+rand()%6;
     wy=2+rand()%6;
+    if (board[agenty*8+agentx]||board[wy*8+wx]) continue;
     setboard(board,agentx,agenty,PIECE_WHITE|((rand()&1)?PIECE_ROOK:PIECE_QUEEN));
     setboard(board,wx,wy,PIECE_WHITE|PIECE_KING);
     if (chess_is_check(board,wx,wy)||!chess_one_move_from_mate(board)) {
-      setboard(board,agentx,agenty,0);
-      setboard(board,wx,wy,0);
+      board[agenty*8+agentx]=0;
+      board[wy*8+wx]=0;
     } else {
       return;
     }
@@ -356,6 +344,7 @@ static void gen_backrank(uint8_t *board) {
  */
  
 static void gen_smother(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   // The two pieces in front of the Black King are Bishop, Rook, or Knight. Rook can't be adjacent to the threatening position.
   // Not using Pawn for these, because those would prevent the board from transforming.
@@ -363,7 +352,7 @@ static void gen_smother(uint8_t *board) {
   setboard(board,1,1,PIECE_BLACK|((rand()&1)?PIECE_BISHOP:PIECE_KNIGHT));
   // The last piece locking in the Black King is a Knight or Rook. Queen or Bishop would be able to take the White Knight in his threatening position.
   setboard(board,1,0,PIECE_BLACK|((rand()&1)?PIECE_KNIGHT:PIECE_ROOK));
-  // Put the White King anywhere that he's not in check, before the White Knight appears. Also exclude the four White Knight candidates.
+  // Put the White King anywhere that he's not in check, before the White Knight appears. Also exclude the four White Knight candidates and the two attack positions.
   for (;;) {
     int x=rand()&7;
     int y=rand()&7;
@@ -371,6 +360,8 @@ static void gen_smother(uint8_t *board) {
     if ((x==3)&&(y==3)) continue;
     if ((x==4)&&(y==2)) continue;
     if ((x==4)&&(y==0)) continue;
+    if ((x==1)&&(y==2)) continue;
+    if ((x==2)&&(y==1)) continue;
     if (board[y*8+x]) continue;
     board[y*8+x]=PIECE_WHITE|PIECE_KING;
     if (!chess_is_check(board,x,y)) break;
@@ -389,6 +380,7 @@ static void gen_smother(uint8_t *board) {
  */
  
 static void gen_anastasia(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Use a Black Rook for the blocker.
   // Pawn would prevent transform, Knight would extend the blackout range, and Bishop or Queen could block the agent.
   int kingx=rand()&7;
@@ -411,7 +403,7 @@ static void gen_anastasia(uint8_t *board) {
     if (board[wy*8+wx]) continue;
     if ((wx==agentx)&&(wy<=agenty)) continue; // outta my way, your highness!
     board[wy*8+wx]=PIECE_WHITE|PIECE_KING;
-    if (!chess_is_check(board,wx,wy)) return;
+    if (!chess_is_check(board,wx,wy)&&chess_one_move_from_mate(board)) return;
     board[wy*8+wx]=0;
   }
 }
@@ -421,6 +413,7 @@ static void gen_anastasia(uint8_t *board) {
  */
  
 static void gen_epaulette(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   int kingx=rand()&7;
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   if (kingx>0) setboard(board,kingx-1,0,PIECE_BLACK|PIECE_ROOK);
@@ -484,6 +477,7 @@ static void gen_epaulette(uint8_t *board) {
  */
  
 static void gen_boden(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   int kingx=2+rand()%5; // Leave at least one free column on the right, and two on the left.
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   uint8_t backblockpiece;
@@ -511,6 +505,7 @@ static void gen_boden(uint8_t *board) {
   int rstepc=7-agentx;
   int dstepc=7-agenty;
   if (dstepc<rstepc) rstepc=dstepc;
+  if (agenty<lstepc) lstepc=agenty;
   int choice=rand()%(lstepc+rstepc);
   if (choice<lstepc) {
     agentx-=choice+1;
@@ -527,7 +522,7 @@ static void gen_boden(uint8_t *board) {
     if (board[7*8+wx]) continue;
     setboard(board,wx,7,PIECE_WHITE|PIECE_KING);
     if (chess_is_check(board,wx,7)) { // Rare but possible. Try again.
-      setboard(board,wx,7,0);
+      board[7*8+wx]=0;
     } else {
       break;
     }
@@ -641,6 +636,7 @@ static void protected_white_queen(uint8_t *board,int atkx,int atky,int kingx,int
  */
  
 static void gen_dovetail(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Black King goes anywhere but the edges.
   int kingx=1+rand()%6;
   int kingy=1+rand()%6;
@@ -659,6 +655,7 @@ static void gen_dovetail(uint8_t *board) {
  */
  
 static void gen_swallowtail(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Black King goes anywhere except the edges.
   int kingx=1+rand()%6;
   int kingy=1+rand()%6;
@@ -680,6 +677,7 @@ static void gen_swallowtail(uint8_t *board) {
  */
  
 static void gen_opera(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   int kingx=1+rand()%6; // Needs one column left and right.
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
   // Rear bodyguard can be Rook, Bishop, Knight, or Queen.
@@ -717,6 +715,7 @@ static void gen_opera(uint8_t *board) {
  */
  
 static void gen_blackburn(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   setboard(board,0,1,PIECE_WHITE|PIECE_BISHOP);
   setboard(board,1,0,PIECE_WHITE|PIECE_KNIGHT);
@@ -751,6 +750,7 @@ static void gen_blackburn(uint8_t *board) {
  */
  
 static void gen_damiano(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   // Black King, his coterie, and a White Bishop holding them in.
   int kingx=rand()%7;
   setboard(board,kingx,0,PIECE_BLACK|PIECE_KING);
@@ -805,6 +805,7 @@ static void gen_damiano(uint8_t *board) {
  */
  
 static void gen_morphy(uint8_t *board) {
+  //fprintf(stderr,"%s\n",__func__);
   setboard(board,0,0,PIECE_BLACK|PIECE_KING);
   // On the King's right, either his Bishop, or a White Rook guarding the column.
   if (rand()&1) {

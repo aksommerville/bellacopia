@@ -120,6 +120,7 @@ int chess_board_generate_distractions_carefully(uint8_t *board,int addc) {
   // If we're not one move from mate to begin with, nothing is going to work.
   if (!chess_one_move_from_mate(board)) {
     fprintf(stderr,"%s: Initial board is not one move from mate.\n",__func__);
+    //chess_log_board(board);
     return 0;
   }
   

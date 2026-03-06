@@ -9,7 +9,7 @@
 #include "game/bellacopia.h"
 #include "game/battle/battle.h"
 
-#define PRESELECT_BATTLE NS_battle_racketeering
+#define PRESELECT_BATTLE NS_battle_chess
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
@@ -36,6 +36,7 @@ struct modal_arcade {
   int horzpv,vertpv;
   int horzc; // handicap adjustment gets wider as it runs
   double input_blackout;
+  int winc,losec,tiec; // TEMP? Log these totals to the console after each battle.
   
   struct label {
     int labelid;
@@ -229,7 +230,10 @@ static void _arcade_notify(struct modal *modal,int k,int v) {
 
 static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userdata) {
   struct modal *modal=userdata;
-  fprintf(stderr,"%s: outcome=%d\n",__func__,outcome);
+  if (outcome<0) MODAL->losec++;
+  else if (outcome>0) MODAL->winc++;
+  else MODAL->tiec++;
+  fprintf(stderr,"%s: outcome=%d. (w,l,t)=(%d,%d,%d)=%d\n",__func__,outcome,MODAL->winc,MODAL->losec,MODAL->tiec,MODAL->winc+MODAL->losec+MODAL->tiec);
   MODAL->outcome=outcome;
   struct label *label=arcade_label_by_id(modal,LABELID_OUTCOME);
   if (label) arcade_rewrite_label_outcome(modal,label);

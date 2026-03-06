@@ -74,6 +74,7 @@ static uint32_t chess_color(int face) {
  */
  
 static int _chess_init(struct battle *battle) {
+  //srand(0x0000003f);
   //fprintf(stderr,"%s: seed 0x%08x\n",__func__,get_rand_seed());
 
   BATTLE->playerv[0].who=0;
@@ -106,7 +107,7 @@ static int _chess_init(struct battle *battle) {
   } else { // Man vs CPU or CPU vs CPU.
     BATTLE->king_taunt=1.0;
     double difficulty=battle_scalar_difficulty(battle);
-    chess_game_init(&BATTLE->chess_game,'1',difficulty);
+    if (chess_game_init(&BATTLE->chess_game,'1',difficulty)<0) return -1;
     BATTLE->use_clock=1;
     BATTLE->clock=CLOCK_HARD*difficulty+CLOCK_EASY*(1.0-difficulty);
   }
@@ -493,7 +494,6 @@ static void chess_update_player(struct battle *battle,struct player *player,doub
     
   // Black CPU player. He doesn't play. If his turn arises it means the white player failed to achieve checkmate.
   } else if (player->who) {
-    fprintf(stderr,"%s:%d: Player reached the dummy CPU player. Assume the human failed to achieve checkmate as required.\n",__FILE__,__LINE__);
     battle->outcome=-1;
     chess_highlight_failure(battle);
     
