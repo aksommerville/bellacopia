@@ -45,8 +45,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
-- [ ] Boomerang: Drop the other rang after one collides.
-- [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
+- [x] Boomerang: Drop the other rang after one collides.
+- [x] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [x] Hiring: Randomize choice and order of criteria above a certain difficulty.

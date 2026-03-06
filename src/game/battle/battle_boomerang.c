@@ -18,7 +18,7 @@
 #define JUMP_DECEL    300.0 /* px/s**2 */
 #define JUMP_INITIAL -150.0 /* px/s */
 #define JUDGMENT_EASIEST 3
-#define JUDGMENT_HARDEST 15
+#define JUDGMENT_HARDEST 10
 
 #define FACE_IDLE 0
 #define FACE_JUMP 1
