@@ -22,6 +22,7 @@ struct map {
   int imageid,songid;
   int parent; // Zero or map rid.
   uint8_t dark,wind,cameralock;
+  int fishodds,fishitemid,fishfld;
 };
 
 /* Run thru (map)'s commands and update its (v) against (rov) and current state.

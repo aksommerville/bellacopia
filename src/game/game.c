@@ -40,6 +40,9 @@ void game_update(double elapsed) {
   if (g.vanishing>0.0) {
     g.vanishing-=elapsed;
   }
+  if (g.fishclock>0.0) {
+    g.fishclock-=elapsed;
+  }
   
   // Weather.
   if (g.eqclock>0.0) bm_update_earthquake(elapsed);
@@ -158,19 +161,83 @@ int game_warp(int mapid,int transition) {
   return 0;
 }
 
+/* Poke the global fish clock and take random odds against it.
+ * Return zero to catch a fish, or nonzero if fished out (or unlucky).
+ */
+ 
+#define FISHCLOCK_LIMIT      20.000
+#define FISHCLOCK_INCREMENT   8.000 /* Bear in mind, the fishing itself takes 1..10 seconds. */
+ 
+static int game_touch_fishclock() {
+  // If we're already over the time limit, return exhausted but don't penalize any further.
+  if (g.fishclock>=FISHCLOCK_LIMIT) return 1;
+  int threshold=(int)((g.fishclock*65535.0)/FISHCLOCK_LIMIT);
+  int choice=rand()&0xffff;
+  g.fishclock+=FISHCLOCK_INCREMENT;
+  return (choice<threshold)?1:0;
+}
+
+/* Return itemid for a given fishodds, applying context.
+ */
+ 
+static int game_apply_fishodds(int fishodds) {
+  switch (fishodds) {
+    case NS_fishodds_never: return 0;
+    case NS_fishodds_green: if (game_touch_fishclock()) return 0; return NS_itemid_greenfish;
+    case NS_fishodds_blue: if (game_touch_fishclock()) return 0; return NS_itemid_bluefish;
+    case NS_fishodds_red: if (game_touch_fishclock()) return 0; return NS_itemid_redfish;
+    case NS_fishodds_rich: {
+        if (game_touch_fishclock()) return 0;
+        switch (rand()%10) {
+          case 0: case 1: case 2: return NS_itemid_greenfish;
+          case 3: case 4: case 5: return NS_itemid_bluefish;
+          case 6: case 7: case 8: case 9: return NS_itemid_redfish;
+        }
+      } break;
+  }
+  // NS_fishodds_default or unknown. Also "parent", if it ends up here.
+  if (game_touch_fishclock()) return 0;
+  switch (rand()%10) {
+    case 0: case 1: case 2: case 3: case 4: case 5: return NS_itemid_greenfish;
+    case 6: case 7: case 8: return NS_itemid_bluefish;
+    case 9: return NS_itemid_redfish;
+  }
+  return 0;
+}
+
 /* Choose a fish to catch.
  */
  
 int game_choose_fish(int x,int y,int z) {
-  //TODO Vary geographically.
-  //TODO Can we do some logic where fish get rarer as you catch more, and you have to wait a while to build them back up?
-  switch (rand()%10) {
-    case 0: case 1: case 2: return 0;
-    case 3: case 4: case 5: case 6: return NS_itemid_greenfish;
-    case 7: case 8: return NS_itemid_bluefish;
-    case 9: return NS_itemid_redfish;
+  struct map *map=map_by_sprite_position(x,y,z);
+  if (!map) return game_apply_fishodds(NS_fishodds_default);
+  int col=x-map->lng*NS_sys_mapw;
+  int row=y-map->lat*NS_sys_maph;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_fishodds: {
+          if (col!=cmd.arg[0]) break;
+          if (row!=cmd.arg[1]) break;
+          int fishodds=(cmd.arg[2]<<8)|cmd.arg[3];
+          int itemid=(cmd.arg[4]<<8)|cmd.arg[5];
+          int fld=(cmd.arg[6]<<8)|cmd.arg[7];
+          if (fld&&!store_get_fld(fld)) {
+            store_set_fld(fld,1);
+            return itemid;
+          }
+          if (fishodds!=NS_fishodds_parent) {
+            return game_apply_fishodds(fishodds);
+          }
+        } break;
+    }
   }
-  return 0;
+  if (map->fishfld&&!store_get_fld(map->fishfld)) {
+    store_set_fld(map->fishfld,1);
+    return map->fishitemid;
+  }
+  return game_apply_fishodds(map->fishodds);
 }
 
 /* Prize for regular battles.

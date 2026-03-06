@@ -46,6 +46,7 @@
 #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
 #define CMD_map_bump            0x65 /* u16:pos u16:activity u16:arg_or_stringsid u16:strix ; Trigger static text or activity when colliding with a solid. For signs and such. */
 #define CMD_map_triggeronce     0x66 /* u16:pos u16:fld u16:activity u16:arg ; Like a treadle, but it will only fire once ever. */
+#define CMD_map_fishodds        0x67 /* u16:pos u16:fishodds u16:itemid u16:fld ; OOB to cover the whole map, and must not use (itemid,fld) then. */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
 #define CMD_sprite_noxform      0x01 /* --- ; npc */
@@ -122,6 +123,14 @@
 #define NS_face_monster 0 /* "The monster", whatever the game prefers. */
 #define NS_face_dot 1
 #define NS_face_princess 2
+
+#define NS_fishodds_default 0 /* All colors possible, green much more likely. */
+#define NS_fishodds_never   1 /* No fish here, ever. */
+#define NS_fishodds_parent  2 /* Use my (itemid,fld) first, but defer to parent plane otherwise. */
+#define NS_fishodds_green   3 /* All green. */
+#define NS_fishodds_blue    4 /* All blue. */
+#define NS_fishodds_red     5 /* All red. */
+#define NS_fishodds_rich    6 /* Always catch a fish, and higher-value ones are likelier than usual. */
 
 /* Everything you can pick up has an itemid.
  * So this includes gold, keys, powerups (things that don't go in inventory).
@@ -499,6 +508,12 @@
 #define NS_fld_story15 84
 #define NS_fld_story16 85
 #define NS_fld_forest_toll 86
+#define NS_fld_hc2 87 /* Heart container in temple pool. */
+#define NS_fld_hc3 88 /* TODO */
+#define NS_fld_hc4 89 /* TODO */
+#define NS_fld_hc5 90 /* TODO */
+#define NS_fld_jig_desert_fish 91 /* One jigpiece in the desert pond where you have to fish for it. */
+#define NS_fld_jigpiece_eyeball_lake 92
 
 /* "fld16" are 16 unsigned bits each.
  */

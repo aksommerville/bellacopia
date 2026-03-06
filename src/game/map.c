@@ -129,6 +129,11 @@ static int map_decode(struct map *dst,const void *src,int srcc) {
       case CMD_map_wind: dst->wind=cmd.arg[0]; break;
       case CMD_map_parent: dst->parent=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_position: dst->lng=cmd.arg[0]; dst->lat=cmd.arg[1]; dst->z=cmd.arg[2]; break;
+      case CMD_map_fishodds: if ((cmd.arg[0]>=NS_sys_mapw)||(cmd.arg[1]>=NS_sys_maph)) {
+          dst->fishodds=(cmd.arg[2]<<8)|cmd.arg[3];
+          dst->fishitemid=(cmd.arg[4]<<8)|cmd.arg[5];
+          dst->fishfld=(cmd.arg[6]<<8)|cmd.arg[7];
+        } break;
     }
   }
   

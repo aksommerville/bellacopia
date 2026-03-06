@@ -79,6 +79,7 @@ extern struct g {
   int telescoping; // Telescope in use. Some viewport-sensitive ops get suspended.
   int stopwatch;
   double eqclock,eqdx,eqdy; // Earthquake.
+  double fishclock;
 } g;
 
 /* Misc global API.

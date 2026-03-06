@@ -263,9 +263,25 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
   if ((SPRITE->fishclock-=elapsed)<=0.0) {
     int battle=0;
     switch (SPRITE->fish) {
+      case 0: break;
       case NS_itemid_greenfish: battle=NS_battle_greenfish; break;
       case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
       case NS_itemid_redfish: battle=NS_battle_redfish; break;
+      //TODO Eventually we want the seamonster encounter here too. Not sure if that will be a battle or what.
+      default: {
+          // If it's a thing that can be got, get it.
+          int quantity=1;
+          if (SPRITE->fish==NS_itemid_jigpiece) { // For jigpiece, quantity is the mapid. It's always this map, where we are right now.
+            struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+            if (map) quantity=map->rid;
+            else SPRITE->fish=quantity=0;
+          }
+          if (!game_get_item(SPRITE->fish,quantity)) {
+            fprintf(stderr,"%s:%d: Unexpected item %d caught on fishpole.\n",__FILE__,__LINE__,SPRITE->fish);
+          }
+          SPRITE->itemid_in_progress=0;
+          return;
+        }
     }
     if (battle) {
       struct modal_args_battle args={
@@ -286,7 +302,10 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
       if (!modal) return;
       SPRITE->itemid_in_progress=0;
     } else {
-      if (SPRITE->fish=game_choose_fish(sprite->x,sprite->y,sprite->z)) {
+      int x=(int)sprite->x+SPRITE->facedx;
+      int y=(int)sprite->y+SPRITE->facedy;
+      //TODO Handle non-fish items, eg Heart Container will be used once.
+      if (SPRITE->fish=game_choose_fish(x,y,sprite->z)) {
         bm_sound(RID_sound_fishpole_catch);
         SPRITE->fishclock=FISH_FLY_TIME;
       } else {

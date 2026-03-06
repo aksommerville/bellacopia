@@ -37,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Generate millions of chess boards under automation, confirm no bail-outs.
 - - 0x0000003f ...fixed
 - - ...Generated the first 0x00820000 (~8.5M) with no errors. Let's call it ok.
-- [ ] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
+- [x] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
 - [ ] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
@@ -54,6 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
 - - I swear this is real, but on careful observation I can't reproduce it.
+- - Looks like we save the store at quit, whether it's been loaded or not.
 - [ ] Drop spell cold if battle begins while encoding.
 
 - For exploration some time in the uncertain future.
@@ -147,10 +148,19 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Magnifier. Buy in Temple Gift Shop. Maybe temporary.
 - [x] Telescope. Buy in Temple Gift Shop. Maybe temporary.
 - [x] hc1: castleshop
-- [ ] hc2
+- [x] hc2: temple pool
 - [ ] hc3
 - [ ] hc4
 - [ ] hc5
+- [ ] Bomb. Must be in a shop.
+- [ ] Stopwatch.
+- [ ] Bus Stop.
+- [ ] Snowglobe.
+- [ ] Tape Measure.
+- [ ] Phonograph.
+- [ ] Crystal Ball.
+- [ ] Power Glove.
+- [ ] Marionette.
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
 
 ## Sprites with placeholder battle
