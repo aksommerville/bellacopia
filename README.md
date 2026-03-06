@@ -49,7 +49,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
-- [ ] Hiring: Randomize choice and order of criteria above a certain difficulty.
+- [x] Hiring: Randomize choice and order of criteria above a certain difficulty.
 - [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [x] Saved game is still getting wiped out sometimes when I visit Arcade Mode.

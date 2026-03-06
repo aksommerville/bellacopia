@@ -14,8 +14,8 @@
 #define RESUMEY 65
 #define RESUMEW (FBW-40)
 #define RESUMEH (FBH-RESUMEY)
-#define TIMELIMIT_EASY 30.0
-#define TIMELIMIT_HARD 30.0 /* No need to increase the time limit; we're increasing the workload. */
+#define TIMELIMIT_EASY 40.0
+#define TIMELIMIT_HARD 40.0 /* No need to increase the time limit; we're increasing the workload. */
 #define SLIDE_IN_SPEED 400.0
 #define SLIDE_OUT_SPEED 400.0
 #define PRINCESS_STEP_TIME 1.500 /* Max 12 steps. */
@@ -27,6 +27,7 @@
 #define PROP_TEETH    0x08
 #define PROP_NECKTIE  0x10
 #define PROP_HAT      0x20
+#define PROP_COUNT 6
 
 struct battle_hiring {
   struct battle hdr;
@@ -229,11 +230,22 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
   graf_decal(&g.graf,5,y,0,0,srcw,srch);
   y+=srch;
   
+  // Put all the possible properties in a random order.
+  uint8_t propv[PROP_COUNT];
+  uint8_t propv_pre[PROP_COUNT];
+  int i=PROP_COUNT; while (i-->0) propv_pre[i]=i;
+  int prec=PROP_COUNT;
+  for (i=0;i<PROP_COUNT;i++,prec--) {
+    int prep=rand()%prec;
+    propv[i]=propv_pre[prep];
+    memmove(propv_pre+prep,propv_pre+prep+1,PROP_COUNT-prep-1);
+  }
+  
   /* Properties.
    * Choose a random formatting scheme.
    * If (lie), pick one of the properties to lie about.
    */
-  int prop=1,strix=93;
+  int propp=0;
   int liectr=-1;
   if (lie) liectr=rand()%BATTLE->oppropc;
   char pfx=0;
@@ -243,8 +255,9 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
     case 2: pfx='~'; break;
     case 3: pfx='>'; break;
   }
-  int i=BATTLE->oppropc;
-  for (;i-->0;prop<<=1,strix+=2) {
+  for (i=BATTLE->oppropc;i-->0;propp++) {
+    uint8_t prop=1<<propv[propp];
+    int strix=93+propv[propp]*2;
     int positive=(applicant->props&prop)?1:0;
     if (!liectr--) positive^=1;
     const char *src=0;
@@ -283,10 +296,10 @@ static int _hiring_init(struct battle *battle) {
   }
   
   /* Select count of properties and applicants per handicap.
-   * Both, coincidentally, range 3 thru 6.
+   * No more than 6 properties. Applicants, also stop at 6, tho I guess we could go higher.
    * My feeling is that adding an applicant is more significant than adding a property.
    */
-  const uint8_t diffv[]={ 0x33,0x34,0x35,0x43,0x44,0x45,0x54,0x55,0x56,0x65,0x66 };
+  const uint8_t diffv[]={ 0x22,0x32,0x33,0x34,0x43,0x44,0x45,0x54,0x55,0x55,0x66 };
   int diffp=(battle->args.bias*sizeof(diffv))/255;
   if (diffp<0) diffp=0;
   else if (diffp>=sizeof(diffv)) diffp=sizeof(diffv)-1;
