@@ -65,13 +65,15 @@ static void cryptmsg_require() {
   }
   
   // Choose the items that open the Bone Room and Leaf Room.
+  // These are depletables that you have to use twice. So it discourages guessing.
   uint8_t itemidv[]={
     NS_itemid_match,
     NS_itemid_candy,
     NS_itemid_bugspray,
     NS_itemid_vanishing,
-    //NS_itemid_pepper, //TODO pepper isn't implemented yet, but should be a choice here
+    NS_itemid_pepper,
     // Can't use potion, because it's not possible to use it twice.
+    //TODO bomb is a reasonable option, but it's not placed yet.
   };
   cryptmsg.boneitem=RAND(sizeof(itemidv));
   cryptmsg.leafitem=RAND(sizeof(itemidv)-1);
@@ -91,15 +93,16 @@ static void cryptmsg_require() {
     NS_itemid_potion,
     NS_itemid_hookshot,
     NS_itemid_candy,
-    //NS_itemid_magnifier, //TODO not placed yet
+    NS_itemid_magnifier,
     NS_itemid_vanishing,
     NS_itemid_compass,
-    //NS_itemid_bell, //TODO This is a side quest reward. Not sure it's appropriate to require it here.
-    //NS_itemid_telescope, //TODO not placed yet
+    NS_itemid_telescope,
     // Can't be shovel, since that's what we're guarding.
     // Can't be barrelhat, since that vanishes irreversibly after completing that side quest.
+    // And also don't use bell, just because I don't like requiring them to complete the barrel-hat quest first.
     // Don't include match or pepper, because that is what they would probably have equipped without intervention.
     // And of course, only inventoriables.
+    // TODO Further possibilities, once we place them: bomb stopwatch busstop snowglobe tapemeasure phonograph crystal glove marionette
   };
   // All the goblin games are candidates, and they all have rsprite by the Star Door.
   // But I'm still on the fence whether to require a specific battle, or just "lose any battle".
@@ -377,6 +380,8 @@ int cryptmsg_check_star_door(int battle,int itemid) {
  */
  
 int cryptmsg_get_spell(char *dst,int dsta,int require) {
+  // Regardless of all else, it doesn't exist until you buy it. The Linguist will set this flag before fetching it the first time.
+  if (!store_get_fld(NS_fld_bought_translation)) return 0;
   if (require) cryptmsg_require();
   if (dsta>=SPELL_LENGTH) memcpy(dst,cryptmsg.spell,SPELL_LENGTH);
   return SPELL_LENGTH;

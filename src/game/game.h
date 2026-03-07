@@ -199,6 +199,7 @@ void cryptmsg_encrypt_in_place(char *v,int c);
 
 /* Write the Spell of Translating into (dst) and return its length.
  * Output undefined if return >dsta. The length is always 6, but you can pretend not to know that.
+ * Returns zero if you haven't bought it yet, and not (require).
  * Content is some combination of [LRUD].
  * If (require), we may initialize the cryptmsg innards.
  */
