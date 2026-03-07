@@ -215,32 +215,6 @@ static int cryptmsg_encrypt(char *v,int c) {
 /* Insert battle name in a message.
  */
  
-static int dress_battle(char *dst,int dsta,const char *name,int namec,const struct battle_type *type) {
-  int dstc=0;
-  if (!namec) return 0;
-  if (!type->no_article) {
-    //TODO I'm just doing this in English for now. Other languages will need specific support.
-    switch (name[0]) {
-      case 'a': case 'e': case 'i': case 'o': case 'u':
-      case 'A': case 'E': case 'I': case 'O': case 'U': {
-          if (dstc<=dsta-3) memcpy(dst+dstc,"an ",3);
-          dstc+=3;
-        } break;
-      default: {
-          if (dstc<=dsta-2) memcpy(dst+dstc,"a ",2);
-          dstc+=2;
-        }
-    }
-  }
-  if (dstc<=dsta-namec) memcpy(dst+dstc,name,namec);
-  dstc+=namec;
-  if (!type->no_contest) {
-    if (dstc<=dsta-8) memcpy(dst+dstc," Contest",8);
-    dstc+=8;
-  }
-  return dstc;
-}
- 
 static int cryptmsg_fmt_battle(char *dst,int dsta,const char *src,int srcc,int battle) {
   char name[256];
   int namec=battle_type_describe_long(name,sizeof(name),battle_type_by_id(battle));

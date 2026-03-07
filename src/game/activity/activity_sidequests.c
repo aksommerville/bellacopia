@@ -166,9 +166,24 @@ static int all_barrels_hatted() {
   return 1;
 }
  
+static int any_barrel_hatted() {
+  if (store_get_fld(NS_fld_barrelhat1)) return 1;
+  if (store_get_fld(NS_fld_barrelhat2)) return 1;
+  if (store_get_fld(NS_fld_barrelhat3)) return 1;
+  if (store_get_fld(NS_fld_barrelhat4)) return 1;
+  if (store_get_fld(NS_fld_barrelhat5)) return 1;
+  if (store_get_fld(NS_fld_barrelhat6)) return 1;
+  if (store_get_fld(NS_fld_barrelhat7)) return 1;
+  if (store_get_fld(NS_fld_barrelhat8)) return 1;
+  if (store_get_fld(NS_fld_barrelhat9)) return 1;
+  return 0;
+}
+ 
 static int knitter_cb(int optionid,void *userdata) {
-  //TODO incremental prizes?
   game_get_item(NS_itemid_barrelhat,0);
+  if (any_barrel_hatted()) {
+    game_get_item(NS_itemid_gold,10);
+  }
   return 1;
 }
 
@@ -189,7 +204,8 @@ void begin_knitter(struct sprite *sprite) {
       modal_dialogue_set_callback(dialogue,knitter_cb_final,0);
     }
   } else {
-    struct modal *dialogue=begin_dialogue(24,sprite);
+    int strix=any_barrel_hatted()?99:24;
+    struct modal *dialogue=begin_dialogue(strix,sprite); // "Take hat, give to barrel."
     if (!dialogue) return;
     modal_dialogue_set_callback(dialogue,knitter_cb,0);
   }

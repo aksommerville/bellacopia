@@ -43,19 +43,19 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
-- [ ] Knitter incremental prizes.
+- [x] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
 - [x] Boomerang: Drop the other rang after one collides.
 - [x] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [x] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
 - [x] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [ ] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle.
+- [x] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle. ...this was not being used :P
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [x] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
 - - I swear this is real, but on careful observation I can't reproduce it.
 - - Looks like we save the store at quit, whether it's been loaded or not.
-- [ ] Drop spell cold if battle begins while encoding.
+- [x] Drop spell cold if battle begins while encoding.
 - [x] Second heart container doesn't actually add a heart container. Happens regardless of the order you get them.
 - - ...they were present all along, just getting chopped off at the story modal's overlay.
 

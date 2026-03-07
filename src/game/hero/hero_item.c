@@ -146,6 +146,10 @@ static int match_begin(struct sprite *sprite) {
  */
  
 static int wand_begin(struct sprite *sprite) {
+  // Drop (monsterpause), since otherwise it would make us think we were interrupted.
+  if (g.monsterpause>0.0) {
+    g.monsterpause=0.0;
+  }
   SPRITE->itemid_in_progress=NS_itemid_wand;
   SPRITE->spellc=0;
   SPRITE->wanddir='.';
@@ -165,6 +169,12 @@ static void wand_end(struct sprite *sprite) {
 }
 
 static void wand_update(struct sprite *sprite,double elapsed) {
+  // (monsterpause) is positive briefly, just after returning from battle.
+  // If it's positive, the spell was interrupted by a battle, and we should drop it cold.
+  if (g.monsterpause>0.0) {
+    SPRITE->itemid_in_progress=0;
+    return;
+  }
   if (SPRITE->spellrejectclock>0.0) {
     if ((SPRITE->spellrejectclock-=elapsed)<=0.0) {
       SPRITE->itemid_in_progress=0;
