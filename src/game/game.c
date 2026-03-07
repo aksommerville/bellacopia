@@ -43,6 +43,9 @@ void game_update(double elapsed) {
   if (g.fishclock>0.0) {
     g.fishclock-=elapsed;
   }
+  if (g.monsterpause>0.0) {
+    g.monsterpause-=elapsed;
+  }
   
   // Weather.
   if (g.eqclock>0.0) bm_update_earthquake(elapsed);

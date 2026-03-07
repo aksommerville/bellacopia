@@ -80,6 +80,7 @@ extern struct g {
   int stopwatch;
   double eqclock,eqdx,eqdy; // Earthquake.
   double fishclock;
+  double monsterpause; // Counts down after each battle; monster sprites stand still while positive.
 } g;
 
 /* Misc global API.

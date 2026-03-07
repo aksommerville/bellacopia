@@ -416,6 +416,9 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
     else sprite->tileid=SPRITE->tileid0;
   }
   
+  // If we've just returned from any battle, stand still for a little bit.
+  if (g.monsterpause>0.0) return;
+  
   // Track horizontal motion.
   double x0=sprite->x;
   
@@ -554,6 +557,7 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;
   SPRITE->spent=1;
+  g.monsterpause=0.500;
 }
 
 /* Type definition.
