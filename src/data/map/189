@@ -24,3 +24,5 @@ rsprite sprite:vampire (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:sage (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:witch (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:minotaur (u8:weight)5 (u8:limit)1 (u32)0
+dark
+sprite @12,7 sprite:firepot (u8:radius_m)3 (u24)0

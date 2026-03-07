@@ -24,3 +24,5 @@ rsprite sprite:vampire 5 1 (u32)0
 rsprite sprite:sage 5 1 (u32)0
 rsprite sprite:witch 5 1 (u32)0
 rsprite sprite:minotaur 5 1 (u32)0
+dark
+sprite @9,7 sprite:firepot (u8:radius_m)3 (u24)0

@@ -25,3 +25,8 @@ rsprite sprite:sage (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:witch (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:minotaur (u8:weight)5 (u8:limit)1 (u32)0
 fishodds 0xffff (u16:fishodds)rich (u16:itemid)seamonster (u16:fld)alsozero
+dark
+sprite @13,7 sprite:firepot (u8:radius_m)3 (u24)0
+sprite @0,7 sprite:firepot (u8:radius_m)3 (u24)0
+sprite @0,1 sprite:firepot (u8:radius_m)3 (u24)0
+sprite @13,1 sprite:firepot (u8:radius_m)3 (u24)0

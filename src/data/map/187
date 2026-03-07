@@ -17,3 +17,5 @@ position 0 0 4 0
 sprite @16,7 sprite:jigpiece (u32)0
 bump @12,6 (u16)0 strings:dialogue (u16)90
 pylon @13,9
+dark
+sprite @9,5 sprite:firepot (u8:radius_m)3 (u24)0

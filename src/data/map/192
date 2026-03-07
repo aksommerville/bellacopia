@@ -16,3 +16,5 @@ position 5 0 4 *
 door @7,6 map:173 @8,2 0x0000
 sprite @2,5 sprite:jigpiece (u32)0
 bump @5,6 (u16)0 strings:dialogue (u16)90
+dark
+sprite @6,5 sprite:firepot (u8:radius_m)3 (u24)0
