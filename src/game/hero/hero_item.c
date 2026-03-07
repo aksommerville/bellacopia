@@ -246,7 +246,9 @@ static void fishpole_end(struct sprite *sprite) {
 
 static void fishpole_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
-  if (outcome>0) {
+  if (SPRITE->fish==NS_itemid_seamonster) {
+    game_warp(RID_map_seamonster,NS_transition_fadeblack);
+  } else if (outcome>0) {
     game_get_item(SPRITE->fish,1);
     modal_battle_add_consequence(modal,SPRITE->fish,1);
   }
@@ -277,7 +279,7 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_greenfish: battle=NS_battle_greenfish; break;
       case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
       case NS_itemid_redfish: battle=NS_battle_redfish; break;
-      //TODO Eventually we want the seamonster encounter here too. Not sure if that will be a battle or what.
+      case NS_itemid_seamonster: battle=NS_battle_seamonster; break;
       default: {
           // If it's a thing that can be got, get it.
           int quantity=1;
@@ -304,10 +306,12 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
           .lface=NS_face_dot,
           .rface=NS_face_monster,
         },
+        .right_name=-198,
         .cb=fishpole_cb_battle,
         .userdata=sprite,
         .skip_prompt=1,
       };
+      if (SPRITE->fish==NS_itemid_seamonster) args.right_name=-199;
       struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
       if (!modal) return;
       SPRITE->itemid_in_progress=0;

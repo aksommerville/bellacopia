@@ -34,6 +34,7 @@ struct battle_type {
   int no_timeout; // Suppress default timeout. You must guarantee to terminate when unattended.
   int support_pvp; // Player-vs-player supported. Only ones that shouldn't are the very asymmetric ones where a second player would have nothing to do.
   int support_cvc; // CPU-vs-CPU supported. All battles should do this, I'm not sure what kind of game couldn't be played automatically.
+  int update_during_report;
   
   void (*del)(struct battle *battle);
   int (*init)(struct battle *battle);

@@ -153,7 +153,24 @@ static void hero_render_fishpole(struct sprite *sprite,int x,int y) {
   graf_tile(&g.graf,x+SPRITE->facedx*NS_sys_tilesize,y+SPRITE->facedy*NS_sys_tilesize,poletileid,xform);
   hero_render_errata(sprite,x,y);
   
-  if (SPRITE->fish) {
+  if (SPRITE->fish==NS_itemid_seamonster) {
+    graf_set_image(&g.graf,RID_image_temple_sprites);
+    int frame=(int)(((FISH_FLY_TIME-SPRITE->fishclock)*7.0)/FISH_FLY_TIME);
+    if (frame<0) frame=0;
+    else if (frame>=7) frame=6;
+    uint8_t fishtile=0x34;
+    switch (frame) {
+      case 0: break;
+      case 1: fishtile+=1; break;
+      case 2: fishtile+=2; break;
+      case 3: fishtile+=3; break;
+      case 4: fishtile+=4; break;
+      case 5: fishtile+=3; break;
+      case 6: fishtile+=4; break;
+    }
+    graf_tile(&g.graf,fishx0,fishy0,fishtile,0);
+  
+  } else if (SPRITE->fish) {
     const struct item_detail *detail=item_detail_for_itemid(SPRITE->fish);
     if (detail&&detail->tileid) {
       const double range=-30.0; // px

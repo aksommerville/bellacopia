@@ -9,7 +9,7 @@
 #include "game/bellacopia.h"
 #include "game/battle/battle.h"
 
-#define PRESELECT_BATTLE NS_battle_boomerang
+#define PRESELECT_BATTLE NS_battle_seamonster
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250

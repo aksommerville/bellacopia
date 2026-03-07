@@ -356,6 +356,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=1,
     .fld16=0,
   },
+  [NS_itemid_seamonster]={ // Really just a signal for fishpole, not an item at all.
+    .tileid=0,
+    .hand_tileid=0,
+    .strix_name=0,
+    .strix_help=0,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
 };
 
 /* Get item reporting.

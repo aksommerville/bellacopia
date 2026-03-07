@@ -116,8 +116,31 @@ static int battle_generate_prompt(struct modal *modal) {
 static int battle_generate_report_text(char *dst,int dsta,struct modal *modal) {
   int dstc=0;
   
+  // One-line summary if a name was provided. When it's a tie, they must have supplied both, and we use neither.
+  if (MODAL->outcome>0) {
+    if (MODAL->left_name<0) {
+      dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,-MODAL->left_name,0,0);
+    } else if (MODAL->left_name>0) {
+      struct text_insertion ins={.mode='r',.r={.rid=RID_strings_battle,.strix=MODAL->left_name}};
+      dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,7,&ins,1);
+    }
+  } else if (MODAL->outcome<0) {
+    if (MODAL->right_name<0) {
+      dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,-MODAL->right_name,0,0);
+    } else if (MODAL->right_name>0) {
+      struct text_insertion ins={.mode='r',.r={.rid=RID_strings_battle,.strix=MODAL->right_name}};
+      dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,7,&ins,1);
+    }
+  } else if (MODAL->left_name&&MODAL->right_name) {
+    dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,8,0,0);
+  }
+  if (dstc) {
+    if (dstc<dsta) dst[dstc++]=0x0a;
+    if (dstc<dsta) dst[dstc++]=0x0a;
+  }
+  
   // If both names were provided start with the one-line summary, then a blank line.
-  if (MODAL->left_name&&MODAL->right_name) {
+  if (0&&MODAL->left_name&&MODAL->right_name) {
     struct text_insertion ins={.mode='r',.r={.rid=RID_strings_battle,.strix=(MODAL->outcome<0)?MODAL->right_name:MODAL->left_name}};
     dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,MODAL->outcome?7:8,&ins,1);
     if (dstc<dsta) dst[dstc++]=0x0a;
@@ -371,6 +394,9 @@ static void battle_update_play(struct modal *modal,double elapsed) {
  */
  
 static void battle_update_report(struct modal *modal,double elapsed) {
+  if (MODAL->type->update_during_report&&MODAL->type->update) {
+    MODAL->type->update(MODAL->battle,elapsed);
+  }
   if (MODAL->timeout>0.0) {
     MODAL->timeout-=elapsed;
   } else if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {

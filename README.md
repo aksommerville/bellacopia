@@ -38,7 +38,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - 0x0000003f ...fixed
 - - ...Generated the first 0x00820000 (~8.5M) with no errors. Let's call it ok.
 - [x] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
-- [ ] Catch a sea monster in the Labyrinth.
+- [x] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
@@ -87,6 +87,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] 5 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
+- [ ] Parasites in the sea monster.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -161,7 +162,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Tape Measure.
 - [ ] Phonograph.
 - [ ] Crystal Ball.
-- [ ] Power Glove.
+- [x] Power Glove: Sea monster (Labyrinth).
 - [ ] Marionette.
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
 

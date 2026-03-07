@@ -24,3 +24,4 @@ rsprite sprite:vampire (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:sage (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:witch (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:minotaur (u8:weight)5 (u8:limit)1 (u32)0
+fishodds 0xffff (u16:fishodds)rich (u16:itemid)seamonster (u16:fld)alsozero

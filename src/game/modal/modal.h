@@ -105,7 +105,7 @@ struct modal_args_battle {
   void (*cb)(struct modal *modal,int outcome,void *userdata); // -1,0,1 = right wins,tie,left wins. Report consequences back to the modal during this callback.
   void (*cb_final)(struct modal *modal,int outcome,void *userdata); // Same idea, but called as we dismiss, after the report. Fine to use both.
   void *userdata;
-  int left_name,right_name; // NS_strings_battle. Highly recommended for NS_face_monster, otherwise we can assume "Dot" or "Princess".
+  int left_name,right_name; // NS_strings_battle. Highly recommended for NS_face_monster, otherwise we can assume "Dot" or "Princess". <0=strix of custom message.
   int skip_prompt; // We normally do a generic "Battle draws near!" hopefully with some helpful instructions.
   int skip_outtro; // We normally wait for a keystroke after completion, while reporting the winner and consequences.
   int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.

@@ -83,6 +83,7 @@
 #define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
 #define NS_plane_labyrinth1 4 /* jungle */
 #define NS_plane_temple_ground 5
+#define NS_plane_seamonster 6
 
 #define NS_busstop_cheapside 1
 #define NS_busstop_fractia 2
@@ -174,6 +175,7 @@
 #define NS_itemid_crystal 37
 #define NS_itemid_glove 38
 #define NS_itemid_marionette 39
+#define NS_itemid_seamonster 40
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -213,7 +215,8 @@
   _(phonograph) \
   _(crystal) \
   _(glove) \
-  _(marionette)
+  _(marionette) \
+  _(seamonster)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -361,6 +364,7 @@
 #define NS_battle_chess 54
 #define NS_battle_broomrace 55
 #define NS_battle_armwrestling 56
+#define NS_battle_seamonster 57
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -417,7 +421,8 @@
   _(counting) \
   _(chess) \
   _(broomrace) \
-  _(armwrestling)
+  _(armwrestling) \
+  _(seamonster)
 
 /* "fld" are single bits.
  */
@@ -514,6 +519,7 @@
 #define NS_fld_hc5 90 /* TODO */
 #define NS_fld_jig_desert_fish 91 /* One jigpiece in the desert pond where you have to fish for it. */
 #define NS_fld_jigpiece_eyeball_lake 92
+#define NS_fld_caught_seamonster 93
 
 /* "fld16" are 16 unsigned bits each.
  */
