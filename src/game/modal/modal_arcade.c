@@ -207,6 +207,9 @@ static int _arcade_init(struct modal *modal,const void *arg,int argc) {
   
   arcade_rebuild_labels(modal);
   
+  // break_soil will get old fast...
+  bm_song_gently(RID_song_bloomful_rejoicement);
+  
   return 0;
 }
 

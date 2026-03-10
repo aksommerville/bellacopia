@@ -118,7 +118,7 @@ int bm_song_for_outerworld() {
     case 0: return RID_song_pretty_pretty_pickle;
     case 1: return RID_song_barrel_of_salt;
     case 2: return RID_song_feet_to_the_fire;//XXX not yet
-    case 3: return RID_song_barrel_of_salt;//TODO
+    case 3: return RID_song_tripping_over_my_tongue;
     case 4: return RID_song_barrel_of_salt;//TODO
     case 5: return RID_song_barrel_of_salt;//TODO
     case 6: return RID_song_barrel_of_salt;//TODO
@@ -141,7 +141,7 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
   AVAILABLE(86,pretty_pretty_pickle)
   if (flowerc>=1) AVAILABLE(87,barrel_of_salt)
   if (flowerc>=2) AVAILABLE(88,feet_to_the_fire)
-  if (flowerc>=3) AVAILABLE(89,barrel_of_salt)//TODO
+  if (flowerc>=3) AVAILABLE(89,tripping_over_my_tongue)
   if (flowerc>=4) AVAILABLE(90,barrel_of_salt)//TODO
   if (flowerc>=5) AVAILABLE(91,barrel_of_salt)//TODO
   if (flowerc>=6) AVAILABLE(92,barrel_of_salt)//TODO

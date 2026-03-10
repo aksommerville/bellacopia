@@ -26,38 +26,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] chess: Init in invalid state, not one move from mate. Had a Knight and a Bishop.
-- - Repro'd, not necessarily the same case, with 0xd32be63d: Anastasia's Mate, but the White King blocks the White Rook.
-- - Easy fix for that. But now I'm doubtful. Play at least a hundred games randomly.
-- - 0xcbd07419: boden. Probably is mateable but I couldn't see it. ...it's mateable, my bad.
-- - 0xfa516a4d: corneredking. Bails out at init. ...must forbid agent knight when the holder is a queen (already doing that if bishop).
-- - 0xb0cddcd4: corneredking. Bails out at init, Knight's attack position blocks the holder Rook.
-- - 0xdcf79a44: boden. "Illegal setboard 0,-1", and bails out. ...I'd missed a clamping case in gen_boden.
-- [x] Play chess 100 times in a row, confirm no illegal boards. ...87-13 at difficulty 0x80, and feeling pretty good about it.
-- [x] Generate millions of chess boards under automation, confirm no bail-outs.
-- - 0x0000003f ...fixed
-- - ...Generated the first 0x00820000 (~8.5M) with no errors. Let's call it ok.
-- [x] Geographic and temporal variety in fish. See `game.c:game_choose_fish()`
-- [x] Catch a sea monster in the Labyrinth.
 - [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
-- [x] Knitter incremental prizes.
 - [ ] Animate digging with shovel.
-- [x] Boomerang: Drop the other rang after one collides.
-- [x] Boomerang: Speed it up a little? Make the koala lose sooner.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
-- [x] Have monster pause a little after a battle completes, is that possible? Kind of annoying when you get mobbed.
-- [x] Hiring: Randomize choice and order of criteria above a certain difficulty.
-- [x] `cryptmsg.c:dress_battle()` hacked with English. Should be doable via battle. ...this was not being used :P
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] Saved game is still getting wiped out sometimes when I visit Arcade Mode.
-- - I swear this is real, but on careful observation I can't reproduce it.
-- - Looks like we save the store at quit, whether it's been loaded or not.
-- [x] Drop spell cold if battle begins while encoding.
-- [x] Second heart container doesn't actually add a heart container. Happens regardless of the order you get them.
-- - ...they were present all along, just getting chopped off at the story modal's overlay.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -72,7 +47,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
-- [x] Put a toll troll near the beginning, blocking access to Fractia and Battlefield. Cheap, say 3 or 4 gold. Just make sure they've played some battles first.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
 - - And if you do that before the election, you already have the endorsement.
