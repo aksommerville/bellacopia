@@ -53,6 +53,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_phonograph: begin_phonograph(); break;
     case NS_activity_crystal: begin_crystal(); break;
     case NS_activity_busstop: begin_busstop(arg); break;
+    case NS_activity_inconvenience: begin_inconvenience(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

@@ -404,3 +404,21 @@ void begin_templeshop(struct sprite *sprite) {
   modal_shop_add_item(modal,NS_itemid_magnifier,10,0);//TODO maybe here?
   modal_shop_add_item(modal,NS_itemid_telescope,10,0);//TODO maybe here?
 }
+
+/* The Inconvenience Store, at the very southwest corner of the world.
+ */
+ 
+void begin_inconvenience(struct sprite *sprite) {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=100,
+    .speaker=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_candy,1,0);
+  modal_shop_add_item(modal,NS_itemid_bugspray,1,0);
+  modal_shop_add_item(modal,NS_itemid_bomb,3,0);
+  modal_shop_add_item(modal,NS_itemid_jigpiece,20,93);
+  modal_shop_add_item(modal,NS_itemid_busstop,10,0);
+}

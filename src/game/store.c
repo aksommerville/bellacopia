@@ -31,7 +31,7 @@ static int store_sanitize() {
  */
  
 int store_clear() {
-  fprintf(stderr,"%s\n",__func__);
+  //fprintf(stderr,"%s\n",__func__);
   g.store.fldc=0;
   g.store.fld16c=0;
   g.store.clockc=0;

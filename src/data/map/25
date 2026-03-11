@@ -44,3 +44,5 @@ switchable @8,6 (u16:fld)endorse_athlete
 switchable @14,0 (u16:fld)endorse_labor
 door @6,6 map:167 @8,8 0x0000
 door @12,0 map:168 @9,8 0x0000
+door @1,6 map:223 @9,8 0x0000
+door @7,0 map:224 @10,7 0x0000

@@ -26,3 +26,4 @@ door @8,0 map:165 @9,7 0x0000
 door @14,6 map:166 @9,9 0x0000
 door @15,0 map:170 @5,10 0x0000
 busstop @14,0 (u16:busstop)fractia
+door @9,6 map:222 @9,8 0x0000

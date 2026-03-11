@@ -1,0 +1,18 @@
+c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6
+c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6
+c6c6b8d6d6d6d6d6d6d6d6d6d6d6d6d6b9c6c6c6
+c6c6c7f0f0f0f0f0f0f0f0f0f0f0f0f0c5c6c6c6
+c6c6c7f0f0f0f0f0f0f0f0f0f0f0f0f0c5c6c6c6
+c6c6c8b6b6e3b6b6b6b6b7f0f0f0f0f0c5c6c6c6
+c6c6c6c6c6c6c6c6c6c6c7f0f0f0f0f0c5c6c6c6
+c6c6c6c6c6c6c6c6c6c6c7f0f0f0f0f0c5c6c6c6
+c6c6c6c6c6c6c6c6c6c6c7f0f0f0f0f0c5c6c6c6
+c6c6c6c6c6c6c6c6c6c6c8b6b6b6b6b6c9c6c6c6
+c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6
+c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6
+
+image image:desert
+door @5,5 map:93 @3,7 0x0000
+parent map:93
+position 0 5 0 0
+sprite @14,7 sprite:thingwalla (u16:activity)inconvenience (u16:activity_arg)0

@@ -214,7 +214,13 @@ static void shop_purchase(struct modal *modal,const struct option *option) {
   
   // Reject if we are already full. If it exceeds the limit, reduce quantity.
   int quantity=option->quantity;
-  if (quantity) {
+  if (option->itemid==NS_itemid_jigpiece) {
+    if (store_get_jigstore(quantity)) { // Shouldn't have created the option in this case, but hey.
+      struct modal_args_dialogue args={.rid=RID_strings_dialogue,.strix=3};
+      modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+      return;
+    }
+  } else if (quantity) {
     int limit=0;
     int havec=possessed_quantity_for_itemid(option->itemid,&limit);
     if (havec>=limit) {
@@ -531,9 +537,12 @@ int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity) {
   
   /* If it's a quantity-bearing item, and caller gave an explicit quantity, bake that into the diplay name.
    * Not quantity-bearing, clear (quantity), it won't be used.
+   * Jigpiece is special. Don't check quantity generically; (quantity) is the mapid.
    */
   char tmp_quantity[256];
-  if (detail->initial_limit&&quantity) {
+  if (itemid==NS_itemid_jigpiece) {
+    if (!quantity||store_get_jigstore(quantity)) return 0;
+  } else if (detail->initial_limit&&quantity) {
     int tmpc=snprintf(tmp_quantity,sizeof(tmp_quantity),"%.*s x%d",namec,name,quantity);
     if ((tmpc<0)||(tmpc>=sizeof(tmp_quantity))) return -1;
     name=tmp_quantity;

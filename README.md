@@ -33,6 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
+- [ ] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -129,15 +130,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] hc3
 - [ ] hc4
 - [ ] hc5
-- [ ] Bomb. Must be in a shop.
-- [ ] Stopwatch.
-- [ ] Bus Stop.
-- [ ] Snowglobe.
-- [ ] Tape Measure.
-- [ ] Phonograph.
-- [ ] Crystal Ball.
+- [x] Bomb: inconvenience
+- [x] Stopwatch: fractia, temporarily
+- [x] Bus Stop: inconvenience
+- [x] Snowglobe: fractia, temporarily
+- [x] Tape Measure: fractia, temporarily
+- [x] Phonograph: fractia, temporarily
+- [x] Crystal Ball: fractia, temporarily
 - [x] Power Glove: Sea monster (Labyrinth).
-- [ ] Marionette.
+- [x] Marionette: fractia, temporarily
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
 
 ## Sprites with placeholder battle

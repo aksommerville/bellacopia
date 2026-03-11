@@ -255,6 +255,7 @@
 #define NS_activity_phonograph 33
 #define NS_activity_crystal 34
 #define NS_activity_busstop 35 /* (u16)busstop */
+#define NS_activity_inconvenience 36
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
