@@ -46,7 +46,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
-- [ ] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
+- [x] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.

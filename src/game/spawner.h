@@ -11,6 +11,7 @@
  * 1/10 is a heck of a lot, and 1/2550 is very rare. 1/10 sounds like a good max.
  */
 #define SPAWN_WEIGHT_MAX 0.100
+#define SPAWN_WEIGHT_MIN 0.002
 
 // Global singleton (g.spawner).
 struct spawner {

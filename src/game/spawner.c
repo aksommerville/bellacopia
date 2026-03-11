@@ -6,11 +6,15 @@
  */
 #define RSPRITE_LIMIT 8
 
+/* We adjust the odds of a spawn according to whether the current set is above or below this.
+ */
+#define RSPRITE_TARGET 3
+
 /* When so many rsprite are present at the start of an exposure cycle,
  * we'll try to cull the herd first.
  * Our culling is more aggressive than camera's.
  */
-#define RSPRITE_CULL_START 4
+#define RSPRITE_CULL_START 6
 
 /* Recalculate pending cell count randomly.
  */
@@ -152,6 +156,24 @@ static int spawner_spawn_1(struct spawnmap *spawnmap,const struct map *map,doubl
   return wsum;
 }
 
+/* SPAWN_WEIGHT_MIN..SPAWN_WEIGHT_MAX depending on how many are afield.
+ */
+ 
+static double spawner_effective_weight() {
+  const double wmid=(SPAWN_WEIGHT_MIN+SPAWN_WEIGHT_MAX)*0.5;
+  int c=g.spawner.rsprites.sprc;
+  c=RSPRITE_LIMIT-c;
+  if (c<RSPRITE_TARGET) {
+    double n=(double)c/(double)RSPRITE_TARGET;
+    return SPAWN_WEIGHT_MIN*(1.0-n)+wmid*n;
+  } else if (c>RSPRITE_TARGET) {
+    double n=(double)(c-RSPRITE_TARGET)/(double)(RSPRITE_LIMIT-RSPRITE_TARGET);
+    return wmid*(1.0-n)+SPAWN_WEIGHT_MAX*n;
+  } else {
+    return wmid;
+  }
+}
+
 /* Cell exposure within one map.
  * Caller confirms (wsum>0).
  * (x,y) are relative to the map, not the plane. OOB is allowed, we clip here.
@@ -206,7 +228,8 @@ static void spawner_expose_1(struct spawnmap *spawnmap,const struct map *map,int
     memmove(candidatev+candidatep,candidatev+candidatep+1,sizeof(struct candidate)*(candidatec-candidatep));
     // Advance spawnmap->pending according to the effective (wsum) returned by spawner_spawn_1.
     if (wsum>0) {
-      int addc=(int)(255.0/(SPAWN_WEIGHT_MAX*wsum));
+      double weight=spawner_effective_weight();
+      int addc=(int)(255.0/(weight*wsum));
       if (addc<1) addc=1;
       spawnmap->pending+=addc+rand()%addc; // Up to double the nominal wait.
     } else {
