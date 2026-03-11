@@ -43,6 +43,7 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
 int map_is_outerworld(const struct map *map) {
   if (!map) return 0;
   if (map->z==NS_plane_outerworld) return 1;
+  if (map->z==NS_plane_tunnel1) return 1;
   if (map->parent) {
     const struct map *parent=map_by_id(map->parent);
     if (parent) {
