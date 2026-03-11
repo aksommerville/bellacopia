@@ -19,7 +19,7 @@
 15 Stats
 16 System
 
-# Stats vellum.
+# Stats vellum. XXX
 17 Progress: %0%%
 18 Time: %0
 19 Flowers: %0/7
@@ -37,3 +37,14 @@
 
 # Stories vellum.
 29 Stories
+
+# Completion.
+30 Flowers
+31 Completion
+32 Time
+33 Side Quests
+34 Items
+35 Maps
+36 Heart Containers
+37 Buried Treasure
+38 Tree Stories

@@ -153,9 +153,24 @@ int game_get_advice(char *dst,int dsta);
 /* Percentage of things done, accounting for everything.
  * Zero only for a fresh session, and 100 only if everything is actually done.
  */
-int game_get_completion();
+int game_get_completion();//XXX
 
-void game_get_sidequests(int *done,int *total);
+void game_get_sidequests(int *done,int *total);//XXX
+
+/* Get the things for stats vellum, in the preferred display order.
+ * We don't produce Total Completion or Play Time.
+ */
+struct completable {
+  int strix; // strings:1
+  int numer; // 0..denom
+  int denom; // >0
+};
+int game_get_completables(struct completable *dst,int dsta);
+
+/* Populate (dst) with the total numerator and denominator.
+ * Returns sanitized percentage. 0 or 100 only if we are truly zero or complete.
+ */
+int completables_total(struct completable *dst,const struct completable *src,int srcc);
 
 /* Returns a song rid for the outer world, depending on progress.
  */

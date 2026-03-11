@@ -1,14 +1,19 @@
 #include "game/bellacopia.h"
 #include "vellum.h"
 
-#define GLYPHSIZE 8
-#define COLC 36 /* 36 fits neatly. 26 should be the most we'll need, in English. */
-#define ROWC 6 /* TODO 18 fits neatly. Add things to the report until it fills the page. */
+#define COMPLETABLE_LIMIT 16
 
 struct vellum_stats {
   struct vellum hdr;
-  char text[COLC*ROWC];
-  int colonp;
+  //char text[COLC*ROWC];
+  //int colonp;
+  int pct;
+  struct completable total;
+  struct completable completablev[COMPLETABLE_LIMIT];
+  int completablec;
+  int texid,texw,texh;
+  int store_listener;
+  int dirty;
 };
 
 #define VELLUM ((struct vellum_stats*)vellum)
@@ -17,191 +22,8 @@ struct vellum_stats {
  */
  
 static void _stats_del(struct vellum *vellum) {
-}
-
-/* Take measurements for per-line alignment.
- */
- 
-static void stats_measure_alignment(struct vellum *vellum) {
-  // Read all the format strings and find the longest key (measuring to colon).
-  VELLUM->colonp=0;
-  int i=17; for (;i<=22;i++) {
-    const char *src=0;
-    int srcc=text_get_string(&src,1,i);
-    int srcp=0;
-    for (;srcp<srcc;srcp++) {
-      if (src[srcp]==':') {
-        if (srcp>VELLUM->colonp) VELLUM->colonp=srcp;
-        break;
-      }
-    }
-  }
-  
-  // Assume 11 bytes after the key, and center that longest line.
-  int linelen=VELLUM->colonp+11;
-  int extra=(COLC>>1)-(linelen>>1);
-  if (extra>0) VELLUM->colonp+=extra;
-}
-
-/* Line up colons, based on a measurement we took at load.
- */
- 
-static void stats_align(char *line,struct vellum *vellum) {
-  int linep=0,colonp=-1;
-  for (;linep<COLC;linep++) {
-    if (line[linep]==':') {
-      colonp=linep;
-      break;
-    }
-  }
-  if (colonp<0) return;
-  int shift=VELLUM->colonp-colonp;
-  if (shift<=0) return;
-  int available=0;
-  while ((available<COLC)&&((unsigned char)line[COLC-available-1]<=0x20)) available++;
-  if (available<=0) return;
-  if (shift>available) shift=available;
-  memmove(line+shift,line,COLC-shift);
-  memset(line,' ',shift);
-}
-
-/* Rewrite bits of the report into (VELLUM->text).
- * The individual bits take a buffer COLC long and overwrite the whole thing.
- */
-  
-static void stats_write_progress(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  int pct=game_get_completion();
-  struct text_insertion insv[]={
-    {.mode='i',.i=pct},
-  };
-  text_format_res(dst,COLC,1,17,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_write_time(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  double fs=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_battletime)+store_get_clock(NS_clock_pausetime);
-  int ms=(int)(fs*1000.0);
-  int seconds=ms/1000; ms%=1000;
-  int minutes=seconds/60; seconds%=60;
-  int hours=minutes/60; minutes%=60;
-  if (hours>999) {
-    hours=ms=999;
-    minutes=seconds=99;
-  }
-  char tmp[]={
-    '0'+hours/100,
-    '0'+(hours/10)%10,
-    '0'+hours%10,
-    ':',
-    '0'+minutes/10,
-    '0'+minutes%10,
-    ':',
-    '0'+seconds/10,
-    '0'+seconds%10,
-    '.',
-    '0'+ms/100,
-    '0'+(ms/10)%10,
-    '0'+ms%10,
-  };
-  // Trim zeroes off the front down to minute ones digit.
-  int lopc;
-  if (hours>=100) lopc=0;
-  else if (hours>=10) lopc=1;
-  else if (hours>=1) lopc=2;
-  else if (minutes>=10) lopc=4;
-  else lopc=5;
-  struct text_insertion insv[]={
-    {.mode='s',.s={.v=tmp+lopc,.c=sizeof(tmp)-lopc}},
-  };
-  text_format_res(dst,COLC,1,18,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_write_flowers(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  int flowerc=0;
-  if (store_get_fld(NS_fld_root1)) flowerc++;
-  if (store_get_fld(NS_fld_root2)) flowerc++;
-  if (store_get_fld(NS_fld_root3)) flowerc++;
-  if (store_get_fld(NS_fld_root4)) flowerc++;
-  if (store_get_fld(NS_fld_root5)) flowerc++;
-  if (store_get_fld(NS_fld_root6)) flowerc++;
-  if (store_get_fld(NS_fld_root7)) flowerc++;
-  struct text_insertion insv[]={
-    {.mode='i',.i=flowerc},
-  };
-  text_format_res(dst,COLC,1,19,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_write_sidequests(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  int completec,totalc;
-  game_get_sidequests(&completec,&totalc);
-  struct text_insertion insv[]={
-    {.mode='i',.i=completec},
-    {.mode='i',.i=totalc},
-  };
-  text_format_res(dst,COLC,1,20,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_write_items(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  int itemc=0;
-  const struct invstore *invstore=g.store.invstorev;
-  int i=INVSTORE_SIZE;
-  for (;i-->0;invstore++) {
-    if (invstore->itemid) itemc++;
-  }
-  struct text_insertion insv[]={
-    {.mode='i',.i=itemc},
-    {.mode='i',.i=INVSTORE_SIZE},
-  };
-  text_format_res(dst,COLC,1,21,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_write_maps(struct vellum *vellum,char *dst) {
-  memset(dst,' ',COLC);
-  struct jigstore_progress progress;
-  jigstore_progress_tabulate(&progress);
-  int v=progress.piecec_got+progress.finished;
-  int c=progress.piecec_total+1;
-  int pct;
-  if (c<1) pct=0;
-  else if (v<1) pct=0;
-  else if (v>=c) pct=100;
-  else {
-    pct=(v*100)/c;
-    if (pct<1) pct=1;
-    else if (pct>99) pct=99;
-  }
-  struct text_insertion insv[]={
-    {.mode='i',.i=pct},
-  };
-  text_format_res(dst,COLC,1,22,insv,sizeof(insv)/sizeof(insv[0]));
-  stats_align(dst,vellum);
-}
-
-static void stats_rewrite_all_except_maps(struct vellum *vellum) {
-  stats_write_progress  (vellum,VELLUM->text+ 0*COLC);
-  stats_write_time      (vellum,VELLUM->text+ 1*COLC);
-  stats_write_flowers   (vellum,VELLUM->text+ 2*COLC);
-  stats_write_sidequests(vellum,VELLUM->text+ 3*COLC);
-  stats_write_items     (vellum,VELLUM->text+ 4*COLC);
-}
-  
-static void stats_rewrite_all(struct vellum *vellum) {
-  memset(VELLUM->text,' ',sizeof(VELLUM->text));
-  stats_write_progress  (vellum,VELLUM->text+ 0*COLC);
-  stats_write_time      (vellum,VELLUM->text+ 1*COLC);
-  stats_write_flowers   (vellum,VELLUM->text+ 2*COLC);
-  stats_write_sidequests(vellum,VELLUM->text+ 3*COLC);
-  stats_write_items     (vellum,VELLUM->text+ 4*COLC);
-  stats_write_maps      (vellum,VELLUM->text+ 5*COLC);
+  egg_texture_del(VELLUM->texid);
+  store_unlisten(VELLUM->store_listener);
 }
 
 /* Focus.
@@ -209,8 +31,6 @@ static void stats_rewrite_all(struct vellum *vellum) {
  
 static void _stats_focus(struct vellum *vellum,int focus) {
   if (focus) {
-    // We have to assume that jigsaw progress could have changed, since their assembly happens in pause modal too.
-    stats_write_maps(vellum,VELLUM->text+ 5*COLC);
   }
 }
 
@@ -225,37 +45,220 @@ static void _stats_updatebg(struct vellum *vellum,double elapsed) {
  
 static void _stats_update(struct vellum *vellum,double elapsed) {
   _stats_updatebg(vellum,elapsed);
-  // pausetime keeps ticking while we're open. Update it constantly.
-  stats_write_time(vellum,VELLUM->text+1*COLC);
 }
 
 /* Language change.
  */
  
 static void _stats_langchanged(struct vellum *vellum,int lang) {
-  stats_measure_alignment(vellum);
-  stats_rewrite_all(vellum);
+  VELLUM->dirty=1;
+}
+
+/* Store changed.
+ */
+ 
+static void _stats_store_changed(char type,int id,int value,void *userdata) {
+  struct vellum *vellum=userdata;
+  switch (type) {
+    case 'f':
+    case 'j':
+    case 'i':
+      VELLUM->dirty=1;
+      break;
+  }
+}
+
+/* Fill rectangle.
+ */
+ 
+static void stats_fill_rect(uint32_t *dst,int dstw,int dsth,int x,int y,int w,int h,uint32_t rgba) {
+  rgba=(rgba>>24)|((rgba&0xff0000)>>8)|((rgba&0xff00)<<8)|(rgba<<24);
+  if (x<0) { w+=x; x=0; }
+  if (y<0) { h+=y; y=0; }
+  if (x>dstw-w) w=dstw-x;
+  if (y>dsth-h) h=dsth-y;
+  if ((w<1)||(h<1)) return;
+  dst+=y*dstw+x;
+  for (;h-->0;dst+=dstw) {
+    uint32_t *dstp=dst;
+    int xi=w;
+    for (;xi-->0;dstp++) *dstp=rgba;
+  }
+}
+
+/* Render one line of the report.
+ */
+ 
+static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,const struct completable *comp,int sepx) {
+  const char *k=0;
+  int kc=text_get_string(&k,1,comp->strix);
+  int kw=font_measure_string(g.font,k,kc);
+  int dstx=sepx-kw;
+  if (dstx<0) dstx=0;
+  uint32_t kcolor=0x000000ff;
+  if (comp->numer<=0) kcolor=0x606060ff;
+  else if (comp->numer>=comp->denom) kcolor=0x008000ff;
+  font_render(
+    dst+y*VELLUM->texw+dstx,VELLUM->texw,VELLUM->texh-y,VELLUM->texw<<2,
+    g.font,k,kc,kcolor
+  );
+  switch (comp->strix) {
+      
+    /* Completion: Progress bar and percentage.
+     */
+    case 31: {
+        int boxh=font_get_line_height(g.font);
+        int boxw=VELLUM->texw-sepx-5;
+        int barw=comp->denom?((comp->numer*boxw)/comp->denom):0;
+        stats_fill_rect(dst,VELLUM->texw,VELLUM->texh,sepx+5,y-1,boxw,boxh,0xa08060ff);
+        stats_fill_rect(dst,VELLUM->texw,VELLUM->texh,sepx+5,y-1,barw,boxh,0x000000ff);
+        char pcttext[8];
+        int pcttextc=snprintf(pcttext,sizeof(pcttext),"%d%%",VELLUM->pct);
+        if ((pcttextc<0)||(pcttextc>sizeof(pcttext))) pcttextc=0;
+        font_render(
+          dst+y*VELLUM->texw+sepx+7,VELLUM->texw-sepx-7,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,pcttext,pcttextc,0xffff00ff
+        );
+      } break;
+      
+    /* Play time: Render as "HH:MM:SS", and pull it from the store, the completable is a dummy.
+     * TODO Capture the output position for this, but then do the rendering from a separate texture, so we can update it every second.
+     * TODO Something similar for #30 Flowers, so we can show animated icons instead of a count.
+     */
+    case 32: {
+        double fs=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_battletime)+store_get_clock(NS_clock_pausetime);
+        int ms=(int)(fs*1000.0);
+        int seconds=ms/1000; ms%=1000;
+        int minutes=seconds/60; seconds%=60;
+        int hours=minutes/60; minutes%=60;
+        if (hours>999) {
+          hours=ms=999;
+          minutes=seconds=99;
+        }
+        char tmp[]={
+          '0'+hours/100,
+          '0'+(hours/10)%10,
+          '0'+hours%10,
+          ':',
+          '0'+minutes/10,
+          '0'+minutes%10,
+          ':',
+          '0'+seconds/10,
+          '0'+seconds%10,
+        };
+        // Trim zeroes off the front down to minute ones digit.
+        int lopc;
+        if (hours>=100) lopc=0;
+        else if (hours>=10) lopc=1;
+        else if (hours>=1) lopc=2;
+        else if (minutes>=10) lopc=4;
+        else lopc=5;
+        int dstx=sepx;
+        dstx+=font_render(
+          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,": ",2,0x000000ff
+        );
+        font_render(
+          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,tmp+lopc,sizeof(tmp)-lopc,0x000000ff
+        );
+      } break;
+      
+    /* Maps: Show as a percentage.
+     */
+    case 35: {
+        int pct=0;
+        if (comp->numer&&comp->denom) {
+          pct=(comp->numer*100)/comp->denom;
+          if (pct<1) pct=1;
+          else if (pct>99) pct=99;
+        }
+        char msg[256];
+        int msgc=snprintf(msg,sizeof(msg),": %d%%\n",pct);
+        if ((msgc<0)||(msgc>=sizeof(msg))) msgc=0;
+        font_render(
+          dst+y*VELLUM->texw+sepx,VELLUM->texw-sepx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,msg,msgc,0x000000ff
+        );
+      } break;
+  
+    /* Everything else: KEY: NUMER/DENOM
+     */
+    default: {
+        char msg[256];
+        int msgc=snprintf(msg,sizeof(msg),": %d/%d\n",comp->numer,comp->denom);
+        if ((msgc<0)||(msgc>=sizeof(msg))) msgc=0;
+        font_render(
+          dst+y*VELLUM->texw+sepx,VELLUM->texw-sepx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,msg,msgc,0x000000ff
+        );
+      }
+  }
+}
+
+/* Render report.
+ * (dst) has size (VELLUM->texw,VELLUM->texh) and is initially zero.
+ * (VELLUM->completablev,total,pct) must be populated first.
+ */
+ 
+static void stats_render_report(uint32_t *dst,struct vellum *vellum,int sepx) {
+  int lineh=font_get_line_height(g.font);
+  int y=2;
+  stats_render_completable(dst,y,vellum,&VELLUM->total,sepx); y+=lineh;
+  struct completable playtime={.strix=32,.numer=1,.denom=2};
+  stats_render_completable(dst,y,vellum,&playtime,sepx); y+=lineh;
+  const struct completable *comp=VELLUM->completablev;
+  int i=VELLUM->completablec;
+  for (;i-->0;comp++,y+=lineh) {
+    stats_render_completable(dst,y,vellum,comp,sepx);
+  }
+}
+
+/* Rendered width of a string resource.
+ */
+ 
+static int stats_string_width(int strix) {
+  const char *src;
+  int srcc=text_get_string(&src,1,strix);
+  if (srcc<1) return 0;
+  return font_measure_string(g.font,src,srcc);
+}
+
+/* Generate report.
+ */
+ 
+static void stats_generate_report(struct vellum *vellum) {
+
+  // Collect the essential stats.
+  VELLUM->completablec=game_get_completables(VELLUM->completablev,COMPLETABLE_LIMIT);
+  if ((VELLUM->completablec<0)||(VELLUM->completablec>COMPLETABLE_LIMIT)) VELLUM->completablec=0;
+  VELLUM->pct=completables_total(&VELLUM->total,VELLUM->completablev,VELLUM->completablec);
+  VELLUM->total.strix=31;
+  
+  // Allocate a buffer to render to, client-side.
+  VELLUM->texw=250;
+  VELLUM->texh=100;
+  int sepx=VELLUM->texw>>1;
+  uint32_t *rgba=calloc(VELLUM->texw*4,VELLUM->texh);
+  if (!rgba) return;
+  stats_render_report(rgba,vellum,sepx);
+  
+  if (!VELLUM->texid) VELLUM->texid=egg_texture_new();
+  egg_texture_load_raw(VELLUM->texid,VELLUM->texw,VELLUM->texh,VELLUM->texw<<2,rgba,VELLUM->texw*VELLUM->texh*4);
+  
+  free(rgba);
 }
 
 /* Render.
  */
  
 static void _stats_render(struct vellum *vellum,int x,int y,int w,int h) {
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_set_tint(&g.graf,0x000000ff);
-  const char *src=VELLUM->text;
-  int fullw=COLC*GLYPHSIZE;
-  int fullh=ROWC*GLYPHSIZE;
-  int tx0=x+(w>>1)-(fullw>>1)+(GLYPHSIZE>>1);
-  int ty=y+(h>>1)-(fullh>>1)+(GLYPHSIZE>>1),yi=ROWC;
-  for (;yi-->0;ty+=GLYPHSIZE) {
-    int tx=tx0,xi=COLC;
-    for (;xi-->0;tx+=GLYPHSIZE,src++) {
-      if ((*src<=0x20)||(*src>=0x7f)) continue;
-      graf_tile(&g.graf,tx,ty,*src,0);
-    }
+  if (VELLUM->dirty) {
+    VELLUM->dirty=0;
+    stats_generate_report(vellum);
   }
-  graf_set_tint(&g.graf,0);
+  graf_set_input(&g.graf,VELLUM->texid);
+  graf_decal(&g.graf,x+(w>>1)-(VELLUM->texw>>1),y+(h>>1)-(VELLUM->texh>>1),0,0,VELLUM->texw,VELLUM->texh);
 }
 
 /* New.
@@ -273,9 +276,8 @@ struct vellum *vellum_new_stats(struct modal *parent) {
   vellum->render=_stats_render;
   vellum->langchanged=_stats_langchanged;
   
-  stats_measure_alignment(vellum);
-  memset(VELLUM->text,' ',sizeof(VELLUM->text));
-  stats_rewrite_all_except_maps(vellum); // maps are expensive, and we'll rewrite them at focus
+  VELLUM->store_listener=store_listen(0,_stats_store_changed,vellum);
+  VELLUM->dirty=1;
   
   return vellum;
 }
