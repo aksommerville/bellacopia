@@ -170,7 +170,8 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
         int pct=0;
         if (comp->numer&&comp->denom) {
           pct=(comp->numer*100)/comp->denom;
-          if (pct<1) pct=1;
+          if (comp->numer>=comp->denom) pct=100;
+          else if (pct<1) pct=1;
           else if (pct>99) pct=99;
         }
         char msg[256];

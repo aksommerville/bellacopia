@@ -16,7 +16,8 @@ static const int bucketfldv_side_quest[]={
   NS_fld_barrelhat1,NS_fld_barrelhat2,NS_fld_barrelhat3,NS_fld_barrelhat4,NS_fld_barrelhat5,NS_fld_barrelhat6,NS_fld_barrelhat7,NS_fld_barrelhat8,NS_fld_barrelhat9,0,
 };
 static const int fldv_heart_container[]={
-  NS_fld_hc1,NS_fld_hc2,NS_fld_hc3,NS_fld_hc4,NS_fld_hc5,
+  NS_fld_hc1,NS_fld_hc2,NS_fld_hc3,
+  //NS_fld_hc4,NS_fld_hc5,//TODO not placed yet
 };
 static const int fldv_buried_treasure[]={
   NS_fld_bt1,NS_fld_bt2,NS_fld_bt3,NS_fld_bt4,

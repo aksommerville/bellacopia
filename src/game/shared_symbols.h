@@ -522,6 +522,7 @@
 #define NS_fld_jig_desert_fish 91 /* One jigpiece in the desert pond where you have to fish for it. */
 #define NS_fld_jigpiece_eyeball_lake 92
 #define NS_fld_caught_seamonster 93
+#define NS_fld_tundra_secret_entrance 94
 
 /* "fld16" are 16 unsigned bits each.
  */
