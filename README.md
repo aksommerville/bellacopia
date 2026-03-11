@@ -33,7 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [ ] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
+- [x] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

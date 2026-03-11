@@ -410,11 +410,18 @@ void camera_update(double elapsed) {
   }
   
   /* If an earthquake is going on, effect the shaking by nudging (ideal).
+   * Capture the offset quantized to pixels, in case we're on a singleton.
    */
+  int eqdx=0,eqdy=0;
   if (g.eqclock>0.0) {
     double eqd=sin(g.eqclock*22.000)*(2.0/NS_sys_tilesize);
-    if ((g.eqdx<-0.5)||(g.eqdx>0.5)) idealy+=eqd;
-    else idealx+=eqd;
+    if ((g.eqdx<-0.5)||(g.eqdx>0.5)) {
+      idealy+=eqd;
+      eqdy=lround(eqd*NS_sys_tilesize);
+    } else {
+      idealx+=eqd;
+      eqdx=lround(eqd*NS_sys_tilesize);
+    }
   }
   
   /* Advance (fx,fy) toward (idealx,idealy) at a global speed limit.
@@ -465,8 +472,8 @@ void camera_update(double elapsed) {
     if (map) {
       rx=map->lng*NS_sys_mapw*NS_sys_tilesize;
       ry=map->lat*NS_sys_maph*NS_sys_tilesize;
-      rx+=((NS_sys_mapw*NS_sys_tilesize)>>1)-(FBW>>1);
-      ry+=((NS_sys_maph*NS_sys_tilesize)>>1)-(FBH>>1);
+      rx+=((NS_sys_mapw*NS_sys_tilesize)>>1)-(FBW>>1)+eqdx;
+      ry+=((NS_sys_maph*NS_sys_tilesize)>>1)-(FBH>>1)+eqdy;
     } else {
       rx=g.camera.rx;
       ry=g.camera.ry;
