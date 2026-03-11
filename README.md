@@ -109,13 +109,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] End the war => Hookshot
 - [ ] Run for mayor => no prize
 - [x] Hat the barrels => Bell
-- [ ] Catch em all => (incremental)
+- [ ] Catch em all => (incremental; multiple)
 - [x] Rescue the Princess => purse+100
 - [x] Decipher the goblins' text => Shovel
 - [x] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?
-- [ ] Inventory critic => ? obvs not an item
+- [x] Inventory critic => hc3
 - [ ] Expensive health care => Heart Container, plus incremental prizes. Can't be gold.
 - [ ] Worldwide broom races => ?
 - [ ] Tree stories => ?
@@ -127,7 +127,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Telescope. Buy in Temple Gift Shop. Maybe temporary.
 - [x] hc1: castleshop
 - [x] hc2: temple pool
-- [ ] hc3
+- [x] hc3: invcritic
 - [ ] hc4
 - [ ] hc5
 - [x] Bomb: inconvenience

@@ -221,3 +221,90 @@ void begin_tree(struct sprite *initiator,int arg) {
     begin_dialogue(91,initiator);
   }
 }
+
+/* invcritic: Judges your inventory.
+ */
+ 
+static int cb_invcritic(int optionid,void *userdata) {
+  game_get_item(NS_itemid_heartcontainer,1);
+  store_set_fld(NS_fld_hc3,1);
+  return 1;
+}
+
+static int compare_item_names(const char *a,int ac,const char *b,int bc) {
+  for (;;) {
+    if (ac<1) {
+      if (bc<1) return 0;
+      return -1;
+    }
+    if (bc<1) return 1;
+    char cha=*a;
+    char chb=*b;
+    if ((cha>='a')&&(cha<='z')) ;
+    else if ((cha>='A')&&(cha<='Z')) cha+=0x20;
+    else { a++; ac--; continue; } // Skip space and punctuation.
+    if ((chb>='a')&&(chb<='z')) ;
+    else if ((chb>='A')&&(chb<='Z')) chb+=0x20;
+    else { b++; bc--; continue; } // Skip space and punctuation.
+    a++; ac--;
+    b++; bc--;
+    if (cha<chb) return -1;
+    if (cha>chb) return 1;
+  }
+}
+ 
+void begin_invcritic(struct sprite *initiator) {
+  if (store_get_fld(NS_fld_hc3)) {
+    begin_dialogue(104,initiator); // "That was fun."
+    return;
+  }
+  
+  /* Collect names of all items.
+   * Bail out if any slot is empty and say "come back with a full backpack".
+   * Beware: g.store.invstorev[0], the equipped item, is first in the store but last by our reckoning.
+   */
+  struct criticizable_item {
+    const char *name;
+    int namec;
+  } itemv[INVSTORE_SIZE];
+  int itemc=0;
+  const struct invstore *invstore=g.store.invstorev+1;
+  int i=INVSTORE_SIZE-1;
+  for (;i-->0;invstore++) {
+    if (!invstore->itemid) {
+      begin_dialogue(101,initiator);
+      return;
+    }
+    const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
+    if (!detail) return;
+    struct criticizable_item *item=itemv+itemc++;
+    item->namec=text_get_string(&item->name,RID_strings_item,detail->strix_name);
+  }
+  //...and then the equipped item...
+  invstore=g.store.invstorev;
+  if (!invstore->itemid) {
+    begin_dialogue(101,initiator);
+    return;
+  }
+  const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
+  if (!detail) return;
+  struct criticizable_item *item=itemv+itemc++;
+  item->namec=text_get_string(&item->name,RID_strings_item,detail->strix_name);
+  
+  /* Backpack is full. Check for alphabetical order.
+   */
+  for (item=itemv+1,i=itemc-1;i-->0;item++) {
+    int cmp=compare_item_names(item[-1].name,item[-1].namec,item[0].name,item[0].namec);
+    if (cmp>0) {
+      begin_dialogue(102,initiator); // "not in order!"
+      return;
+    }
+  }
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=103,
+    .speaker=initiator,
+    .cb=cb_invcritic,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}
