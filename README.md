@@ -34,6 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [x] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
+- [x] Tundra secret entrance, make a rock in the outer world that turns into a ladder, with a stompbox underground. If you only see it from outside, you shouldn't guess there's a ladder.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -47,6 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [x] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
+- - [ ] Actually I think I made it worse. Wipe `spawner` and replace with something more structured, along the lines of Spelling Bee. Will be complicated because the weights are per-map.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.

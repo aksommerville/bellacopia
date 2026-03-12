@@ -55,6 +55,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_busstop: begin_busstop(arg); break;
     case NS_activity_inconvenience: begin_inconvenience(initiator); break;
     case NS_activity_invcritic: begin_invcritic(initiator); break;
+    case NS_activity_tundra_secret_entrance: store_set_fld(NS_fld_tundra_secret_entrance,1); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

@@ -257,6 +257,7 @@
 #define NS_activity_busstop 35 /* (u16)busstop */
 #define NS_activity_inconvenience 36
 #define NS_activity_invcritic 37
+#define NS_activity_tundra_secret_entrance 38
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -516,7 +517,7 @@
 #define NS_fld_story16 85
 #define NS_fld_forest_toll 86
 #define NS_fld_hc2 87 /* Heart container in temple pool. */
-#define NS_fld_hc3 88 /* TODO */
+#define NS_fld_hc3 88 /* Inventory critic. */
 #define NS_fld_hc4 89 /* TODO */
 #define NS_fld_hc5 90 /* TODO */
 #define NS_fld_jig_desert_fish 91 /* One jigpiece in the desert pond where you have to fish for it. */
