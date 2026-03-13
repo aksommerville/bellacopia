@@ -35,6 +35,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [x] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
 - [x] Tundra secret entrance, make a rock in the outer world that turns into a ladder, with a stompbox underground. If you only see it from outside, you shouldn't guess there's a ladder.
+- [ ] Goblins' Jail Key must not appear until you've been kidnapped. And make the Princess say something funny if you improbably enter her cell before being kidnapped.
+- [ ] Move the goblin secret entrance and hide it like the tundra one.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
