@@ -258,6 +258,7 @@
 #define NS_activity_inconvenience 36
 #define NS_activity_invcritic 37
 #define NS_activity_tundra_secret_entrance 38
+#define NS_activity_goblin_secret_entrance 39
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -524,6 +525,7 @@
 #define NS_fld_jigpiece_eyeball_lake 92
 #define NS_fld_caught_seamonster 93
 #define NS_fld_tundra_secret_entrance 94
+#define NS_fld_goblin_secret_entrance 95
 
 /* "fld16" are 16 unsigned bits each.
  */

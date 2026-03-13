@@ -218,6 +218,11 @@ static int targets_find_plane_position(int *dstx,int *dsty,int px,int py,int dst
       if (door->dstx/NS_sys_mapw!=srcx/NS_sys_mapw) continue;
       if (door->dsty/NS_sys_maph!=srcy/NS_sys_maph) continue;
     }
+    if (door->dstz==NS_plane_tunnel1) {
+      // Recommend the tunnels only if our final target is down there.
+      // Otherwise, suggest a path in the outerworld, even if it's not navigable.
+      if (dstz!=NS_plane_tunnel1) continue;
+    }
     if (targets_find_plane_position(dstx,dsty,px,py,dstz,door->srcx,door->srcy,door->srcz,p1x,p1y,visited)>=0) {
       return 0;
     }

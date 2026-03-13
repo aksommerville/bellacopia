@@ -77,6 +77,13 @@ static int kidnap_cb(int optionid,void *userdata) {
 }
  
 void begin_kidnap(struct sprite *sprite) {
+  store_set_fld(NS_fld_kidnapped,1);
+  if (store_get_fld(NS_fld_escaped)) {
+    // It's possible to enter the goblins' cave via tunnels. If you do that and exit via the front door, the kidnapping bit will never happen.
+    // Mainly because if this happens, it's fairly likely you're already leading the Princess.
+    // Also comes up if you fly over the kidnap trigger, but that's a bug and I'm going to fix it eventually.
+    return;
+  }
   fprintf(stderr,"TODO %s:%d:%s\n",__FILE__,__LINE__,__func__);
   struct modal_args_dialogue args={
     .text="TODO: Cutscene of Dot falling into a trap, then the goblins drag her off.",

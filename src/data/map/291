@@ -13,5 +13,5 @@
 
 image image:caves
 position 9 6 2 *
-door @14,8 map:125 @2,1 0x0000
 sprite @9,9 sprite:jigpiece (u32)0
+door @14,8 map:141 @6,7 (u16:activity)goblin_secret_entrance
