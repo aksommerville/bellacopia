@@ -135,6 +135,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
       }
       sprite->z=-1; // Poison our plane, so camera doesn't try to outsmart the transition.
       SPRITE->busstop_clock=10.0;
+      g.song_override_outerworld=0;
       camera_cut(SPRITE->busstop_mapid,SPRITE->busstop_col,SPRITE->busstop_row,NS_transition_fadeblack);
     }
     return;

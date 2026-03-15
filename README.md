@@ -33,16 +33,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] Earthquakes don't shake the camera in singleton maps due to clamping. They do need to.
-- [x] Tundra secret entrance, make a rock in the outer world that turns into a ladder, with a stompbox underground. If you only see it from outside, you shouldn't guess there's a ladder.
-- [x] Goblins' Jail Key must not appear until you've been kidnapped. And make the Princess say something funny if you improbably enter her cell before being kidnapped.
-- - ...actually, I think it's ok to leave it here.
-- [x] Move the goblin secret entrance and hide it like the tundra one.
-- [x] Bury a jigpiece by where you get the shovel.
-- - [x] Does the `buriedtreasure` POI work for jigpiece? ...does now
-- [x] Record time at Any% clear and 100% clear.
-- [x] 100% didn't register.
-- [ ] Outerworld background music isn't always kicking in. Maybe only after all root devils are dead?
+- [x] Outerworld background music isn't always kicking in. Maybe only after all root devils are dead?
+- - ...trivially reproducible. No need to kill the root devils. Just bus-stop out of the temple. Happens from the caves too.
+- - ...due to `g.song_override_outerworld`. Fixed for the bus. Will probably come up in other ways.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

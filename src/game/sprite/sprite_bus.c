@@ -147,7 +147,7 @@ static void _bus_collide(struct sprite *sprite,struct sprite *hero) {
   if (SPRITE->cooldown>0.0) return;
   SPRITE->cooldown=0.250;
   
-  // It's pretty easy to get run over by the bus. Bus moves without physics, but it solid. (must be so; we don't want to catch on every blockage in the run-up).
+  // It's pretty easy to get run over by the bus. Bus moves without physics, but is solid. (must be so; we don't want to catch on every blockage in the run-up).
   // So if hero is in a state of collision, try to force her out instead of triggering the modal.
   // Worst case scenario if this doesn't work, she can wait for us to depart.
   if (bus_is_lawsuit_situation(sprite,hero)) return;
