@@ -40,7 +40,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Move the goblin secret entrance and hide it like the tundra one.
 - [x] Bury a jigpiece by where you get the shovel.
 - - [x] Does the `buriedtreasure` POI work for jigpiece? ...does now
-- [ ] Record time at Any% clear and 100% clear.
+- [x] Record time at Any% clear and 100% clear.
+- [x] 100% didn't register.
+- [ ] Outerworld background music isn't always kicking in. Maybe only after all root devils are dead?
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?

@@ -81,6 +81,10 @@ extern struct g {
   double eqclock,eqdx,eqdy; // Earthquake.
   double fishclock;
   double monsterpause; // Counts down after each battle; monster sprites stand still while positive.
+  int completion_listener; // Store listener, always present. Responsible for NS_clock_(mainclear,fullclear) and NS_fld_minimalist.
+  int completion; // 0,1,2 = none,any%,100%
+  int completion_dirty;
+  int jigstate; // -1,0,1 = incomplete,unknown,complete. Optimization to spare us examining the whole jigstore when anything changes.
 } g;
 
 /* Misc global API.

@@ -198,6 +198,32 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
           g.font,msg,msgc,0x000000ff
         );
       } break;
+      
+    /* Any% and 100% clear times.
+     */
+    case 39:
+    case 40: {
+        char tmp[32];
+        int tmpc=stats_format_time(tmp,sizeof(tmp),comp->numer);
+        if ((tmpc<0)||(tmpc>sizeof(tmp))) tmpc=0;
+        if (comp->denom==3) { // Extra indicator for minimalist Any% completion.
+          if (tmpc<=sizeof(tmp)-4) {
+            tmp[tmpc++]=' ';
+            tmp[tmpc++]='!';
+            tmp[tmpc++]='!';
+            tmp[tmpc++]='!';
+          }
+        }
+        int dstx=sepx;
+        dstx+=font_render(
+          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,": ",2,0x000000ff
+        );
+        font_render(
+          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,tmp,tmpc,0x000000ff
+        );
+      } break;
   
     /* Everything else: KEY: NUMER/DENOM
      */
@@ -224,9 +250,26 @@ static void stats_render_report(uint32_t *dst,struct vellum *vellum,int sepx) {
   VELLUM->flowerx=VELLUM->flowery=-1;
   int lineh=font_get_line_height(g.font);
   int y=2;
+  
+  // Total progress bar.
   stats_render_completable(dst,y,vellum,&VELLUM->total,sepx); y+=lineh;
+  
+  // Running clock.
   struct completable playtime={.strix=32,.numer=1,.denom=2};
   stats_render_completable(dst,y,vellum,&playtime,sepx); y+=lineh;
+  
+  // Any% and 100% time if present.
+  double sf;
+  if ((sf=store_get_clock(NS_clock_mainclear))>0.0) {
+    struct completable comp={.strix=39,.numer=(int)sf,.denom=store_get_fld(NS_fld_minimalist)?3:2};
+    stats_render_completable(dst,y,vellum,&comp,sepx); y+=lineh;
+  }
+  if ((sf=store_get_clock(NS_clock_fullclear))>0.0) {
+    struct completable comp={.strix=40,.numer=(int)sf,.denom=2};
+    stats_render_completable(dst,y,vellum,&comp,sepx); y+=lineh;
+  }
+  
+  // Generic completables.
   const struct completable *comp=VELLUM->completablev;
   int i=VELLUM->completablec;
   for (;i-->0;comp++,y+=lineh) {

@@ -259,6 +259,7 @@
 #define NS_activity_invcritic 37
 #define NS_activity_tundra_secret_entrance 38
 #define NS_activity_goblin_secret_entrance 39
+#define NS_activity_main_quest_wrap_up 40
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -527,6 +528,7 @@
 #define NS_fld_tundra_secret_entrance 94
 #define NS_fld_goblin_secret_entrance 95
 #define NS_fld_bt5 96 /* Jigpiece in caves by the shovel. */
+#define NS_fld_minimalist 97 /* True if we had no other stats when the last Root Devil got strangled. */
 
 /* "fld16" are 16 unsigned bits each.
  */

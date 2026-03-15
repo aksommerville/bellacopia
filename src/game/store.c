@@ -702,10 +702,12 @@ static int map_has_parent(const struct map *map) {
 }
 
 /* Measure jigstore progress.
+ * We also set (g.jigstate).
  */
  
 void jigstore_progress_tabulate(struct jigstore_progress *progress) {
   memset(progress,0,sizeof(struct jigstore_progress));
+  g.jigstate=-1;
   /* Iterate planes from mapstore.
    * Iterate maps in each. (mind that index zero isn't necessarily a real map, have to iterate to find the first).
    * If the first map has a parent, abort the plane, move on.
@@ -739,7 +741,7 @@ void jigstore_progress_tabulate(struct jigstore_progress *progress) {
   // If all the pieces are got, ask jigsaw for each plane, whether it's complete.
   // We can stop at the first false.
   if (progress->piecec_got==progress->piecec_total) {
-    progress->finished=1;
+    progress->finished=g.jigstate=1;
     for (plane=g.mapstore.planev,planei=g.mapstore.planec;planei-->0;plane++) {
       if (!plane->v) continue;
       if (plane->full) {
@@ -752,10 +754,39 @@ void jigstore_progress_tabulate(struct jigstore_progress *progress) {
       }
       if (!jigsaw_plane_is_complete(plane->z)) {
         progress->finished=0;
+        g.jigstate=-1;
         return;
       }
     }
   }
+}
+
+/* Jigstore progress, the simpler answer.
+ */
+ 
+int jigstore_is_complete() {
+  if (!g.jigstate) {
+    struct jigstore_progress progress;
+    jigstore_progress_tabulate(&progress);
+    if (!g.jigstate) { // tabulation should set this, but we can clean up after it if not
+      g.jigstate=progress.finished?1:-1;
+    }
+  }
+  if (g.jigstate>0) return 1;
+  return 0;
+}
+
+/* Nonzero if anything in jigstore is present.
+ */
+ 
+int jigstore_has_anything() {
+  struct jigstore *jigstore=g.store.jigstorev;
+  int i=g.store.jigstorec;
+  for (;i-->0;jigstore++) {
+    if (jigstore->y==0xff) continue; // Dummy.
+    return 1;
+  }
+  return 0;
 }
 
 /* Listeners.

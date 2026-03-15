@@ -115,6 +115,8 @@ struct jigstore_progress {
   int finished;
 };
 void jigstore_progress_tabulate(struct jigstore_progress *progress);
+int jigstore_is_complete();
+int jigstore_has_anything();
 
 /* Serial format, written out to "save" in the Egg store.
  * Starts with 10 bytes for the lengths of the individual stores.

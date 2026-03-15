@@ -150,12 +150,13 @@ int game_get_advice(char *dst,int dsta);
 /* Completion: completion.c
  **************************************************************************************/
 
-/* Percentage of things done, accounting for everything.
- * Zero only for a fresh session, and 100 only if everything is actually done.
+/* The short answer, determined as efficiently as possible.
+ * 0,1,2 = none,any%,100%
+ * Mind that it is possible to skip from 0 to 2, if the last thing you do is strangle a Root Devil.
  */
-int game_get_completion();//XXX
+int game_get_completion();
 
-void game_get_sidequests(int *done,int *total);//XXX
+int game_is_minimalist_complete();
 
 /* Get the things for stats vellum, in the preferred display order.
  * We don't produce Total Completion or Play Time.

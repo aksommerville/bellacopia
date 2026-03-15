@@ -60,6 +60,54 @@ int bm_count_flowers() {
   return FLDV_COUNT(0,fldv_flowers);
 }
 
+/* Get the simple digest of completion.
+ */
+ 
+int game_get_completion() {
+  int n,d=0;
+  
+  // Any flowers unset, the main quest is incomplete so our answer is 0.
+  n=FLDV_COUNT(&d,fldv_flowers); if (n<d) return 0;
+  
+  // Check all the other completable things. 1 if anything missing. Start with cheaper tests.
+  d=0; n=FLDV_COUNT(&d,fldv_side_quest); if (n<d) return 1;
+  d=0; n=BUCKETFLDV_COUNT(&d,bucketfldv_side_quest); if (n<d) return 1;
+  d=0; n=FLDV_COUNT(&d,fldv_heart_container); if (n<d) return 1;
+  d=0; n=FLDV_COUNT(&d,fldv_buried_treasure); if (n<d) return 1;
+  d=0; n=FLDV_COUNT(&d,fldv_story_tree); if (n<d) return 1;
+  const struct invstore *invstore=g.store.invstorev;
+  for (n=INVSTORE_SIZE;n-->0;invstore++) if (!invstore->itemid) return 1;
+  
+  // Reading jigstore is potentially expensive. We do cache the result, but it clears a lot.
+  if (!jigstore_is_complete()) return 1;
+  
+  // OK, it's fully complete!
+  return 2;
+}
+
+/* Test for minimalist completion.
+ */
+ 
+int game_is_minimalist_complete() {
+  int n,d;
+  
+  // Any flowers unset, the main quest is incomplete so our answer is 0.
+  n=FLDV_COUNT(&d,fldv_flowers); if (n<d) return 0;
+  
+  // Check all the other completable things. Anything at all present, our answer is 0.
+  const struct invstore *invstore=g.store.invstorev;
+  for (n=INVSTORE_SIZE;n-->0;invstore++) if (invstore->itemid) return 0;
+  if (FLDV_COUNT(0,fldv_side_quest)) return 0;
+  if (BUCKETFLDV_COUNT(0,bucketfldv_side_quest)) return 0;
+  if (FLDV_COUNT(0,fldv_heart_container)) return 0;
+  if (FLDV_COUNT(0,fldv_buried_treasure)) return 0;
+  if (FLDV_COUNT(0,fldv_story_tree)) return 0;
+  if (jigstore_has_anything()) return 0;
+  
+  // OK, main quest complete and nothing else!
+  return 1;
+}
+
 /* Measure completion.
  */
  
@@ -169,81 +217,6 @@ int completables_total(struct completable *dst,const struct completable *src,int
     }
   }
   return pct;
-}
-
-/* Measure completion.XXX
- */
- 
-int game_get_completion() {
-fprintf(stderr,"%s:%d:%s: XXX Don't use this anymore.\n",__FILE__,__LINE__,__func__);
-return 0;
-/*XXX
-  int numer=0,denom=0;
-  
-  { // Every field in (progress_fldv) must be set.
-    const int *fld=progress_fldv;
-    int i=sizeof(progress_fldv)/sizeof(int);
-    for (;i-->0;fld++) {
-      if (store_get_fld(*fld)) numer++;
-      denom++;
-    }
-  }
-  
-  { // Count inventory. I'll design things such that every slot can be filled exactly (that's not true yet, 2026-01-29)
-    // Do not just count inventoriables in item_detailv. That includes transient things like barrelhat and letter.
-    const struct invstore *invstore=g.store.invstorev;
-    int i=INVSTORE_SIZE;
-    for (;i-->0;invstore++) {
-      if (invstore->itemid) numer++;
-    }
-    denom+=INVSTORE_SIZE;
-  }
-  
-  { // Maps are good to go. Store does the work.
-    struct jigstore_progress progress;
-    jigstore_progress_tabulate(&progress);
-    numer+=progress.piecec_got;
-    denom+=progress.piecec_total;
-    numer+=(progress.finished?1:0);
-    denom+=1;
-  }
-  
-  if ((numer<1)||(denom<1)) return 0;
-  if (numer>=denom) return 100;
-  int pct=(numer*100)/denom;
-  if (pct<1) return 1;
-  if (pct>99) return 99;
-  return pct;
-  */
-}
-
-void game_get_sidequests(int *done,int *total) {
-fprintf(stderr,"%s:%d:%s: XXX Don't use this anymore.\n",__FILE__,__LINE__,__func__);
-/*XXX
-  *done=*total=0;
-  
-  // Most side quests are defined by one field.
-  const int *fld=sidequest_fldv;
-  int i=sizeof(sidequest_fldv)/sizeof(int);
-  for (;i-->0;fld++) {
-    if (store_get_fld(*fld)) (*done)++;
-    (*total)++;
-  }
-  
-  // barrelhat1..barrelhat9 comprise one quest. All must be set.
-  (*total)++;
-  if (
-    store_get_fld(NS_fld_barrelhat1)&&
-    store_get_fld(NS_fld_barrelhat2)&&
-    store_get_fld(NS_fld_barrelhat3)&&
-    store_get_fld(NS_fld_barrelhat4)&&
-    store_get_fld(NS_fld_barrelhat5)&&
-    store_get_fld(NS_fld_barrelhat6)&&
-    store_get_fld(NS_fld_barrelhat7)&&
-    store_get_fld(NS_fld_barrelhat8)&&
-    store_get_fld(NS_fld_barrelhat9)
-  ) (*done)++;
-  /**/
 }
 
 /* Outer world song, depending on context.

@@ -3,6 +3,19 @@
 #define SPRITE_CULL_DISTANCE (NS_sys_mapw*2)
 #define SPRITE_CULL_DISTANCE2 (SPRITE_CULL_DISTANCE*SPRITE_CULL_DISTANCE)
 
+/* Store callback.
+ */
+ 
+static void game_cb_store(char type,int id,int value,void *userdata) {
+  if (g.completion>=2) return; // Already complete, nothing more for us to track.
+  switch (type) {
+    // fld16 doesn't influence completion so we ignore those.
+    case 'j': g.jigstate=0; // pass
+    case 'f':
+    case 'i': g.completion_dirty=1; break;
+  }
+}
+
 /* Reset entire game.
  */
  
@@ -22,6 +35,9 @@ int game_reset(int use_save) {
   g.warp_listener=0;
   g.gameover=0;
   g.song_override_outerworld=0;
+  g.jigstate=0;
+  g.completion=game_get_completion();
+  g.completion_listener=store_listen(0,game_cb_store,0);
   return 0;
 }
 
@@ -49,6 +65,37 @@ void game_update(double elapsed) {
   
   // Weather.
   if (g.eqclock>0.0) bm_update_earthquake(elapsed);
+  
+  // Check completion if something changed.
+  if (g.completion_dirty) {
+    int activity=0,set_minimalist=0;
+    int ncompletion=game_get_completion();
+    if (ncompletion==g.completion) return;
+    // Finished main quest?
+    if ((ncompletion>=1)&&(g.completion<=0)) {
+      double *cl=store_require_clock(NS_clock_mainclear);
+      if (cl) {
+        *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
+        g.store.dirty=1;
+        activity=NS_activity_main_quest_wrap_up;
+        if ((ncompletion==1)&&game_is_minimalist_complete()) {
+          fprintf(stderr,"%s: Minimalist completion!\n",__func__);
+          set_minimalist=1;
+        }
+      }
+    }
+    // Reached 100%?
+    if ((ncompletion>=2)&&(g.completion<=1)) {
+      double *cl=store_require_clock(NS_clock_fullclear);
+      if (cl) {
+        *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
+        g.store.dirty=1;
+      }
+    }
+    g.completion=ncompletion;
+    if (set_minimalist) store_set_fld(NS_fld_minimalist,1);
+    if (activity) game_begin_activity(activity,0,0);
+  }
 }
 
 /* Map becomes visible.
