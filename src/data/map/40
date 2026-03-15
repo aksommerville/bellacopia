@@ -13,4 +13,4 @@
 
 image image:temple
 position 0 3 1 *
-sprite @8,7 sprite:jigpiece (u32)0
+sprite @7,7 sprite:jigpiece (u32)0

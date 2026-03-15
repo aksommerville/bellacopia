@@ -6,6 +6,8 @@
 
 #include "game/bellacopia.h"
 
+#define GROUNDY 150
+
 struct battle_mindcontrol {
   struct battle hdr;
   int choice;
@@ -14,6 +16,10 @@ struct battle_mindcontrol {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
     double skill; // 0..1, reverse of each other.
+    int srcx,srcy;
+    int frame;
+    uint8_t xform;
+    int dstx;
   } playerv[2];
 };
 
@@ -31,18 +37,27 @@ static void _mindcontrol_del(struct battle *battle) {
 static void player_init(struct battle *battle,struct player *player,int human,int face) {
   if (player==BATTLE->playerv) { // Left.
     player->who=0;
+    player->dstx=FBW/3;
   } else { // Right.
     player->who=1;
+    player->xform=EGG_XFORM_XREV;
+    player->dstx=(FBW*2)/3;
   }
   if (player->human=human) { // Human.
   } else { // CPU.
   }
   switch (face) {
     case NS_face_monster: {
+        player->srcx=0;
+        player->srcy=160;
       } break;
     case NS_face_dot: {
+        player->srcx=0;
+        player->srcy=64;
       } break;
     case NS_face_princess: {
+        player->srcx=0;
+        player->srcy=112;
       } break;
   }
 }
@@ -93,46 +108,25 @@ static void _mindcontrol_update(struct battle *battle,double elapsed) {
     player_update_common(battle,player,elapsed);
   }
 
-  //XXX Placeholder UI.
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(BATTLE->choice)<-1) BATTLE->choice=1; }
-  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(BATTLE->choice)>1) BATTLE->choice=-1; }
-  if ((battle->outcome<-1)&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    bm_sound(RID_sound_uiactivate);
-    battle->outcome=BATTLE->choice;
-  }
+  //XXX
+  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.
  */
  
 static void player_render(struct battle *battle,struct player *player) {
+  graf_decal_xform(&g.graf,player->dstx-24,GROUNDY-48,player->srcx+player->frame*48,player->srcy,48,48,player->xform);
 }
 
 /* Render.
  */
  
 static void _mindcontrol_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  
-  // XXX Placeholder UI.
-  int y=FBH/3;
-  int boxh=20;
-  int boxw=20;
-  int y1=y+boxh+1;
-  int xv[3]={
-    (FBW>>2)-(boxw>>1),
-    (FBW>>1)-(boxw>>1),
-    ((FBW*3)>>2)-(boxw>>1),
-  };
-  graf_fill_rect(&g.graf,xv[0],y,boxw,boxh,0xff0000ff);
-  graf_fill_rect(&g.graf,xv[1],y,boxw,boxh,0x404040ff);
-  graf_fill_rect(&g.graf,xv[2],y,boxw,boxh,0x00ff00ff);
-  switch (BATTLE->choice) {
-    case -1: graf_fill_rect(&g.graf,xv[0],y1,boxw,boxh,0xffffffff); break;
-    case  0: graf_fill_rect(&g.graf,xv[1],y1,boxw,boxh,0xffffffff); break;
-    case  1: graf_fill_rect(&g.graf,xv[2],y1,boxw,boxh,0xffffffff); break;
-  }
-  
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80a0e0ff);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x105020ff);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }

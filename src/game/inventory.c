@@ -547,8 +547,18 @@ int game_get_item(int itemid,int quantity) {
    */
   if (itemid==NS_itemid_jigpiece) {
     if (!quantity) {
-      fprintf(stderr,"%s:%d:ERROR: Getting jigpiece but quantity (ie mapid) zero.\n",__FILE__,__LINE__);
-      return 0;
+      if (GRP(hero)->sprc>=1) {
+        struct sprite *hero=GRP(hero)->sprv[0];
+        struct map *map=map_by_sprite_position(hero->x,hero->y,hero->z);
+        if (map) {
+          quantity=map->rid;
+        }
+      }
+      if (!quantity) {
+        fprintf(stderr,"%s:%d:ERROR: Getting jigpiece but quantity (ie mapid) zero, and failed to default per hero.\n",__FILE__,__LINE__);
+        return 0;
+      }
+      game_report_item_quantity_add(NS_itemid_jigpiece,1);
     }
     if (store_get_jigstore(quantity)) return 0; // Already have it.
     if (!store_add_jigstore(quantity)) return 0; // Shouldn't fail.

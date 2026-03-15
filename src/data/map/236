@@ -14,4 +14,4 @@
 image image:caves
 position 0 7 2 *
 door @3,8 map:36 @5,7 0x0000
-sprite @9,6 sprite:jigpiece (u32)0
+sprite @16,8 sprite:jigpiece (u32)0

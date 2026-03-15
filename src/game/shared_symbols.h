@@ -526,6 +526,7 @@
 #define NS_fld_caught_seamonster 93
 #define NS_fld_tundra_secret_entrance 94
 #define NS_fld_goblin_secret_entrance 95
+#define NS_fld_bt5 96 /* Jigpiece in caves by the shovel. */
 
 /* "fld16" are 16 unsigned bits each.
  */

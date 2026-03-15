@@ -4,14 +4,14 @@
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
 #RC____D NAME              OPPONENT           ZONE
   2____D Apples            Boblin             Cave
-  2      ArmWrestling      Minotaur           Labyrinth
+  2____D ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
   2      BodySlam          Yak                Taiga
   2      Bombing           Grenadier          Battlefield
   2____D Boomerang         Koala              Desert
   2      Bouncing          Squirrel           Woodland
   2      Breaching         Whale              Sea
- R2      BroomRace         Witch              Labyrinth
+ R2____D BroomRace         Witch              Labyrinth
   2      Building          Contractor         City
   2      Burrowing         Mole               Cave
   2      CakeCarrying      Baker              City
@@ -19,7 +19,7 @@
   2      Cartography       Geographer         Taiga
   2      CeilingTouching   Giant              Cave
   1      Cheating          Hustler            City
-  1      Chess             Sage               Labyrinth
+  1____D Chess             Sage               Labyrinth
   2      CheeseCutting     Executioner        City
   2____D Chopping          Goat               Farm
   1      Cinematography    Filmmaker          Woodland
@@ -42,18 +42,18 @@
   2____D Exterminating     Soldier            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
-  2      Fencing           Samurai            Farm
+  2      Fencing           Samurai            City
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
   2____D Fishing           Leopard            Jungle
-  2      Flapjack          Cook               City
+  2____D Flapjack          Cook               City
  R2      Flapping          Albatross          Sea
   2      Flipping          Ostrich            Desert
   2      FloeChart         PolarBear          Taiga
   2      Flying            Sparrow            Farm
   2      FrogEating        Pelican            Sea
   2____D Gobbling          Goblin             Cave
-  2      Golf              Unicorn            Labyrinth
+  2____D Golf              Unicorn            Labyrinth
   2      Harvesting        Picker             Farm
   2____D Hiring            Joblin             Cave
   2      HomeRunDerby      Ballplayer         City
@@ -104,7 +104,7 @@
   2      Sawing            Carpenter          Farm
   2      Scaring           Ghost              City
   2      ScubaTuba         Tuna               Sea
-  2      Shaking           Bartender          City
+  2____D Shaking           Bartender          City
   2      Sharing           Bear               Woodland
   2      Shovelling        Miner              Cave
   2      Shuffling         Dealer             City
@@ -120,13 +120,13 @@
   2      Sonar             Bat                Cave
   2      Sorting           Clerk              City
   2      Sparing           Beetle             Desert
-  2      Stacking          Waiter             City
+  2____D Stacking          Waiter             City
   1      Staring           Deer               Woodland
   2____D Stealing          Roblin             Cave
   2      Steering          Buck               Farm
   2      Stenography       Secretary          City
  R2      Stirring          Mouse              Woodland
-  2      Strangling        RootDevil          All
+  2____D Strangling        RootDevil          All
   2      SumoHorse         Wrestler           City
   2      Surrounding       Snake              Jungle
  R2      Swearing          Sailor             Sea
@@ -135,10 +135,10 @@
   2      Tempting          Siren              Sea
   2____D Throwing          Loblin             Cave
   2      TicTacToe         Raccoon            Woodland
-  2      Topping           HotDogVendor       City
+  2____D Topping           HotDogVendor       City
  R2      Traffic           Cop                City
  R2      Umbrella          Kitten             Farm
-  2      Watching          Cook               City
+  2____D Watching          Cook               City
   2      Watermelon        Aardvark           Desert
   2      Weaving           Spider             Cave
   2      Whining           Cub                Woodland

@@ -38,6 +38,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Goblins' Jail Key must not appear until you've been kidnapped. And make the Princess say something funny if you improbably enter her cell before being kidnapped.
 - - ...actually, I think it's ok to leave it here.
 - [x] Move the goblin secret entrance and hide it like the tundra one.
+- [x] Bury a jigpiece by where you get the shovel.
+- - [x] Does the `buriedtreasure` POI work for jigpiece? ...does now
+- [ ] Record time at Any% clear and 100% clear.
 
 - For exploration some time in the uncertain future.
 - [ ] Can we randomize the statuemaze like we did cryptmsg?
@@ -187,3 +190,14 @@ Before the first release, validate and clean up this list. And if in-game credit
 - - The Garden of Earthly Delights; by Hieronymus Bosch; c. 1504; oil on panel, Museo del Prado
 - Erudition Contest text. TODO Not acquired yet.
 
+## Morally Questionable
+
+I'm keeping this game appropriate for children in my opinion, like all of Dot Vine's games.
+Record everything that someone might object to on moral grounds, so we can declare it all up front.
+
+- Witchcraft. No getting around that!
+- Stealing Contest.
+- Election rigging.
+- Shaking Contest (champagne).
+- Casino.
+- Strangling Contest.

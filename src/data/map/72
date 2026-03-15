@@ -4,16 +4,16 @@ e6decbccccdfba000102060403000203c9e3e4f9
 f6da000003d9ba000502050404000600b9e2f4e7
 e4ca000506c9ca0000010103050501c5c4fbe7e2
 e4ba030103b7c80404d5b1bcbcbbbdeffafde9f9
-f8ca05010404020200c0f1e2e4e9e7f7edf2f6f8
-fdeec6000206000506d9e1fce2f3f1fcf2fcf6f3
-f2edceb1bbb1bcbcbbc4e7f5f2e7edf0faedf8f1
+f8ca05010404020205d7bfe2e4e9e7f7edf2f6f8
+fdeec600020600050403d9fce2f3f1fcf2fcf6f3
+f2edceb1bbb1bcbcbcbbcff5f2e7edf0faedf8f1
 cccdcbcbb4e4f0f4f8e0fbece6eae8e3f0ebf6e5
 05040403b7dfe3fdfbe5e1ece1fbe0f4edecf4f6
 0005000500c0e0f1e9e7f6f0e5f5f8f4f5fbfdfb
 
 image image:mountains
 position 9 6 1 *
-sprite @7,7 sprite:jigpiece (u32)0
+sprite @9,7 sprite:jigpiece (u32)0
 root @3,4 (u16:fld)root6
 root @0,6 (u16:fld)root6
 root @1,6 (u16:fld)root6

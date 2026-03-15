@@ -16,4 +16,4 @@ door @7,8 map:5 @15,3 0x0000
 position 2 1 0 0
 parent map:5
 sprite @13,5 sprite:jigpiece (u32)0
-door @16,4 map:294 @18,1 0x0000
+door @16,4 map:294 @10,5 0x0000

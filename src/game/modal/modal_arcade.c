@@ -9,7 +9,7 @@
 #include "game/bellacopia.h"
 #include "game/battle/battle.h"
 
-#define PRESELECT_BATTLE NS_battle_seamonster
+#define PRESELECT_BATTLE NS_battle_mindcontrol
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
@@ -236,7 +236,8 @@ static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userda
   if (outcome<0) MODAL->losec++;
   else if (outcome>0) MODAL->winc++;
   else MODAL->tiec++;
-  fprintf(stderr,"%s: outcome=%d. (w,l,t)=(%d,%d,%d)=%d\n",__func__,outcome,MODAL->winc,MODAL->losec,MODAL->tiec,MODAL->winc+MODAL->losec+MODAL->tiec);
+  // XXX Running log if you want it. Eventually we'll display this kind of thing in the main UI.
+  //fprintf(stderr,"%s: battle=%d outcome=%d. (w,l,t)=(%d,%d,%d)=%d\n",__func__,MODAL->battle,outcome,MODAL->winc,MODAL->losec,MODAL->tiec,MODAL->winc+MODAL->losec+MODAL->tiec);
   MODAL->outcome=outcome;
   struct label *label=arcade_label_by_id(modal,LABELID_OUTCOME);
   if (label) arcade_rewrite_label_outcome(modal,label);
@@ -244,7 +245,6 @@ static void arcade_cb_battle(struct modal *battle_modal,int outcome,void *userda
 }
  
 static void arcade_begin_game(struct modal *modal) {
-  fprintf(stderr,"%s battle=%d players=%d\n",__func__,MODAL->battle,MODAL->players);//TODO
   struct modal_args_battle args={
     .battle=MODAL->battle,
     .args={
