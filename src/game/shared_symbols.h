@@ -548,5 +548,7 @@
 #define NS_clock_playtime 0
 #define NS_clock_pausetime 1
 #define NS_clock_battletime 2
+#define NS_clock_mainclear 3 /* Timestamp when you strangle the last Root Devil. */
+#define NS_clock_fullclear 4 /* Timestamp when you reach 100% completion. */
   
 #endif

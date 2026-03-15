@@ -5,8 +5,6 @@
 
 struct vellum_stats {
   struct vellum hdr;
-  //char text[COLC*ROWC];
-  //int colonp;
   int pct;
   struct completable total;
   struct completable completablev[COMPLETABLE_LIMIT];
@@ -14,6 +12,13 @@ struct vellum_stats {
   int texid,texw,texh;
   int store_listener;
   int dirty;
+  
+  // Positions relative to (tex) for dynamic values:
+  int clockx,clocky;
+  int flowerx,flowery;
+  int clocktex,clockw,clockh;
+  int clocksec;
+  int flowerv[7];
 };
 
 #define VELLUM ((struct vellum_stats*)vellum)
@@ -23,6 +28,7 @@ struct vellum_stats {
  
 static void _stats_del(struct vellum *vellum) {
   egg_texture_del(VELLUM->texid);
+  egg_texture_del(VELLUM->clocktex);
   store_unlisten(VELLUM->store_listener);
 }
 
@@ -68,6 +74,35 @@ static void _stats_store_changed(char type,int id,int value,void *userdata) {
   }
 }
 
+/* Format time in seconds for display.
+ */
+ 
+static int stats_format_time(char *dst,int dsta,int sec) {
+  if (!dst||(dsta<1)) return 0;
+  if (sec<0) sec=0;
+  int min=sec/60; sec%=60;
+  int hour=min/60; min%=60;
+  if (hour>999) {
+    hour=999;
+    min=99;
+    sec=99;
+  }
+  int dstc=0;
+  if (hour>=100) { if (dstc<dsta) dst[dstc]='0'+hour/100; dstc++; }
+  if (hour>=10) { if (dstc<dsta) dst[dstc]='0'+(hour/10)%10; dstc++; }
+  if (hour>=1) {
+    if (dstc<dsta) dst[dstc]='0'+hour%10; dstc++;
+    if (dstc<dsta) dst[dstc]=':'; dstc++;
+  }
+  if ((hour>0)||(min>=10)) { if (dstc<dsta) dst[dstc]='0'+min/10; dstc++; }
+  // Minutes ones and lower print always.
+  if (dstc<dsta) dst[dstc]='0'+min%10; dstc++;
+  if (dstc<dsta) dst[dstc]=':'; dstc++;
+  if (dstc<dsta) dst[dstc]='0'+sec/10; dstc++;
+  if (dstc<dsta) dst[dstc]='0'+sec%10; dstc++;
+  return dstc;
+}
+
 /* Fill rectangle.
  */
  
@@ -103,6 +138,18 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
     g.font,k,kc,kcolor
   );
   switch (comp->strix) {
+  
+    /* Flowers: Record position so we can render live with animated flower icons.
+     */
+    case 30: {
+        int dstx=sepx;
+        dstx+=font_render(
+          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
+          g.font,": ",2,0x000000ff
+        );
+        VELLUM->flowerx=dstx;
+        VELLUM->flowery=y;
+      } break;
       
     /* Completion: Progress bar and percentage.
      */
@@ -121,47 +168,16 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
         );
       } break;
       
-    /* Play time: Render as "HH:MM:SS", and pull it from the store, the completable is a dummy.
-     * TODO Capture the output position for this, but then do the rendering from a separate texture, so we can update it every second.
-     * TODO Something similar for #30 Flowers, so we can show animated icons instead of a count.
+    /* Play time: Record position. We'll render it as a separate texture, so as not to redraw this whole report every second.
      */
     case 32: {
-        double fs=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_battletime)+store_get_clock(NS_clock_pausetime);
-        int ms=(int)(fs*1000.0);
-        int seconds=ms/1000; ms%=1000;
-        int minutes=seconds/60; seconds%=60;
-        int hours=minutes/60; minutes%=60;
-        if (hours>999) {
-          hours=ms=999;
-          minutes=seconds=99;
-        }
-        char tmp[]={
-          '0'+hours/100,
-          '0'+(hours/10)%10,
-          '0'+hours%10,
-          ':',
-          '0'+minutes/10,
-          '0'+minutes%10,
-          ':',
-          '0'+seconds/10,
-          '0'+seconds%10,
-        };
-        // Trim zeroes off the front down to minute ones digit.
-        int lopc;
-        if (hours>=100) lopc=0;
-        else if (hours>=10) lopc=1;
-        else if (hours>=1) lopc=2;
-        else if (minutes>=10) lopc=4;
-        else lopc=5;
         int dstx=sepx;
         dstx+=font_render(
           dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
           g.font,": ",2,0x000000ff
         );
-        font_render(
-          dst+y*VELLUM->texw+dstx,VELLUM->texw-dstx,VELLUM->texh-y,VELLUM->texw<<2,
-          g.font,tmp+lopc,sizeof(tmp)-lopc,0x000000ff
-        );
+        VELLUM->clockx=dstx;
+        VELLUM->clocky=y;
       } break;
       
     /* Maps: Show as a percentage.
@@ -200,9 +216,12 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
 /* Render report.
  * (dst) has size (VELLUM->texw,VELLUM->texh) and is initially zero.
  * (VELLUM->completablev,total,pct) must be populated first.
+ * We'll replace (clockx,clocky,flowerx,flowery) along the way.
  */
  
 static void stats_render_report(uint32_t *dst,struct vellum *vellum,int sepx) {
+  VELLUM->clockx=VELLUM->clocky=-1;
+  VELLUM->flowerx=VELLUM->flowery=-1;
   int lineh=font_get_line_height(g.font);
   int y=2;
   stats_render_completable(dst,y,vellum,&VELLUM->total,sepx); y+=lineh;
@@ -229,6 +248,15 @@ static int stats_string_width(int strix) {
  */
  
 static void stats_generate_report(struct vellum *vellum) {
+
+  // Collect flowers a la carte. Completables only describes them as a total count.
+  VELLUM->flowerv[0]=store_get_fld(NS_fld_root1);
+  VELLUM->flowerv[1]=store_get_fld(NS_fld_root2);
+  VELLUM->flowerv[2]=store_get_fld(NS_fld_root3);
+  VELLUM->flowerv[3]=store_get_fld(NS_fld_root4);
+  VELLUM->flowerv[4]=store_get_fld(NS_fld_root5);
+  VELLUM->flowerv[5]=store_get_fld(NS_fld_root6);
+  VELLUM->flowerv[6]=store_get_fld(NS_fld_root7);
 
   // Collect the essential stats.
   VELLUM->completablec=game_get_completables(VELLUM->completablev,COMPLETABLE_LIMIT);
@@ -258,8 +286,33 @@ static void _stats_render(struct vellum *vellum,int x,int y,int w,int h) {
     VELLUM->dirty=0;
     stats_generate_report(vellum);
   }
+  
+  // If the clock reached a new second, redraw it.
+  int sec=(int)(store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_battletime)+store_get_clock(NS_clock_pausetime));
+  if (sec!=VELLUM->clocksec) {
+    VELLUM->clocksec=sec;
+    char tmp[16];
+    int tmpc=stats_format_time(tmp,sizeof(tmp),sec);
+    font_render_to_texture(VELLUM->clocktex,g.font,tmp,tmpc,FBW,FBH,0x000000ff);
+    egg_texture_get_size(&VELLUM->clockw,&VELLUM->clockh,VELLUM->clocktex);
+  }
+  
+  int dstx=x+(w>>1)-(VELLUM->texw>>1);
+  int dsty=y+(h>>1)-(VELLUM->texh>>1);
   graf_set_input(&g.graf,VELLUM->texid);
-  graf_decal(&g.graf,x+(w>>1)-(VELLUM->texw>>1),y+(h>>1)-(VELLUM->texh>>1),0,0,VELLUM->texw,VELLUM->texh);
+  graf_decal(&g.graf,dstx,dsty,0,0,VELLUM->texw,VELLUM->texh);
+  
+  // Play time. Keeps running while paused.
+  graf_set_input(&g.graf,VELLUM->clocktex);
+  graf_decal(&g.graf,dstx+VELLUM->clockx,dsty+VELLUM->clocky,0,0,VELLUM->clockw,VELLUM->clockh);
+  
+  // Flowers.
+  graf_set_image(&g.graf,RID_image_pause);
+  int flx=dstx+VELLUM->flowerx+2;
+  int fly=dsty+VELLUM->flowery+4;
+  int i=0; for (;i<7;i++,flx+=10) {
+    graf_tile(&g.graf,flx,fly,0xa6+i+(VELLUM->flowerv[i]?0x10:0),0);
+  }
 }
 
 /* New.
@@ -279,6 +332,8 @@ struct vellum *vellum_new_stats(struct modal *parent) {
   
   VELLUM->store_listener=store_listen(0,_stats_store_changed,vellum);
   VELLUM->dirty=1;
+  VELLUM->clocktex=egg_texture_new();
+  VELLUM->clocksec=-1;
   
   return vellum;
 }
