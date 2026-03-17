@@ -236,6 +236,44 @@ void labyrinth_reset();
  */
 void labyrinth_freshen_map(struct map *map);
 
+/* Statue Maze: statuemaze.c
+ ***********************************************************************/
+ 
+#define STATUEMAZE_COLC 5
+#define STATUEMAZE_ROWC 3
+
+#define STATUEMAZE_APPEARANCE_MERMAID 0
+#define STATUEMAZE_APPEARANCE_BEAR 1
+#define STATUEMAZE_APPEARANCE_MINOTAUR 2
+#define STATUEMAZE_APPEARANCE_WYVERN 3
+#define STATUEMAZE_APPEARANCE_PENGUIN 4
+
+#define STATUEMAZE_APPEARANCE(cell) (((cell)>>4)&15)
+#define STATUEMAZE_N 0x01
+#define STATUEMAZE_W 0x02
+#define STATUEMAZE_E 0x04
+#define STATUEMAZE_S 0x08
+
+/* Controller should call before it needs the maze.
+ * Lazy load. If we already have content, we quickly noop.
+ * If we need to generate a seed, we do. But if it already exists, we use what's there.
+ * You can reset it by setting NS_fld16_statuemaze_seed zero.
+ * Or force a specific puzzle by setting that nonzero.
+ * You don't actually need to call this ever; all our public entry points do.
+ */
+void statuemaze_require();
+
+/* Fill a grid (STATUEMAZE_COLC*STATUEMAZE_ROWC) with the fail mask in low 4 bits, and appearance in high 4.
+ * Calls statuemaze_require() first.
+ * Note that this model grid is just the statues. Caller is responsible for expanding into the gaps between statues.
+ */
+void statuemaze_get_grid(uint8_t *dst);
+
+/* Get plain text describing one of the rules.
+ * There are four messages, msgid 0..3
+ */
+int statuemaze_get_message(char *dst,int dsta,int msgid);
+
 /* Stories: stories/stories.c
  **************************************************************************/
  

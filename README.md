@@ -38,7 +38,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...due to `g.song_override_outerworld`. Fixed for the bus. Will probably come up in other ways.
 
 - For exploration some time in the uncertain future.
-- [ ] Can we randomize the statuemaze like we did cryptmsg?
+- [x] Can we randomize the statuemaze like we did cryptmsg? ...hell yeah we can
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?

@@ -61,4 +61,7 @@ void begin_phonograph();
 void begin_crystal();
 void begin_busstop(int arg);
 
+// activity_dialogue.c
+void begin_statuemaze_clue(struct sprite *initiator,int arg);
+
 #endif

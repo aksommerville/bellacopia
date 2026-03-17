@@ -30,6 +30,7 @@
 #define CMD_map_parent          0x23 /* u16:rid ; For jigsaw purposes, I belong to this other map. One level of redirection only, please. */
 #define CMD_map_barrelhat       0x24 /* u16:pos ; Must also be switchable */
 #define CMD_map_pylon           0x25 /* u16:pos ; Used only by labyrinth, marks the top-left pylon so we can infer the rest. */
+#define CMD_map_statuemaze      0x26 /* u16:pos ; Used only by statuemaze, marks the position of the first statue. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -260,6 +261,7 @@
 #define NS_activity_tundra_secret_entrance 38
 #define NS_activity_goblin_secret_entrance 39
 #define NS_activity_main_quest_wrap_up 40
+#define NS_activity_statuemaze_clue 41 /* (u16:msgid)0..3 */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -544,6 +546,7 @@
 #define NS_fld16_cryptmsg_seed 9
 #define NS_fld16_labyrinth_seed 10
 #define NS_fld16_phonograph 11 /* Zero for default, or explicit song rid for outerworld. */
+#define NS_fld16_statuemaze_seed 12
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
