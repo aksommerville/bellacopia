@@ -36,6 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Outerworld background music isn't always kicking in. Maybe only after all root devils are dead?
 - - ...trivially reproducible. No need to kill the root devils. Just bus-stop out of the temple. Happens from the caves too.
 - - ...due to `g.song_override_outerworld`. Fixed for the bus. Will probably come up in other ways.
+- [ ] Fishmonger should let you select how many to sell. eg if you're in danger of saturating the purse.
 
 - For exploration some time in the uncertain future.
 - [x] Can we randomize the statuemaze like we did cryptmsg? ...hell yeah we can
