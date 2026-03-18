@@ -20,4 +20,4 @@ root @18,3 (u16:fld)root3
 root @17,3 (u16:fld)root3
 root @17,2 (u16:fld)root3
 root @17,1 (u16:fld)root3
-door @5,7 map:236 @3,8 0x0000
+door @5,7 map:236 @6,7 0x0000

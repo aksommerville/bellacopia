@@ -531,6 +531,9 @@
 #define NS_fld_goblin_secret_entrance 95
 #define NS_fld_bt5 96 /* Jigpiece in caves by the shovel. */
 #define NS_fld_minimalist 97 /* True if we had no other stats when the last Root Devil got strangled. */
+#define NS_fld_jungle_underdoor 98
+#define NS_fld_mountains_underdoor 99
+#define NS_fld_tundra_underdoor 100
 
 /* "fld16" are 16 unsigned bits each.
  */
