@@ -190,7 +190,7 @@ static void camera_calculate_edges(int *l,int *r,int *t,int *b) {
  * (ox,oy) are the previous values of (rx,ry).
  */
  
-static void camera_check_exposures(int ox,int oy) {
+static void camera_check_exposures(int ox,int oy,int cut) {
   struct plane *plane=plane_by_position(g.camera.z);
   if (!plane) return;
   if ((plane->w<1)||(plane->h<1)) return;
@@ -276,21 +276,33 @@ static void camera_check_exposures(int ox,int oy) {
    */
   int nl,nr,nt,nb;
   camera_calculate_edges(&nl,&nr,&nt,&nb);
-  if (nl!=g.camera.edgel) {
+  if (cut) {
     g.camera.edgel=nl;
-    camera_broadcast_cell(nl,nt,1,nb-nt+1);
-  }
-  if (nr!=g.camera.edger) {
     g.camera.edger=nr;
-    camera_broadcast_cell(nr,nt,1,nb-nt+1);
-  }
-  if (nt!=g.camera.edget) {
     g.camera.edget=nt;
-    camera_broadcast_cell(nl,nt,nr-nl+1,1);
-  }
-  if (nb!=g.camera.edgeb) {
     g.camera.edgeb=nb;
-    camera_broadcast_cell(nl,nb,nr-nl+1,1);
+    camera_broadcast_cell(nl+1,nt+1,nr-nl-2,nb-nt-2);
+  } else {
+    if (nl!=g.camera.edgel) {
+      int forward=nl<g.camera.edgel;
+      g.camera.edgel=nl;
+      if (forward) camera_broadcast_cell(nl,nt,1,nb-nt+1);
+    }
+    if (nr!=g.camera.edger) {
+      int forward=nr>g.camera.edger;
+      g.camera.edger=nr;
+      if (forward) camera_broadcast_cell(nr,nt,1,nb-nt+1);
+    }
+    if (nt!=g.camera.edget) {
+      int forward=nt<g.camera.edget;
+      g.camera.edget=nt;
+      if (forward) camera_broadcast_cell(nl,nt,nr-nl+1,1);
+    }
+    if (nb!=g.camera.edgeb) {
+      int forward=nb>g.camera.edgeb;
+      g.camera.edgeb=nb;
+      if (forward) camera_broadcast_cell(nl,nb,nr-nl+1,1);
+    }
   }
 }
 
@@ -497,7 +509,7 @@ void camera_update(double elapsed) {
   int oy=g.camera.ry;
   g.camera.rx=rx;
   g.camera.ry=ry;
-  camera_check_exposures(ox,oy);
+  camera_check_exposures(ox,oy,wascut);
   
   /* During a spotlight transition, dynamically update the To focus point.
    */

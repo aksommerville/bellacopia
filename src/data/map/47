@@ -14,11 +14,6 @@
 image image:meadow
 position 4 5 1 *
 sprite @10,6 sprite:jigpiece (u32)0
-rsprite sprite:leopard 10 1 (u32)0
-rsprite sprite:stick 30 2 (u32)0
-rsprite sprite:koala 10 1 (u32)0
-rsprite sprite:goat 10 1 (u32)0
-rsprite sprite:soldier 1 1 (u32)0
 root @12,0 (u16:fld)root5
 root @19,3 (u16:fld)root5
 root @18,3 (u16:fld)root5
@@ -58,3 +53,8 @@ root @1,8 (u16:fld)root4
 sprite @2,4 sprite:poet (u16:activity)poet (u16:activity_arg)0
 bump @6,9 (u16:activity)tree (u16:fld)tree4 (u16)0
 switchable @6,9 (u16:fld)tree4
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

@@ -34,3 +34,8 @@ root @4,4 (u16:fld)root1
 root @3,4 (u16:fld)root1
 root @2,4 (u16:fld)root1
 root @1,4 (u16:fld)root1
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

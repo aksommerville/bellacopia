@@ -1,282 +1,209 @@
 #include "bellacopia.h"
 
-/* If we have so many sprites spawned already, we won't spawn any more.
- * Everything we spawn gets added to (g.spawner.rsprites).
- * We don't do the removal from that group. Let camera kill them when far offscreen.
- */
-#define RSPRITE_LIMIT 8
+static uint16_t primev[]={
+1,2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,
+73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,
+179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,
+283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,
+419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,
+547,557,563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,
+661,673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,
+811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,941,
+947,953,967,971,977,983,991,997,1009,1013,1019,1021,1031,1033,1039,1049,1051,1061,1063,1069,
+1087,1091,1093,1097,1103,1109,1117,1123,1129,1151,1153,1163,1171,1181,1187,1193,1201,1213,1217,1223,
+1229,1231,1237,1249,1259,
+};
 
-/* We adjust the odds of a spawn according to whether the current set is above or below this.
- */
-#define RSPRITE_TARGET 3
-
-/* When so many rsprite are present at the start of an exposure cycle,
- * we'll try to cull the herd first.
- * Our culling is more aggressive than camera's.
- */
-#define RSPRITE_CULL_START 6
-
-/* Recalculate pending cell count randomly.
+/* Reset one spawnmap.
  */
  
-static void spawnmap_recalculate_pending(struct spawnmap *spawnmap) {
-  if (spawnmap->wsum<1) return;
-  spawnmap->pending=(int)(255.0/(SPAWN_WEIGHT_MAX*spawnmap->wsum));
-  if (spawnmap->pending<1) spawnmap->pending=1;
-  spawnmap->pending+=rand()%spawnmap->pending; // Up to double the nominal wait.
-}
+static void spawnmap_reset(struct spawnmap *spawnmap,struct map *map) {
 
-/* Reset one map.
- */
- 
-static void spawnmap_reset(struct spawnmap *spawnmap,const struct map *map) {
-  spawnmap->wsum=0;
-  spawnmap->pending=0;
+  // First zero everything. If it stays zeroes, it's noop.
+  // (map) may be null, in fact the first one will always be.
+  memset(spawnmap,0,sizeof(struct spawnmap));
   if (!map) return;
+  
+  // Add up rsprite weights. Get out if zero.
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
-  struct cmdlist_entry cmd;
+  struct cmdlist_entry cmd={0};
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     if (cmd.opcode==CMD_map_rsprite) {
-      spawnmap->wsum+=cmd.arg[2];
+      uint8_t weight=cmd.arg[2];
+      if (!weight) {
+        fprintf(stderr,"map:%d contains an rsprite (sprite:%d) with weight zero\n",map->rid,(cmd.arg[0]<<8)|cmd.arg[1]);
+      } else {
+        spawnmap->wsum+=weight;
+      }
     }
   }
   if (!spawnmap->wsum) return;
-  spawnmap_recalculate_pending(spawnmap);
+  
+  /* We're deliberately cagey about the exact meaning of "weight".
+   * But we need to settle on something concrete here.
+   * Let's say a weight of 255, the most that one command could use, will yield a period of 10.
+   */
+  const int scale=10;
+  spawnmap->period=(255*scale)/spawnmap->wsum;
+  if (spawnmap->period<1) {
+    fprintf(stderr,"map:%d: wsum %d exceeds expected limit of %d\n",map->rid,spawnmap->wsum,255*scale);
+    spawnmap->period=1;
+  }
+  spawnmap->spawn_counter=spawnmap->period;
+  
+  /* (step) must be coprime to (wsum), and smaller.
+   * Start from a random position in our list of primes, and chop in half until we're under (wsum).
+   * A (wsum) of 1 is legal and there's nothing lower; in that case, use 1 for (step).
+   */
+  int primec=sizeof(primev)/sizeof(primev[0]);
+  int primep=(rand()&0x7fffffff)%primec;
+  while (primep&&(primev[primep]>=spawnmap->wsum)) primep>>=1;
+  spawnmap->step=primev[primep];
+  
+  /* Initialize (choice) randomly.
+   */
+  spawnmap->choice=rand()%spawnmap->step;
+  
+  fprintf(stderr,"map:%d: wsum=%d period=%d step=%d choice=%d\n",map->rid,spawnmap->wsum,spawnmap->period,spawnmap->step,spawnmap->choice);
 }
 
 /* Reset.
  */
  
 void spawner_reset() {
-  sprite_group_clear(&g.spawner.rsprites); // Should happen by other means but we'll be sure of it.
+  fprintf(stderr,"%s mapc=%d\n",__func__,g.mapstore.byidc);
+  g.spawner.z=-1;
+  g.spawner.spawnmapc=0;
   
-  /* Rebuild (spawnmapv) if it doesn't match (g.mapstore.byidv).
+  /* Rebuild (g.spawner.spawnmapv) from (g.mapstore.byidv).
    */
-  if (g.spawner.spawnmapc!=g.mapstore.byidc) {
-    g.spawner.spawnmapc=0;
-    void *nv=realloc(g.spawner.spawnmapv,sizeof(struct spawnmap)*g.mapstore.byidc);
-    if (!nv) return;
-    g.spawner.spawnmapv=nv;
-    g.spawner.spawnmapc=g.mapstore.byidc;
-    struct spawnmap *spawnmap=g.spawner.spawnmapv;
-    struct map **mapp=g.mapstore.byidv;
-    int i=g.mapstore.byidc;
-    for (;i-->0;spawnmap++,mapp++) {
-      spawnmap_reset(spawnmap,*mapp);
-    }
+  if (g.spawner.spawnmapv) free(g.spawner.spawnmapv);
+  if (!(g.spawner.spawnmapv=malloc(sizeof(struct spawnmap)*g.mapstore.byidc))) return;
+  struct spawnmap *spawnmap=g.spawner.spawnmapv;
+  struct map **mapp=g.mapstore.byidv;
+  for (;g.spawner.spawnmapc<g.mapstore.byidc;g.spawner.spawnmapc++,spawnmap++,mapp++) {
+    spawnmap_reset(spawnmap,*mapp);
   }
 }
 
-/* Nonzero if there's a solid sprite overlapping (x,y).
+/* Count sprites with a given (arg).
+ * Return nonzero if there's >=(limit).
  */
  
-static int sprites_present_at_cell(int x,int y) {
-  // Rather than accounting for each solid's hitbox, just assume we need a half meter on each side.
-  double l=x-0.5;
-  double r=x+1.5;
-  double t=y-0.5;
-  double b=y+1.5;
-  struct sprite **p=GRP(solid)->sprv;
-  int i=GRP(solid)->sprc;
+static int spawnmap_over_limit(const void *arg,int limit) {
+  struct sprite **p=GRP(keepalive)->sprv;
+  int i=GRP(keepalive)->sprc;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->defunct) continue;
-    if (sprite->x<l) continue;
-    if (sprite->x>r) continue;
-    if (sprite->y<t) continue;
-    if (sprite->y>b) continue;
-    return 1;
+    if (sprite->arg!=arg) continue;
+    if (--limit<=0) return 1;
   }
   return 0;
 }
 
-/* How many current rsprite have this arg?
+/* Expose one cell.
+ * Caller ensures the tile is agreeable.
+ * We'll check for other sprites.
+ * Returns nonzero if we spawn something.
+ * Does not touch (spawn_counter).
  */
  
-static int spawner_count_instances(const void *arg) {
-  struct sprite **p=g.spawner.rsprites.sprv;
-  int i=g.spawner.rsprites.sprc,c=0;
-  for (;i-->0;p++) {
-    struct sprite *sprite=*p;
-    if (sprite->defunct) continue;
-    if (sprite->arg==arg) c++;
-  }
-  return c;
-}
-
-/* Having decided to spawn a sprite at a given point,
- * now we decide which sprite, and spawn it.
- * We didn't index rsprite commands. I feel it makes more sense to read them from scratch each spawn.
- * Returns the new effective (wsum) for (spawnmap), accounting for rsprites afield.
- */
- 
-static int spawner_spawn_1(struct spawnmap *spawnmap,const struct map *map,double x,double y) {
-  if (spawnmap->wsum<1) return 0;
+static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,double x,double y) {
   
-  /* Collect a list of available rsprite commands, respecting each's limit.
+  /* Reject if there's a solid sprite within 1 m cardinally.
+   * Don't bother with the hitboxes, keep it as neat as possible.
    */
-  #define CANDIDATE_LIMIT 32
-  uint8_t lastspawn=0; // bits (1<<p). Set if spawning this candidate would put it at the limit.
-  struct cmdlist_entry candidatev[CANDIDATE_LIMIT];
-  int candidatec=0;
-  int wsum=0;
+  double limitl=x-1.0;
+  double limitr=x+1.0;
+  double limitt=y-1.0;
+  double limitb=y+1.0;
+  struct sprite **otherp=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->x<limitl) continue;
+    if (other->x>limitr) continue;
+    if (other->y<limitt) continue;
+    if (other->y>limitb) continue;
+    return 0; // Occupado!
+  }
+  
+  /* Which sprite do we want?
+   * Reread (map.cmd) and add up the rsprite weights. When that counter crosses (choice), that's the one.
+   * This should never fail to find one, but if it does, drop (choice) to zero and report a failure.
+   */
+  const uint8_t *arg=0;
+  int acc=0;
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
-    if (cmd.opcode!=CMD_map_rsprite) continue;
-    if (!cmd.arg[2]) continue; // zero weight; ignore it.
-    if (cmd.arg[3]) { // nonzero limit; check instances.
-      int existc=spawner_count_instances(cmd.arg+4);
-      if (existc>=cmd.arg[3]) continue;
-      if (existc==cmd.arg[3]-1) lastspawn|=(1<<candidatec);
+    if (cmd.opcode==CMD_map_rsprite) {
+      acc+=cmd.arg[2];
+      if (acc>spawnmap->choice) {
+        arg=cmd.arg;
+        break;
+      }
     }
-    wsum+=cmd.arg[2];
-    candidatev[candidatec++]=cmd;
-    if (candidatec>=CANDIDATE_LIMIT) break;
   }
-  #undef CANDIDATE_LIMIT
-  if (wsum<1) return 0; // All rsprite commands are over their limit. Don't spawn anything.
+  if (!arg) {
+    spawnmap->choice=0;
+    return 0;
+  }
   
-  /* Pick one randomly according to weight.
+  /* Step (choice).
    */
-  int choice=rand()%wsum;
-  struct cmdlist_entry *rcmd=candidatev;
-  int i=0;
-  for (;i<candidatec;i++,rcmd++) {
-    choice-=rcmd->arg[2];
-    if (choice>=0) continue;
-    int rid=(rcmd->arg[0]<<8)|rcmd->arg[1];
-    struct sprite *sprite=sprite_spawn(x,y,rid,rcmd->arg+4,rcmd->argc-4,0,0,0);
-    if (!sprite) return wsum;
-    sprite_group_add(&g.spawner.rsprites,sprite);
-    //fprintf(stderr,"spawner spawn %p(%s) @%f,%f\n",sprite,sprite->type->name,sprite->x,sprite->y);
-    if (lastspawn&(1<<i)) wsum-=rcmd->arg[2];
-    return wsum;
-  }
-  return wsum;
+  spawnmap->choice+=spawnmap->step;
+  if (spawnmap->choice>=spawnmap->wsum) spawnmap->choice-=spawnmap->wsum;
+  
+  /* If we have too many of these afield already, report a failure.
+   */
+  int rid=(arg[0]<<8)|arg[1];
+  int limit=arg[3]; if (!limit) limit=1;
+  const uint8_t *sarg=arg+4;
+  if (spawnmap_over_limit(sarg,limit)) return 0;
+  
+  /* Try to spawn it.
+   */
+  struct sprite *sprite=sprite_spawn(x,y,rid,sarg,4,0,0,0);
+  if (!sprite) return 0;
+  return 1;
 }
 
-/* SPAWN_WEIGHT_MIN..SPAWN_WEIGHT_MAX depending on how many are afield.
+/* Expose cells for one map.
  */
  
-static double spawner_effective_weight() {
-  const double wmid=(SPAWN_WEIGHT_MIN+SPAWN_WEIGHT_MAX)*0.5;
-  int c=g.spawner.rsprites.sprc;
-  c=RSPRITE_LIMIT-c;
-  if (c<RSPRITE_TARGET) {
-    double n=(double)c/(double)RSPRITE_TARGET;
-    return SPAWN_WEIGHT_MIN*(1.0-n)+wmid*n;
-  } else if (c>RSPRITE_TARGET) {
-    double n=(double)(c-RSPRITE_TARGET)/(double)(RSPRITE_LIMIT-RSPRITE_TARGET);
-    return wmid*(1.0-n)+SPAWN_WEIGHT_MAX*n;
-  } else {
-    return wmid;
-  }
-}
-
-/* Cell exposure within one map.
- * Caller confirms (wsum>0).
- * (x,y) are relative to the map, not the plane. OOB is allowed, we clip here.
- */
- 
-static void spawner_expose_1(struct spawnmap *spawnmap,const struct map *map,int x,int y,int w,int h) {
-  if (spawnmap->wsum<1) return; // Shouldn't have called. But consequences would be disastrous if they do, so check.
-
-  // Clip.
+static void spawner_expose_map(struct spawnmap *spawnmap,const struct map *map,int x,int y,int w,int h) {
   if (x<0) { w+=x; x=0; }
   if (y<0) { h+=y; y=0; }
   if (x>NS_sys_mapw-w) w=NS_sys_mapw-x;
   if (y>NS_sys_maph-h) h=NS_sys_maph-y;
   if ((w<1)||(h<1)) return;
   
-  // List candidate cells. Vacant physics and no nearby solids.
-  #define CANDIDATE_LIMIT 25
-  struct candidate {
-    int x,y; // plane meters
-  } candidatev[CANDIDATE_LIMIT];
-  int candidatec=0;
-  int cky=map->lat*NS_sys_maph+y;
-  const uint8_t *rowp=map->v+y*NS_sys_mapw+x;
+  // Visit each cell. Only operate on vacant ones.
+  const uint8_t *cellrow=map->v+y*NS_sys_mapw+x;
   int yi=h;
-  for (;yi-->0;rowp+=NS_sys_mapw,cky++) {
-    int ckx=map->lng*NS_sys_mapw+x;
-    const uint8_t *cellp=rowp;
+  double yf=map->lat*NS_sys_maph+y+0.5;
+  for (;yi-->0;cellrow+=NS_sys_mapw,yf+=1.0) {
+    const uint8_t *cellp=cellrow;
     int xi=w;
-    for (;xi-->0;cellp++,ckx++) {
+    double xf=map->lng*NS_sys_mapw+x+0.5;
+    for (;xi-->0;cellp++,xf+=1.0) {
       uint8_t physics=map->physics[*cellp];
       if (physics!=NS_physics_vacant) continue;
-      if (sprites_present_at_cell(ckx,cky)) continue;
-      struct candidate *candidate=candidatev+candidatec++;
-      candidate->x=ckx;
-      candidate->y=cky;
-      if (candidatec>=CANDIDATE_LIMIT) goto _done_search_;
-    }
-  }
- _done_search_:;
-  if (candidatec<1) return;
-  #undef CANDIDATE_LIMIT
-  
-  /* Drop pending by the candidate count.
-   * If it crosses zero, we spawn something.
-   * Capture the remainders, and we might spawn more than once per call.
-   */
-  spawnmap->pending-=candidatec;
-  while ((spawnmap->pending<=0)&&(candidatec>0)) {
-    int candidatep=rand()%candidatec;
-    int wsum=spawner_spawn_1(spawnmap,map,candidatev[candidatep].x+0.5,candidatev[candidatep].y+0.5);
-    candidatec--;
-    memmove(candidatev+candidatep,candidatev+candidatep+1,sizeof(struct candidate)*(candidatec-candidatep));
-    // Advance spawnmap->pending according to the effective (wsum) returned by spawner_spawn_1.
-    if (wsum>0) {
-      double weight=spawner_effective_weight();
-      int addc=(int)(255.0/(weight*wsum));
-      if (addc<1) addc=1;
-      spawnmap->pending+=addc+rand()%addc; // Up to double the nominal wait.
-    } else {
-      spawnmap->pending+=spawnmap->wsum<<1;
+      if (spawnmap->spawn_counter>0) {
+        spawnmap->spawn_counter--;
+      } else if (spawner_expose_cell(spawnmap,map,xf,yf)) {
+        spawnmap->spawn_counter=spawnmap->period;
+      }
     }
   }
 }
 
-/* Kill any rsprite well outside of the camera's view.
- * Camera does this on its own, but it is not as aggressive as we'd like.
- * Beware that all rsprite are oob initially, just a little.
- * So we'll cull at a short but nonzero distance. Say 3 meters.
- * Cell exposures will definitely not happen during sprite updates, so it's ok to kill them directly instead of deathrow.
+/* Expose cells, main entry point.
  */
- 
-static void spawner_drop_oobs() {
-  const double margin=3.0;
-  double l=(double)g.camera.rx/(double)NS_sys_tilesize-margin;
-  double r=(double)(g.camera.rx+FBW)/(double)NS_sys_tilesize+margin;
-  double t=(double)g.camera.ry/(double)NS_sys_tilesize-margin;
-  double b=(double)(g.camera.ry+FBH)/(double)NS_sys_tilesize+margin;
-  int i=g.spawner.rsprites.sprc;
-  while (i-->0) {
-    struct sprite *sprite=g.spawner.rsprites.sprv[i];
-    // Include the sprite's hitbox, in case it's big.
-    if (
-      (sprite->x+sprite->hbr<l)||
-      (sprite->x+sprite->hbl>r)||
-      (sprite->y+sprite->hbb<t)||
-      (sprite->y+sprite->hbt>b)
-    ) {
-      //fprintf(stderr,"spawner cull %p(%s) @%f,%f\n",sprite,sprite->type->name,sprite->x,sprite->y);
-      sprite_kill(sprite);
-    }
-  }
-}
 
-/* Cell exposure: Possible spawn.
- */
- 
 void spawner_expose(int x,int y,int w,int h) {
-
-  // Too many afield, no worries, we're not making more.
-  if (g.spawner.rsprites.sprc>RSPRITE_CULL_START) {
-    if (!g.telescoping) spawner_drop_oobs();
-    if (g.spawner.rsprites.sprc>=RSPRITE_LIMIT) return;
-  }
   
   // Acquire the plane and clip to it. Fully OOB is entirely possible.
   const struct plane *plane=plane_by_position(g.camera.z);
@@ -302,7 +229,7 @@ void spawner_expose(int x,int y,int w,int h) {
       if (!spawnmap->wsum) continue;
       int subx=x-map->lng*NS_sys_mapw;
       int suby=y-map->lat*NS_sys_maph;
-      spawner_expose_1(spawnmap,map,subx,suby,w,h);
+      spawner_expose_map(spawnmap,map,subx,suby,w,h);
     }
   }
 }

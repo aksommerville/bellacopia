@@ -6,23 +6,22 @@
 #ifndef SPAWNER_H
 #define SPAWNER_H
 
-/* An rsprite command's weight is the odds that a given exposed cell will spawn it.
- * Obviously the natural 0..1 range is too hot, so we scale it down by this constant.
- * 1/10 is a heck of a lot, and 1/2550 is very rare. 1/10 sounds like a good max.
+/* Global singleton (g.spawner).
  */
-#define SPAWN_WEIGHT_MAX 0.100
-#define SPAWN_WEIGHT_MIN 0.002
-
-// Global singleton (g.spawner).
 struct spawner {
-  struct sprite_group rsprites;
+  int z; // Most recent plane. If it doesn't match camera, wipe everything.
   
-  /* We have some extra bookkeeping per map.
-   * These are indexed by mapid, so they always match (g.maps.byidv).
+  /* Extra bookkeeping, indexed by map id.
+   * For each map, we record the sum of rsprite weights. If zero, the map doesn't spawn anything.
+   * A period is calculated from the weight sum. Spawn something every time so many candidate cells are received.
+   * To decide which rsprite to spawn, step a counter by a prime step and wrap around at weight sum.
    */
   struct spawnmap {
-    int wsum; // Sum of weights from rsprite commands. If zero, doesn't participate.
-    int pending; // Volatile. Allow so many candidate cells to pass before spawning the next one.
+    int wsum; // Sum of weights from rsprite commands.
+    int period; // How many candidate cells per spawn.
+    int spawn_counter; // Counts down from (period), spawn at zero.
+    int step; // Some positive integer coprime to (wsum).
+    int choice; // Counts up by (step), wraps around at (wsum). Which rsprite to spawn.
   } *spawnmapv;
   int spawnmapc;
 };

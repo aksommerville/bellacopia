@@ -14,10 +14,10 @@
 image image:meadow
 position 5 6 1 *
 sprite @8,5 sprite:jigpiece (u32)0
-rsprite sprite:leopard 10 1 (u32)0
-rsprite sprite:stick 30 2 (u32)0
-rsprite sprite:koala 10 1 (u32)0
-rsprite sprite:goat 10 1 (u32)0
+rsprite sprite:leopard 5 1 (u32)0
+rsprite sprite:stick 20 1 (u32)0
+rsprite sprite:koala 5 1 (u32)0
+rsprite sprite:goat 5 1 (u32)0
 rsprite sprite:soldier 1 1 (u32)0
 root @0,9 (u16:fld)root3
 root @19,7 (u16:fld)root3
