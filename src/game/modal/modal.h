@@ -94,6 +94,7 @@ extern const struct modal_type modal_type_cryptmsg; // Special type of dialogue 
 extern const struct modal_type modal_type_linguist; // ''
 extern const struct modal_type modal_type_cutscene; // Any of several enumerated non-interactive cutscenes.
 extern const struct modal_type modal_type_crystal; // Crystal Ball. Invoke as NS_activity_crystal.
+extern const struct modal_type modal_type_fishwife; // Story Mode.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -149,6 +150,11 @@ struct modal_args_cutscene {
   int strix_title; // Identifier, from the story.
   void (*cb)(void *userdata);
   void *userdata;
+};
+
+struct modal_args_fishwife {
+  int rid,strix; // For the prompt.
+  struct sprite *speaker;
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

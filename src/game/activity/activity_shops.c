@@ -176,7 +176,7 @@ static int cb_fishwife(int option,void *userdata) {
   return 1;
 }
  
-void begin_fishwife(struct sprite *sprite) {
+void begin_fishwife_old(struct sprite *sprite) {//XXX Replace with options for how many to sell
   int fishc=0;
   int price=fishwife_gather_price(&fishc);
   if (fishc<1) { // "Bring me fish"
@@ -199,6 +199,19 @@ void begin_fishwife(struct sprite *sprite) {
   if (!modal) return;
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+}
+
+/* Fishwife.
+ * Let the modal do all the work.
+ */
+ 
+void begin_fishwife(struct sprite *sprite) {
+  struct modal_args_fishwife args={
+    .rid=RID_strings_dialogue,
+    .strix=18,
+    .speaker=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_fishwife,&args,sizeof(args));
 }
 
 /* Compass technician at Magnetic North.

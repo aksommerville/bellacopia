@@ -63,15 +63,12 @@ static void spawnmap_reset(struct spawnmap *spawnmap,struct map *map) {
   /* Initialize (choice) randomly.
    */
   spawnmap->choice=rand()%spawnmap->step;
-  
-  fprintf(stderr,"map:%d: wsum=%d period=%d step=%d choice=%d\n",map->rid,spawnmap->wsum,spawnmap->period,spawnmap->step,spawnmap->choice);
 }
 
 /* Reset.
  */
  
 void spawner_reset() {
-  fprintf(stderr,"%s mapc=%d\n",__func__,g.mapstore.byidc);
   g.spawner.z=-1;
   g.spawner.spawnmapc=0;
   
