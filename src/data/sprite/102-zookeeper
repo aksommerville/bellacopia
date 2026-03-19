@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 50 0
+type (u16:sprtype)zookeeper
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+hitbox -4 4 -8 8

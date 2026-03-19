@@ -288,6 +288,8 @@
 #define NS_sprtype_marionette  22 /* (u32)0 */
 #define NS_sprtype_pushable    23 /* (u32)0 */
 #define NS_sprtype_bus         24 /* (u32)0 */
+#define NS_sprtype_ticker      25 /* (u16:fld)0 (u16)0 */
+#define NS_sprtype_zookeeper   26 /* (u16:fld)0 (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -313,7 +315,9 @@
   _(bomb) \
   _(marionette) \
   _(pushable) \
-  _(bus)
+  _(bus) \
+  _(ticker) \
+  _(zookeeper)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -534,6 +538,10 @@
 #define NS_fld_jungle_underdoor 98
 #define NS_fld_mountains_underdoor 99
 #define NS_fld_tundra_underdoor 100
+#define NS_fld_zoo1_0 101 /* Forest zoo... */
+#define NS_fld_zoo1_1 102
+#define NS_fld_zoo1_2 103
+#define NS_fld_zoo1_3 104
 
 /* "fld16" are 16 unsigned bits each.
  */

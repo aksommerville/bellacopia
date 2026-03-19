@@ -99,6 +99,8 @@ struct sprite *sprite_toast_get_any();
 
 void sprite_marionette_set_input(struct sprite *sprite,int dx,int dy);
 
+int sprite_ticker_set_text(struct sprite *sprite,const char *src,int srcc);
+
 /* Sprite group.
  *******************************************************************/
  

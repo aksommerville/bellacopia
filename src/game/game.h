@@ -302,4 +302,14 @@ void game_tell_story(const struct story *story);
 void bm_start_earthquake(char dir);
 void bm_update_earthquake(double elapsed);
 
+/* Zookeepers: zoo.c
+ ***************************************************************************/
+
+// Return the count of animals in this zoo, given the first fld eg NS_fld_zoo1_0.
+int zoo_get_count(int fld);
+
+int zoo_get_spriteid(int fld);
+
+int zoo_get_ticker_text(char *dst,int dsta,int fld);
+
 #endif

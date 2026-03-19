@@ -27,7 +27,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
-- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
@@ -35,6 +34,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 
 - For exploration some time in the uncertain future.
+- [ ] Acquire stories.
+- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
@@ -64,6 +65,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
+- [ ] Include zoos in 100% completion. (need to get them all apportioned first).
+- [ ] Fanfare and reward for delivering monster to the zoo.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

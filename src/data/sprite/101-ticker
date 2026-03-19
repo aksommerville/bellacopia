@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 96 0
+type (u16:sprtype)ticker
+groups (b32:sprgrp)visible,update,solid
+hitbox -8 56 -8 8
