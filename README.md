@@ -26,21 +26,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
+- [x] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] Outerworld background music isn't always kicking in. Maybe only after all root devils are dead?
-- - ...trivially reproducible. No need to kill the root devils. Just bus-stop out of the temple. Happens from the caves too.
-- - ...due to `g.song_override_outerworld`. Fixed for the bus. Will probably come up in other ways.
-- [x] Fishmonger should let you select how many to sell. eg if you're in danger of saturating the purse.
-- [x] Switches in outerworld for doors in the underworld main tunnel. To force a much longer path for minimalist completion.
 
 - For exploration some time in the uncertain future.
-- [x] Can we randomize the statuemaze like we did cryptmsg? ...hell yeah we can
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
@@ -50,9 +44,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
-- [x] rsprite: Monsters are sparse at first and accumulate the longer you stay in a zone. Can we thumb the scale a bit to try keeping population near the middle?
-- - [x] Actually I think I made it worse. Wipe `spawner` and replace with something more structured, along the lines of Spelling Bee. Will be complicated because the weights are per-map.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
+- [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
 - - And if you do that before the election, you already have the endorsement.
@@ -61,6 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
+- - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
 - - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [ ] More spells. Not sure what...
@@ -68,6 +62,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Properer graphics for Crystal Ball. Very rough today.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
+- [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
+- [ ] The temple's pool needs a sunbathing monk with a pina colada.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

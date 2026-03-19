@@ -1,5 +1,6 @@
-//TODO bluefish. For now, this is an exact copy of greenfish.
-// I want the fish to deploy a parachute at the crest, then at some random point, detach and dive.
+/* battle_bluefish.c
+ * At some random point in the flight, the fish deploys a parachute, and a bit later, detaches from it.
+ */
 
 #include "game/bellacopia.h"
 
@@ -10,6 +11,18 @@
 #define FLIGHT_TIME 3.000 /* How long for the fish to go from bottom to top and back. */
 #define FISHDY_INITIAL -300.0
 #define FISHDY_ACCEL 250.0
+#define PARACHUTE_DY 20.0
+#define DIVE_DY 300.0
+
+#define STAGE_NOT_READY 0 /* Rising. */
+#define STAGE_LEAD      1 /* Falling, not deployed yet. */
+#define STAGE_PARACHUTE 2 /* Parachute deployed, falling slow. */
+#define STAGE_DIVE      3 /* Parachute released, falling fast. */
+
+#define LEAD_TIME_MIN      0.200
+#define LEAD_TIME_MAX      1.000
+#define PARACHUTE_TIME_MIN 0.250
+#define PARACHUTE_TIME_MAX 0.800
 
 struct battle_bluefish {
   struct battle hdr;
@@ -27,6 +40,10 @@ struct battle_bluefish {
   uint8_t fishtileid;
   uint8_t fishxform;
   double fishanimclock;
+  int stage;
+  double stageclock;
+  uint8_t paratile;
+  double parax,paray;
 };
 
 #define BATTLE ((struct battle_bluefish*)battle)
@@ -80,6 +97,31 @@ static void bluefish_walk_none(struct battle *battle,double elapsed) {
   BATTLE->dotanimclock=0.0;
 }
 
+/* Next stage.
+ */
+ 
+static void bluefish_advance_stage(struct battle *battle) {
+  switch (BATTLE->stage) {
+    case STAGE_NOT_READY: {
+        BATTLE->stage=STAGE_LEAD;
+        BATTLE->stageclock=LEAD_TIME_MIN+((rand()&0xffff)*(LEAD_TIME_MAX-LEAD_TIME_MIN))/65535.0;
+        if (BATTLE->fishxform==0) BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+        else if (BATTLE->fishxform==EGG_XFORM_XREV) BATTLE->fishxform=EGG_XFORM_SWAP;
+      } break;
+    case STAGE_LEAD: {
+        BATTLE->stage=STAGE_PARACHUTE;
+        BATTLE->stageclock=PARACHUTE_TIME_MIN+((rand()&0xffff)*(PARACHUTE_TIME_MAX-PARACHUTE_TIME_MIN))/65535.0;
+      } break;
+    case STAGE_PARACHUTE: {
+        BATTLE->stage=STAGE_DIVE;
+        BATTLE->stageclock=999.999;
+        BATTLE->paratile=0x1e;
+        BATTLE->parax=BATTLE->fishx;
+        BATTLE->paray=BATTLE->fishy-12.0;
+      } break;
+  }
+}
+
 /* Move the fish.
  */
  
@@ -92,8 +134,17 @@ static void bluefish_move_fish(struct battle *battle,double elapsed) {
   double pvdy=BATTLE->fishdy;
   BATTLE->fishdy+=FISHDY_ACCEL*elapsed;
   if ((pvdy<=0.0)&&(BATTLE->fishdy>0.0)) { // Crested.
-    if (BATTLE->fishxform==0) BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
-    else if (BATTLE->fishxform==EGG_XFORM_XREV) BATTLE->fishxform=EGG_XFORM_SWAP;
+    bluefish_advance_stage(battle);
+  } else {
+    if (BATTLE->stageclock>0.0) {
+      if ((BATTLE->stageclock-=elapsed)<=0.0) {
+        bluefish_advance_stage(battle);
+      }
+    }
+    switch (BATTLE->stage) {
+      case STAGE_PARACHUTE: BATTLE->fishdy=PARACHUTE_DY; break;
+      case STAGE_DIVE: BATTLE->fishdy=DIVE_DY; break;
+    }
   }
   BATTLE->fishy+=BATTLE->fishdy*elapsed;
   BATTLE->fishx+=BATTLE->fishdx*elapsed;
@@ -126,7 +177,12 @@ static void _bluefish_update(struct battle *battle,double elapsed) {
     if (++(BATTLE->wanimframe)>=6) BATTLE->wanimframe=0; // 4 frames, pingponging
   }
   
-  // Finished? Tick the cooldown, but no further model activity.
+  // Parachute rises after release.
+  if (BATTLE->paratile) {
+    BATTLE->paray-=elapsed*40.0;
+  }
+  
+  // Finished?
   if (battle->outcome!=-2) return;
   
   // Dot's motion.
@@ -155,6 +211,7 @@ static void _bluefish_update(struct battle *battle,double elapsed) {
         BATTLE->fishxform=0;
         BATTLE->fishx+=19.0;
       }
+      BATTLE->stage=STAGE_NOT_READY;
     } else {
       BATTLE->dotframe=2;
     }
@@ -179,10 +236,26 @@ static void _bluefish_render(struct battle *battle) {
   int dotsrcy=64;
   graf_decal_xform(&g.graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,BATTLE->dotxform);
   
+  // Free parachute.
+  if (BATTLE->paratile) {
+    graf_tile(&g.graf,BATTLE->parax,BATTLE->paray,BATTLE->paratile,0);
+  }
+  
   // Fish.
   int fishdstx=(int)BATTLE->fishx;
   int fishdsty=(int)BATTLE->fishy;
-  graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
+  switch (BATTLE->stage) {
+    case STAGE_PARACHUTE: {
+        graf_tile(&g.graf,fishdstx,fishdsty-12,0x1e,0);
+        graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
+      } break;
+    case STAGE_DIVE: {
+        graf_tile(&g.graf,fishdstx,fishdsty,0x1f,0);
+      } break;
+    default: {
+        graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
+      }
+  }
   
   // Animated row of water at the bottom.
   uint8_t watertileid=0x3a;
@@ -209,6 +282,7 @@ const struct battle_type battle_type_bluefish={
   .no_contest=0,
   .support_pvp=0,
   .support_cvc=0,
+  .update_during_report=1,
   .del=_bluefish_del,
   .init=_bluefish_init,
   .update=_bluefish_update,

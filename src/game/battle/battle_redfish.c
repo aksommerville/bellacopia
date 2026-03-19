@@ -1,5 +1,6 @@
-//TODO redfish. For now this is an exact copy of greenfish.
-// I want the fish to deploy two decoys at the crest, and you have to determine which to track.
+/* battle_redfish.c
+ * At the crest of his flight, he stops and produces two decoys.
+ */
 
 #include "game/bellacopia.h"
 
@@ -27,6 +28,12 @@ struct battle_redfish {
   uint8_t fishtileid;
   uint8_t fishxform;
   double fishanimclock;
+  double crestclock;
+  // Decoys:
+  double dax,day,dadx,dady;
+  double dbx,dby,dbdx,dbdy;
+  uint8_t datileid,dbtileid;
+  uint8_t daxform,dbxform;
 };
 
 #define BATTLE ((struct battle_redfish*)battle)
@@ -80,23 +87,90 @@ static void redfish_walk_none(struct battle *battle,double elapsed) {
   BATTLE->dotanimclock=0.0;
 }
 
+/* Generate decoys, and shake up the fish's horizontal velocity.
+ */
+ 
+static void redfish_produce_decoys(struct battle *battle) {
+  BATTLE->dax=BATTLE->dbx=BATTLE->fishx;
+  BATTLE->day=BATTLE->dby=BATTLE->fishy;
+  BATTLE->datileid=0x2b+rand()%5;
+  BATTLE->dbtileid=0x2b+rand()%5;
+  BATTLE->daxform=rand()&7;
+  BATTLE->dbxform=rand()&7;
+  BATTLE->dady=BATTLE->dbdy=BATTLE->fishdy;
+  
+  // The only important thing with dx is which slot the fish goes in.
+  // (a) will always go left of (b), doesn't matter.
+  // And decoys don't care about direction re xform, anything goes.
+  double dxm=BATTLE->fishdx;
+  double dxl=dxm-60.0;
+  double dxr=dxm+60.0;
+  switch (rand()%3) {
+    case 0: {
+        BATTLE->fishdx=dxl;
+        BATTLE->dadx=dxm;
+        BATTLE->dbdx=dxr;
+      } break;
+    case 1: {
+        BATTLE->dadx=dxl;
+        BATTLE->fishdx=dxm;
+        BATTLE->dbdx=dxr;
+      } break;
+    case 2: {
+        BATTLE->dadx=dxl;
+        BATTLE->dbdx=dxm;
+        BATTLE->fishdx=dxr;
+      } break;
+  }
+  if (BATTLE->fishdx<0.0) BATTLE->fishxform=EGG_XFORM_SWAP;
+  else BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+}
+
 /* Move the fish.
+ * This does run after termination.
  */
  
 static void redfish_move_fish(struct battle *battle,double elapsed) {
-  if ((BATTLE->fishanimclock-=elapsed)<=0.0) {
-    BATTLE->fishanimclock+=0.200;
-    if (BATTLE->fishtileid==0x1a) BATTLE->fishtileid=0x2a;
-    else BATTLE->fishtileid=0x1a;
+
+  // Animate if not terminated.
+  if (battle->outcome==-2) {
+    if ((BATTLE->fishanimclock-=elapsed)<=0.0) {
+      BATTLE->fishanimclock+=0.200;
+      if (BATTLE->fishtileid==0x1a) BATTLE->fishtileid=0x2a;
+      else BATTLE->fishtileid=0x1a;
+    }
   }
-  double pvdy=BATTLE->fishdy;
-  BATTLE->fishdy+=FISHDY_ACCEL*elapsed;
-  if ((pvdy<=0.0)&&(BATTLE->fishdy>0.0)) { // Crested.
-    if (BATTLE->fishxform==0) BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
-    else if (BATTLE->fishxform==EGG_XFORM_XREV) BATTLE->fishxform=EGG_XFORM_SWAP;
+  
+  // At the crest, we delay a little before producing decoys and falling again.
+  if (BATTLE->crestclock>0.0) {
+    if ((BATTLE->crestclock-=elapsed)<=0.0) {
+      redfish_produce_decoys(battle);
+    }
+    return;
   }
-  BATTLE->fishy+=BATTLE->fishdy*elapsed;
-  BATTLE->fishx+=BATTLE->fishdx*elapsed;
+  
+  // Move fish, if we're not terminated yet.
+  if (battle->outcome==-2) {
+    double pvdy=BATTLE->fishdy;
+    BATTLE->fishdy+=FISHDY_ACCEL*elapsed;
+    if ((pvdy<=0.0)&&(BATTLE->fishdy>0.0)) { // Crested.
+      BATTLE->crestclock=0.500;
+      if (BATTLE->fishxform==0) BATTLE->fishxform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
+      else if (BATTLE->fishxform==EGG_XFORM_XREV) BATTLE->fishxform=EGG_XFORM_SWAP;
+    }
+    BATTLE->fishy+=BATTLE->fishdy*elapsed;
+    BATTLE->fishx+=BATTLE->fishdx*elapsed;
+  }
+  
+  // Move decoys if present.
+  if (BATTLE->datileid) {
+    BATTLE->dady+=FISHDY_ACCEL*elapsed;
+    BATTLE->dbdy+=FISHDY_ACCEL*elapsed;
+    BATTLE->dax+=BATTLE->dadx*elapsed;
+    BATTLE->day+=BATTLE->dady*elapsed;
+    BATTLE->dbx+=BATTLE->dbdx*elapsed;
+    BATTLE->dby+=BATTLE->dbdy*elapsed;
+  }
 }
 
 /* Check both terminal conditions.
@@ -126,6 +200,9 @@ static void _redfish_update(struct battle *battle,double elapsed) {
     if (++(BATTLE->wanimframe)>=6) BATTLE->wanimframe=0; // 4 frames, pingponging
   }
   
+  // Fish's motion. Continues after completion, for the decoys.
+  redfish_move_fish(battle,elapsed);
+  
   // Finished? Tick the cooldown, but no further model activity.
   if (battle->outcome!=-2) return;
   
@@ -135,9 +212,6 @@ static void _redfish_update(struct battle *battle,double elapsed) {
     case EGG_BTN_RIGHT: redfish_walk(battle,elapsed,1); break;
     default: redfish_walk_none(battle,elapsed); break;
   }
-  
-  // Fish's motion.
-  redfish_move_fish(battle,elapsed);
   
   // Termination.
   battle->outcome=redfish_check_termination(battle);
@@ -184,6 +258,14 @@ static void _redfish_render(struct battle *battle) {
   int fishdsty=(int)BATTLE->fishy;
   graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
   
+  // Decoys.
+  if (BATTLE->datileid) {
+    graf_tile(&g.graf,BATTLE->dax,BATTLE->day,BATTLE->datileid,BATTLE->daxform);
+  }
+  if (BATTLE->dbtileid) {
+    graf_tile(&g.graf,BATTLE->dbx,BATTLE->dby,BATTLE->dbtileid,BATTLE->dbxform);
+  }
+  
   // Animated row of water at the bottom.
   uint8_t watertileid=0x3a;
   switch (BATTLE->wanimframe) {
@@ -209,6 +291,7 @@ const struct battle_type battle_type_redfish={
   .no_contest=0,
   .support_pvp=0,
   .support_cvc=0,
+  .update_during_report=1,
   .del=_redfish_del,
   .init=_redfish_init,
   .update=_redfish_update,
