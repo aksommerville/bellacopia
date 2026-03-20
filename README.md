@@ -34,6 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 
 - For exploration some time in the uncertain future.
+- [ ] We might still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" after transitions.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
