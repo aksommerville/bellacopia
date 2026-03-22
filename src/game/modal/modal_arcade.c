@@ -7,7 +7,6 @@
  */
 
 #include "game/bellacopia.h"
-#include "game/battle/battle.h"
 
 #define PRESELECT_BATTLE NS_battle_bluefish
 

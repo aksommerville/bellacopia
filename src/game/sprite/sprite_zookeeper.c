@@ -178,7 +178,7 @@ static void zookeeper_acknowledge_capture(struct sprite *sprite,int rid,struct s
   }
   
   //TODO sound, fireworks, reward
-  game_get_item(NS_itemid_gold,10);
+  game_get_item(NS_itemid_gold,5);
 }
 
 /* Update.

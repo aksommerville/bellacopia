@@ -1,5 +1,4 @@
 #include "bellacopia.h"
-#include "game/battle/battle.h"
 
 /* Crypto sidequest state.
  * This is all volatile. We rebuild it from a 16-bit seed on demand.

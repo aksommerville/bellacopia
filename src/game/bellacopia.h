@@ -11,7 +11,7 @@
 #include "egg_res_toc.h"
 #include "map.h"
 #include "store.h"
-#include "battle/battle.h"
+#include "batsup/battle.h"
 #include "modal/modal.h"
 #include "sprite/sprite.h"
 #include "camera.h"
