@@ -40,6 +40,7 @@
 #define CMD_map_switchable2     0x47 /* u16:pos u16:fld ; Same as `switchable` but tileid+2 if set, for double-wide features. */
 #define CMD_map_target          0x48 /* u16:pos u16:strix ; strings:item, loose unflagged targets for compass and princess. */
 #define CMD_map_busstop         0x49 /* u16:pos u16:busstop ; Place on the sign itself, should be solid with room below. */
+#define CMD_map_battlemark      0x4a /* u16:pos u16:id ; Generic marker for battle maps. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */

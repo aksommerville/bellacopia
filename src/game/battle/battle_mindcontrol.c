@@ -1,29 +1,35 @@
 /* battle_mindcontrol.c
  * Alternate A/B in the right rhythm to maintain psychic control. While control established, dpad moves your victim.
  * Push a piece of candy thru the hazards.
- * TODO placeholder
  */
 
 #include "game/bellacopia.h"
+#include "game/batsup/batsup_world.h"
 
-#define GROUNDY 150
+/* Our sprite ids are also arguments to "battlemark" poi in the map.
+ */
+#define SPRITEID_LMAN 1
+#define SPRITEID_RMAN 2
+#define SPRITEID_LCAT 3
+#define SPRITEID_RCAT 4
+#define BATTLEMARK_TREE 5 /* POI must describe a rectangle. */
 
 struct battle_mindcontrol {
   struct battle hdr;
-  int choice;
-  
-  struct player {
-    int who; // My index in this list.
-    int human; // 0 for CPU, or the input index.
-    double skill; // 0..1, reverse of each other.
-    int srcx,srcy;
-    int frame;
-    uint8_t xform;
-    int dstx;
-  } playerv[2];
+  struct batsup_world *world;
+  double treex,treey,treew,treeh;
 };
 
 #define BATTLE ((struct battle_mindcontrol*)battle)
+
+struct sprite_man {
+  struct batsup_sprite hdr;
+  int human; // player id or zero for cpu control
+};
+
+struct sprite_cat {
+  struct batsup_sprite hdr;
+};
 
 /* Delete.
  */
@@ -31,67 +37,93 @@ struct battle_mindcontrol {
 static void _mindcontrol_del(struct battle *battle) {
 }
 
-/* Init player.
- */
- 
-static void player_init(struct battle *battle,struct player *player,int human,int face) {
-  if (player==BATTLE->playerv) { // Left.
-    player->who=0;
-    player->dstx=FBW/3;
-  } else { // Right.
-    player->who=1;
-    player->xform=EGG_XFORM_XREV;
-    player->dstx=(FBW*2)/3;
-  }
-  if (player->human=human) { // Human.
-  } else { // CPU.
-  }
-  switch (face) {
-    case NS_face_monster: {
-        player->srcx=0;
-        player->srcy=160;
-      } break;
-    case NS_face_dot: {
-        player->srcx=0;
-        player->srcy=64;
-      } break;
-    case NS_face_princess: {
-        player->srcx=0;
-        player->srcy=112;
-      } break;
-  }
-}
-
 /* New.
  */
  
 static int _mindcontrol_init(struct battle *battle) {
-  battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
-  // or in simpler cases: BATTLE->difficulty=battle_scalar_difficulty(battle);
-  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
-  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
+  //TODO difficulty
+  
+  if (!(BATTLE->world=batsup_world_new(RID_map_mindcontrol))) return -1;
+  
+  struct cmdlist_reader reader={.v=BATTLE->world->map->cmd,.c=BATTLE->world->map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_battlemark: {
+          int arg=(cmd.arg[2]<<8)|cmd.arg[3];
+          switch (arg) {
+          
+            case SPRITEID_LMAN: {
+                struct batsup_sprite *sprite=batsup_sprite_spawn(BATTLE->world,SPRITEID_LMAN,sizeof(struct sprite_man));
+                if (!sprite) return -1;
+                struct sprite_man *SPRITE=(struct sprite_man*)sprite;
+                sprite->x=cmd.arg[0]+0.5;
+                sprite->y=cmd.arg[1]+0.5;
+                sprite->tileid=0x80; //TODO 0x80=Dot, 0x90=Princess, 0xa0=Nyarlathotep
+              } break;
+
+            case SPRITEID_RMAN: {
+                struct batsup_sprite *sprite=batsup_sprite_spawn(BATTLE->world,SPRITEID_RMAN,sizeof(struct sprite_man));
+                if (!sprite) return -1;
+                struct sprite_man *SPRITE=(struct sprite_man*)sprite;
+                sprite->x=cmd.arg[0]+0.5;
+                sprite->y=cmd.arg[1]+0.5;
+                sprite->tileid=0xa0; //TODO 0x80=Dot, 0x90=Princess, 0xa0=Nyarlathotep
+                sprite->xform=EGG_XFORM_XREV;
+              } break;
+
+            case SPRITEID_LCAT: {
+                struct batsup_sprite *sprite=batsup_sprite_spawn(BATTLE->world,SPRITEID_LCAT,sizeof(struct sprite_cat));
+                if (!sprite) return -1;
+                struct sprite_cat *SPRITE=(struct sprite_cat*)sprite;
+                sprite->x=cmd.arg[0]+0.5;
+                sprite->y=cmd.arg[1]+0.5;
+                sprite->tileid=0xb0;
+              } break;
+
+            case SPRITEID_RCAT: {
+                struct batsup_sprite *sprite=batsup_sprite_spawn(BATTLE->world,SPRITEID_RCAT,sizeof(struct sprite_cat));
+                if (!sprite) return -1;
+                struct sprite_cat *SPRITE=(struct sprite_cat*)sprite;
+                sprite->x=cmd.arg[0]+0.5;
+                sprite->y=cmd.arg[1]+0.5;
+                sprite->tileid=0xb0;
+                sprite->xform=EGG_XFORM_XREV;
+              } break;
+
+            case BATTLEMARK_TREE: {
+                if (BATTLE->treew<0.5) {
+                  BATTLE->treex=cmd.arg[0];
+                  BATTLE->treey=cmd.arg[1];
+                  BATTLE->treew=1.0;
+                  BATTLE->treeh=1.0;
+                } else {
+                  double nv=cmd.arg[0];
+                  if (nv<BATTLE->treex) {
+                    BATTLE->treew+=BATTLE->treex-nv;
+                    BATTLE->treex=nv;
+                  }
+                  nv+=1.0;
+                  if (nv>BATTLE->treex+BATTLE->treew) {
+                    BATTLE->treew=nv-BATTLE->treex;
+                  }
+                  nv=cmd.arg[1];
+                  if (nv<BATTLE->treey) {
+                    BATTLE->treeh+=BATTLE->treey-nv;
+                    BATTLE->treey=nv;
+                  }
+                  nv+=1.0;
+                  if (nv>BATTLE->treey+BATTLE->treeh) {
+                    BATTLE->treeh=nv-BATTLE->treey;
+                  }
+                }
+              } break;
+          }
+        } break;
+    }
+  }
+
   return 0;
-}
-
-/* Update human player.
- */
- 
-static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
-  //TODO
-}
-
-/* Update CPU player.
- */
- 
-static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
-  //TODO
-}
-
-/* Update all players, after specific controller.
- */
- 
-static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
-  //TODO
 }
 
 /* Update.
@@ -100,35 +132,17 @@ static void player_update_common(struct battle *battle,struct player *player,dou
 static void _mindcontrol_update(struct battle *battle,double elapsed) {
   if (battle->outcome>-2) return;
   
-  struct player *player=BATTLE->playerv;
-  int i=2;
-  for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
-    else player_update_cpu(battle,player,elapsed);
-    player_update_common(battle,player,elapsed);
-  }
+  batsup_world_update(BATTLE->world,elapsed);
 
   //XXX
   if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
-}
-
-/* Render player.
- */
- 
-static void player_render(struct battle *battle,struct player *player) {
-  graf_decal_xform(&g.graf,player->dstx-24,GROUNDY-48,player->srcx+player->frame*48,player->srcy,48,48,player->xform);
 }
 
 /* Render.
  */
  
 static void _mindcontrol_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80a0e0ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x105020ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
-  player_render(battle,BATTLE->playerv+0);
-  player_render(battle,BATTLE->playerv+1);
+  batsup_world_render(BATTLE->world);
 }
 
 /* Type definition.
