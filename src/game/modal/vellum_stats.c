@@ -309,7 +309,7 @@ static void stats_generate_report(struct vellum *vellum) {
   
   // Allocate a buffer to render to, client-side.
   VELLUM->texw=250;
-  VELLUM->texh=100;
+  VELLUM->texh=120;
   int sepx=VELLUM->texw>>1;
   uint32_t *rgba=calloc(VELLUM->texw*4,VELLUM->texh);
   if (!rgba) return;

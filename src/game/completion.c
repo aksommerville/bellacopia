@@ -26,6 +26,9 @@ static const int fldv_story_tree[]={
   NS_fld_tree1,NS_fld_tree2,NS_fld_tree3,NS_fld_tree4,NS_fld_tree5,NS_fld_tree6,NS_fld_tree7,NS_fld_tree8,
   NS_fld_tree9,NS_fld_tree10,NS_fld_tree11,NS_fld_tree12,NS_fld_tree13,NS_fld_tree14,NS_fld_tree15,NS_fld_tree16,
 };
+static const int fldv_zookeeper[]={ // Zookeeper bits count individually, tho we could aggregate if we feel like it.
+  NS_fld_zoo1_0,NS_fld_zoo1_1,NS_fld_zoo1_2,NS_fld_zoo1_3,
+};
 
 /* Digest field lists.
  */
@@ -75,6 +78,7 @@ int game_get_completion() {
   d=0; n=FLDV_COUNT(&d,fldv_heart_container); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_buried_treasure); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_story_tree); if (n<d) return 1;
+  d=0; n=FLDV_COUNT(&d,fldv_zookeeper); if (n<d) return 1;
   const struct invstore *invstore=g.store.invstorev;
   for (n=INVSTORE_SIZE;n-->0;invstore++) if (!invstore->itemid) return 1;
   
@@ -102,6 +106,7 @@ int game_is_minimalist_complete() {
   if (FLDV_COUNT(0,fldv_heart_container)) return 0;
   if (FLDV_COUNT(0,fldv_buried_treasure)) return 0;
   if (FLDV_COUNT(0,fldv_story_tree)) return 0;
+  if (FLDV_COUNT(0,fldv_zookeeper)) return 0;
   if (jigstore_has_anything()) return 0;
   
   // OK, main quest complete and nothing else!
@@ -184,6 +189,15 @@ int game_get_completables(struct completable *dst,int dsta) {
     comp->strix=38;
     comp->denom=0;
     comp->numer=FLDV_COUNT(&comp->denom,fldv_story_tree);
+  }
+  dstc++;
+  
+  // Zookeepers.
+  if (dstc<dsta) {
+    struct completable *comp=dst+dstc;
+    comp->strix=41;
+    comp->denom=0;
+    comp->numer=FLDV_COUNT(&comp->denom,fldv_zookeeper);
   }
   dstc++;
   

@@ -172,7 +172,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - ogre: Smashing
 - golem: Pushing
 - medusa: Petrifying
-- nyarlathotep: MindControl
 
 ## Acknowledgements
 

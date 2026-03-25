@@ -89,19 +89,20 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
       return (xok||yok)?1:0;
     }
   } else {
-    if ((dy<-0.0)||(dy>0.0)) return 0;
+    if ((dy>=-0.0)&&(dy<=0.0)) return 0;
   }
   
   // Capture the desired position, both the center and the hitbox bounds.
-  #define RADIUS 0.500
+  #define RADIUS 0.450
   #define SMIDGE 0.001
-  double nx=sprite->x,ny=sprite->y,nl,nr,nt,nb;
+  double nx=sprite->x+dx,ny=sprite->y+dy,nl,nr,nt,nb;
   #define REBOX {\
-    nl=sprite->x-RADIUS; \
-    nr=sprite->x+RADIUS; \
-    nt=sprite->y-RADIUS; \
-    nb=sprite->y+RADIUS; \
+    nl=nx-RADIUS; \
+    nr=nx+RADIUS; \
+    nt=ny-RADIUS; \
+    nb=ny+RADIUS; \
   }
+  REBOX
   
   /* Call me for every physical box we might encounter.
    * If it collides with the target box, I'll update the target and abort if we end up noop or backward.
@@ -138,9 +139,9 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
   
   /* Check map.
    */
-  int cola=(int)nl; if (cola<0) cola=0;
+  int cola=(int)(nl+SMIDGE); if (cola<0) cola=0;
   int colz=(int)(nr-SMIDGE); if (colz>=NS_sys_mapw) colz=NS_sys_mapw-1;
-  int rowa=(int)nt; if (rowa<0) rowa=0;
+  int rowa=(int)(nt+SMIDGE); if (rowa<0) rowa=0;
   int rowz=(int)(nb-SMIDGE); if (rowz>=NS_sys_maph) rowz=NS_sys_maph-1;
   const uint8_t *maprow=sprite->world->map->v+rowa*NS_sys_mapw+cola;
   int row=rowa;

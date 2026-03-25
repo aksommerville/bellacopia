@@ -16,10 +16,11 @@ void batsup_world_del(struct batsup_world *world) {
 /* New.
  */
  
-struct batsup_world *batsup_world_new(int mapid) {
+struct batsup_world *batsup_world_new(struct battle *battle,int mapid) {
   struct batsup_world *world=calloc(1,sizeof(struct batsup_world));
   if (!world) return 0;
   
+  world->battle=battle;
   world->sortdir=1;
   world->spriteid_next=1;
   

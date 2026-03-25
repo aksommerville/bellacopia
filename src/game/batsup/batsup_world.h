@@ -8,6 +8,8 @@
 #ifndef BATSUP_WORLD_H
 #define BATSUP_WORLD_H
 
+struct battle;
+
 struct batsup_sprite {
   struct batsup_world *world; // WEAK, REQUIRED
   int id; // >0 and unique within the world all time.
@@ -24,6 +26,7 @@ struct batsup_sprite {
 };
 
 struct batsup_world {
+  struct battle *battle; // WEAK
   struct map *map; // WEAK; belongs to global store
   struct batsup_sprite **spritev;
   int spritec,spritea;
@@ -32,7 +35,7 @@ struct batsup_world {
 };
 
 void batsup_world_del(struct batsup_world *world);
-struct batsup_world *batsup_world_new(int mapid);
+struct batsup_world *batsup_world_new(struct battle *battle,int mapid);
 
 void batsup_world_update(struct batsup_world *world,double elapsed);
 
