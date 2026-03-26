@@ -883,6 +883,7 @@ void camera_cut(int mapid,int subcol,int subrow,int transition) {
   g.camera.cut=1;
   g.camera.lock=0;
   g.camera.transition_ready=0;
+  g.song_override_outerworld=0;
 
   g.camera.transition_clock=0.0;
   g.camera.transition_time=CAMERA_TRANSITION_TIME;

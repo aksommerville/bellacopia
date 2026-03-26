@@ -26,15 +26,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Music didn't change when wand-warping out of labyrinth and goblin cave.
 - [x] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
+- [ ] We still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" on arrivals. And crowded when you've been there a while.
 
 - For exploration some time in the uncertain future.
-- [ ] We might still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" after transitions.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
@@ -66,8 +67,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
-- [ ] Include zoos in 100% completion. (need to get them all apportioned first).
-- [ ] Fanfare and reward for delivering monster to the zoo.
+- [x] Include zoos in 100% completion. (need to get them all apportioned first).
+- [x] Fanfare and reward for delivering monster to the zoo.
+- [ ] Make the songs longer. Aim for 2 minutes per song.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
