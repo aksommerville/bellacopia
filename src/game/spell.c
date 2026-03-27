@@ -12,6 +12,7 @@ void spell_flash() {
  */
  
 void spell_home() {
+  g.song_override_outerworld=0;
   game_warp(RID_map_start,NS_transition_fadeblack);
 }
 

@@ -26,6 +26,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Repairing music for the wand broke it for normal door cases! See roof and pool of the temple.
 - [x] Music didn't change when wand-warping out of labyrinth and goblin cave.
 - [x] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Handicap for monster and fishpole.
@@ -71,6 +72,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Fanfare and reward for delivering monster to the zoo.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
+- [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
