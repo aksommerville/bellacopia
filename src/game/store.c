@@ -259,6 +259,7 @@ int store_load(const char *k,int kc) {
   g.store.listenerid_next=1;
   
   // Acquire the Base64-ish encoded game.
+  int i;
   uint8_t src[STORE_MAX_ENCODED_SIZE];
   int srcc=egg_store_get((char*)src,sizeof(src),k,kc);
   if ((srcc<10)||(srcc>sizeof(src))) {
@@ -274,21 +275,35 @@ int store_load(const char *k,int kc) {
   if ((jigstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
   if ((invstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
   
-  // 1-bit fields. The length we've read is the decoded length in bytes. Must be a multiple of 3.
-  if (fldc%3) return store_load_fail();
-  int srcexpect=(fldc*4)/3;
-  if (srcp>srcc-srcexpect) return store_load_fail();
-  if (store_require_fldv(fldc)<0) return store_load_fail();
-  if ((g.store.fldc=store_decode_base64(g.store.fldv,g.store.flda,src+srcp,srcexpect))!=fldc) return store_load_fail();
-  srcp+=srcexpect;
+  // 1-bit fields. The length we've read is the encoded length in bytes.
+  int fldc_decoded=(fldc*6+7)>>3;
+  if (srcp>srcc-fldc) return store_load_fail();
+  if (store_require_fldv(fldc_decoded)<0) return store_load_fail();
+  g.store.fldc=0;
+  uint8_t *dst=0;
+  uint8_t dstmask=0x01;
+  for (i=fldc;i-->0;srcp++) {
+    int digit=store_decode_base64_digit(src[srcp]);
+    if (digit<0) return store_load_fail();
+    uint8_t srcmask=0x01;
+    for (;srcmask<0x40;srcmask<<=1) {
+      if (!dst) {
+        if (g.store.fldc>=g.store.flda) return store_load_fail();
+        dst=g.store.fldv+g.store.fldc++;
+        dstmask=0x01;
+        *dst=0;
+      }
+      if (digit&srcmask) (*dst)|=dstmask;
+      if (dstmask==0x80) dst=0; else dstmask<<=1;
+    }
+  }
   
   // 16-bit fields. Each encodes as three bytes of base64.
-  srcexpect=fld16c*3;
+  int srcexpect=fld16c*3;
   if (srcp>srcc-srcexpect) return store_load_fail();
   if (store_require_fld16v(fld16c)<0) return store_load_fail();
   uint16_t *dst16=g.store.fld16v;
-  int i=fld16c;
-  for (;i-->0;dst16++,srcp+=3) {
+  for (i=fld16c;i-->0;dst16++,srcp+=3) {
     int v=store_decode_18bit(src+srcp,srcc-srcp);
     if ((v<0)||(v&~0xffff)) return store_load_fail();
     *dst16=v;
@@ -350,17 +365,8 @@ int store_load(const char *k,int kc) {
 static int store_encode(char *dst,int dsta) {
   int dstc=0,err;
   
-  // When encoded, (fldv) must have a multiple-of-three length. Grow it now if needed.
-  int fldc=g.store.fldc;
-  int m3=fldc%3;
-  if (m3) {
-    int nc=fldc+3-m3;
-    if (store_require_fldv(nc)<0) return -1;
-    while (g.store.fldc<nc) g.store.fldv[g.store.fldc++]=0;
-    fldc=nc;
-  }
-  while ((fldc>=3)&&!g.store.fldv[fldc-1]&&!g.store.fldv[fldc-2]&&!g.store.fldv[fldc-3]) fldc-=3;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fldc);
+  int fldc_encoded=((g.store.fldc<<3)+5)/6;
+  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fldc_encoded);
   
   int fld16c=g.store.fld16c;
   while (fld16c&&!g.store.fld16v[fld16c-1]) fld16c--;
@@ -377,12 +383,30 @@ static int store_encode(char *dst,int dsta) {
   dstc+=store_encode_12bit(dst+dstc,dsta-dstc,invstorec);
   
   // fldv
-  dstc+=store_encode_base64(dst+dstc,dsta-dstc,g.store.fldv,fldc);
+  const uint8_t *fldsrc=g.store.fldv;
+  int fldsrcc=g.store.fldc;
+  uint8_t fldsrcmask=0x01;
+  int i=fldc_encoded;
+  for (;i-->0;) {
+    int v=0,j=6,vmask=0x01;
+    for (;j-->0;vmask<<=1) {
+      if (fldsrcc<=0) break;
+      if ((*fldsrc)&fldsrcmask) v|=vmask;
+      if (fldsrcmask==0x80) {
+        fldsrc++;
+        fldsrcc--;
+        fldsrcmask=0x01;
+      } else {
+        fldsrcmask<<=1;
+      }
+    }
+    if (dstc<dsta) dst[dstc]=store_base64_alphabet[v];
+    dstc++;
+  }
   
   // fld16v
   const uint16_t *src16=g.store.fld16v;
-  int i=fld16c;
-  for (;i-->0;src16++) {
+  for (i=fld16c;i-->0;src16++) {
     dstc+=store_encode_18bit(dst+dstc,dsta-dstc,*src16);
   }
   

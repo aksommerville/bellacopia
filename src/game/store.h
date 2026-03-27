@@ -121,13 +121,13 @@ int jigstore_has_anything();
 /* Serial format, written out to "save" in the Egg store.
  * Starts with 10 bytes for the lengths of the individual stores.
  * Each length is 2 Base64 digits, big-endianly:
- *  - fldc (bytes decoded, always a multiple of 3)
+ *  - fldc (bytes encoded, ie ceil(flagc/6))
  *  - fld16c (fields)
  *  - clockc (fields)
  *  - jigstorec (records)
  *  - invstorec (records). Can't go above 26, but we use 2 bytes like the others, for consistency.
  * Followed by the heaps, Base64, in the same order:
- *  - fldv: Straight Base64, and length must align to a block.
+ *  - fldv: Six flags per encoded byte, little-endianly.
  *  - fld16v: Three encoded bytes each, big-endian, the 2 high bits of each must be zero.
  *  - clockv: Five encoded bytes each, big-endian, ms. Holds about 298 hours each.
  *  - jigstorev: Five encoded bytes each, split big-endianly: 11 mapid, 8 x, 8 y, 3 xform.

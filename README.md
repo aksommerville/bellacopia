@@ -52,7 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
 - - And if you do that before the election, you already have the endorsement.
-- [ ] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
+- [x] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
@@ -70,6 +70,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Include zoos in 100% completion. (need to get them all apportioned first).
 - [x] Fanfare and reward for delivering monster to the zoo.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
+- [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

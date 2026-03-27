@@ -5,6 +5,7 @@
 import { Dom } from "../js/Dom.js";
 import { JigctabEditor } from "./JigctabEditor.js";
 import { EditWorldModal } from "./EditWorldModal.js";
+import { EditSaveModal } from "./EditSaveModal.js";
  
 export class Override {
   static getDependencies() {
@@ -22,6 +23,7 @@ export class Override {
      */
     this.actions = [
       { name: "editWorld", label: "Edit World...", fn: () => this.dom.spawnModal(EditWorldModal) },
+      { name: "editSave", label: "Edit Saved Game...", fn: () => this.dom.spawnModal(EditSaveModal) },
     ];
     
     /* Each editor is a class:

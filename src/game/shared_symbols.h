@@ -77,15 +77,16 @@
 #define NS_physics_hole 5 /* water, but no splash */
 #define NS_physics_vanishable 6 /* solid, unless you're using vanishing cream */
 
-/* Map planes. I doubt we'll actually use these symbols, they're just for manual documentation.
+/* Map planes.
+ * Include "NOJIGSAW" in the comment, for the saved game editor.
  */
-#define NS_plane_singletons 0
-#define NS_plane_outerworld 1
-#define NS_plane_tunnel1 2 /* cheapside<~>botire */
-#define NS_plane_caves1 3 /* mountains, where the goblins live. Expect multiple levels. */
-#define NS_plane_labyrinth1 4 /* jungle */
-#define NS_plane_temple_ground 5
-#define NS_plane_seamonster 6
+#define NS_plane_singletons    0 /* NOJIGSAW */
+#define NS_plane_outerworld    1
+#define NS_plane_tunnel1       2 /* The whole underworld. */
+#define NS_plane_caves1        3 /* Mountains, where the goblins live. */
+#define NS_plane_labyrinth1    4 /* jungle */
+#define NS_plane_temple_ground 5 /* NOJIGSAW */
+#define NS_plane_seamonster    6 /* NOJIGSAW */
 
 #define NS_busstop_cheapside 1
 #define NS_busstop_fractia 2
