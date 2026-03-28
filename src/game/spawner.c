@@ -1,5 +1,12 @@
 #include "bellacopia.h"
 
+#define SPRC_ACCEL_THRESH 4 /* If below this, fudge maps to make a spawn more likely. */
+#define SPRC_DECEL_THRESH 6 /* If over this, fudge maps to make less likely. */
+#define SPRC_HARD_LIMIT   8 /* Above this, just stop spawning. */
+#define KILL_DISTANCE         200 /* So far offscreen, we drop at the next opportunity no matter what. */
+#define QUESTIONABLE_DISTANCE 100 /* Drop if our sprite count is too high. */
+#define QUESTIONABLE_SPRC       5
+
 static uint16_t primev[]={
 1,2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,
 73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,
@@ -71,6 +78,8 @@ static void spawnmap_reset(struct spawnmap *spawnmap,struct map *map) {
 void spawner_reset() {
   g.spawner.z=-1;
   g.spawner.spawnmapc=0;
+  sprite_group_clear(&g.spawner.group);
+  g.spawner.discard=0;
   
   /* Rebuild (g.spawner.spawnmapv) from (g.mapstore.byidv).
    */
@@ -83,13 +92,13 @@ void spawner_reset() {
   }
 }
 
-/* Count sprites with a given (arg).
+/* Count living rsprites with a given (arg).
  * Return nonzero if there's >=(limit).
  */
  
 static int spawnmap_over_limit(const void *arg,int limit) {
-  struct sprite **p=GRP(keepalive)->sprv;
-  int i=GRP(keepalive)->sprc;
+  struct sprite **p=g.spawner.group.sprv;
+  int i=g.spawner.group.sprc;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->defunct) continue;
@@ -154,16 +163,32 @@ static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,d
   if (spawnmap->choice>=spawnmap->wsum) spawnmap->choice-=spawnmap->wsum;
   
   /* If we have too many of these afield already, report a failure.
+   * Caller will try again soon.
    */
   int rid=(arg[0]<<8)|arg[1];
   int limit=arg[3]; if (!limit) limit=1;
   const uint8_t *sarg=arg+4;
   if (spawnmap_over_limit(sarg,limit)) return 0;
   
+  /* If we're over the deceleration threshold, (discard) must be zero, and we'll set it positive.
+   * When discarding a spawn this way, report a success so the caller resets counters.
+   */
+  int over=g.spawner.group.sprc-SPRC_DECEL_THRESH;
+  if (over>0) {
+    if (g.spawner.discard>0) {
+      g.spawner.discard--;
+      return 1;
+    }
+    g.spawner.discard=over;
+  } else {
+    g.spawner.discard=0;
+  }
+  
   /* Try to spawn it.
    */
   struct sprite *sprite=sprite_spawn(x,y,rid,sarg,4,0,0,0);
   if (!sprite) return 0;
+  sprite_group_add(&g.spawner.group,sprite);
   return 1;
 }
 
@@ -171,6 +196,10 @@ static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,d
  */
  
 static void spawner_expose_map(struct spawnmap *spawnmap,const struct map *map,int x,int y,int w,int h) {
+
+  // If we're over the hard limit, forget it. And keep all the counters right where they are.
+  if (g.spawner.group.sprc>=SPRC_HARD_LIMIT) return;
+
   if (x<0) { w+=x; x=0; }
   if (y<0) { h+=y; y=0; }
   if (x>NS_sys_mapw-w) w=NS_sys_mapw-x;
@@ -189,6 +218,8 @@ static void spawner_expose_map(struct spawnmap *spawnmap,const struct map *map,i
       uint8_t physics=map->physics[*cellp];
       if (physics!=NS_physics_vacant) continue;
       if (spawnmap->spawn_counter>0) {
+        int extra=SPRC_ACCEL_THRESH-g.spawner.group.sprc;
+        if (extra>0) spawnmap->spawn_counter-=extra;
         spawnmap->spawn_counter--;
       } else if (spawner_expose_cell(spawnmap,map,xf,yf)) {
         spawnmap->spawn_counter=spawnmap->period;
@@ -197,10 +228,45 @@ static void spawner_expose_map(struct spawnmap *spawnmap,const struct map *map,i
   }
 }
 
+/* Distance to the nearest viewport edge, or zero if onscreen.
+ */
+ 
+static int spawner_distance_to_viewport(const struct sprite *sprite) {
+  int x=(int)(sprite->x*NS_sys_tilesize);
+  int y=(int)(sprite->y*NS_sys_tilesize);
+  int dx,dy;
+  if ((dx=g.camera.rx-x)<-FBW) dx=-dx-FBW; else if (dx<0) dx=0;
+  if ((dy=g.camera.ry-y)<-FBH) dy=-dy-FBH; else if (dy<0) dy=0;
+  return (dx>dy)?dx:dy;
+}
+
 /* Expose cells, main entry point.
  */
 
 void spawner_expose(int x,int y,int w,int h) {
+
+  // Kill any sprites too far offscreen.
+  struct sprite **spritep=g.spawner.group.sprv;
+  int i=g.spawner.group.sprc;
+  for (;i-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    if (sprite->defunct) continue;
+    int distance=spawner_distance_to_viewport(sprite);
+    if (distance>=KILL_DISTANCE) {
+      sprite_kill_soon(sprite);
+    } else if ((distance>=QUESTIONABLE_DISTANCE)&&(g.spawner.group.sprc>=QUESTIONABLE_SPRC)) {
+      sprite_kill_soon(sprite);
+    }
+  }
+  
+  // Drop all defunct sprites.
+  for (spritep=g.spawner.group.sprv+g.spawner.group.sprc-1,i=g.spawner.group.sprc;i-->0;spritep--) {
+    struct sprite *sprite=*spritep;
+    if (sprite->defunct) sprite_kill(sprite);
+  }
+  
+  // Over the hard limit, no need to do anything else.
+  if (g.spawner.group.sprc>=SPRC_HARD_LIMIT) return;
   
   // Acquire the plane and clip to it. Fully OOB is entirely possible.
   const struct plane *plane=plane_by_position(g.camera.z);

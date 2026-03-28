@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [ ] We still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" on arrivals. And crowded when you've been there a while.
+- [x] We still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" on arrivals. And crowded when you've been there a while.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.

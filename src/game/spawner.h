@@ -9,6 +9,7 @@
 /* Global singleton (g.spawner).
  */
 struct spawner {
+  struct sprite_group group;
   int z; // Most recent plane. If it doesn't match camera, wipe everything.
   
   /* Extra bookkeeping, indexed by map id.
@@ -24,6 +25,8 @@ struct spawner {
     int choice; // Counts up by (step), wraps around at (wsum). Which rsprite to spawn.
   } *spawnmapv;
   int spawnmapc;
+  
+  int discard; // Nix so many spawns at the last minute, when our population is too high.
 };
 
 void spawner_reset();
