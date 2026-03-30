@@ -73,14 +73,14 @@
   2      Licking           Puppy              Farm
   2      Lighting          Acolyte            City
   2      Math              Owl                Woodland
-  2      MindControl       Nyarlathotep       Labyrinth
+  2____D MindControl       Nyarlathotep       Labyrinth
   2      Mixing            Drunk              City
   2      MorseCode         Walrus             Taiga
   2      Newspaper         Boy                City
   2      Pairing           Snake              Jungle
  R2      Parachute         Chicken            Desert
   2      Parkour           Lizard             Cave
-  2      Petrifying        Medusa             Labyrinth
+  2____D Petrifying        Medusa             Labyrinth
   2      Photography       Photographer       Woodland
   2      PianoThrowing     Gorilla            Jungle
   2      Pilfering         Rabbit             Cave

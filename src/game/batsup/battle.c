@@ -163,7 +163,7 @@ int battle_type_describe_long(char *dst,int dsta,const struct battle_type *type)
 
 void battle_normalize_bias(double *lskill,double *rskill,const struct battle *battle) {
   if (battle->args.bias!=0x80) *rskill=(double)battle->args.bias/255.0;
-  else *rskill=(double)battle->args.difficulty/255.0;
+  else *rskill=(double)battle->args.difficulty/256.0;
   *lskill=1.0-(*rskill);
 }
 

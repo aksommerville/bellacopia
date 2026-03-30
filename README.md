@@ -62,7 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
 - - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [ ] More spells. Not sure what...
-- [ ] 5 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
+- [ ] 3 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
@@ -73,6 +73,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
+- [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -176,7 +177,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - psychic: Telekinesis
 - ogre: Smashing
 - golem: Pushing
-- medusa: Petrifying
 
 ## Acknowledgements
 

@@ -657,9 +657,6 @@ static void _mindcontrol_update(struct battle *battle,double elapsed) {
   if (battle->outcome>-2) return;
   
   batsup_world_update(BATTLE->world,elapsed);
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render.
