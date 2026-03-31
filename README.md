@@ -62,7 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
 - - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
 - [ ] More spells. Not sure what...
-- [ ] 3 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
+- [ ] 2 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
