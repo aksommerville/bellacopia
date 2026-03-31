@@ -15,6 +15,4 @@ image image:fractia_int
 door @9,8 map:58 @9,6 0x0000
 parent map:58
 position 9 3 0 0
-sprite @7,4 sprite:treasure (u8:itemid)stopwatch (u8:quantity)0 (u16:fld)0
-sprite @11,4 sprite:treasure (u8:itemid)tapemeasure (u8:quantity)0 (u16:fld)0
 door @5,7 map:268 @5,7 0x0000

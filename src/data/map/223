@@ -15,5 +15,3 @@ image image:fractia_int
 door @9,8 map:25 @1,6 0x0000
 position 10 3 0 0
 parent map:25
-sprite @5,4 sprite:treasure (u8:itemid)snowglobe (u8:quantity)0 (u16:fld)0
-sprite @12,4 sprite:treasure (u8:itemid)phonograph (u8:quantity)0 (u16:fld)0

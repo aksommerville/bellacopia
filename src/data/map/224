@@ -15,5 +15,3 @@ image image:fractia_int
 door @10,7 map:25 @7,0 0x0000
 parent map:25
 position 11 3 0 0
-sprite @7,3 sprite:treasure (u8:itemid)crystal (u8:quantity)0 (u16:fld)0
-sprite @12,3 sprite:treasure (u8:itemid)marionette (u8:quantity)0 (u16:fld)0
