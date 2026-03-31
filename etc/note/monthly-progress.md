@@ -64,13 +64,26 @@ Goals:
 - [x] Make 100% completion reachable. Not the final 100% of course, but let me see that number. ...2 March
 - [x] All items working. ...2 March
 
+Missed my goal of finishing the placeholders, in fact I really dragged my feet on battles this month. Just 6 new ones.
+Did add a ton of new stuff, and I'm still feeling pretty good about finishing before GDEX.
+But if it's not *finished* finished then, that's fine.
+
+I entered and judged the Uplifting Jam this month, and still managed to keep Bellacopia moving forward.
+
+Stats as of 7120125e360b8001c1019dd3344d247a8305b30e, 2026-03-31:
+ - Code: 43594 lines.
+ - `rom=1022550 code=521109 image=2464748px*41 song=7:25.678*10 sound=0:16.234*54 map=77520m*323`
+ - Non-placeholder battles: 35
+ - Casual full-clear time: 1:36:38, 100%.
+
 ## April 2026
 
 Goals:
-- [ ] 30 new battles.
+- [ ] 30 new battles, starting with the 22 outstanding placeholders.
 - [ ] Treasures placed and recorded.
 - [ ] Cutscenes started, finish at least one.
 - [ ] Proper acquisition of stories.
+- [ ] First public showing. Maybe a COGG session, or an after-work game night?
 
 ## May 2026
 
@@ -85,3 +98,18 @@ Goals:
 Goals:
 - [ ] 30 new battles.
 - [ ] Feature-complete. Entire game is playable, presentable, and arguably finished. Of course, we'll still have touch-up, tuning, and bugs.
+
+## July 2026
+
+## August 2026
+
+## September 2026
+
+## October 2026
+
+## November 2026
+
+## December 2026
+
+Goals:
+- [ ] Bend every effort toward finishing before end of year, if we haven't yet.
