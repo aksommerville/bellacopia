@@ -16,11 +16,14 @@
 #define DISTANCE_HARDEST 8 /* 11 is exactly the distance to the far corner, can't go higher. */
 #define STATUE_SPEED 8.0 /* Should be faster than players. */
 #define VICTORY_DELAY 0.500
+#define CPU_PENALTY 0.500 /* CPU players are always substantially slower than humans. */
+#define TIME_LIMIT 15.0 /* We can be rendered unsolvable, and sometimes CPU players get stuck. So, aggressive timeout. */
 
 struct battle_pushing {
   struct battle hdr;
   struct batsup_world *world;
   int lx,ly,rx,ry; // Goal positions, which are also start positions.
+  double timer;
 };
 
 #define BATTLE ((struct battle_pushing*)battle)
@@ -43,6 +46,8 @@ struct sprite_player {
   double walkspeed;
   double pushdelay;
   double pushclock;
+  double waitclock;
+  double reconsider;
 };
 
 struct sprite_statue {
@@ -133,6 +138,14 @@ static int pushing_deliver_push(struct battle *battle,int x,int y,int dx,int dy)
 static void pushing_update_player_common(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
   struct battle *battle=sprite->world->battle;
+  
+  /* Game over, we do continue updating. But just set a neutral face and don't move.
+   */
+  if (battle->outcome>-2) {
+    SPRITE->walking=0;
+    SPRITE->pushing=0;
+    return;
+  }
   
   /* If input changed, update our face immediately.
    */
@@ -226,11 +239,9 @@ static void pushing_update_player_common(struct batsup_sprite *sprite,double ela
     SPRITE->animclock=0.0;
     SPRITE->animframe=0;
   }
-  
-  //TODO
 }
 
-/* Update player, per controller.
+/* Update player, human.
  * Just update (indx,indy) and call pushing_update_player_common().
  */
  
@@ -249,11 +260,197 @@ static void pushing_update_player_man(struct batsup_sprite *sprite,double elapse
   }
   pushing_update_player_common(sprite,elapsed);
 }
+
+/* Update player, CPU.
+ */
+ 
+struct option {
+  int dx,dy;
+  int weight;
+};
+
+static int pushing_weigh_option(
+  struct option *option,
+  struct battle *battle,
+  int spritex,int spritey,int statuex,int statuey,int targetx,int targety
+) {
+  // Idle always weighs zero.
+  if (!option->dx&&!option->dy) return 0;
+  int nx=spritex+option->dx;
+  int ny=spritey+option->dy;
+  // It won't be possible to reach the edges, but if we do, they're negative.
+  if ((nx<0)||(ny<0)||(nx>=NS_sys_mapw)||(ny>=NS_sys_maph)) return -1;
+  // Likewise if it's impassable via the map.
+  if (BATTLE->world->map->physics[BATTLE->world->map->v[ny*NS_sys_mapw+nx]]==NS_physics_solid) return -1;
+  // If the new position coincides with the statue, it's either very good or very bad.
+  // Good if it moves the statue toward the goal.
+  if ((nx==statuex)&&(ny==statuey)) {
+    //TODO A more robust implementation would check whether the statue is able to move that way.
+    if (option->dx<0) return (statuex>targetx)?100:-100;
+    if (option->dx>0) return (statuex<targetx)?100:-100;
+    if (option->dy<0) return (statuey>targety)?100:-100;
+    return (statuey<targety)?100:-100;
+  }
+  // Other player on that cell, it's negative. Do allow pushing the wrong statue.
+  struct batsup_sprite **spritep=BATTLE->world->spritev;
+  int i=BATTLE->world->spritec;
+  for (;i-->0;spritep++) {
+    struct batsup_sprite *sprite=*spritep;
+    int sx,sy;
+    pushing_get_sprite_position(&sx,&sy,sprite);
+    if ((sx==nx)&&(sy==ny)) {
+      if ((sprite->id==SPRITEID_LEFT)||(sprite->id==SPRITEID_RIGHT)) return -1;
+    }
+  }
+  // Identify the point outside the statue by one meter. That's where we want to be.
+  int outsidex=statuex;
+  int outsidey=statuey;
+  if (statuex<targetx) outsidex--;
+  else if (statuex>targetx) outsidex++;
+  if (statuey<targety) outsidey--;
+  else if (statuey>targety) outsidey++;
+  // If it points away from the outside point, it's valid but undesirable.
+  if ((option->dx<0)&&(spritex<outsidex)) return 1;
+  if ((option->dx>0)&&(spritex>outsidex)) return 1;
+  if ((option->dy<0)&&(spritey<outsidey)) return 1;
+  if ((option->dy>0)&&(spritey>outsidey)) return 1;
+  // Otherwise, there are a few positions outside of the statue that we want to reach.
+  int xdistance=nx-outsidex;
+  int ydistance=ny-outsidey;
+  if (xdistance<0) xdistance=-xdistance;
+  if (ydistance<0) ydistance=-ydistance;
+  return (NS_sys_mapw-xdistance)+(NS_sys_maph-ydistance);
+}
  
 static void pushing_update_player_cpu(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
   struct battle *battle=sprite->world->battle;
-  //TODO
+  
+  /* If (reconsider) expires, drop whatever we're doing.
+   */
+  if ((SPRITE->reconsider>0.0)&&((SPRITE->reconsider-=elapsed)<=0.0)) {
+    SPRITE->indx=0;
+    SPRITE->indy=0;
+    pushing_update_player_common(sprite,elapsed);
+    return;
+  }
+  
+  /* If our waitclock is set, something went wrong and we're killing time until the opponent puts us out of our misery.
+   */
+  if (SPRITE->waitclock>0.0) {
+    SPRITE->waitclock-=elapsed;
+    SPRITE->indx=0;
+    SPRITE->indy=0;
+  
+  /* If we are currently pushing, keep on keeping on, until the statue moves.
+   * Or until the wall moves, if we messed something up.
+   */
+  } else if (SPRITE->pushing) {
+  
+  /* If we are currently walking, set dpad zero and wait to land at the next cell.
+   */
+  } else if (SPRITE->walking) {
+    SPRITE->indx=0;
+    SPRITE->indy=0;
+  
+  /* Choose our next play.
+   */
+  } else {
+    SPRITE->indx=0;
+    SPRITE->indy=0;
+    SPRITE->reconsider=1.500; // No matter what, after so long we'll stop trying. eg pushing statue into a wall.
+    
+    // Take quantized positions of ourself, the statue, and the target.
+    int spritex=(int)sprite->x;
+    int spritey=(int)sprite->y;
+    int targetx,targety,statuex,statuey;
+    struct batsup_sprite *statue=0;
+    if (SPRITE->who) {
+      targetx=BATTLE->rx;
+      targety=BATTLE->ry;
+      statue=batsup_sprite_by_id(BATTLE->world,SPRITEID_RSTATUE);
+    } else {
+      targetx=BATTLE->lx;
+      targety=BATTLE->ly;
+      statue=batsup_sprite_by_id(BATTLE->world,SPRITEID_LSTATUE);
+    }
+    if (!statue) {
+      statuex=targetx;
+      statuey=targety;
+    } else {
+      statuex=(int)statue->x;
+      statuey=(int)statue->y;
+    }
+    //fprintf(stderr,"%s: Next step. player=%d,%d statue=%d,%d target=%d,%d\n",__func__,spritex,spritey,statuex,statuey,targetx,targety);
+    
+    /* There's four things we might be able to do, the four cardinal directions.
+     * Record each option and give it a weight.
+     * So any deleterious option should be negative.
+     */
+    struct option optionv[4];
+    int optionc=0;
+    optionv[optionc++]=(struct option){-1,0,0};
+    optionv[optionc++]=(struct option){1,0,0};
+    optionv[optionc++]=(struct option){0,-1,0};
+    optionv[optionc++]=(struct option){0,1,0};
+    struct option *option=optionv;
+    int i=optionc;
+    for (;i-->0;option++) {
+      option->weight=pushing_weigh_option(option,battle,spritex,spritey,statuex,statuey,targetx,targety);
+      //fprintf(stderr,"...option %+d,%+d, weight=%d\n",option->dx,option->dy,option->weight);
+    }
+    
+    /* Eliminate options with negative weight.
+     * Identify the lightest positive weight.
+     */
+    int wmin=INT_MAX;
+    for (i=optionc,option=optionv+optionc-1;i-->0;option--) {
+      if (option->weight<=0) {
+        optionc--;
+        memmove(option,option+1,sizeof(struct option)*(optionc-i));
+      } else if (option->weight<wmin) {
+        wmin=option->weight;
+      }
+    }
+    
+    /* If there's no positive options, set our waitclock.
+     */
+    if (wmin>=INT_MAX) {
+      SPRITE->waitclock=1.000;
+      
+    } else {
+    
+      /* Reduce weights such that the lightest becomes 1, then square it.
+       * This serves to accentuate the more likely options.
+       * Collect the new sum.
+       */
+      //fprintf(stderr,"  options after adjustment:\n");
+      int wsum=0;
+      wmin--;
+      for (option=optionv,i=optionc;i-->0;option++) {
+        option->weight-=wmin;
+        option->weight*=option->weight;
+        wsum+=option->weight;
+        //fprintf(stderr,"    %+d,%+d weight=%d\n",option->dx,option->dy,option->weight);
+      }
+      
+      /* Pick an option at random based on their weights.
+       * "Push statue toward the goal" weighs a lot more than any regular walking option,
+       * so it should be very rare for the golem to abandon a statue once started.
+       * But possible! And I like the noisiness of that.
+       */
+      int choice=rand()%wsum;
+      for (option=optionv,i=optionc;i-->0;option++) {
+        choice-=option->weight;
+        if (choice<0) {
+          SPRITE->indx=option->dx;
+          SPRITE->indy=option->dy;
+          break;
+        }
+      }
+    }
+  }
+  
   pushing_update_player_common(sprite,elapsed);
 }
 
@@ -342,6 +539,7 @@ static struct batsup_sprite *pushing_spawn_player(struct battle *battle,int x,in
     sprite->update=pushing_update_player_man;
   } else {
     sprite->update=pushing_update_player_cpu;
+    SPRITE->walkspeed*=CPU_PENALTY;
   }
   switch (SPRITE->face) {
     case NS_face_dot: {
@@ -399,6 +597,7 @@ static struct batsup_sprite *pushing_spawn_statue(struct battle *battle,struct b
   /* Cells at a given Manhattan distance describe a diamond.
    * Iterate those and build up a list of candidate positions.
    * There will never be more than 12 candidates, let's say 16 in case I'm wrong.
+   * To simplify plan generation, I'm also forbidding cardinals.
    */
   #define CANDIDATE_LIMIT 16
   struct candidate { int x,y; } candidatev[CANDIDATE_LIMIT];
@@ -421,6 +620,7 @@ static struct batsup_sprite *pushing_spawn_statue(struct battle *battle,struct b
   for (;dx<=distance;dx++) {
     int adx=(dx<0)?-dx:dx;
     int ady=distance-adx;
+    if (!adx||!ady) continue; // Must be at least a little bit diagonal.
     CHECKCELL(x0+dx,y0-ady)
     if (ady) CHECKCELL(x0+dx,y0+ady)
   }
@@ -481,12 +681,14 @@ static int _pushing_init(struct battle *battle) {
       }
     }
   }
-  if (!pushing_spawn_statue(battle,batsup_sprite_by_id(BATTLE->world,SPRITEID_LEFT))) return -1;
-  if (!pushing_spawn_statue(battle,batsup_sprite_by_id(BATTLE->world,SPRITEID_RIGHT))) return -1;
-  if (BATTLE->world->spritec!=4) {
+  struct batsup_sprite *playerl=0,*playerr=0,*statuel=0,*statuer=0;
+  if (!(statuel=pushing_spawn_statue(battle,playerl=batsup_sprite_by_id(BATTLE->world,SPRITEID_LEFT)))) return -1;
+  if (!(statuer=pushing_spawn_statue(battle,playerr=batsup_sprite_by_id(BATTLE->world,SPRITEID_RIGHT)))) return -1;
+  if (!playerl||!playerr||!statuel||!statuer) {
     fprintf(stderr,"%s: Should have ended up with 4 sprites, but have %d.\n",__func__,BATTLE->world->spritec);
     return -1;
   }
+  BATTLE->timer=TIME_LIMIT;
   return 0;
 }
 
@@ -494,9 +696,18 @@ static int _pushing_init(struct battle *battle) {
  */
  
 static void _pushing_update(struct battle *battle,double elapsed) {
+  
+  /* Do continue updating sprites after finish.
+   * If a statue was moving, it's weird for it to just stop cold.
+   */
+  batsup_world_update(BATTLE->world,elapsed);
+  
   if (battle->outcome>-2) return;
   
-  batsup_world_update(BATTLE->world,elapsed);
+  if ((BATTLE->timer-=elapsed)<=0.0) {
+    battle->outcome=0;
+    return;
+  }
   
   /* Victory when a statue is on its goal and its (stilltime) crosses some short threshold.
    * If they're both on goal at that crossing, it's a tie.
@@ -524,6 +735,14 @@ static void _pushing_update(struct battle *battle,double elapsed) {
  
 static void _pushing_render(struct battle *battle) {
   batsup_world_render(BATTLE->world);
+  
+  /* Timer.
+   */
+  int sec=(int)(BATTLE->timer+0.999);
+  if (sec>99) sec=99; else if (sec<0) sec=0;
+  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_tile(&g.graf,(FBW>>1)-4,6,'0'+sec/10,0);
+  graf_tile(&g.graf,(FBW>>1)+4,6,'0'+sec%10,0);
 }
 
 /* Type definition.

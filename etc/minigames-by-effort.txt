@@ -48,7 +48,6 @@ Pilfering. Dig Dug style, dig up to steal carrots, fail if you break the surface
 Pitching. Circle the dpad then tap A, judged on consistency of timing.
 Pouring. Once chance to hold A and release. Speeds up as it goes. Disqualify if any overflow.
 Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
-Pushing. Push a statue to the target cell. Sokoban-ish.
 Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
 Rebounding. Pong. First miss loses.
 Remembering. Shown 9 cards, then they flip and you have to pick a given one.

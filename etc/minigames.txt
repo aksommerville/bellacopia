@@ -89,7 +89,7 @@
   2      Popping           Farmer             Farm
   2      Pouring           Dowager            City
   2      Protecting        Goose              Farm
-  2      Pushing           Golem              Labyrinth
+  2____D Pushing           Golem              Labyrinth
   2____D Racketeering      Moblin             Cave
   2      Ramming           Orca               Sea
   2      RatRace           Rat                Cave

@@ -26,22 +26,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Repairing music for the wand broke it for normal door cases! See roof and pool of the temple.
-- [x] Music didn't change when wand-warping out of labyrinth and goblin cave.
-- [x] bluefish and redfish battles. Right now they are the same as greenfish, but I'd like extra gimmicks.
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] We still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" on arrivals. And crowded when you've been there a while.
-- [x] Pick up up a cluster of jigpieces, move the whole cluster above all other pieces. Right now there can be some unexpected overlap.
-- [x] Move temporary treasures from Fractia to the naked endpoints underground. Doesn't have to be final, but that would be a bit more believable.
 - [ ] Full clear time doesn't seem to register immediately, if you achieve it by finishing the maps.
-- [x] Sometimes on entering the maps vellum, a seemingly random jigpiece is highlighted.
-- - The first call to jigsaw_motion, its origin (ox,oy) is zero.
-- - Origin is established at the first map_render_field.
-- [x] Record position in stories vellum, like we do for inventory.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.
@@ -60,7 +50,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
 - [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
 - - And if you do that before the election, you already have the endorsement.
-- [x] Friendly UI for editing saved games. (non-public, obviously) Actually, I dunno, how bad do we need this? Would I ever use it?
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
@@ -75,8 +64,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
-- [x] Include zoos in 100% completion. (need to get them all apportioned first).
-- [x] Fanfare and reward for delivering monster to the zoo.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
@@ -149,14 +136,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] hc4
 - [ ] hc5
 - [x] Bomb: inconvenience
-- [x] Stopwatch: fractia, temporarily
+- [x] Stopwatch: underworld, temporarily
 - [x] Bus Stop: inconvenience
-- [x] Snowglobe: fractia, temporarily
-- [x] Tape Measure: fractia, temporarily
-- [x] Phonograph: fractia, temporarily
-- [x] Crystal Ball: fractia, temporarily
+- [x] Snowglobe: underworld, temporarily
+- [x] Tape Measure: underworld, temporarily
+- [x] Phonograph: underworld, temporarily
+- [x] Crystal Ball: underworld, temporarily
 - [x] Power Glove: Sea monster (Labyrinth).
-- [x] Marionette: fractia, temporarily
+- [x] Marionette: underworld, temporarily
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
 
 ## Sprites with placeholder battle
@@ -183,7 +170,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - gardener: Lawnmowing
 - psychic: Telekinesis
 - ogre: Smashing
-- golem: Pushing
 
 ## Acknowledgements
 
