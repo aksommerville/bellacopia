@@ -6,11 +6,13 @@
 #define LABELID_DESC 2
 #define LABELID_SORRY 3
 
+// Extra globals that persist across the program's run.
+static int stories_storyp=0;
+
 struct vellum_stories {
   struct vellum hdr;
   const struct story *storyv[16];
   int storyc;
-  int storyp;
   struct label {
     int texid;
     int x,y,w,h; // (x,y) relative to vellum
@@ -76,8 +78,8 @@ static void stories_remove_label(struct vellum *vellum,int labelid) {
  */
 
 static void stories_refresh_labels(struct vellum *vellum) {
-  if ((VELLUM->storyp>=0)&&(VELLUM->storyp<VELLUM->storyc)) {
-    const struct story *story=VELLUM->storyv[VELLUM->storyp];
+  if ((stories_storyp>=0)&&(stories_storyp<VELLUM->storyc)) {
+    const struct story *story=VELLUM->storyv[stories_storyp];
     stories_set_label(vellum,LABELID_TITLE,story->strix_title);
     stories_set_label(vellum,LABELID_DESC,story->strix_desc);
     stories_remove_label(vellum,LABELID_SORRY);
@@ -98,11 +100,11 @@ static void _stories_focus(struct vellum *vellum,int focus) {
  */
  
 static void stories_activate(struct vellum *vellum) {
-  if ((VELLUM->storyp<0)||(VELLUM->storyp>=VELLUM->storyc)) {
+  if ((stories_storyp<0)||(stories_storyp>=VELLUM->storyc)) {
     bm_sound(RID_sound_reject);
     return;
   }
-  const struct story *story=VELLUM->storyv[VELLUM->storyp];
+  const struct story *story=VELLUM->storyv[stories_storyp];
   game_tell_story(story);
 }
 
@@ -111,9 +113,9 @@ static void stories_activate(struct vellum *vellum) {
  
 static void stories_move_storyp(struct vellum *vellum,int d) {
   if (VELLUM->storyc<1) return;
-  VELLUM->storyp+=d;
-  if (VELLUM->storyp<0) VELLUM->storyp=VELLUM->storyc-1;
-  else if (VELLUM->storyp>=VELLUM->storyc) VELLUM->storyp=0;
+  stories_storyp+=d;
+  if (stories_storyp<0) stories_storyp=VELLUM->storyc-1;
+  else if (stories_storyp>=VELLUM->storyc) stories_storyp=0;
   bm_sound(RID_sound_uimotion);
   stories_refresh_labels(vellum);
 }
@@ -159,16 +161,16 @@ static void _stories_render(struct vellum *vellum,int x,int y,int w,int h) {
   for (;i<VELLUM->storyc;i++,tx+=4) {
     const struct story *story=VELLUM->storyv[i];
     int sy=ty;
-    if (i==VELLUM->storyp) sy-=3;
+    if (i==stories_storyp) sy-=3;
     graf_tile(&g.graf,tx,sy,story->tileid_small,0);
   }
   
   /* Dot's finger under the selected story.
    */
   const struct story *selected=0;
-  if ((VELLUM->storyp>=0)&&(VELLUM->storyp<VELLUM->storyc)) selected=VELLUM->storyv[VELLUM->storyp];
+  if ((stories_storyp>=0)&&(stories_storyp<VELLUM->storyc)) selected=VELLUM->storyv[stories_storyp];
   if (selected) {
-    graf_tile(&g.graf,x+130+VELLUM->storyp*4-5,ty+NS_sys_tilesize,0x01,0);
+    graf_tile(&g.graf,x+130+stories_storyp*4-5,ty+NS_sys_tilesize,0x01,0);
   }
   
   /* Cover of the selected story.
@@ -235,6 +237,8 @@ struct vellum *vellum_new_stories(struct modal *parent) {
     if (VELLUM->storyc>=16) break;
   }
   stories_refresh_labels(vellum);
+  
+  if ((stories_storyp<0)||(stories_storyp>=VELLUM->storyc)) stories_storyp=0;
   
   return vellum;
 }

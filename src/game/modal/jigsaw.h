@@ -13,7 +13,7 @@ struct plane;
 // All private.
 struct jigsaw {
   int ox,oy,ow,oh; // Outer bounds, as delivered to jigsaw_set_bounds. Never more than 256 per axis. (framebuffer pixels)
-  int mx,my; // Mouse position in framebuffer pixels.
+  int mx,my; // Mouse position in framebuffer pixels, offset by origin.
   int texid; // Tilesheet.
   int texid_outline; // Also tilesheet.
   const struct plane *plane;

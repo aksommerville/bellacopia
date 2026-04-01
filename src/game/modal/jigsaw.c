@@ -469,6 +469,16 @@ static uint8_t jigsaw_choose_indicator(const struct map *map) {
   return 0;
 }
 
+/* Initial reorder.
+ */
+ 
+static int jigpiececmp(const void *a,const void *b) {
+  const struct jigpiece *A=a,*B=b;
+  if (A->clusterid<B->clusterid) return 1;
+  if (A->clusterid>B->clusterid) return -1;
+  return 0;
+}
+
 /* Generate pieces, with the maps and images already established.
  * (tho images aren't actually needed for this).
  */
@@ -522,22 +532,52 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
   
   // With the pieces made, determine which are already connected.
   jigsaw_detect_clusters(jigsaw);
+  
+  /* Sort by cluster.
+   * For the drop-shadows to render nicely, all pieces within a cluster should be contiguous.
+   */
+  qsort(jigsaw->jigpiecev,jigsaw->jigpiecec,sizeof(struct jigpiece),jigpiececmp);
    
   return 0;
 }
 
-/* Move a piece to the top.
+/* Move a piece's cluster to the top.
  */
  
 static struct jigpiece *jigsaw_to_top(struct jigsaw *jigsaw,struct jigpiece *jigpiece) {
   int p=jigpiece-jigsaw->jigpiecev;
   if ((p<0)||(p>=jigsaw->jigpiecec)) return jigpiece; // Invalid.
-  struct jigpiece *npiece=jigsaw->jigpiecev+jigsaw->jigpiecec-1;
-  if (jigpiece==npiece) return jigpiece; // Already there.
-  struct jigpiece tmp=*jigpiece;
-  memmove(jigpiece,jigpiece+1,sizeof(struct jigpiece)*(jigsaw->jigpiecec-p-1));
-  *npiece=tmp;
-  return npiece;
+  if (jigsaw->jigpiecec<2) return jigpiece; // Can't need adjustment.
+  uint8_t tileid=jigpiece->tileid;
+  uint8_t clusterid=jigpiece->clusterid;
+  
+  /* Clusterid zero means singleton -- don't raise the peers, just this one.
+   */
+  if (!clusterid) {
+    struct jigpiece tmp=*jigpiece;
+    memmove(jigpiece,jigpiece+1,sizeof(struct jigpiece)*(jigsaw->jigpiecec-p-1));
+    struct jigpiece *dst=jigsaw->jigpiecev+jigsaw->jigpiecec-1;
+    *dst=tmp;
+    return dst;
+  }
+  
+  int topp=jigsaw->jigpiecec;
+  int bottomp=topp;
+  jigpiece=jigsaw->jigpiecev+bottomp-1;
+  for (;bottomp-->0;jigpiece--) {
+    if (jigpiece->clusterid!=clusterid) continue;
+    struct jigpiece tmp=*jigpiece;
+    topp--;
+    memmove(jigpiece,jigpiece+1,sizeof(struct jigpiece)*(topp-bottomp));
+    jigsaw->jigpiecev[topp]=tmp;
+  }
+  
+  int i=jigsaw->jigpiecec;
+  for (jigpiece=jigsaw->jigpiecev;i-->0;jigpiece++) {
+    if (jigpiece->tileid==tileid) return jigpiece;
+  }
+  // oops:
+  return jigsaw->jigpiecev;
 }
 
 /* Scan for possible new connections to the given piece.
@@ -740,32 +780,58 @@ void jigsaw_render(struct jigsaw *jigsaw) {
 
   /* Get out fast if our outer bounds are empty or offscreen.
    * In the pause modal, we will be called often when entirely offscreen, when the map page is showing just its edge.
+   * Also out if no pieces.
    */
   if ((jigsaw->ow<1)||(jigsaw->oh<1)) return;
   if (jigsaw->ox>=FBW) return;
   if (jigsaw->oy>=FBH) return;
   if (jigsaw->ox<=-jigsaw->ow) return;
   if (jigsaw->oy<=-jigsaw->oh) return;
+  if (jigsaw->jigpiecec<1) return;
   
   if (jigsaw->cheerclock>0) jigsaw->cheerclock--;
   jigsaw->blinkclock++;
   int blink=(jigsaw->blinkclock&32);
   
-  // Draw the pieces.
-  struct jigpiece *jigpiece=jigsaw->jigpiecev;
-  int i=jigsaw->jigpiecec;
-  for (;i-->0;jigpiece++) {
-    graf_set_input(&g.graf,jigsaw->texid);
-    if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0x00ff0080);
-    graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->tileid,jigpiece->xform);
-    if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0);
-    if (blink&&jigpiece->indicator) {
-      graf_set_image(&g.graf,RID_image_pause);
-      graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->indicator,jigpiece->xform);
+  /* Iterate clusters.
+   * For each cluster, draw all the shadows, then all the jigpieces.
+   * They're not technically required to group by cluster, but they effectively will, due to jigsaw_to_top().
+   */
+  int i=0;
+  while (i<jigsaw->jigpiecec) {
+    struct jigpiece *jigpiece=jigsaw->jigpiecev+i;
+    int c=1;
+    while ((i+c<jigsaw->jigpiecec)&&(jigpiece->clusterid==jigpiece[c].clusterid)) c++;
+    
+    // Shadows.
+    graf_set_input(&g.graf,jigsaw->texid_outline);
+    graf_set_tint(&g.graf,0x000000ff);
+    graf_set_alpha(&g.graf,0x40);
+    int j=c;
+    for (;j-->0;jigpiece++) {
+      graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->tileid,jigpiece->xform);
     }
+    graf_set_tint(&g.graf,0x00000000);
+    graf_set_alpha(&g.graf,0xff);
+    
+    // Pieces.
+    for (j=c,jigpiece=jigsaw->jigpiecev+i;j-->0;jigpiece++) {
+      graf_set_input(&g.graf,jigsaw->texid);
+      if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0x00ff0080);
+      graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->tileid,jigpiece->xform);
+      if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0);
+      if (blink&&jigpiece->indicator) {
+        graf_set_image(&g.graf,RID_image_pause);
+        graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->indicator,jigpiece->xform);
+      }
+    }
+    
+    i+=c;
   }
   
-  // Outline the grab or hover piece. This outline intentionally renders above any pieces occluding the focussed one.
+  /* Outline the grab or hover piece.
+   * This outline intentionally renders above any pieces occluding the focussed one.
+   */
   if (jigsaw->grab) {
     graf_set_input(&g.graf,jigsaw->texid_outline);
     graf_set_tint(&g.graf,0x00ffffff);
@@ -821,6 +887,12 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
   if (jigsaw->grab) jigpiece=jigsaw->grab;
   else if (jigsaw->hover) jigpiece=jigsaw->hover;
   else return;
+  
+  // Pull it to the top. Then if (grab) or (hover) is not null, update them, since the order could change.
+  jigpiece=jigsaw_to_top(jigsaw,jigpiece);
+  if (jigsaw->grab) jigsaw->grab=jigpiece;
+  if (jigsaw->hover) jigsaw->hover=jigpiece;
+  
   jigpiece->xform=jigsaw_clockwise(jigpiece->xform);
   jigsaw_dirty(jigsaw,jigpiece);
   if (jigpiece->clusterid) {
@@ -850,6 +922,19 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
  */
  
 void jigsaw_motion(struct jigsaw *jigsaw,int x,int y) {
+
+  /* In the very first frame, we'll have origin (0,0).
+   * That's never real; we always render a bit offset, and we don't know the origin until the first render.
+   * So discard motion when we're at zero.
+   */
+  if (!jigsaw->ox) return;
+  
+  /* Apply origin immediately.
+   * If our origin changes, eg sliding in or out, that should count as motion.
+   */
+  x-=jigsaw->ox;
+  y-=jigsaw->oy;
+  
   int dx=x-jigsaw->mx;
   int dy=y-jigsaw->my;
   if (!dx&&!dy) return;
@@ -871,7 +956,7 @@ void jigsaw_motion(struct jigsaw *jigsaw,int x,int y) {
       jigsaw_dirty(jigsaw,jigsaw->grab);
     }
   } else {
-    jigsaw->hover=jigsaw_find_hover(jigsaw,x-jigsaw->ox,y-jigsaw->oy);
+    jigsaw->hover=jigsaw_find_hover(jigsaw,x,y);
   }
 }
 

@@ -35,9 +35,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [x] We still need some spawner fudging when the set of instantiated rsprite is very small. Getting a bit of "where is everybody?" on arrivals. And crowded when you've been there a while.
-- [ ] Pick up up a cluster of jigpieces, move the whole cluster above all other pieces. Right now there can be some unexpected overlap.
+- [x] Pick up up a cluster of jigpieces, move the whole cluster above all other pieces. Right now there can be some unexpected overlap.
 - [x] Move temporary treasures from Fractia to the naked endpoints underground. Doesn't have to be final, but that would be a bit more believable.
 - [ ] Full clear time doesn't seem to register immediately, if you achieve it by finishing the maps.
+- [x] Sometimes on entering the maps vellum, a seemingly random jigpiece is highlighted.
+- - The first call to jigsaw_motion, its origin (ox,oy) is zero.
+- - Origin is established at the first map_render_field.
+- [x] Record position in stories vellum, like we do for inventory.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.
