@@ -55,8 +55,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
-- [ ] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
-- - [ ] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
+- [x] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
+- - [x] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
+- - ...opted for more of an axis-aligned accordion stack than the original idea of rotating the stack. Less physics involved, and arguably more fun.
 - [ ] More spells. Not sure what...
 - [ ] 2 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
@@ -148,7 +149,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- baker: CakeCarrying
 - cop: Traffic
 - executioner: CheeseCutting
 - teacher: Latin

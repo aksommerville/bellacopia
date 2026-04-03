@@ -15,7 +15,6 @@ Balancing. Walk to the goal with a tomato on your head.
 Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 Burrowing. Right to move, A to dig. Dig thru the dirt.
-Cake Carrying. On a train that stops suddenly. L/R to balance.
 Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
 Clam Baking. Hold A to engage flamethrower, only when the clam is open.
 Climbing. L/R and A/B, maintaining one "point of contact" at all times.
