@@ -174,7 +174,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - contractor: Building
 - fractia_carpenter: Sawing
 - gardener: Lawnmowing
-- psychic: Telekinesis
 
 ## Acknowledgements
 

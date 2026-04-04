@@ -8,7 +8,7 @@
 
 #include "game/bellacopia.h"
 
-#define PRESELECT_BATTLE NS_battle_smashing
+#define PRESELECT_BATTLE NS_battle_telekinesis
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
@@ -207,7 +207,7 @@ static int _arcade_init(struct modal *modal,const void *arg,int argc) {
   arcade_rebuild_labels(modal);
   
   // break_soil will get old fast...
-  bm_song_gently(RID_song_bloomful_rejoicement);
+  bm_song_gently(rand()%10+1);
   
   return 0;
 }

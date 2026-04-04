@@ -113,7 +113,7 @@
   2      Slapping          Gambler            City
   2      Slicing           Ninja              Battlefield
   2      Sliding           Penguin            Taiga
-  2      Smashing          Ogre               Labyrinth
+  2____D Smashing          Ogre               Labyrinth
   2      Snorkel           Seal               Taiga
   2      SnowballFight     Snowman            Taiga
   2      Snaring           Drummer            Battlefield
@@ -131,7 +131,7 @@
   2      Surrounding       Snake              Jungle
  R2      Swearing          Sailor             Sea
   2      Swinging          Kid                City
-  2      Telekinesis       Psychic            Labyrinth
+  2____D Telekinesis       Psychic            Labyrinth
   2      Tempting          Siren              Sea
   2____D Throwing          Loblin             Cave
   2      TicTacToe         Raccoon            Woodland

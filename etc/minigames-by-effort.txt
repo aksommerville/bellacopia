@@ -62,7 +62,6 @@ Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower
 Slapping. One chance to press A, to slap a given card when it falls on the pile.
 Slicing. Tap to stop the blade and cut the pie, aiming for half.
 Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
-Smashing. Stand still, A to jump. Squash melons as they roll at you.
 Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
 Snowball Fight. Once around the dpad, then A to throw it, then repeat.
 Staring. Dpad to keep your eyes on the foe's.
@@ -71,7 +70,6 @@ Sumo Horse. Metronome. One player dances with only Left and Right, then the othe
 Surrounding. Snake.
 Swearing. Press the button for a word bubble like "$#@!", last word wins.
 Swinging. Hold L/R in phase, riding a swing.
-Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
 Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
 Umbrella. Hold A while raining, release while not.
 Watermelon. Hold A to charge and release to spit a seed, going for distance.
