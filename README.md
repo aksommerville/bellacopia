@@ -31,7 +31,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [ ] Full clear time doesn't seem to register immediately, if you achieve it by finishing the maps.
+- [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
+- [ ] One more huge interior zone. We have room for one more jigsaw.
+- - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle
+- [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
+- [ ] Bridge-builder side quests, in places where you have to hookshot or broom across first, eventually you can get a convenient bridge built.
+- - First one, "I'm building a bridge out of sticks! I need 8 more sticks.". And every other bridge is some other item, growing more ridiculous the further you go. Candy, fish, telescope...
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.

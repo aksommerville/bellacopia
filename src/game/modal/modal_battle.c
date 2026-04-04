@@ -331,7 +331,7 @@ static void _battle_notify(struct modal *modal,int k,int v) {
  */
  
 static void battle_finish(struct modal *modal) {
-  if ((MODAL->outcome=MODAL->battle->outcome)<=-2) MODAL->outcome=0;
+  if ((MODAL->outcome=MODAL->battle->outcome)<=-2) MODAL->outcome=MODAL->battle->outcome=0;
   fprintf(stderr,
     "%s: battle=%d(%s) outcome=%d duration=%.03fs\n",__func__,
     MODAL->battleid,MODAL->type->name,MODAL->outcome,MODAL->duration

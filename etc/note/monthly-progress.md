@@ -84,12 +84,14 @@ Goals:
 - [ ] Cutscenes started, finish at least one.
 - [ ] Proper acquisition of stories.
 - [ ] First public showing. Maybe a COGG session, or an after-work game night?
+- [ ] Write the final 2 outerworld songs, and put them all in a sane order.
 
 ## May 2026
 
 Goals:
 - [ ] 30 new battles.
 - [ ] All cutscenes complete.
+- [ ] Sand Castle. Use the 5th jigsaw slot, make a big castle full of side quests, in the southwestern desert.
 - [ ] Outerworld final. Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
 - [ ] User-friendly Arcade Mode.
 
