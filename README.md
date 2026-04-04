@@ -155,7 +155,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- cop: Traffic
 - executioner: CheeseCutting
 - teacher: Latin
 - firefighter: Rescuing
@@ -197,5 +196,6 @@ Record everything that someone might object to on moral grounds, so we can decla
 - Stealing Contest.
 - Election rigging.
 - Shaking Contest (champagne).
+- Telekinesis Contest (drinking game).
 - Casino.
 - Strangling Contest.
