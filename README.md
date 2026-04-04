@@ -37,6 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Bridge-builder side quests, in places where you have to hookshot or broom across first, eventually you can get a convenient bridge built.
 - - First one, "I'm building a bridge out of sticks! I need 8 more sticks.". And every other bridge is some other item, growing more ridiculous the further you go. Candy, fish, telescope...
+- [ ] Phonograph modal should dismiss noop on WEST. We are treating it same as SOUTH.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.
@@ -174,7 +175,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - fractia_carpenter: Sawing
 - gardener: Lawnmowing
 - psychic: Telekinesis
-- ogre: Smashing
 
 ## Acknowledgements
 

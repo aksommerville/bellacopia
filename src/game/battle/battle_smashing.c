@@ -10,6 +10,9 @@
 #define THROW_MIN  3 /* How long before the CPU player makes a mistake. 0x6d strikes him on the fifth, 0x6e and above will not strike him. */
 #define THROW_MAX 10 /* Greater than SCORE_MAX, ie at most difficulties, the CPU player won't miss. */
 #define SCORE_MAX 5
+#define PARTICLE_LIMIT 256 /* For particles in flight. Once bound, they are part of the terrain texture. */
+#define PARTICLEC_LO 60 /* How many particles per vegetable. */
+#define PARTICLEC_HI 100
 
 #define POSE_IDLE 0
 #define POSE_LOSE 1
@@ -20,6 +23,7 @@
 struct battle_smashing {
   struct battle hdr;
   int choice;
+  int bgtexid,bgw,bgh;
   
   struct player {
     int who; // My index in this list.
@@ -58,9 +62,20 @@ struct battle_smashing {
     double dt;
     uint8_t tileid;
     int still;
+    int falling;
     int vegid; // Positive and unique, or zero if this vegetable not in use.
+    uint32_t color;
   } vegetablev[2];
   int vegid_next;
+  
+  struct particle {
+    int defunct;
+    double x,y;
+    double dx,dy;
+    uint32_t color;
+    double shloopclock;
+  } particlev[PARTICLE_LIMIT];
+  int particlec;
 };
 
 #define BATTLE ((struct battle_smashing*)battle)
@@ -69,6 +84,7 @@ struct battle_smashing {
  */
  
 static void _smashing_del(struct battle *battle) {
+  egg_texture_del(BATTLE->bgtexid);
 }
 
 /* Init player.
@@ -120,6 +136,45 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
 }
 
+/* Generate the initial background texture.
+ */
+ 
+static int smashing_generate_bgtex(struct battle *battle) {
+  BATTLE->bgw=FBW;
+  BATTLE->bgh=FBH-GROUNDY;
+  BATTLE->bgtexid=egg_texture_new();
+  if (egg_texture_load_raw(BATTLE->bgtexid,BATTLE->bgw,BATTLE->bgh,BATTLE->bgw<<2,0,0)<0) return -1;
+  egg_texture_clear(BATTLE->bgtexid);
+  
+  int cliffl=(FBW>>1)-20;
+  int cliffr=(FBW>>1)+20;
+  uint32_t floorcolor=0x006020ff;
+  
+  graf_set_output(&g.graf,BATTLE->bgtexid);
+  graf_fill_rect(&g.graf,0,0,cliffl,BATTLE->bgh,floorcolor);
+  graf_fill_rect(&g.graf,cliffr,0,BATTLE->bgw-cliffr,BATTLE->bgh,floorcolor);
+  graf_fill_rect(&g.graf,0,0,cliffl,1,0x000000ff);
+  graf_fill_rect(&g.graf,cliffr,0,BATTLE->bgw-cliffr,1,0x000000ff);
+  graf_fill_rect(&g.graf,cliffl,0,1,BATTLE->bgh,0x000000ff);
+  graf_fill_rect(&g.graf,cliffr,0,1,BATTLE->bgh,0x000000ff);
+  graf_set_output(&g.graf,1);
+  
+  return 0;
+}
+
+/* Set one pixel in the background texture.
+ */
+ 
+static void smashing_add_bgpixel(struct battle *battle,int x,int y,uint32_t color) {
+  y-=GROUNDY;
+  if ((x<0)||(x>=BATTLE->bgw)) return;
+  if ((y<0)||(y>=BATTLE->bgh)) return;
+  graf_set_output(&g.graf,BATTLE->bgtexid);
+  graf_set_input(&g.graf,0);
+  graf_point(&g.graf,x,y,color&0xffffff7f);
+  graf_set_output(&g.graf,1);
+}
+
 /* New.
  */
  
@@ -129,6 +184,7 @@ static int _smashing_init(struct battle *battle) {
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   BATTLE->vegid_next=1;
+  if (smashing_generate_bgtex(battle)<0) return -1;
   return 0;
 }
 
@@ -242,6 +298,50 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   else player->input=0;
 }
 
+/* Return a color near the input, randomly off a little.
+ */
+ 
+static uint32_t fuzz_rgba(uint32_t rgba) {
+  int r=(rgba>>24)&0xff;
+  int g=(rgba>>16)&0xff;
+  int b=(rgba>> 8)&0xff;
+  int a=(rgba    )&0xff;
+  r+=rand()%32-16; if (r<0) r=0; else if (r>0xff) r=0xff;
+  g+=rand()%32-16; if (g<0) g=0; else if (g>0xff) g=0xff;
+  b+=rand()%32-16; if (b<0) b=0; else if (b>0xff) b=0xff;
+  return (r<<24)|(g<<16)|(b<<8)|a;
+}
+
+/* Create a bunch of random particles for a given vegetable.
+ */
+ 
+static void smashing_generate_particles(struct battle *battle,struct vegetable *veg) {
+
+  // How many?
+  int availc=PARTICLE_LIMIT-BATTLE->particlec;
+  if (availc<=0) return;
+  if (availc>PARTICLEC_HI) availc=PARTICLEC_HI;
+  int c;
+  if (availc<=PARTICLEC_LO) c=availc;
+  else c=PARTICLEC_LO+rand()%(availc-PARTICLEC_LO+1);
+  
+  // Make them.
+  const double horzrange=50.0; // px/s, signed.
+  const double vertlo=-100.0; // px/s
+  const double verthi=10.0; // ps/s. Verts are asymmetric because pointing down would terminate really fast.
+  struct particle *particle=BATTLE->particlev+BATTLE->particlec;
+  BATTLE->particlec+=c;
+  for (;c-->0;particle++) {
+    particle->defunct=0;
+    particle->x=veg->x+(rand()%12)-6;
+    particle->y=veg->y+(rand()%12)-6;
+    particle->dx=(((rand()&0xffff)-32768)*horzrange)/32768.0;
+    particle->dy=vertlo+((rand()&0xffff)*(verthi-vertlo))/65535.0;
+    particle->color=fuzz_rgba(veg->color);
+    particle->shloopclock=0.0;
+  }
+}
+
 /* Update all players, after specific controller.
  */
  
@@ -313,7 +413,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
         bm_sound_pan(RID_sound_pop,player->who?0.250:-0.250);
         veg->vegid=0;
         player->score++;
-        //TODO splatter
+        smashing_generate_particles(battle,veg);
       }
     }
   }
@@ -336,17 +436,24 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  
 static void vegetable_update(struct battle *battle,struct vegetable *veg,double elapsed) {
   if (veg->still||!veg->vegid) return;
+  
+  if (veg->falling) {
+    veg->y+=100.0*elapsed;
+    if (veg->y>FBH+10.0) veg->vegid=0;
+    return;
+  }
+  
   veg->x+=veg->dx*elapsed;
   
   /* Eliminate when we reach the horizontal midpoint.
    * It's fun to play without this, because you can let one thru in the hopes it will strike your opponent from behind.
    * But our CPU player isn't built for it. I don't really like the extra complexity.
    */
-  if (((veg->dx>0.0)&&(veg->x>FBW*0.450))||((veg->dx<0.0)&&(veg->x<FBW*0.550))) {
+  if (((veg->dx>0.0)&&(veg->x>FBW*0.475))||((veg->dx<0.0)&&(veg->x<FBW*0.525))) {
     struct player *player=BATTLE->playerv;
     if (veg->dx<0.0) player+=1;
     if (player->score>0) player->score--;
-    veg->vegid=0;
+    veg->falling=1;
     return;
   }
   
@@ -366,6 +473,7 @@ static void smashing_generate_vegetable(struct battle *battle,int who) {
   veg->dx=80.0;
   veg->dt=5.0;
   veg->still=0;
+  veg->falling=0;
   if (who) {
     veg->x=FBW+NS_sys_tilesize;
     veg->dx=-veg->dx;
@@ -375,13 +483,51 @@ static void smashing_generate_vegetable(struct battle *battle,int who) {
   }
   veg->y=GROUNDY-7.0;
   switch (rand()%6) {
-    case 0: veg->tileid=0xdc; break; // tomato
-    case 1: veg->tileid=0xdd; break; // plum
-    case 2: veg->tileid=0xec; break; // pumpkin
-    case 3: veg->tileid=0xed; break; // acorn
-    case 4: veg->tileid=0xfc; break; // watermelon
-    case 5: veg->tileid=0xfd; break; // cantaloupe
+    case 0: veg->tileid=0xdc; veg->color=0xb61c32ff; break; // tomato
+    case 1: veg->tileid=0xdd; veg->color=0xc97de8ff; break; // plum
+    case 2: veg->tileid=0xec; veg->color=0xc4762fff; break; // pumpkin
+    case 3: veg->tileid=0xed; veg->color=0x998273ff; break; // acorn
+    case 4: veg->tileid=0xfc; veg->color=0xe51485ff; break; // watermelon
+    case 5: veg->tileid=0xfd; veg->color=0xf97205ff; break; // cantaloupe
   }
+}
+
+/* Update one particle.
+ */
+ 
+static void particle_update(struct battle *battle,struct particle *particle,double elapsed) {
+
+  /* After we've hit a wall, we continue applying (dy) until a counter expires, then commit it.
+   * Intent is to prevent all the splatter from landing right on the edge pixel.
+   */
+  if (particle->shloopclock>0.0) {
+    if ((particle->shloopclock-=elapsed)<=0.0) {
+      smashing_add_bgpixel(battle,(int)particle->x,(int)particle->y,particle->color);
+      particle->defunct=1;
+    }
+    particle->y+=particle->dy*elapsed;
+    return;
+  }
+
+  particle->dy+=GRAVITY_ACCEL*elapsed;
+  particle->x+=particle->dx*elapsed;
+  particle->y+=particle->dy*elapsed;
+  
+  // Check for binding.
+  if (particle->y<GROUNDY) {
+    // Too high.
+  } else if ((particle->x>=(FBW>>1)-20)&&(particle->x<(FBW>>1)+20)) {
+    // In the hole.
+  } else {
+    // Colliding.
+    particle->dx=0.0;
+    particle->dy=5.0;
+    particle->shloopclock=0.001+((rand()&0xffff)*0.750)/65535.0;
+  }
+  
+  if ((particle->x<0.0)&&(particle->dx<0.0)) particle->defunct=1;
+  if ((particle->x>FBW)&&(particle->dx>0.0)) particle->defunct=1;
+  if (particle->y>FBH) particle->defunct=1;
 }
 
 /* Update.
@@ -402,6 +548,18 @@ static void _smashing_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;veg++) {
     vegetable_update(battle,veg,elapsed);
+  }
+  
+  /* Update particles, then drop defunct.
+   */
+  struct particle *particle=BATTLE->particlev;
+  for (i=BATTLE->particlec;i-->0;particle++) {
+    particle_update(battle,particle,elapsed);
+  }
+  for (particle=BATTLE->particlev+BATTLE->particlec-1,i=BATTLE->particlec;i-->0;particle--) {
+    if (!particle->defunct) continue;
+    BATTLE->particlec--;
+    memmove(particle,particle+1,sizeof(struct particle)*(BATTLE->particlec-i));
   }
   
   /* Update players.
@@ -462,9 +620,9 @@ static void vegetable_render(struct battle *battle,struct vegetable *veg) {
  
 static void _smashing_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,0x80b0d0ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x006020ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80b0d0ff);
+  graf_set_input(&g.graf,BATTLE->bgtexid);
+  graf_decal(&g.graf,0,FBH-BATTLE->bgh,0,0,BATTLE->bgw,BATTLE->bgh);
   graf_set_image(&g.graf,RID_image_battle_labyrinth2);
   
   player_render(battle,BATTLE->playerv+0);
@@ -476,6 +634,13 @@ static void _smashing_render(struct battle *battle) {
   struct vegetable *veg=BATTLE->vegetablev;
   int i=2;
   for (;i-->0;veg++) vegetable_render(battle,veg);
+  
+  graf_set_input(&g.graf,0);
+  struct particle *particle=BATTLE->particlev;
+  for (i=BATTLE->particlec;i-->0;particle++) {
+    if (particle->defunct) continue;
+    graf_point(&g.graf,(int)particle->x,(int)particle->y,particle->color);
+  }
 }
 
 /* Type definition.
