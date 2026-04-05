@@ -35,6 +35,9 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
     store_set_fld(SPRITE->fld,1);
     sprite_kill_soon(sprite);
     // All Root Devils are in the outer world, and killing one changes the song.
+    // Don't change for the one attached to the temple, since the pool area counts as inside, mostly.
+    // Do clear the phonograph selection. User might have put on a record and now wouldn't realize she has a new song available.
+    store_set_fld16(NS_fld16_phonograph,0);
     if (!g.song_override_outerworld) {
       bm_song_gently(bm_song_for_outerworld());
     }

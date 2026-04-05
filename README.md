@@ -26,6 +26,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Killing a Root Devil should clear the phonograph selection. Otherwise the user doesn't know she just got a new song.
+- [ ] Earthquake doesn't work at screen edges. Noticed near the nortwest corner of underworld.
+- [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
@@ -37,7 +40,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Bridge-builder side quests, in places where you have to hookshot or broom across first, eventually you can get a convenient bridge built.
 - - First one, "I'm building a bridge out of sticks! I need 8 more sticks.". And every other bridge is some other item, growing more ridiculous the further you go. Candy, fish, telescope...
-- [ ] Phonograph modal should dismiss noop on WEST. We are treating it same as SOUTH.
+- [x] Phonograph modal should dismiss noop on WEST. We are treating it same as SOUTH.
+- - ...i was mistaken. WEST restores the default, as it ought to. Default happened to be the thing I had highlighted.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.
