@@ -42,6 +42,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - First one, "I'm building a bridge out of sticks! I need 8 more sticks.". And every other bridge is some other item, growing more ridiculous the further you go. Candy, fish, telescope...
 - [x] Phonograph modal should dismiss noop on WEST. We are treating it same as SOUTH.
 - - ...i was mistaken. WEST restores the default, as it ought to. Default happened to be the thing I had highlighted.
+- [ ] Petrifying: Make knights slower, and the line of sight wider.
+- [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
 
 - For exploration some time in the uncertain future.
 - [ ] Acquire stories.

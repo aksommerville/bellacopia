@@ -33,6 +33,7 @@ void begin_knitter(struct sprite *initiator);
 void begin_tree(struct sprite *initiator,int arg);
 void begin_generic_tolltroll(struct sprite *initiator,int arg);
 void begin_invcritic(struct sprite *initiator);
+void begin_bridget(struct sprite *initiator,int arg);
 
 // activity_princess.c
 void begin_king(struct sprite *initiator);

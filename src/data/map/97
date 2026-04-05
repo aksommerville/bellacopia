@@ -14,3 +14,4 @@
 image image:desert
 position 4 9 1 *
 sprite @5,7 sprite:jigpiece (u32)0
+sprite @11,5 sprite:bridget (u16:activity)bridget (u16:fld)bridge5start

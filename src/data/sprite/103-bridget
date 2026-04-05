@@ -1,0 +1,5 @@
+image image:hero
+tile 195 0
+type (u16:sprtype)npc
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+hitbox -6 6 -8 8

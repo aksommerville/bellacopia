@@ -42,3 +42,4 @@ rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
 sprite @5,1 sprite:ticker (u16:fld)zoo1_0 (u16)0
 sprite @5,5 sprite:zookeeper (u16:fld)zoo1_0 (u16)0
+sprite @18,4 sprite:bridget (u16:activity)bridget (u16:fld)bridge3start

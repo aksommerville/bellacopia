@@ -1,9 +1,9 @@
 /* battle_lawnmowing.c
  * Moving constantly, turn to cut the grass and don't touch cells you've already visited.
- * TODO placeholder
  */
 
 #include "game/bellacopia.h"
+#include "game/batsup/batsup_world.h"
 
 struct battle_lawnmowing {
   struct battle hdr;

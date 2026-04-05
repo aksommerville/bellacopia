@@ -264,6 +264,7 @@
 #define NS_activity_goblin_secret_entrance 39
 #define NS_activity_main_quest_wrap_up 40
 #define NS_activity_statuemaze_clue 41 /* (u16:msgid)0..3 */
+#define NS_activity_bridget 42 /* (u16:fld)bridgeNstart */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -544,6 +545,20 @@
 #define NS_fld_zoo1_1 102
 #define NS_fld_zoo1_2 103
 #define NS_fld_zoo1_3 104
+#define NS_fld_bridge1start 105 /* bridgeNstart are set the first time you talk to Bridget, and she sets the relevant fld16 */
+#define NS_fld_bridge2start 106 /* Use the bridgeNstart flags to refer to it. */
+#define NS_fld_bridge3start 107
+#define NS_fld_bridge4start 108
+#define NS_fld_bridge5start 109
+#define NS_fld_bridge6start 110
+#define NS_fld_bridge7start 111
+#define NS_fld_bridge1done 112 /* bridgeNdone are set after the bridge is built. */
+#define NS_fld_bridge2done 113
+#define NS_fld_bridge3done 114
+#define NS_fld_bridge4done 115
+#define NS_fld_bridge5done 116
+#define NS_fld_bridge6done 117
+#define NS_fld_bridge7done 118
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -560,6 +575,13 @@
 #define NS_fld16_labyrinth_seed 10
 #define NS_fld16_phonograph 11 /* Zero for default, or explicit song rid for outerworld. */
 #define NS_fld16_statuemaze_seed 12
+#define NS_fld16_bridge1q 13 /* Quantity outstanding. Only relevant if bridgeNstart and not bridgeNdone. */
+#define NS_fld16_bridge2q 14
+#define NS_fld16_bridge3q 15
+#define NS_fld16_bridge4q 16
+#define NS_fld16_bridge5q 17
+#define NS_fld16_bridge6q 18
+#define NS_fld16_bridge7q 19
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

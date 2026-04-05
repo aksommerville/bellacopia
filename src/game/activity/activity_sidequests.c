@@ -308,3 +308,51 @@ void begin_invcritic(struct sprite *initiator) {
   };
   modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
+
+/* Bridget: Build a bridge.
+ *  1: forest-botire: Stick.
+ *  2: forest-desert: 
+ *  3: forest-mountains: 
+ *  4: fractia-mountains: 
+ *  5: desert: 
+ *  6: botire-southjungle: 
+ *  7: botire-northjungle: 
+ *
+Eliminate two:
+match
+candy
+gold
+greenfish
+bluefish
+redfish
+telescope
+pepper
+/**/
+ 
+static const struct bridgetdata {
+  int fldstart;
+  int fld16q;
+  int flddone;
+  int itemid;
+  int quantity;
+} bridgetdata[]={
+  {NS_fld_bridge1start,NS_fld16_bridge1q,NS_fld_bridge1done,NS_itemid_stick,8},
+  {NS_fld_bridge2start,NS_fld16_bridge2q,NS_fld_bridge2done,NS_itemid_stick,8},
+  {NS_fld_bridge3start,NS_fld16_bridge3q,NS_fld_bridge3done,NS_itemid_stick,8},
+  {NS_fld_bridge4start,NS_fld16_bridge4q,NS_fld_bridge4done,NS_itemid_stick,8},
+  {NS_fld_bridge5start,NS_fld16_bridge5q,NS_fld_bridge5done,NS_itemid_stick,8},
+  {NS_fld_bridge6start,NS_fld16_bridge6q,NS_fld_bridge6done,NS_itemid_stick,8},
+  {NS_fld_bridge7start,NS_fld16_bridge7q,NS_fld_bridge7done,NS_itemid_stick,8},
+};
+ 
+void begin_bridget(struct sprite *initiator,int arg) {
+  struct text_insertion ins={.mode='i',.i=arg};
+  struct modal_args_dialogue args={
+    .text="Hi I'm Bridget number %0. (TEMP)",
+    .textc=-1,
+    .insv=&ins,
+    .insc=1,
+    .speaker=initiator,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}
