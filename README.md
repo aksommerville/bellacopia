@@ -27,7 +27,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Killing a Root Devil should clear the phonograph selection. Otherwise the user doesn't know she just got a new song.
-- [ ] Earthquake doesn't work at screen edges. Noticed near the nortwest corner of underworld.
+- [x] Earthquake doesn't work at screen edges. Noticed near the nortwest corner of underworld.
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.

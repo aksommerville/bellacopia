@@ -421,17 +421,14 @@ void camera_update(double elapsed) {
     idealy+=g.camera.teledy;
   }
   
-  /* If an earthquake is going on, effect the shaking by nudging (ideal).
-   * Capture the offset quantized to pixels, in case we're on a singleton.
+  /* If an earthquake is going on, capture its effect as quantized relative pixels.
    */
   int eqdx=0,eqdy=0;
   if (g.eqclock>0.0) {
     double eqd=sin(g.eqclock*22.000)*(2.0/NS_sys_tilesize);
     if ((g.eqdx<-0.5)||(g.eqdx>0.5)) {
-      idealy+=eqd;
       eqdy=lround(eqd*NS_sys_tilesize);
     } else {
-      idealx+=eqd;
       eqdx=lround(eqd*NS_sys_tilesize);
     }
   }
@@ -484,8 +481,8 @@ void camera_update(double elapsed) {
     if (map) {
       rx=map->lng*NS_sys_mapw*NS_sys_tilesize;
       ry=map->lat*NS_sys_maph*NS_sys_tilesize;
-      rx+=((NS_sys_mapw*NS_sys_tilesize)>>1)-(FBW>>1)+eqdx;
-      ry+=((NS_sys_maph*NS_sys_tilesize)>>1)-(FBH>>1)+eqdy;
+      rx+=((NS_sys_mapw*NS_sys_tilesize)>>1)-(FBW>>1);
+      ry+=((NS_sys_maph*NS_sys_tilesize)>>1)-(FBH>>1);
     } else {
       rx=g.camera.rx;
       ry=g.camera.ry;
@@ -505,6 +502,8 @@ void camera_update(double elapsed) {
     if (rx<0) rx=0; else if (rx>planew-FBW) rx=planew-FBW;
     if (ry<0) ry=0; else if (ry>planeh-FBH) ry=planeh-FBH;
   }
+  rx+=eqdx;
+  ry+=eqdy;
   int ox=g.camera.rx;
   int oy=g.camera.ry;
   g.camera.rx=rx;
@@ -682,18 +681,43 @@ void camera_render_pretransition(int dsttexid) {
   
   graf_set_output(&g.graf,dsttexid);
   
-  /* Copy all scopes to the main output.
-   * We take it on faith that these will cover the whole framebuffer opaquely.
-   * Effort is made elsewhere to ensure that none is necessary here.
+  /* Determine whether we need a blotter.
+   * This will be true if a map is missing, but that should never happen.
+   * Realistically the only way it comes up is when you snowglobe at the edge of a plane.
+   * We check this by pre-projecting the scope's output position and then recording whether all four corners got covered.
+   * The same scope can cover all four corners, in fact for singletons this is the usually so.
    */
+  const int mapw=NS_sys_mapw*NS_sys_tilesize;
+  const int maph=NS_sys_maph*NS_sys_tilesize;
+  uint8_t corner_coverage=0; // 0x80|0x20|0x04|0x01
   struct scope *scope=g.camera.scopev;
   int i=CAMERA_SCOPE_LIMIT;
   for (;i-->0;scope++) {
     if (!scope->map) continue;
-    int dstx=scope->map->lng*NS_sys_mapw*NS_sys_tilesize-g.camera.rx;
-    int dsty=scope->map->lat*NS_sys_maph*NS_sys_tilesize-g.camera.ry;
-    graf_set_input(&g.graf,scope->texid);
-    graf_decal(&g.graf,dstx,dsty,0,0,NS_sys_mapw*NS_sys_tilesize,NS_sys_maph*NS_sys_tilesize);
+    int dstx=scope->map->lng*mapw-g.camera.rx;
+    int dsty=scope->map->lat*maph-g.camera.ry;
+    if ((dstx<=0)&&(dstx+mapw>0)) {
+      if ((dsty<=0)&&(dsty+maph>0)) corner_coverage|=0x80;
+      if ((dsty<FBH)&&(dsty+maph>=FBH)) corner_coverage|=0x04;
+    }
+    if ((dstx<FBW)&&(dstx+mapw>=FBW)) {
+      if ((dsty<=0)&&(dsty+maph>0)) corner_coverage|=0x20;
+      if ((dsty<FBH)&&(dsty+maph>=FBH)) corner_coverage|=0x01;
+    }
+  }
+  if (corner_coverage!=0xa5) {
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  }
+  
+  /* Copy all scopes to the main output.
+   */
+  for (scope=g.camera.scopev,i=CAMERA_SCOPE_LIMIT;i-->0;scope++) {
+    if (scope->map) {
+      int dstx=scope->map->lng*mapw-g.camera.rx;
+      int dsty=scope->map->lat*maph-g.camera.ry;
+      graf_set_input(&g.graf,scope->texid);
+      graf_decal(&g.graf,dstx,dsty,0,0,NS_sys_mapw*NS_sys_tilesize,NS_sys_maph*NS_sys_tilesize);
+    }
   }
   
   /* Render sprites.
