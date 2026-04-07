@@ -1,4 +1,5 @@
 #include "bellacopia.h"
+#include "egg/egg_language_codes.h"
 
 /* Items metadata.
  */
@@ -569,6 +570,59 @@ int game_get_item(int itemid,int quantity) {
   fprintf(stderr,"%s: Unknown itemid %d\n",__func__,itemid);
   return 0;
 }
+
+/* Lose items.
+ */
+ 
+int game_lose_item(int itemid,int quantity) {
+
+  /* Losing less than one of something doesn't make sense.
+   * Gaining and losing are not perfectly symmetric for us.
+   */
+  if (quantity<1) return -1;
+
+  /* Fetch the details. If that doesn't exist, get out.
+   */
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail) return -1;
+  
+  /* If we have it in inventory, great.
+   * It's either a quantity we can reduce, or a singleton we can efface from the inventory.
+   */
+  struct invstore *invstore=store_get_itemid(itemid);
+  if (invstore) {
+    if (invstore->limit) {
+      if (invstore->quantity<quantity) return -1; // Insufficient quantity.
+      invstore->quantity-=quantity;
+      g.store.dirty=1;
+      return 0; // Reduced quantity.
+    } else {
+      invstore->itemid=0;
+      invstore->quantity=0;
+      g.store.dirty=1;
+      return 0; // Cleared item slot.
+    }
+  }
+  
+  /* In general, other collectibles are packed by fld16.
+   * These are easy too. Gold, fish, ...
+   */
+  if (detail->fld16) {
+    int have=store_get_fld16(detail->fld16);
+    if (have<quantity) return -1; // Insufficient quantity.
+    have-=quantity;
+    store_set_fld16(detail->fld16,have);
+    return 0; // Reduced quantity.
+  }
+  
+  /* We could probably handle jigpiece and other exceptional things too, if there's a need.
+   * Right now there is no need.
+   */
+  return -1;
+}
+
+/* Get item detail.
+ */
  
 const struct item_detail *item_detail_for_itemid(int itemid) {
   if (itemid<=0) return 0;
@@ -623,4 +677,69 @@ int possessed_quantity_for_itemid(int itemid,int *limit) {
   
   // There will probably be plain (fld) items in the future. Maybe? Well there aren't yet.
   return 0;
+}
+
+/* Format item name for context, language-savvy.
+ */
+ 
+int item_name_contextualize(char *dst,int dsta,int itemid,int quantity,int start_of_sentence) {
+  const struct item_detail *detail=item_detail_for_itemid(itemid);
+  if (!detail) return 0;
+  const char *base=0;
+  int basec=text_get_string(&base,RID_strings_item,detail->strix_name);
+  if (basec<1) return 0;
+  int lang=egg_prefs_get(EGG_PREF_LANG);
+  switch (lang) {
+    //TODO Language support.
+    
+    // English might be the only language we ever support. Dunno.
+    case EGG_LANG_en: {
+        // The rules never make it shorter, so get out now if it doesn't fit.
+        if (basec>dsta) return basec;
+        memcpy(dst,base,basec);
+        int dstc=basec;
+        // Start of sentence, force the first letter uppercase and preserve case elsewhere.
+        if (start_of_sentence) {
+          if ((dst[0]>='a')&&(dst[0]<='z')) dst[0]-=0x20;
+        // Mid-sentence, force the whole thing lowercase.
+        } else {
+          int i=basec; while (i-->0) {
+            if ((dst[i]>='A')&&(dst[i]<='Z')) dst[i]+=0x20;
+          }
+        }
+        // Any quantity other than one gets pluralized. Zero and negatives use the plural case.
+        if (quantity!=1) {
+          // "gold" is an item name and it should not pluralize at all (it's a currency unit, not a countable noun).
+          if ((dstc==4)&&(!memcmp(dst,"gold",4)||!memcmp(dst,"Gold",4))) {
+          // If it ends "s", "sh", or "ch", append "es".
+          } else if (
+            (dst[dstc-1]=='s')||
+            ((dstc>=2)&&!memcmp(dst+dstc-2,"sh",2))||
+            ((dstc>=2)&&!memcmp(dst+dstc-2,"ch",2))
+          ) {
+            if (dstc<=dsta-2) memcpy(dst+dstc,"es",2);
+            dstc+=2;
+          // If it ends "y" but not "ay", replace the "y" with "ies". Hit "candy" but not "bug spray".
+          } else if (
+            (dst[dstc-1]=='y')&&
+            ((dstc<2)||(dst[dstc-2]!='a'))
+          ) {
+            dstc--;
+            if (dstc<=dsta-3) memcpy(dst+dstc,"ies",3);
+            dstc+=3;
+          // And otherwise append "s". Why is my language so complicated? Let's write a letter of complaint to the King.
+          } else {
+            if (dstc<dsta) dst[dstc]='s';
+            dstc++;
+          }
+        }
+        if (dstc<dsta) dst[dstc]=0;
+        return dstc;
+      }
+
+  }
+  // If we don't recognize the language, return the canonical name verbatim.
+  if (basec<=dsta) memcpy(dst,base,basec);
+  if (basec<dsta) dst[basec]=0;
+  return basec;
 }

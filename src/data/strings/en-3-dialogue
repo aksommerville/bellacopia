@@ -126,6 +126,8 @@
 116 If you lead an animal on to my purple carpet, I'll give you a reward.
 117 Thanks for your help catching these animals!
 
-118 I want to build a bridge, but I'm short on materials. Can you find %0 %1 for me?
-119 I need %0 more %1 to finish this bridge.
-120 Thanks for your help! Doesn't this bridge look great?
+118 Thanks for your help! Doesn't this bridge look great?
+119 I want to build a bridge, but I'm short on materials. Can you find %0 %1 for me?
+120 I want to build a bridge, but I'm short on materials. I need %0 %1. Will you give me %2?
+121 I need %0 more %1 to finish this bridge.
+122 I need %0 more %1 to finish this bridge. Will you give me %2?

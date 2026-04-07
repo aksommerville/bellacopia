@@ -45,6 +45,11 @@ void game_hurt_hero();
  */
 int game_get_item(int itemid,int quantity);
 
+/* Fails if this thing isn't losable, quantity is zero or negative, or quantity exceeds possessed quantity.
+ * Does not perform any bells or whistles (ie it's not the exact opposite of game_get_item).
+ */
+int game_lose_item(int itemid,int quantity);
+
 /* Static metadata per itemid.
  */
 struct item_detail {
@@ -63,6 +68,11 @@ const struct item_detail *item_detail_for_equipped();
  * Also optionally returns the limit, since we're already in there.
  */
 int possessed_quantity_for_itemid(int itemid,int *limit);
+
+/* Apply language-specific rules to massage an item's name into context.
+ * As we add languages, we might need to add criteria.
+ */
+int item_name_contextualize(char *dst,int dsta,int itemid,int quantity,int start_of_sentence);
 
 /* Return zero or itemid, something you caught around the given cell.
  */

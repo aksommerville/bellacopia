@@ -545,13 +545,13 @@
 #define NS_fld_zoo1_1 102
 #define NS_fld_zoo1_2 103
 #define NS_fld_zoo1_3 104
-#define NS_fld_bridge1start 105 /* bridgeNstart are set the first time you talk to Bridget, and she sets the relevant fld16 */
-#define NS_fld_bridge2start 106 /* Use the bridgeNstart flags to refer to it. */
-#define NS_fld_bridge3start 107
-#define NS_fld_bridge4start 108
-#define NS_fld_bridge5start 109
-#define NS_fld_bridge6start 110
-#define NS_fld_bridge7start 111
+#define NS_fld_bridge1start 105 /* (forest-botire) bridgeNstart are set the first time you talk to Bridget, and she sets the relevant fld16 */
+#define NS_fld_bridge2start 106 /* (forest-desert) Use the bridgeNstart flags to refer to it. */
+#define NS_fld_bridge3start 107 /* forest-mountains */
+#define NS_fld_bridge4start 108 /* fractia-mountains */
+#define NS_fld_bridge5start 109 /* desert east-west */
+#define NS_fld_bridge6start 110 /* botire-south jungle */
+#define NS_fld_bridge7start 111 /* botire-north jungle */
 #define NS_fld_bridge1done 112 /* bridgeNdone are set after the bridge is built. */
 #define NS_fld_bridge2done 113
 #define NS_fld_bridge3done 114

@@ -13,7 +13,7 @@
 #include "game/bellacopia.h"
 
 // activity.c
-struct modal *begin_dialogue(int arg,struct sprite *initiator);
+struct modal *begin_dialogue(int arg,struct sprite *initiator); // RID_strings_dialogue
 
 // activity_shops.c
 void begin_carpenter(struct sprite *initiator);

@@ -311,23 +311,13 @@ void begin_invcritic(struct sprite *initiator) {
 
 /* Bridget: Build a bridge.
  *  1: forest-botire: Stick.
- *  2: forest-desert: 
- *  3: forest-mountains: 
- *  4: fractia-mountains: 
- *  5: desert: 
- *  6: botire-southjungle: 
- *  7: botire-northjungle: 
- *
-Eliminate two:
-match
-candy
-gold
-greenfish
-bluefish
-redfish
-telescope
-pepper
-/**/
+ *  2: forest-desert: Match.
+ *  3: forest-mountains: Candy
+ *  4: fractia-mountains: Pepper
+ *  5: desert: Gold.
+ *  6: botire-southjungle: Green Fish.
+ *  7: botire-northjungle: Telescope
+ */
  
 static const struct bridgetdata {
   int fldstart;
@@ -335,24 +325,121 @@ static const struct bridgetdata {
   int flddone;
   int itemid;
   int quantity;
-} bridgetdata[]={
-  {NS_fld_bridge1start,NS_fld16_bridge1q,NS_fld_bridge1done,NS_itemid_stick,8},
-  {NS_fld_bridge2start,NS_fld16_bridge2q,NS_fld_bridge2done,NS_itemid_stick,8},
-  {NS_fld_bridge3start,NS_fld16_bridge3q,NS_fld_bridge3done,NS_itemid_stick,8},
-  {NS_fld_bridge4start,NS_fld16_bridge4q,NS_fld_bridge4done,NS_itemid_stick,8},
-  {NS_fld_bridge5start,NS_fld16_bridge5q,NS_fld_bridge5done,NS_itemid_stick,8},
-  {NS_fld_bridge6start,NS_fld16_bridge6q,NS_fld_bridge6done,NS_itemid_stick,8},
-  {NS_fld_bridge7start,NS_fld16_bridge7q,NS_fld_bridge7done,NS_itemid_stick,8},
+} bridgetdatav[]={
+  {NS_fld_bridge1start,NS_fld16_bridge1q,NS_fld_bridge1done,NS_itemid_stick,      6},
+  {NS_fld_bridge2start,NS_fld16_bridge2q,NS_fld_bridge2done,NS_itemid_match,     25},
+  {NS_fld_bridge3start,NS_fld16_bridge3q,NS_fld_bridge3done,NS_itemid_candy,     12},
+  {NS_fld_bridge4start,NS_fld16_bridge4q,NS_fld_bridge4done,NS_itemid_pepper,    12},
+  {NS_fld_bridge5start,NS_fld16_bridge5q,NS_fld_bridge5done,NS_itemid_gold,     150},
+  {NS_fld_bridge6start,NS_fld16_bridge6q,NS_fld_bridge6done,NS_itemid_greenfish, 15},
+  {NS_fld_bridge7start,NS_fld16_bridge7q,NS_fld_bridge7done,NS_itemid_telescope,  5},
 };
+
+// There won't be more than one of our dialogues at a time, so we can cut corners by using a global context.
+static struct bridget_context {
+  const struct bridgetdata *bridgetdata;
+  int quantity;
+} bridgetctx={0};
+
+static int bridget_cb(int optionid,void *userdata) {
+  if ((optionid==4)&&bridgetctx.bridgetdata&&bridgetctx.quantity) {
+    if (game_lose_item(bridgetctx.bridgetdata->itemid,bridgetctx.quantity)>=0) {
+      int nq=store_get_fld16(bridgetctx.bridgetdata->fld16q)-bridgetctx.quantity;
+      if (nq<0) nq=0;
+      store_set_fld16(bridgetctx.bridgetdata->fld16q,nq);
+      if (!nq) {
+        store_set_fld(bridgetctx.bridgetdata->flddone,1);
+        g.camera.mapsdirty=1;
+      }
+    }
+  }
+  return 0;
+}
  
 void begin_bridget(struct sprite *initiator,int arg) {
-  struct text_insertion ins={.mode='i',.i=arg};
+
+  // Find the metadata.
+  const struct bridgetdata *bridgetdata=0;
+  const struct bridgetdata *q=bridgetdatav;
+  int i=sizeof(bridgetdatav)/sizeof(bridgetdatav[0]);
+  for (;i-->0;q++) {
+    if (q->fldstart==arg) {
+      bridgetdata=q;
+      break;
+    }
+  }
+  if (!bridgetdata) {
+    fprintf(stderr,"%s:%d: fld:%d is not a 'bridgeNstart' flag\n",__FILE__,__LINE__,arg);
+    return;
+  }
+  
+  // If my bridge is already built, just congratulate ourselves statically.
+  if (store_get_fld(bridgetdata->flddone)) {
+    begin_dialogue(118,initiator);
+    return;
+  }
+  
+  // If the quest hasn't started yet, initialize its counter and record the fact.
+  int first_time=0;
+  if (!store_get_fld(bridgetdata->fldstart)) {
+    first_time=1;
+    store_set_fld(bridgetdata->fldstart,1);
+    store_set_fld16(bridgetdata->fld16q,bridgetdata->quantity);
+  }
+  
+  // How many of this item are we asking for? Max of quantity needed and quantity the hero possesses.
+  int needed=store_get_fld16(bridgetdata->fld16q);
+  int available=possessed_quantity_for_itemid(bridgetdata->itemid,0);
+  int quantity=(needed<available)?needed:available;
+  
+  // Prepare the item's name for display.
+  // (start_of_sentence) is always zero for the English strings. I expect that will remain true across languages but who knows.
+  char plural[32];
+  int pluralc=item_name_contextualize(plural,sizeof(plural),bridgetdata->itemid,needed,0);
+  if ((pluralc<0)||(pluralc>sizeof(plural))) pluralc=0;
+  
+  // Choose the string and prepare format args.
+  int strix;
+  struct text_insertion insv[3]={0};
+  if (first_time) {
+    if (quantity) {
+      strix=120;
+      insv[0]=(struct text_insertion){.mode='i',.i=needed};
+      insv[1]=(struct text_insertion){.mode='s',.s={.v=plural,.c=pluralc}};
+      insv[2]=(struct text_insertion){.mode='i',.i=quantity};
+    } else {
+      strix=119;
+      insv[0]=(struct text_insertion){.mode='i',.i=needed};
+      insv[1]=(struct text_insertion){.mode='s',.s={.v=plural,.c=pluralc}};
+    }
+  } else {
+    if (quantity) {
+      strix=122;
+      insv[0]=(struct text_insertion){.mode='i',.i=needed};
+      insv[1]=(struct text_insertion){.mode='s',.s={.v=plural,.c=pluralc}};
+      insv[2]=(struct text_insertion){.mode='i',.i=quantity};
+    } else {
+      strix=121;
+      insv[0]=(struct text_insertion){.mode='i',.i=needed};
+      insv[1]=(struct text_insertion){.mode='s',.s={.v=plural,.c=pluralc}};
+    }
+  }
+
+  // Make a dialogue box.
+  bridgetctx.bridgetdata=bridgetdata;
+  bridgetctx.quantity=quantity;
   struct modal_args_dialogue args={
-    .text="Hi I'm Bridget number %0. (TEMP)",
-    .textc=-1,
-    .insv=&ins,
-    .insc=1,
+    .rid=RID_strings_dialogue,
+    .strix=strix,
+    .insv=insv,
+    .insc=3,
     .speaker=initiator,
+    .cb=bridget_cb,
   };
-  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  if (quantity) {
+    modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+    modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+  }
 }

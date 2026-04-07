@@ -9,7 +9,7 @@
 7171717171717172404200404202060320213431
 0600040300040400030202030102002034253125
 8181818182040204808181818181824041414141
-9191919193818181949191919191938181818181
+9191919193814b81949191919191938181818181
 
 image image:meadow
 position 6 7 1 *
@@ -47,4 +47,4 @@ rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
 rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
-sprite @7,10 sprite:bridget (u16:activity)bridget (u16:fld)bridge2start
+switchable @6,11 (u16:fld)bridge2done
