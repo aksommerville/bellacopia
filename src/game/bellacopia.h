@@ -80,6 +80,7 @@ extern struct g {
   int stopwatch;
   double eqclock,eqdx,eqdy; // Earthquake.
   double fishclock;
+  int fishx,fishy,fishz; // See game.c:game_choose_fish()
   double monsterpause; // Counts down after each battle; monster sprites stand still while positive.
   int completion_listener; // Store listener, always present. Responsible for NS_clock_(mainclear,fullclear) and NS_fld_minimalist.
   int completion; // 0,1,2 = none,any%,100%

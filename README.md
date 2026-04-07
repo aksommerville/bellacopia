@@ -44,7 +44,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...i was mistaken. WEST restores the default, as it ought to. Default happened to be the thing I had highlighted.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 - [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
-- [ ] Travelling a fair distance, say 30 m, should reset the fish clock.
+- [x] Travelling a fair distance, say 30 m, should reset the fish clock.
 
 - For exploration some time in the uncertain future.
 - [ ] Make the bridges look like the stuff they're made of.

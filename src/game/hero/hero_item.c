@@ -216,7 +216,7 @@ static void wand_update(struct sprite *sprite,double elapsed) {
  */
  
 #define FISH_TIME_MIN 1.000
-#define FISH_TIME_MAX 10.000
+#define FISH_TIME_MAX 6.000
  
 static int fishpole_begin(struct sprite *sprite) {
   double qx=sprite->x+SPRITE->facedx*0.75;

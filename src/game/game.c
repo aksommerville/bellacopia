@@ -213,10 +213,13 @@ int game_warp(int mapid,int transition) {
 
 /* Poke the global fish clock and take random odds against it.
  * Return zero to catch a fish, or nonzero if fished out (or unlucky).
+ * If you fish repeatedly in the same place, you'll exhaust that spot and eventually catch nothing.
+ * Movement in space or time will reset it.
  */
  
 #define FISHCLOCK_LIMIT      20.000
 #define FISHCLOCK_INCREMENT   8.000 /* Bear in mind, the fishing itself takes 1..10 seconds. */
+#define FISHCLOCK_SPATIAL_RESET  30 /* Move so far from the last attempt and the clock resets. Or change planes. */
  
 static int game_touch_fishclock() {
   // If we're already over the time limit, return exhausted but don't penalize any further.
@@ -225,6 +228,22 @@ static int game_touch_fishclock() {
   int choice=rand()&0xffff;
   g.fishclock+=FISHCLOCK_INCREMENT;
   return (choice<threshold)?1:0;
+}
+
+static void game_touch_fish_position(int x,int y,int z) {
+  if (z!=g.fishz) { // Changed planes: reset.
+    g.fishclock=0.0;
+  } else { // Consider Manhattan distance of on-plane movement.
+    int dx=x-g.fishx; if (dx<0) dx=-dx;
+    int dy=y-g.fishy; if (dy<0) dy=-dy;
+    int distance=dx+dy;
+    if (dx+dy>=FISHCLOCK_SPATIAL_RESET) {
+      g.fishclock=0.0;
+    }
+  }
+  g.fishx=x;
+  g.fishy=y;
+  g.fishz=z;
 }
 
 /* Return itemid for a given fishodds, applying context.
@@ -259,6 +278,7 @@ static int game_apply_fishodds(int fishodds) {
  */
  
 int game_choose_fish(int x,int y,int z) {
+  game_touch_fish_position(x,y,z);
   struct map *map=map_by_sprite_position(x,y,z);
   if (!map) return game_apply_fishodds(NS_fishodds_default);
   int col=x-map->lng*NS_sys_mapw;
