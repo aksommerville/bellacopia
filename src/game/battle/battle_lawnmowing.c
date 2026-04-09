@@ -72,7 +72,9 @@ static void lawnmowing_generate_map(struct battle *battle) {
   uint8_t *dst=BATTLE->world->map->v;
   int i=NS_sys_mapw*NS_sys_maph;
   for (;i-->0;dst++) {
-    *dst=0x08;
+    int choice=rand()%15;
+    if (choice<8) *dst=choice; // static grass
+    else *dst=0x08; // for mowing
   }
   //TODO
 }
