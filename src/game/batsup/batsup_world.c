@@ -10,6 +10,9 @@ void batsup_world_del(struct batsup_world *world) {
     while (world->spritec-->0) batsup_sprite_del(world->spritev[world->spritec]);
     free(world->spritev);
   }
+  if (world->ownmap&&world->map) {
+    free(world->map);
+  }
   free(world);
 }
 
@@ -24,13 +27,41 @@ struct batsup_world *batsup_world_new(struct battle *battle,int mapid) {
   world->sortdir=1;
   world->spriteid_next=1;
   
-  if (!(world->map=map_by_id(mapid))) {
-    fprintf(stderr,"%s:%d: map:%d not found\n",__FILE__,__LINE__,mapid);
-    batsup_world_del(world);
-    return 0;
+  /* If a nonzero (mapid) provided, it must name a map in the store.
+   */
+  if (mapid) {
+    if (!(world->map=map_by_id(mapid))) {
+      fprintf(stderr,"%s:%d: map:%d not found\n",__FILE__,__LINE__,mapid);
+      batsup_world_del(world);
+      return 0;
+    }
+    
+  /* (mapid) zero means generate one.
+   */
+  } else {
+    world->ownmap=1;
+    if (!(world->map=calloc(1,sizeof(struct map)))) {
+      batsup_world_del(world);
+      return 0;
+    }
+    world->map->rov=world->map->v;
+    world->map->physics=tilesheet_get_physics(0); // Returns an all-zeroes default.
+    world->map->jigctab=tilesheet_get_jigctab(0); // Can't imagine anyone will need this, but let's be safe.
   }
   
   return world;
+}
+
+/* Set image for custom map.
+ */
+ 
+int batsup_world_set_image(struct batsup_world *world,int imageid) {
+  if (!world) return -1;
+  if (!world->ownmap) return -1;
+  world->map->imageid=imageid;
+  world->map->physics=tilesheet_get_physics(imageid);
+  world->map->jigctab=tilesheet_get_jigctab(imageid);
+  return 0;
 }
 
 /* Update.

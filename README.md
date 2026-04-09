@@ -26,8 +26,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Killing a Root Devil should clear the phonograph selection. Otherwise the user doesn't know she just got a new song.
-- [x] Earthquake doesn't work at screen edges. Noticed near the nortwest corner of underworld.
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
@@ -38,13 +36,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] One more huge interior zone. We have room for one more jigsaw.
 - - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
-- [x] Bridge-builder side quests, in places where you have to hookshot or broom across first, eventually you can get a convenient bridge built.
-- - First one, "I'm building a bridge out of sticks! I need 8 more sticks.". And every other bridge is some other item, growing more ridiculous the further you go. Candy, fish, telescope...
-- [x] Phonograph modal should dismiss noop on WEST. We are treating it same as SOUTH.
-- - ...i was mistaken. WEST restores the default, as it ought to. Default happened to be the thing I had highlighted.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 - [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
-- [x] Travelling a fair distance, say 30 m, should reset the fish clock.
 
 - For exploration some time in the uncertain future.
 - [ ] Make the bridges look like the stuff they're made of.
@@ -69,9 +62,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
-- [x] cakecarrying: I'm thinking of a full physics simulation. Is that crazy? Punt this one, do some others first, maybe there's a more corner-cutty way that would still be appealing.
-- - [x] The full sim would be crazy, an appropriate kind of crazy. Do it, but separate so we can reuse in other battles.
-- - ...opted for more of an axis-aligned accordion stack than the original idea of rotating the stack. Less physics involved, and arguably more fun.
 - [ ] More spells. Not sure what...
 - [ ] 2 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
@@ -140,6 +130,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Worldwide broom races => ?
 - [ ] Tree stories => ?
 - [ ] Reverse Sokoban => ?
+- [ ] Bridges => ?
 - This set of quests doesn't feel adequate. Need like a dozen more.
 
 - Prizes unassigned.

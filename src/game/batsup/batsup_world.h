@@ -27,15 +27,23 @@ struct batsup_sprite {
 
 struct batsup_world {
   struct battle *battle; // WEAK
-  struct map *map; // WEAK; belongs to global store
+  struct map *map; // STRONG if (ownmap), else WEAK (belongs to store)
   struct batsup_sprite **spritev;
   int spritec,spritea;
   int spriteid_next;
   int sortdir; // Default 1. Set zero to disable sprite sorting.
+  int ownmap;
 };
 
+/* New with (mapid==0) to generate a map that you can modify.
+ */
 void batsup_world_del(struct batsup_world *world);
 struct batsup_world *batsup_world_new(struct battle *battle,int mapid);
+
+/* Set our map's tilesheet, which will also be the default image for new sprites.
+ * This is only valid if (mapid==0) at init, ie we own the map.
+ */
+int batsup_world_set_image(struct batsup_world *world,int imageid);
 
 void batsup_world_update(struct batsup_world *world,double elapsed);
 

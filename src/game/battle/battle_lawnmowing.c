@@ -5,77 +5,102 @@
 #include "game/bellacopia.h"
 #include "game/batsup/batsup_world.h"
 
+#define SPRITEID_LEFT 1
+#define SPRITEID_RIGHT 2
+
 struct battle_lawnmowing {
   struct battle hdr;
-  int choice;
-  
-  struct player {
-    int who; // My index in this list.
-    int human; // 0 for CPU, or the input index.
-    double skill; // 0..1, reverse of each other.
-  } playerv[2];
+  struct batsup_world *world;
+  double animclock;
+  int animframe;
 };
 
 #define BATTLE ((struct battle_lawnmowing*)battle)
+
+/* Player sprite.
+ */
+ 
+struct sprite_player {
+  struct batsup_sprite hdr;
+  int human; // 0,1,2
+  double skill;
+};
+
+static void player_update(struct batsup_sprite *sprite,double elapsed) {
+  struct battle *battle=sprite->world->battle;
+  //TODO
+}
+
+static struct batsup_sprite *player_init(struct battle *battle,int id,int ctl,int face,double skill) {
+  struct batsup_sprite *sprite=batsup_sprite_spawn(BATTLE->world,id,sizeof(struct sprite_player));
+  if (!sprite) return 0;
+  struct sprite_player *SPRITE=(struct sprite_player*)sprite;
+  
+  sprite->y=(NS_sys_maph>>1)+0.5;
+  if (id==SPRITEID_LEFT) {
+    sprite->x=(NS_sys_mapw>>2)+0.5;
+  } else {
+    sprite->x=((NS_sys_mapw*3)>>2)+0.5;
+  }
+  SPRITE->human=ctl;
+  SPRITE->skill=skill;
+  
+  switch (face) {
+    case NS_face_dot: {
+        //TODO
+      } break;
+    case NS_face_princess: {
+      } break;
+    case NS_face_monster: default: {
+      } break;
+  }
+  
+  return sprite;
+}
 
 /* Delete.
  */
  
 static void _lawnmowing_del(struct battle *battle) {
+  batsup_world_del(BATTLE->world);
 }
 
-/* Init player.
+/* Generate the initial map.
  */
  
-static void player_init(struct battle *battle,struct player *player,int human,int face) {
-  if (player==BATTLE->playerv) { // Left.
-    player->who=0;
-  } else { // Right.
-    player->who=1;
+static void lawnmowing_generate_map(struct battle *battle) {
+  uint8_t *dst=BATTLE->world->map->v;
+  int i=NS_sys_mapw*NS_sys_maph;
+  for (;i-->0;dst++) {
+    *dst=0x08;
   }
-  if (player->human=human) { // Human.
-  } else { // CPU.
-  }
-  switch (face) {
-    case NS_face_monster: {
-      } break;
-    case NS_face_dot: {
-      } break;
-    case NS_face_princess: {
-      } break;
-  }
+  //TODO
 }
 
 /* New.
  */
  
 static int _lawnmowing_init(struct battle *battle) {
-  battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
-  // or in simpler cases: BATTLE->difficulty=battle_scalar_difficulty(battle);
-  player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
-  player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
+  if (!(BATTLE->world=batsup_world_new(battle,0))) return -1;
+  if (batsup_world_set_image(BATTLE->world,RID_image_battle_labor)<0) return -1;
+  double lskill,rskill;
+  battle_normalize_bias(&lskill,&rskill,battle);
+  player_init(battle,SPRITEID_LEFT,battle->args.lctl,battle->args.lface,lskill);
+  player_init(battle,SPRITEID_RIGHT,battle->args.rctl,battle->args.rface,rskill);
+  lawnmowing_generate_map(battle);
   return 0;
 }
 
-/* Update human player.
+/* Replace each uncut grass tile with the current animation frame.
  */
  
-static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
-  //TODO
-}
-
-/* Update CPU player.
- */
- 
-static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
-  //TODO
-}
-
-/* Update all players, after specific controller.
- */
- 
-static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
-  //TODO
+static void lawnmowing_animate_grass(struct battle *battle) {
+  uint8_t tileid=0x08+BATTLE->animframe;
+  uint8_t *v=BATTLE->world->map->v;
+  int i=NS_sys_mapw*NS_sys_maph;
+  for (;i-->0;v++) {
+    if ((*v>=0x08)&&(*v<0x10)) *v=tileid;
+  }
 }
 
 /* Update.
@@ -83,57 +108,22 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  
 static void _lawnmowing_update(struct battle *battle,double elapsed) {
   if (battle->outcome>-2) return;
-  
-  struct player *player=BATTLE->playerv;
-  int i=2;
-  for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
-    else player_update_cpu(battle,player,elapsed);
-    player_update_common(battle,player,elapsed);
+  batsup_world_update(BATTLE->world,elapsed);
+  if ((BATTLE->animclock-=elapsed)<=0.0) {
+    BATTLE->animclock+=0.200;
+    if (++(BATTLE->animframe)>=8) BATTLE->animframe=0;
+    lawnmowing_animate_grass(battle);
   }
 
-  //XXX Placeholder UI.
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(BATTLE->choice)<-1) BATTLE->choice=1; }
-  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(BATTLE->choice)>1) BATTLE->choice=-1; }
-  if ((battle->outcome<-1)&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    bm_sound(RID_sound_uiactivate);
-    battle->outcome=BATTLE->choice;
-  }
-}
-
-/* Render player.
- */
- 
-static void player_render(struct battle *battle,struct player *player) {
+  //XXX
+  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render.
  */
  
 static void _lawnmowing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  
-  // XXX Placeholder UI.
-  int y=FBH/3;
-  int boxh=20;
-  int boxw=20;
-  int y1=y+boxh+1;
-  int xv[3]={
-    (FBW>>2)-(boxw>>1),
-    (FBW>>1)-(boxw>>1),
-    ((FBW*3)>>2)-(boxw>>1),
-  };
-  graf_fill_rect(&g.graf,xv[0],y,boxw,boxh,0xff0000ff);
-  graf_fill_rect(&g.graf,xv[1],y,boxw,boxh,0x404040ff);
-  graf_fill_rect(&g.graf,xv[2],y,boxw,boxh,0x00ff00ff);
-  switch (BATTLE->choice) {
-    case -1: graf_fill_rect(&g.graf,xv[0],y1,boxw,boxh,0xffffffff); break;
-    case  0: graf_fill_rect(&g.graf,xv[1],y1,boxw,boxh,0xffffffff); break;
-    case  1: graf_fill_rect(&g.graf,xv[2],y1,boxw,boxh,0xffffffff); break;
-  }
-  
-  player_render(battle,BATTLE->playerv+0);
-  player_render(battle,BATTLE->playerv+1);
+  batsup_world_render(BATTLE->world);
 }
 
 /* Type definition.
