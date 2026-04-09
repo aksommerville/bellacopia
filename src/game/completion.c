@@ -265,8 +265,8 @@ int bm_song_for_outerworld() {
     case 3: return RID_song_tripping_over_my_tongue;
     case 4: return RID_song_dust_mote;
     case 5: return RID_song_smoke_and_mirrors;
-    case 6: return RID_song_barrel_of_salt;//TODO
-    case 7: return RID_song_barrel_of_salt;//TODO
+    case 6: return RID_song_ladder_to_nowhere;
+    case 7: return RID_song_crawling_chaos;
   }
   // And our universal fallback (won't happen) is Barrel of Salt.
   return RID_song_barrel_of_salt;
@@ -288,8 +288,8 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
   if (flowerc>=3) AVAILABLE(89,tripping_over_my_tongue)
   if (flowerc>=4) AVAILABLE(90,dust_mote)
   if (flowerc>=5) AVAILABLE(91,smoke_and_mirrors)
-  if (flowerc>=6) AVAILABLE(92,barrel_of_salt)//TODO
-  if (flowerc>=7) AVAILABLE(93,barrel_of_salt)//TODO
+  if (flowerc>=6) AVAILABLE(92,ladder_to_nowhere)
+  if (flowerc>=7) AVAILABLE(93,crawling_chaos)
   #undef AVAILABLE
   return dstc;
 }
