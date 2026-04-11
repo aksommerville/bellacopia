@@ -106,6 +106,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Witch hats. Same idea as the dolls.
 - - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly (~$30 ea at a glance).
 - - [ ] Mini comic?
+- - - If we draw one, get in touch with Hardwired, Back Alley Games, and similar, see if they'll publish it.
 - - [ ] Thumb drives. I still have 20 leftover from Spelling Bee, if we want to make the shell ourselves.
 - - - customusb.com has some gorgeous shells and cases (they did the Plunder Squad bottles). $5-10 ea for the drives and another $5-10 for cases. A bit much.
 - - [ ] Instruction manual + strategy guide, to bundle with thumb drives.
@@ -171,7 +172,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - hustler: Cheating
 - plumber: Plumbing
 - contractor: Building
-- fractia_carpenter: Sawing
 
 ## Acknowledgements
 

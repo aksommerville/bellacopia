@@ -53,7 +53,6 @@ Remembering. Shown 9 cards, then they flip and you have to pick a given one.
 Rodeo. L/R to balance on the bull or hold A to brace.
 Rollerskates. Jump and brake. Gets too fast if you don't brake.
 Rowing. Circle the dpad with lopsided speed, slower in the water.
-Sawing. L/R, and there's an ideal rhythm.
 Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
 Sharing. Dpad around the crowd, touch somebody to give them a berry.
 Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.

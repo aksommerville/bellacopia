@@ -14,6 +14,7 @@ struct battle_placeholder {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
     double skill; // 0..1, reverse of each other.
+    uint32_t color;
   } playerv[2];
 };
 
@@ -39,10 +40,13 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
   switch (face) {
     case NS_face_monster: {
+        player->color=0x808080ff;//TODO per monster
       } break;
     case NS_face_dot: {
+        player->color=0x411775ff;
       } break;
     case NS_face_princess: {
+        player->color=0x0d3ac1ff;
       } break;
   }
 }

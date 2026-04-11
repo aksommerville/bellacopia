@@ -101,7 +101,7 @@
   2      Rodeo             Cowpoke            Desert
  R2      Rollerskates      Rabbit             Woodland
   2      Rowing            Viking             Sea
-  2      Sawing            Carpenter          Farm
+  2____D Sawing            Carpenter          Fractia
   2      Scaring           Ghost              City
   2      ScubaTuba         Tuna               Sea
   2____D Shaking           Bartender          Fractia
