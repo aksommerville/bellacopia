@@ -20,7 +20,7 @@
   2      CeilingTouching   Giant              Cave
   1      Cheating          Hustler            City
   1____D Chess             Sage               Labyrinth
-  2      CheeseCutting     Executioner        Fractia
+  2____D CheeseCutting     Executioner        Fractia
   2____D Chopping          Goat               Farm
   1      Cinematography    Filmmaker          Woodland
   2      ClamBaking        Dragon             Sea

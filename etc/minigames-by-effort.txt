@@ -10,7 +10,6 @@ Frog Eating. A to grab and eat a frog, when it hops near.
 Distancing. Dpad to get as far from everyone as possible.
 Dodging. Bullet hell.
 Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
-Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
 Balancing. Walk to the goal with a tomato on your head.
 Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
