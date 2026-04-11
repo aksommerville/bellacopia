@@ -73,6 +73,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
+- [ ] I think the recorded 100% Time can get reset.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -171,7 +172,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - plumber: Plumbing
 - contractor: Building
 - fractia_carpenter: Sawing
-- gardener: Lawnmowing
 
 ## Acknowledgements
 

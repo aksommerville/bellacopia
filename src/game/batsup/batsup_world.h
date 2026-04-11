@@ -69,6 +69,10 @@ struct batsup_sprite *batsup_sprite_by_id(struct batsup_world *world,int id);
  */
 int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy);
 
+/* Calculate one-off, the same (dstx,dsty) you would get at (sprite->render).
+ */
+void batsup_sprite_render_position(int *x,int *y,const struct batsup_sprite *sprite);
+
 /* Internal use.
  */
 void batsup_sprite_del(struct batsup_sprite *sprite);

@@ -144,3 +144,12 @@ void batsup_world_render(struct batsup_world *world) {
     }
   }
 }
+
+/* Get one sprite's render position.
+ */
+ 
+void batsup_sprite_render_position(int *x,int *y,const struct batsup_sprite *sprite) {
+  if (!sprite) return;
+  *x=ORX+(int)(sprite->x*NS_sys_tilesize);
+  *y=ORY+(int)(sprite->y*NS_sys_tilesize);
+}

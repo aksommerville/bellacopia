@@ -93,7 +93,6 @@ Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
 Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
 Joust. Joust, the video game. You on a broom, and he on Pegasus.
-Lawnmowing. Visit as much of a grid as possible without retracing any steps.
 Math. 10-key input, answer simple arithmetic problems.
 Plumbing. Rotate columns in a 4x4 Pipe Dream puzzle to complete a path.
 Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.

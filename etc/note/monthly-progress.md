@@ -85,6 +85,7 @@ Goals:
 - [ ] Proper acquisition of stories.
 - [ ] First public showing. Maybe a COGG session, or an after-work game night?
 - [ ] Write the final 2 outerworld songs, and put them all in a sane order.
+- [ ] Determine how to make or order stuffed witches.
 
 ## May 2026
 
