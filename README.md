@@ -156,7 +156,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- teacher: Latin
 - firefighter: Rescuing
 - wrestler: SumoHorse
 - samurai: Fencing
