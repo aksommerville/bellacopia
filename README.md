@@ -103,6 +103,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ^ prefer bearsforhumanity.com
 - - - ...but I really would prefer "Made in Flytown"
 - - - Whatever we're doing, figure it out by the end of April.
+- - - A semicircle of felt 12cm diameter rolls up into a pretty good witch hat, just the size for a fist puppet.
+- - - - The white felt sheets I already have are the perfect size for this, alas they're white and not purple.
 - - [ ] Witch hats. Same idea as the dolls.
 - - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly (~$30 ea at a glance).
 - - [ ] Mini comic?
@@ -156,7 +158,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- firefighter: Rescuing
 - wrestler: SumoHorse
 - samurai: Fencing
 - dancer: Jeter
