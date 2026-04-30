@@ -170,7 +170,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - dealer: Shuffling
 - hustler: Cheating
 - plumber: Plumbing
-- contractor: Building
 
 ## Acknowledgements
 
@@ -197,3 +196,4 @@ Record everything that someone might object to on moral grounds, so we can decla
 - Telekinesis Contest (drinking game).
 - Casino.
 - Strangling Contest.
+- Dead babies splattered on the sidewalk: Rescuing Contest.

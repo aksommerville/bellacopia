@@ -81,7 +81,8 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
     return 1;
   }
   
-  // If they're both nonzero, reenter per axis. And if both zero, get out.
+  // If they're both nonzero, reenter per axis. And if both zero, note that we are only peeking.
+  int peek=0;
   if ((dx<-0.0)||(dx>0.0)) {
     if ((dy<-0.0)||(dy>0.0)) {
       int xok=batsup_sprite_move(sprite,dx,0.0);
@@ -89,11 +90,13 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
       return (xok||yok)?1:0;
     }
   } else {
-    if ((dy>=-0.0)&&(dy<=0.0)) return 0;
+    if ((dy>=-0.0)&&(dy<=0.0)) peek=1;
   }
   
   // Capture the desired position, both the center and the hitbox bounds.
-  #define RADIUS 0.450
+  double RADIUS=0.450;
+  if (sprite->fullmeter==2) RADIUS=0.480;
+  else if (sprite->fullmeter) RADIUS=0.500;
   #define SMIDGE 0.001
   double nx=sprite->x+dx,ny=sprite->y+dy,nl,nr,nt,nb;
   #define REBOX {\
@@ -111,6 +114,8 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
     double ol=(_ol),or=(_or),ot=(_ot),ob=(_ob); \
     if ((nl>=or)||(nr<=ol)||(nt>=ob)||(nb<=ot)) { \
       /* No collision. */ \
+    } else if (peek) { \
+      return 0; \
     } else if (dx<-0.0) { \
       nx=or+RADIUS; \
       if (nx>=sprite->x) return 0; \
@@ -171,9 +176,9 @@ int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy) {
   }
   
   // OK, commit it.
-  #undef RADIUS
   #undef SMIDGE
   #undef REBOX
+  if (peek) return 1;
   sprite->x=nx;
   sprite->y=ny;
   return 1;

@@ -79,7 +79,6 @@ Wining. Big pile of grapes that you jump on to squash.
 Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself. Score is how close to center.
 Bombing. Mini Super Bomberman?
 Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
-Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
 Cartography. Pick a color for all the regions of a map, 4 choices, no going back.
 Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
 Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.

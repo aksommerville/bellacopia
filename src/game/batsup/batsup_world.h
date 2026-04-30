@@ -21,6 +21,7 @@ struct batsup_sprite {
   uint8_t tileid;
   uint8_t xform;
   int solid; // Solid sprites are presumed to have a one meter square hitbox, exactly centered.
+  int fullmeter; // Normally sprites' radius is a little under the tile size. Nonzero here for the whole thing.
   void (*update)(struct batsup_sprite *sprite,double elapsed);
   void (*render)(struct batsup_sprite *sprite,int dstx,int dsty);
 };
@@ -65,6 +66,7 @@ struct batsup_sprite *batsup_sprite_by_id(struct batsup_world *world,int id);
  * If (sprite->solid), we check against the map and other solid sprites.
  * Only vacant and safe cells are passable, for all sprites.
  * The map's edge is a hard stop too. (NB map's edge, not screen's edge).
+ * You may call with zeroes to test a position without changing anything. >0 if valid.
  * Returns >0 if it moved at all.
  */
 int batsup_sprite_move(struct batsup_sprite *sprite,double dx,double dy);
