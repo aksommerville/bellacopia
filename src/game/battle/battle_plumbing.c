@@ -1,13 +1,11 @@
 /* battle_plumbing.c
  * Mini Pipe Dream.
- * TODO placeholder
  */
 
 #include "game/bellacopia.h"
 
 struct battle_plumbing {
   struct battle hdr;
-  int choice;
   
   struct player {
     int who; // My index in this list.
@@ -92,13 +90,8 @@ static void _plumbing_update(struct battle *battle,double elapsed) {
     player_update_common(battle,player,elapsed);
   }
 
-  //XXX Placeholder UI.
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) { if (--(BATTLE->choice)<-1) BATTLE->choice=1; }
-  if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) { if (++(BATTLE->choice)>1) BATTLE->choice=-1; }
-  if ((battle->outcome<-1)&&(g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    bm_sound(RID_sound_uiactivate);
-    battle->outcome=BATTLE->choice;
-  }
+  //XXX
+  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.
@@ -112,25 +105,6 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _plumbing_render(struct battle *battle) {
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  
-  // XXX Placeholder UI.
-  int y=FBH/3;
-  int boxh=20;
-  int boxw=20;
-  int y1=y+boxh+1;
-  int xv[3]={
-    (FBW>>2)-(boxw>>1),
-    (FBW>>1)-(boxw>>1),
-    ((FBW*3)>>2)-(boxw>>1),
-  };
-  graf_fill_rect(&g.graf,xv[0],y,boxw,boxh,0xff0000ff);
-  graf_fill_rect(&g.graf,xv[1],y,boxw,boxh,0x404040ff);
-  graf_fill_rect(&g.graf,xv[2],y,boxw,boxh,0x00ff00ff);
-  switch (BATTLE->choice) {
-    case -1: graf_fill_rect(&g.graf,xv[0],y1,boxw,boxh,0xffffffff); break;
-    case  0: graf_fill_rect(&g.graf,xv[1],y1,boxw,boxh,0xffffffff); break;
-    case  1: graf_fill_rect(&g.graf,xv[2],y1,boxw,boxh,0xffffffff); break;
-  }
   
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);

@@ -79,32 +79,53 @@ Stats as of 7120125e360b8001c1019dd3344d247a8305b30e, 2026-03-31:
 ## April 2026
 
 Goals:
-- [ ] 30 new battles, starting with the 22 outstanding placeholders.
-- [ ] Treasures placed and recorded.
-- [ ] Cutscenes started, finish at least one.
-- [ ] Proper acquisition of stories.
-- [ ] First public showing. Maybe a COGG session, or an after-work game night?
-- [ ] Write the final 2 outerworld songs, and put them all in a sane order.
-- [ ] Determine how to make or order stuffed witches.
+- [ ] 30 new battles, starting with the 22 outstanding placeholders. ...missed, made 10.
+- [ ] Treasures placed and recorded. ...missed
+- [ ] Cutscenes started, finish at least one. ...missed
+- [ ] Proper acquisition of stories. ...missed
+- [x] First public showing. Maybe a COGG session, or an after-work game night? ...kind of. Showed some devs at the COGG Clippers promo.
+- [ ] Write the final 2 outerworld songs, and put them all in a sane order. ...close
+- [ ] Determine how to make or order stuffed witches. ...missed
+
+Got very little done this month.
+I devoted too much time to the Gamedev.js jam, that's still running, and took some asides for fife, ra4, and a COGG event.
+The Fractia battles are about halfway implemented (I planned to have all of them done by now).
+Added 4 songs but haven't got them in the right order yet, and most of them will need some rework.
+Probably the coolest add this month was Bridget, some bridge-building side quests that I hadn't thought of before.
+
+I'm counting on May, June, and July being very productive to make up for my lackluster March and April.
+
+Stats as of a12ce9b64970160505fabdc526720aa3fddf35ee, 2026-05-01 (plus some dirty workspace for the next commit):
+ - Code: 48632 lines.
+ - `rom=1141114 code=585816 image=2763756px*46 song=9:37.514*14 sound=0:20.248*64 map=77520m*323`
+ - Non-placeholder battles: 45
+ - Casual full-clear time: 1:39:45
 
 ## May 2026
 
 Goals:
-- [ ] 30 new battles.
-- [ ] All cutscenes complete.
-- [ ] Sand Castle. Use the 5th jigsaw slot, make a big castle full of side quests, in the southwestern desert.
-- [ ] Outerworld final. Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
-- [ ] User-friendly Arcade Mode.
+- [ ] 30 new battles. 12 placeholders still outstanding, finish those first.
+- [ ] Start cutscenes and proper story acquisition.
+- [ ] Sand Castle. Use the 5th jigsaw slot, make a big castle full of side quests, in the southwestern desert. Apportion it, not expecting to have it all complete.
+- [ ] Outerworld final shape and monsters everywhere.
 
 ## June 2026
 
 Goals:
 - [ ] 30 new battles.
-- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished. Of course, we'll still have touch-up, tuning, and bugs.
+- [ ] User-friendly Arcade Mode.
+- [ ] Outer world: Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
+- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished. Allow that placeholder battles still exist.
 
 ## July 2026
 
+Goals:
+- [ ] UI all prettied up.
+
 ## August 2026
+
+Goals:
+- [ ] All battles complete.
 
 ## September 2026
 
