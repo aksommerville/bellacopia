@@ -169,7 +169,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - gambler: Slapping
 - dealer: Shuffling
 - hustler: Cheating
-- plumber: Plumbing
 
 ## Acknowledgements
 
