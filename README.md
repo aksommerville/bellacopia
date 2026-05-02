@@ -23,6 +23,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-02-07: Fed up with GIMP 3, so me and Alex are taking a brief aside to write a new text editor and image editor. How hard could that be?
 - - ...well that's kind of back-burnered now, don't worry, i'm on it.
 - 2026-03-02: Dividing time for a while, making a game and judging Uplifting Jam #7.
+- 2026-05-02: Slower than I hoped, mostly because I keep getting distracted by game jams. But I still think we'll finish this year.
 
 ## TODO
 
@@ -34,7 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] One more huge interior zone. We have room for one more jigsaw.
-- - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle
+- - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle. Wait no, the Princess's castle is the Sand Castle. Make an Ice Palace.
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 - [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
@@ -74,6 +75,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - [ ] I think the recorded 100% Time can get reset.
+- [ ] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

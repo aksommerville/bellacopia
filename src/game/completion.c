@@ -258,15 +258,15 @@ int bm_song_for_outerworld() {
   // Otherwise, it depends how many Root Devils have been strangled. Order doesn't matter.
   int flowerc=bm_count_flowers();
   switch (flowerc) {
-    //TODO order
+    // Ordered roughly by intensity, but the last one is special.
     case 0: return RID_song_pretty_pretty_pickle;
     case 1: return RID_song_barrel_of_salt;
-    case 2: return RID_song_feet_to_the_fire;
+    case 2: return RID_song_ladder_to_nowhere;
     case 3: return RID_song_tripping_over_my_tongue;
     case 4: return RID_song_dust_mote;
-    case 5: return RID_song_smoke_and_mirrors;
-    case 6: return RID_song_ladder_to_nowhere;
-    case 7: return RID_song_crawling_chaos;
+    case 5: return RID_song_feet_to_the_fire;
+    case 6: return RID_song_crawling_chaos;
+    case 7: return RID_song_smoke_and_mirrors; // Calm, long, and high-quality: What plays forever after you've won.
   }
   // And our universal fallback (won't happen) is Barrel of Salt.
   return RID_song_barrel_of_salt;
@@ -284,12 +284,12 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
   }
   AVAILABLE(86,pretty_pretty_pickle)
   if (flowerc>=1) AVAILABLE(87,barrel_of_salt)
-  if (flowerc>=2) AVAILABLE(88,feet_to_the_fire)
+  if (flowerc>=6) AVAILABLE(92,ladder_to_nowhere)
   if (flowerc>=3) AVAILABLE(89,tripping_over_my_tongue)
   if (flowerc>=4) AVAILABLE(90,dust_mote)
-  if (flowerc>=5) AVAILABLE(91,smoke_and_mirrors)
-  if (flowerc>=6) AVAILABLE(92,ladder_to_nowhere)
+  if (flowerc>=2) AVAILABLE(88,feet_to_the_fire)
   if (flowerc>=7) AVAILABLE(93,crawling_chaos)
+  if (flowerc>=5) AVAILABLE(91,smoke_and_mirrors)
   #undef AVAILABLE
   return dstc;
 }
