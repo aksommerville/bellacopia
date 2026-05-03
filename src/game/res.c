@@ -54,10 +54,10 @@ static int res_welcome(const struct rom_entry *res) {
     case EGG_TID_metadata:
     case EGG_TID_code:
     case EGG_TID_image:
-    case EGG_TID_song:
     case EGG_TID_sound:
     case EGG_TID_strings:
       return 0;
+    case EGG_TID_song: // Mainly songs are read by the synthesizer, but we need some of them too, to read tempo for the rhythm games.
     case EGG_TID_sprite:
       return 1;
     case EGG_TID_map: if (mapstore_welcome(res)<0) return -1; return 1;

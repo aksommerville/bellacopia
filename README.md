@@ -165,7 +165,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - dancer: Jeter
 - ballplayer: HomeRunDerby
 - doctor: Dissection
-- fractia_nurse: CPR
 - secretary: Stenography
 - clerk: Sorting
 - gambler: Slapping

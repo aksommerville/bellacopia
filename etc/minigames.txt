@@ -28,7 +28,7 @@
   2____D Cobbling          Coblin             Goblins
   2      Conducting        Conductor          Desert
   2      Counting          Vampire            Labyrinth
-  2      CPR               Nurse              City
+  2____D CPR               Nurse              City
   2      Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
   2      Cutting           Seamstress         Farm
