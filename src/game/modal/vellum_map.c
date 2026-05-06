@@ -12,6 +12,7 @@ static struct puzzle {
   {NS_plane_tunnel1,48},
   {NS_plane_caves1,96},
   {NS_plane_labyrinth1,144},
+  {NS_plane_icepalace,192},
 };
 
 struct vellum_map {

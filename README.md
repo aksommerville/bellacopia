@@ -36,6 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] One more huge interior zone. We have room for one more jigsaw.
 - - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle. Wait no, the Princess's castle is the Sand Castle. Make an Ice Palace.
+- - A temple with six wings, ie snowflake-shaped, where in each wing you have to fight the Ice Dragon in some Winter Olympics game. Win the Snowglobe at the end.
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 - [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.

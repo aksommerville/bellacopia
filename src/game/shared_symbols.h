@@ -87,6 +87,7 @@
 #define NS_plane_labyrinth1    4 /* jungle */
 #define NS_plane_temple_ground 5 /* NOJIGSAW */
 #define NS_plane_seamonster    6 /* NOJIGSAW */
+#define NS_plane_icepalace     7 /* Enter in the North. */
 
 #define NS_busstop_cheapside 1
 #define NS_busstop_fractia 2
