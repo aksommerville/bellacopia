@@ -170,7 +170,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - clerk: Sorting
 - gambler: Slapping
 - dealer: Shuffling
-- hustler: Cheating
 
 ## Acknowledgements
 
@@ -184,6 +183,7 @@ Before the first release, validate and clean up this list. And if in-game credit
 - - The Swing; by Jean-Honoré Fragonard; 1767–1768; oil on canvas; Wallace Collection
 - - The Garden of Earthly Delights; by Hieronymus Bosch; c. 1504; oil on panel, Museo del Prado
 - Erudition Contest text. TODO Not acquired yet.
+- Telekinesis Contest: Reference to the old janx spirit drinking game in Hitchhiker's Guide to the Galaxy.
 
 ## Morally Questionable
 

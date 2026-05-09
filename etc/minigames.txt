@@ -18,7 +18,7 @@
   2      Calligraphy       Elephant           Jungle
   2      Cartography       Geographer         Taiga
   2      CeilingTouching   Giant              Cave
-  1      Cheating          Hustler            City
+  1____D Cheating          Hustler            City
   1____D Chess             Sage               Labyrinth
   2____D CheeseCutting     Executioner        Fractia
   2____D Chopping          Goat               Farm
