@@ -107,7 +107,7 @@
   2____D Shaking           Bartender          Fractia
   2      Sharing           Bear               Woodland
   2      Shovelling        Miner              Cave
-  2      Shuffling         Dealer             City
+  2____D Shuffling         Dealer             City
   2      Skiing            Reindeer           Taiga
   2      Skipping          Duck               Farm
   2      Slapping          Gambler            City

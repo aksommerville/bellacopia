@@ -169,7 +169,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - secretary: Stenography
 - clerk: Sorting
 - gambler: Slapping
-- dealer: Shuffling
 
 ## Acknowledgements
 
