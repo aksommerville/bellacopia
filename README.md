@@ -37,15 +37,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - [x] Underworld. Block the whole thing, it's not needed yet. And we don't want them to find the Crystal Ball, since it doesn't give real advice yet.
 - - - [x] Cave of Cheating.
 - - - [ ] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
-- - [ ] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
+- - [x] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
 - - [x] Include a switch in the Cave of Cheating to unblock everything.
 - - [x] Keep the Cave of Cheating open but make it much less prominent.
 - - [ ] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
 - - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
 - - [x] Clean up jigsaw color tables.
-- - [ ] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
+- - [x] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 
+- [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
+- - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.

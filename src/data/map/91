@@ -16,3 +16,8 @@ position 6 8 1 *
 sprite @6,4 sprite:jigpiece (u32)0
 switchable @6,0 (u16:fld)bridge2done
 sprite @7,1 sprite:bridget (u16:activity)bridget (u16:fld)bridge2start
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

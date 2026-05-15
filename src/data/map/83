@@ -27,3 +27,8 @@ root @12,8 (u16:fld)root7
 root @12,7 (u16:fld)root7
 root @12,6 (u16:fld)root7
 sprite @12,5 sprite:rootdevil (u16:fld)root7 (u16)0
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

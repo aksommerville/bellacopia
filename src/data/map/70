@@ -14,3 +14,8 @@ fcedf0eed6040205c9e9faf7f4e6f1f5e5e3e4eb
 image image:mountains
 position 9 4 1 *
 sprite @4,5 sprite:jigpiece (u32)0
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

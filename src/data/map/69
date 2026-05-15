@@ -1,5 +1,5 @@
 0405402425313535312531353125312535234141
-020002402435313525313523414141414142c5bd
+181802402435313525313523414141414142c5bd
 020302014041414141414142d5bdbcbcbdbbcffd
 03030303060606d5b1bcbdbdefe9e7ebfaf1f8e1
 00040203030304c7b4e7f4f2eaf8f4ede9ebf8e2
@@ -14,3 +14,8 @@
 image image:mountains
 position 9 3 1 *
 sprite @4,5 sprite:jigpiece (u32)0
+rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
+rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0

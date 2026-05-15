@@ -152,10 +152,46 @@ static int target_add_map(int compass,int rid) {
 /* Sort targets.
  */
  
+static int ordercmp(int a,int b,const int *order,int c) {
+  if (a==b) return 0; // Equal is equal.
+  for (;c-->0;order++) { // First we find in (order) comes first.
+    if (*order==a) return -1;
+    if (*order==b) return 1;
+  }
+  // Both unlisted. Shouldn't happen but if so, compare them numerically.
+  if (a<b) return -1;
+  if (a>b) return 1;
+  return 0;
+}
+ 
 static int targetcmp(const void *A,const void *B) {
   const struct target *a=A,*b=B;
-  if (a->compass<b->compass) return -1;//TODO numeric order here is not kosher, need an arbitrarily-specified order
+  if (a->compass<b->compass) return -1;
   if (a->compass>b->compass) return 1;
+  switch (a->compass) {
+    case NS_compass_rootdevil: {
+        const int order[]={
+          NS_fld_root1, // meadow
+          NS_fld_root2, // fractia
+          NS_fld_root5, // battlefield
+          NS_fld_root6, // goblins
+          NS_fld_root7, // desert
+          NS_fld_root3, // south jungle
+          NS_fld_root4, // temple
+        };
+        return ordercmp(a->fld,b->fld,order,sizeof(order)/sizeof(int));
+      }
+    case NS_compass_heartcontainer: {
+        const int order[]={
+          NS_fld_hc1, // castle shop
+          NS_fld_hc2, // temple pool
+          NS_fld_hc3, // inventory critic
+          //NS_fld_hc4,
+          //NS_fld_hc5,
+        };
+        return ordercmp(a->fld,b->fld,order,sizeof(order)/sizeof(int));
+      }
+  }
   if (a->fld<b->fld) return -1; // When assigning fields, we can arrange for them to be in chronological order.
   if (a->fld>b->fld) return 1; // Probably would happen by accident anyway.
   return 0;
@@ -262,6 +298,29 @@ int game_init_targets() {
       target->p1y=target->y;
     } else if (!store_get_fld(target->fld)) {
       targets_find_plane_position(&target->p1x,&target->p1y,-1,-1,1,target->x,target->y,target->z,-1,-1,0);
+    }
+  }
+  
+  //XXX Show me the root devils in order.
+  if (0) {
+    fprintf(stderr,"%s ready. Root devils in order:\n",__func__);
+    for (i=targets.c,target=targets.v;i-->0;target++) {
+      if (target->compass==NS_compass_rootdevil) {
+        const char *desc="?";
+        switch (target->fld) {
+          case NS_fld_root1: desc="meadow"; break;
+          case NS_fld_root2: desc="fractia"; break;
+          case NS_fld_root3: desc="south jungle"; break;//XXX
+          case NS_fld_root4: desc="temple"; break;
+          case NS_fld_root5: desc="battlefield"; break;
+          case NS_fld_root6: desc="goblins"; break;
+          case NS_fld_root7: desc="desert"; break;
+        }
+        fprintf(stderr,"  %d (%s)\n",target->fld,desc);
+      }
+      // Heart containers:
+      // 1: Desert
+      // Inventory Judge and Temple Pool not listed yet! TODO
     }
   }
   
