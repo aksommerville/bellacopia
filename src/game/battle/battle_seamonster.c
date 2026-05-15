@@ -156,6 +156,7 @@ static void _seamonster_render(struct battle *battle) {
 const struct battle_type battle_type_seamonster={
   .name="seamonster",
   .objlen=sizeof(struct battle_seamonster),
+  .id=NS_battle_seamonster,
   .strix_name=20,
   .no_article=0,
   .no_contest=0,

@@ -411,6 +411,7 @@ static void _throwing_render(struct battle *battle) {
 const struct battle_type battle_type_throwing={
   .name="throwing",
   .objlen=sizeof(struct battle_throwing),
+  .id=NS_battle_throwing,
   .strix_name=49,
   .no_article=0,
   .no_contest=0,

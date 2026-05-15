@@ -617,6 +617,7 @@ static void _gobbling_render(struct battle *battle) {
 const struct battle_type battle_type_gobbling={
   .name="gobbling",
   .objlen=sizeof(struct battle_gobbling),
+  .id=NS_battle_gobbling,
   .strix_name=48,
   .no_article=0,
   .no_contest=0,

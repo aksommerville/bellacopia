@@ -380,6 +380,7 @@ static void _telekinesis_render(struct battle *battle) {
 const struct battle_type battle_type_telekinesis={
   .name="telekinesis",
   .objlen=sizeof(struct battle_telekinesis),
+  .id=NS_battle_telekinesis,
   .strix_name=173,
   .no_article=0,
   .no_contest=0,

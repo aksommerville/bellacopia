@@ -397,6 +397,7 @@ static void _cpr_render(struct battle *battle) {
 const struct battle_type battle_type_cpr={
   .name="cpr",
   .objlen=sizeof(struct battle_cpr),
+  .id=NS_battle_cpr,
   .strix_name=163,
   .no_article=0,
   .no_contest=0,

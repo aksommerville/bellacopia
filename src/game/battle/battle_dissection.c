@@ -143,6 +143,7 @@ static void _dissection_render(struct battle *battle) {
 const struct battle_type battle_type_dissection={
   .name="dissection",
   .objlen=sizeof(struct battle_dissection),
+  .id=NS_battle_dissection,
   .strix_name=162,
   .no_article=0,
   .no_contest=0,

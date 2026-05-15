@@ -352,6 +352,7 @@ static void _apples_render(struct battle *battle) {
 const struct battle_type battle_type_apples={
   .name="apples",
   .objlen=sizeof(struct battle_apples),
+  .id=NS_battle_apples,
   .strix_name=58,
   .no_article=0,
   .no_contest=0,

@@ -142,6 +142,7 @@ static void _homerunderby_render(struct battle *battle) {
 const struct battle_type battle_type_homerunderby={
   .name="homerunderby",
   .objlen=sizeof(struct battle_homerunderby),
+  .id=NS_battle_homerunderby,
   .strix_name=161,
   .no_article=0,
   .no_contest=1,

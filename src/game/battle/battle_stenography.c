@@ -142,6 +142,7 @@ static void _stenography_render(struct battle *battle) {
 const struct battle_type battle_type_stenography={
   .name="stenography",
   .objlen=sizeof(struct battle_stenography),
+  .id=NS_battle_stenography,
   .strix_name=164,
   .no_article=0,
   .no_contest=0,

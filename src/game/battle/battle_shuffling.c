@@ -357,6 +357,7 @@ static void _shuffling_render(struct battle *battle) {
 const struct battle_type battle_type_shuffling={
   .name="shuffling",
   .objlen=sizeof(struct battle_shuffling),
+  .id=NS_battle_shuffling,
   .strix_name=167,
   .no_article=0,
   .no_contest=0,

@@ -725,6 +725,7 @@ static void _stealing_render(struct battle *battle) {
 const struct battle_type battle_type_stealing={
   .name="stealing",
   .objlen=sizeof(struct battle_stealing),
+  .id=NS_battle_stealing,
   .strix_name=50,
   .no_article=0,
   .no_contest=0,

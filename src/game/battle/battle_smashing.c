@@ -649,6 +649,7 @@ static void _smashing_render(struct battle *battle) {
 const struct battle_type battle_type_smashing={
   .name="smashing",
   .objlen=sizeof(struct battle_smashing),
+  .id=NS_battle_smashing,
   .strix_name=174,
   .no_article=0,
   .no_contest=0,

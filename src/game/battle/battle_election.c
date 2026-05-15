@@ -464,6 +464,7 @@ static void _election_render(struct battle *battle) {
 const struct battle_type battle_type_election={
   .name="election",
   .objlen=sizeof(struct battle_election),
+  .id=NS_battle_election,
   .strix_name=112,
   .no_article=0,
   .no_contest=1,

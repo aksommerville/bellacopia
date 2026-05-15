@@ -751,6 +751,7 @@ static void _pushing_render(struct battle *battle) {
 const struct battle_type battle_type_pushing={
   .name="pushing",
   .objlen=sizeof(struct battle_pushing),
+  .id=NS_battle_pushing,
   .strix_name=175,
   .no_article=0,
   .no_contest=0,

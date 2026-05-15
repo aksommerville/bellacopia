@@ -31,6 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Finish rewiring arcade cabinet.
 - - - [x] Order spade cables. ...Ordered 2026-05-14.
 - - [ ] Persistent and more detailed logging.
+- - - [ ] Can we arrange to capture these via Romassist? Might be easier than adding some log-to-file option to Egg, and this will surely come up again for other games.
 - - [ ] Block off grossly-unfinished areas:
 - - - [x] Tundra. Access to Magnetic North but block off everything else.
 - - - [x] Southwest desert and South Jungle.
@@ -40,12 +41,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
 - - [x] Include a switch in the Cave of Cheating to unblock everything.
 - - [x] Keep the Cave of Cheating open but make it much less prominent.
-- - [ ] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
+- - [x] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
 - - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
 - - [x] Clean up jigsaw color tables.
 - - [x] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
+- - [ ] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 
+- [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?

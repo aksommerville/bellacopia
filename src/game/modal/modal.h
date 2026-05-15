@@ -86,6 +86,7 @@ int modal_is_resident(const struct modal *modal);
 extern const struct modal_type modal_type_hello; // Default. No args.
 extern const struct modal_type modal_type_story; // Entire session of Story Mode.
 extern const struct modal_type modal_type_arcade; // Entire session of Arcade Mode.
+extern const struct modal_type modal_type_pvp; // XXX Temporary arcade mode for early demos. Will probably remove eventually.
 extern const struct modal_type modal_type_battle; // Story or Arcade Mode.
 extern const struct modal_type modal_type_pause; // Story Mode.
 extern const struct modal_type modal_type_dialogue; // Any mode.
@@ -108,6 +109,7 @@ struct modal_args_battle {
   void *userdata;
   int left_name,right_name; // NS_strings_battle. Highly recommended for NS_face_monster, otherwise we can assume "Dot" or "Princess". <0=strix of custom message.
   int skip_prompt; // We normally do a generic "Battle draws near!" hopefully with some helpful instructions.
+  int nameless_prompt; // Do the generic prompt but don't try to say the participant's names. Just "Rollerskates Contest!".
   int skip_outtro; // We normally wait for a keystroke after completion, while reporting the winner and consequences.
   int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.
 };

@@ -286,6 +286,7 @@ static void _redfish_render(struct battle *battle) {
 const struct battle_type battle_type_redfish={
   .name="redfish",
   .objlen=sizeof(struct battle_redfish),
+  .id=NS_battle_redfish,
   .strix_name=0,
   .no_article=0,
   .no_contest=0,

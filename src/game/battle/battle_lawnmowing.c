@@ -410,6 +410,7 @@ static void _lawnmowing_render(struct battle *battle) {
 const struct battle_type battle_type_lawnmowing={
   .name="lawnmowing",
   .objlen=sizeof(struct battle_lawnmowing),
+  .id=NS_battle_lawnmowing,
   .strix_name=172,
   .no_article=0,
   .no_contest=0,

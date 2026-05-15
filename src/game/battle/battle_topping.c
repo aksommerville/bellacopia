@@ -390,6 +390,7 @@ static void _topping_render(struct battle *battle) {
 const struct battle_type battle_type_topping={
   .name="topping",
   .objlen=sizeof(struct battle_topping),
+  .id=NS_battle_topping,
   .strix_name=151,
   .no_article=0,
   .no_contest=0,

@@ -142,6 +142,7 @@ static void _sorting_render(struct battle *battle) {
 const struct battle_type battle_type_sorting={
   .name="sorting",
   .objlen=sizeof(struct battle_sorting),
+  .id=NS_battle_sorting,
   .strix_name=165,
   .no_article=0,
   .no_contest=0,

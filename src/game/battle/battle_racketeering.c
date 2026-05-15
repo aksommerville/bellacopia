@@ -603,6 +603,7 @@ static void _racketeering_render(struct battle *battle) {
 const struct battle_type battle_type_racketeering={
   .name="racketeering",
   .objlen=sizeof(struct battle_racketeering),
+  .id=NS_battle_racketeering,
   .strix_name=52,
   .no_article=0,
   .no_contest=0,

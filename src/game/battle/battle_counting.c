@@ -477,6 +477,7 @@ static void _counting_render(struct battle *battle) {
 const struct battle_type battle_type_counting={
   .name="counting",
   .objlen=sizeof(struct battle_counting),
+  .id=NS_battle_counting,
   .strix_name=179,
   .no_article=0,
   .no_contest=0,

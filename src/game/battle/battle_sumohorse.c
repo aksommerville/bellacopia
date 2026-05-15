@@ -142,6 +142,7 @@ static void _sumohorse_render(struct battle *battle) {
 const struct battle_type battle_type_sumohorse={
   .name="sumohorse",
   .objlen=sizeof(struct battle_sumohorse),
+  .id=NS_battle_sumohorse,
   .strix_name=158,
   .no_article=1,
   .no_contest=1,

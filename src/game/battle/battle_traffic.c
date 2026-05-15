@@ -537,6 +537,7 @@ static void _traffic_render(struct battle *battle) {
 const struct battle_type battle_type_traffic={
   .name="traffic",
   .objlen=sizeof(struct battle_traffic),
+  .id=NS_battle_traffic,
   .strix_name=183,
   .no_article=0,
   .no_contest=0,

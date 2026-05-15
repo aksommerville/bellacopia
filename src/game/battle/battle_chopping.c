@@ -410,6 +410,7 @@ static void _chopping_render(struct battle *battle) {
 const struct battle_type battle_type_chopping={
   .name="chopping",
   .objlen=sizeof(struct battle_chopping),
+  .id=NS_battle_chopping,
   .strix_name=15,
   .no_article=0,
   .no_contest=0,

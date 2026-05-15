@@ -131,7 +131,12 @@ static void hello_begin_story(struct modal *modal,int from_save) {
  
 static void hello_begin_arcade(struct modal *modal) {
   
-  struct modal *arcade=modal_spawn(&modal_type_arcade,0,0);
+  struct modal *arcade=0;
+  if (0) { // modal_type_arcade: What I expect to use in the final version, and currently a good test scaffold for battle dev.
+    arcade=modal_spawn(&modal_type_arcade,0,0);
+  } else { // modal_type_pvp: A simple one-or-two-player arcade mode that I'm throwing together fast for CORGSCon.
+    arcade=modal_spawn(&modal_type_pvp,0,0);
+  }
   if (!arcade) {
     bm_sound(RID_sound_reject);
     return;

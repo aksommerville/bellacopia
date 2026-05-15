@@ -142,6 +142,7 @@ static void _jeter_render(struct battle *battle) {
 const struct battle_type battle_type_jeter={
   .name="jeter",
   .objlen=sizeof(struct battle_jeter),
+  .id=NS_battle_jeter,
   .strix_name=160,
   .no_article=0,
   .no_contest=0,

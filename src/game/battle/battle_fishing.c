@@ -378,6 +378,7 @@ static void _fishing_render(struct battle *battle) {
 const struct battle_type battle_type_fishing={
   .name="fishing",
   .objlen=sizeof(struct battle_fishing),
+  .id=NS_battle_fishing,
   .strix_name=13,
   .no_article=0,
   .no_contest=0,

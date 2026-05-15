@@ -378,6 +378,7 @@ static void _strangling_render(struct battle *battle) {
 const struct battle_type battle_type_strangling={
   .name="strangling",
   .objlen=sizeof(struct battle_strangling),
+  .id=NS_battle_strangling,
   .strix_name=19,
   .no_article=0,
   .no_contest=0,

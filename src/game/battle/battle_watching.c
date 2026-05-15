@@ -467,6 +467,7 @@ static void _watching_render(struct battle *battle) {
 const struct battle_type battle_type_watching={
   .name="watching",
   .objlen=sizeof(struct battle_watching),
+  .id=NS_battle_watching,
   .strix_name=149,
   .no_article=0,
   .no_contest=0,

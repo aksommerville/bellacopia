@@ -28,6 +28,7 @@ struct battle {
 struct battle_type {
   const char *name; // For logging and such; do not display to user.
   int objlen;
+  int id;
   int strix_name; // For display to user.
   int no_article; // Don't use an indefinite article when discussing the game in English.
   int no_contest; // Don't call it "X Contest", just "X".

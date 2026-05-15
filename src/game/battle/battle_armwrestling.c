@@ -232,6 +232,7 @@ static void _armwrestling_render(struct battle *battle) {
 const struct battle_type battle_type_armwrestling={
   .name="armwrestling",
   .objlen=sizeof(struct battle_armwrestling),
+  .id=NS_battle_armwrestling,
   .strix_name=182,
   .no_article=0,
   .no_contest=0,

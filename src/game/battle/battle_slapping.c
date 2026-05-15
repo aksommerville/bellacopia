@@ -431,6 +431,7 @@ static void _slapping_render(struct battle *battle) {
 const struct battle_type battle_type_slapping={
   .name="slapping",
   .objlen=sizeof(struct battle_slapping),
+  .id=NS_battle_slapping,
   .strix_name=166,
   .no_article=0,
   .no_contest=0,

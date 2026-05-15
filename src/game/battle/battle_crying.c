@@ -238,6 +238,7 @@ static void _crying_render(struct battle *battle) {
 const struct battle_type battle_type_crying={
   .name="crying",
   .objlen=sizeof(struct battle_crying),
+  .id=NS_battle_crying,
   .strix_name=56,
   .no_article=0,
   .no_contest=0,

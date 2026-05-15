@@ -277,6 +277,7 @@ static void _bluefish_render(struct battle *battle) {
 const struct battle_type battle_type_bluefish={
   .name="bluefish",
   .objlen=sizeof(struct battle_bluefish),
+  .id=NS_battle_bluefish,
   .strix_name=0,
   .no_article=0,
   .no_contest=0,

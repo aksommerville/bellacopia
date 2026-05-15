@@ -344,6 +344,7 @@ static void _regex_render(struct battle *battle) {
 const struct battle_type battle_type_regex={
   .name="regex",
   .objlen=sizeof(struct battle_regex),
+  .id=NS_battle_regex,
   .strix_name=51,
   .no_article=0,
   .no_contest=0,

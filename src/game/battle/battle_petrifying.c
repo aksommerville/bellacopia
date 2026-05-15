@@ -754,6 +754,7 @@ static void _petrifying_render(struct battle *battle) {
 const struct battle_type battle_type_petrifying={
   .name="petrifying",
   .objlen=sizeof(struct battle_petrifying),
+  .id=NS_battle_petrifying,
   .strix_name=176,
   .no_article=0,
   .no_contest=0,

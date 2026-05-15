@@ -26,6 +26,7 @@ struct modal_battle {
   int stage;
   int no_store;
   int skip_outtro;
+  int nameless_prompt;
   
   int prompt_texid,prompt_w,prompt_h;
   int report_texid,report_w,report_h;
@@ -61,7 +62,9 @@ static int battle_generate_prompt(struct modal *modal) {
   /* Choose the right template.
    */
   int templateid;
-  if ((MODAL->args.lctl==1)&&(MODAL->args.rctl==0)) { // The usual refrain.
+  if (MODAL->nameless_prompt) { // Special case for arcade mode, just the battle's name.
+    templateid=1; // "%1!"
+  } else if ((MODAL->args.lctl==1)&&(MODAL->args.rctl==0)) { // The usual refrain.
     templateid=2; // "%0 challenges you to %1!"
   } else { // Player-vs-player, CPU-vs-CPU, or who knows what.
     templateid=3; // The more generic one: "%0: %1 vs %2"
@@ -71,7 +74,11 @@ static int battle_generate_prompt(struct modal *modal) {
    */
   char title[256];
   int titlec=0;
-  if (templateid==2) {
+  if (templateid==1) {
+    struct battle_type tmp=*MODAL->type;
+    tmp.no_article=1;
+    titlec=battle_type_describe_long(title,sizeof(title),&tmp);
+  } else if (templateid==2) {
     titlec=battle_type_describe_long(title,sizeof(title),MODAL->type);
   } else {
     titlec=battle_type_describe_short(title,sizeof(title),MODAL->type);
@@ -272,6 +279,7 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
   MODAL->userdata=args->userdata;
   MODAL->no_store=args->no_store;
   MODAL->skip_outtro=args->skip_outtro;
+  MODAL->nameless_prompt=args->nameless_prompt;
   
   // If either name was zero, infer from face.
   if (!(MODAL->left_name=args->left_name)) switch (MODAL->args.lface) {

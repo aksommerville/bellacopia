@@ -260,6 +260,7 @@ static void _shaking_render(struct battle *battle) {
 const struct battle_type battle_type_shaking={
   .name="shaking",
   .objlen=sizeof(struct battle_shaking),
+  .id=NS_battle_shaking,
   .strix_name=153,
   .no_article=0,
   .no_contest=0,

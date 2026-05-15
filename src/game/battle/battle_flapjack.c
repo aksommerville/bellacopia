@@ -407,6 +407,7 @@ static void _flapjack_render(struct battle *battle) {
 const struct battle_type battle_type_flapjack={
   .name="flapjack",
   .objlen=sizeof(struct battle_flapjack),
+  .id=NS_battle_flapjack,
   .strix_name=150,
   .no_article=0,
   .no_contest=0,

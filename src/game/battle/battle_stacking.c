@@ -457,6 +457,7 @@ static void _stacking_render(struct battle *battle) {
 const struct battle_type battle_type_stacking={
   .name="stacking",
   .objlen=sizeof(struct battle_stacking),
+  .id=NS_battle_stacking,
   .strix_name=152,
   .no_article=0,
   .no_contest=0,

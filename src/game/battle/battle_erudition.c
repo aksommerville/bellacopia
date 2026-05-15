@@ -450,6 +450,7 @@ static void _erudition_render(struct battle *battle) {
 const struct battle_type battle_type_erudition={
   .name="erudition",
   .objlen=sizeof(struct battle_erudition),
+  .id=NS_battle_erudition,
   .strix_name=55,
   .no_article=0,
   .no_contest=0,

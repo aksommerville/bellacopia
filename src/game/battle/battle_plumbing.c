@@ -743,6 +743,7 @@ static void _plumbing_render(struct battle *battle) {
 const struct battle_type battle_type_plumbing={
   .name="plumbing",
   .objlen=sizeof(struct battle_plumbing),
+  .id=NS_battle_plumbing,
   .strix_name=169,
   .no_article=0,
   .no_contest=0,

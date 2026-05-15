@@ -583,6 +583,7 @@ static void _hiring_render(struct battle *battle) {
 const struct battle_type battle_type_hiring={
   .name="hiring",
   .objlen=sizeof(struct battle_hiring),
+  .id=NS_battle_hiring,
   .strix_name=54,
   .no_article=0,
   .no_contest=0,

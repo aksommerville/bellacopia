@@ -673,6 +673,7 @@ static void _latin_render(struct battle *battle) {
 const struct battle_type battle_type_latin={
   .name="latin",
   .objlen=sizeof(struct battle_latin),
+  .id=NS_battle_latin,
   .strix_name=156,
   .no_article=0,
   .no_contest=0,

@@ -734,6 +734,7 @@ static void _chess_render(struct battle *battle) {
 const struct battle_type battle_type_chess={
   .name="chess",
   .objlen=sizeof(struct battle_chess),
+  .id=NS_battle_chess,
   .strix_name=180,
   .no_article=0,
   .no_contest=0,

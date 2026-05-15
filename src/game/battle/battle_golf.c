@@ -275,6 +275,7 @@ static void _golf_render(struct battle *battle) {
 const struct battle_type battle_type_golf={
   .name="golf",
   .objlen=sizeof(struct battle_golf),
+  .id=NS_battle_golf,
   .strix_name=178,
   .no_article=0,
   .no_contest=0,

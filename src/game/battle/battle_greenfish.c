@@ -201,6 +201,7 @@ static void _greenfish_render(struct battle *battle) {
 const struct battle_type battle_type_greenfish={
   .name="greenfish",
   .objlen=sizeof(struct battle_greenfish),
+  .id=NS_battle_greenfish,
   .strix_name=0,
   .no_article=0,
   .no_contest=0,

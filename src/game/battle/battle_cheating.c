@@ -466,6 +466,7 @@ static void _cheating_render(struct battle *battle) {
 const struct battle_type battle_type_cheating={
   .name="cheating",
   .objlen=sizeof(struct battle_cheating),
+  .id=NS_battle_cheating,
   .strix_name=168,
   .no_article=0,
   .no_contest=0,

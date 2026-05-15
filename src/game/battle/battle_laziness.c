@@ -454,6 +454,7 @@ static void _laziness_render(struct battle *battle) {
 const struct battle_type battle_type_laziness={
   .name="laziness",
   .objlen=sizeof(struct battle_laziness),
+  .id=NS_battle_laziness,
   .strix_name=53,
   .no_article=0,
   .no_contest=0,

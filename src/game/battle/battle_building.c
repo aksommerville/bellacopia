@@ -763,6 +763,7 @@ static void _building_render(struct battle *battle) {
 const struct battle_type battle_type_building={
   .name="building",
   .objlen=sizeof(struct battle_building),
+  .id=NS_battle_building,
   .strix_name=170,
   .no_article=0,
   .no_contest=0,

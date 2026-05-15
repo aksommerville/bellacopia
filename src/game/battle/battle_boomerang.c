@@ -506,6 +506,7 @@ static void _boomerang_render(struct battle *battle) {
 const struct battle_type battle_type_boomerang={
   .name="boomerang",
   .objlen=sizeof(struct battle_boomerang),
+  .id=NS_battle_boomerang,
   .strix_name=11,
   .no_article=0,
   .no_contest=0,

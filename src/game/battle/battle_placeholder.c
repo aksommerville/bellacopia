@@ -147,6 +147,7 @@ static void _placeholder_render(struct battle *battle) {
 const struct battle_type battle_type_placeholder={
   .name="placeholder",
   .objlen=sizeof(struct battle_placeholder),
+  .id=NS_battle_placeholder,
   .strix_name=20,
   .no_article=0,
   .no_contest=0,

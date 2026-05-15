@@ -235,6 +235,7 @@ static void _cobbling_render(struct battle *battle) {
 const struct battle_type battle_type_cobbling={
   .name="cobbling",
   .objlen=sizeof(struct battle_cobbling),
+  .id=NS_battle_cobbling,
   .strix_name=57,
   .no_article=0,
   .no_contest=0,

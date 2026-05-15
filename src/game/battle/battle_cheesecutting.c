@@ -534,6 +534,7 @@ static void _cheesecutting_render(struct battle *battle) {
 const struct battle_type battle_type_cheesecutting={
   .name="cheesecutting",
   .objlen=sizeof(struct battle_cheesecutting),
+  .id=NS_battle_cheesecutting,
   .strix_name=155,
   .no_article=0,
   .no_contest=0,

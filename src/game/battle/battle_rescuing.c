@@ -610,6 +610,7 @@ static void _rescuing_render(struct battle *battle) {
 const struct battle_type battle_type_rescuing={
   .name="rescuing",
   .objlen=sizeof(struct battle_rescuing),
+  .id=NS_battle_rescuing,
   .strix_name=157,
   .no_article=0,
   .no_contest=0,

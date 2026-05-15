@@ -142,6 +142,7 @@ static void _fencing_render(struct battle *battle) {
 const struct battle_type battle_type_fencing={
   .name="fencing",
   .objlen=sizeof(struct battle_fencing),
+  .id=NS_battle_fencing,
   .strix_name=159,
   .no_article=0,
   .no_contest=0,

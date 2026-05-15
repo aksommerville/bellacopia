@@ -672,6 +672,7 @@ static void _mindcontrol_render(struct battle *battle) {
 const struct battle_type battle_type_mindcontrol={
   .name="mindcontrol",
   .objlen=sizeof(struct battle_mindcontrol),
+  .id=NS_battle_mindcontrol,
   .strix_name=177,
   .no_article=0,
   .no_contest=0,

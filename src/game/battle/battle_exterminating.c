@@ -467,6 +467,7 @@ static void _exterminating_render(struct battle *battle) {
 const struct battle_type battle_type_exterminating={
   .name="exterminating",
   .objlen=sizeof(struct battle_exterminating),
+  .id=NS_battle_exterminating,
   .strix_name=17,
   .no_article=0,
   .no_contest=0,

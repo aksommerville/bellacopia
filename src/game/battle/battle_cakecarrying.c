@@ -549,6 +549,7 @@ static void _cakecarrying_render(struct battle *battle) {
 const struct battle_type battle_type_cakecarrying={
   .name="cakecarrying",
   .objlen=sizeof(struct battle_cakecarrying),
+  .id=NS_battle_cakecarrying,
   .strix_name=154,
   .no_article=0,
   .no_contest=0,

@@ -342,6 +342,7 @@ static void _broomrace_render(struct battle *battle) {
 const struct battle_type battle_type_broomrace={
   .name="broomrace",
   .objlen=sizeof(struct battle_broomrace),
+  .id=NS_battle_broomrace,
   .strix_name=181,
   .no_article=0,
   .no_contest=1,
