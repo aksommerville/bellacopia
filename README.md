@@ -32,17 +32,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - [x] Order spade cables. ...Ordered 2026-05-14.
 - - [ ] Persistent and more detailed logging.
 - - [ ] Block off grossly-unfinished areas:
-- - - [ ] Tundra. Access to Magnetic North but block off everything else.
-- - - [ ] Southwest desert and South Jungle.
-- - - [ ] Underworld. Block the whole thing, it's not needed yet. And we don't want them to find the Crystal Ball, since it doesn't give real advice yet.
-- - - [ ] Cave of Cheating.
+- - - [x] Tundra. Access to Magnetic North but block off everything else.
+- - - [x] Southwest desert and South Jungle.
+- - - [x] Underworld. Block the whole thing, it's not needed yet. And we don't want them to find the Crystal Ball, since it doesn't give real advice yet.
+- - - [x] Cave of Cheating.
 - - - [ ] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
 - - [ ] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
-- - [ ] Include a switch in the Cave of Cheating to unblock everything.
-- - [ ] Keep the Cave of Cheating open but make it much less prominent.
+- - [x] Include a switch in the Cave of Cheating to unblock everything.
+- - [x] Keep the Cave of Cheating open but make it much less prominent.
 - - [ ] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
 - - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
-- - [ ] Clean up jigsaw color tables.
+- - [x] Clean up jigsaw color tables.
 - - [ ] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 

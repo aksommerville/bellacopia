@@ -560,6 +560,7 @@
 #define NS_fld_bridge5done 116
 #define NS_fld_bridge6done 117
 #define NS_fld_bridge7done 118
+#define NS_fld_undemo 119 /* For opening the demo-mode blockades, temporary. */
 
 /* "fld16" are 16 unsigned bits each.
  */
