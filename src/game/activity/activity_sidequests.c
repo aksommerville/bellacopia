@@ -332,7 +332,7 @@ static const struct bridgetdata {
   {NS_fld_bridge4start,NS_fld16_bridge4q,NS_fld_bridge4done,NS_itemid_pepper,    12},
   {NS_fld_bridge5start,NS_fld16_bridge5q,NS_fld_bridge5done,NS_itemid_gold,     150},
   {NS_fld_bridge6start,NS_fld16_bridge6q,NS_fld_bridge6done,NS_itemid_greenfish, 15},
-  {NS_fld_bridge7start,NS_fld16_bridge7q,NS_fld_bridge7done,NS_itemid_telescope,  5},
+  {NS_fld_bridge7start,NS_fld16_bridge7q,NS_fld_bridge7done,NS_itemid_telescope,  3},
 };
 
 // There won't be more than one of our dialogues at a time, so we can cut corners by using a global context.

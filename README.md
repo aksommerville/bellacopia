@@ -27,6 +27,25 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- Prepare to exhibit at CORGS, 6-7 June.
+- - [ ] Finish rewiring arcade cabinet.
+- - - [x] Order spade cables. ...Ordered 2026-05-14.
+- - [ ] Persistent and more detailed logging.
+- - [ ] Block off grossly-unfinished areas:
+- - - [ ] Tundra. Access to Magnetic North but block off everything else.
+- - - [ ] Southwest desert and South Jungle.
+- - - [ ] Underworld. Block the whole thing, it's not needed yet. And we don't want them to find the Crystal Ball, since it doesn't give real advice yet.
+- - - [ ] Cave of Cheating.
+- - - [ ] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
+- - [ ] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
+- - [ ] Include a switch in the Cave of Cheating to unblock everything.
+- - [ ] Keep the Cave of Cheating open but make it much less prominent.
+- - [ ] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
+- - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
+- - [ ] Clean up jigsaw color tables.
+- - [ ] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
+- - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
+
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
@@ -34,9 +53,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
-- [ ] One more huge interior zone. We have room for one more jigsaw.
+- [x] One more huge interior zone. We have room for one more jigsaw.
 - - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle. Wait no, the Princess's castle is the Sand Castle. Make an Ice Palace.
 - - A temple with six wings, ie snowflake-shaped, where in each wing you have to fight the Ice Dragon in some Winter Olympics game. Win the Snowglobe at the end.
+- [ ] Populate Ice Palace.
+- [ ] Ice Dragon. 6 battles.
 - [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 - [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
@@ -77,6 +98,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - [ ] I think the recorded 100% Time can get reset.
 - [ ] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
+- - [ ] Fishing: Randomly maybe one or two fish are colored?
+- - [ ] Not quite the same thing, but maybe all the eating contests should guarantee a heart if you need one? apples, gobbling, hm i guess that's all so far
+- [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -168,7 +192,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - doctor: Dissection
 - secretary: Stenography
 - clerk: Sorting
-- gambler: Slapping
 
 ## Acknowledgements
 
