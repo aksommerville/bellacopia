@@ -2,7 +2,7 @@ all:
 .SILENT:
 
 ifeq (,$(EGG_SDK))
-  EGG_SDK:=../egg
+  EGG_SDK:=../egg2
 endif
 EGGDEV:=$(EGG_SDK)/out/eggdev
 

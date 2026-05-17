@@ -10,6 +10,7 @@
 #define WALK_SPEED 3.0 /* m/s */
 #define TEMPT_SPEED 4.0 /* m/s */
 #define DAZE_TIME 2.0 /* Plus FLASH_TIME. */
+#define NEUTER_TIME 1.0
 
 static void monster_idle_begin(struct sprite *sprite);
 static void monster_walk_begin(struct sprite *sprite);
@@ -25,7 +26,8 @@ struct sprite_monster {
   double radius,radius2;
   double speed;
   double animclock;
-  double dazeclock;
+  double dazeclock; // For after the flash spell.
+  double neuterclock; // Counts down initially. We move and all, but won't chase.
   int spent;
   int name_strix; // RID_strings_battle
 };
@@ -43,6 +45,7 @@ static int _monster_init(struct sprite *sprite) {
   SPRITE->stageclock=INITIAL_IDLE_TIME;
   SPRITE->radius=2.0;
   SPRITE->speed=TEMPT_SPEED;
+  SPRITE->neuterclock=NEUTER_TIME;
   
   struct cmdlist_reader reader;
   if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
@@ -342,6 +345,7 @@ static void monster_tempt_begin(struct sprite *sprite,struct sprite *hero) {
  */
  
 static struct sprite *monster_find_target(struct sprite *sprite) {
+  if (SPRITE->neuterclock>0.0) return 0;
   struct sprite *best=0;
   double bestd2=999.999;
   struct sprite **otherp=GRP(monsterlike)->sprv;
@@ -401,6 +405,8 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
  */
  
 static void _monster_update(struct sprite *sprite,double elapsed) {
+
+  if (SPRITE->neuterclock>0.0) SPRITE->neuterclock-=elapsed;
 
   // If dazed, nothing else happens, even animation.
   if (g.flash>0.0) { SPRITE->dazeclock=DAZE_TIME; return; }

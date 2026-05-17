@@ -126,17 +126,24 @@ static void hero_cb_map(struct map *map,int focus,void *userdata) {
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
-  
+
   if (SPRITE->busstop_clock>0.0) {
     if ((SPRITE->busstop_clock-=elapsed)<=0.0) {
-      if (!SPRITE->door_listener) {
-        SPRITE->door_listener=camera_listen_map(hero_cb_map,sprite);
-        SPRITE->door_clock=3.000; // Panic if this expires. Must be longer than camera's door transition.
+      if (g.camera.map&&(g.camera.map->rid==SPRITE->busstop_mapid)) {
+        sprite->x=g.camera.map->lng*NS_sys_mapw+SPRITE->busstop_col+0.5;
+        sprite->y=g.camera.map->lat*NS_sys_maph+SPRITE->busstop_row+0.5;
+        SPRITE->ignoreqx=(int)sprite->x-g.camera.map->lng*NS_sys_mapw;
+        SPRITE->ignoreqy=(int)sprite->y-g.camera.map->lat*NS_sys_maph;
+      } else {
+        if (!SPRITE->door_listener) {
+          SPRITE->door_listener=camera_listen_map(hero_cb_map,sprite);
+          SPRITE->door_clock=3.000; // Panic if this expires. Must be longer than camera's door transition.
+        }
+        sprite->z=-1; // Poison our plane, so camera doesn't try to outsmart the transition.
+        g.song_override_outerworld=0;
+        SPRITE->busstop_clock=10.0;
+        camera_cut(SPRITE->busstop_mapid,SPRITE->busstop_col,SPRITE->busstop_row,NS_transition_fadeblack);
       }
-      sprite->z=-1; // Poison our plane, so camera doesn't try to outsmart the transition.
-      SPRITE->busstop_clock=10.0;
-      g.song_override_outerworld=0;
-      camera_cut(SPRITE->busstop_mapid,SPRITE->busstop_col,SPRITE->busstop_row,NS_transition_fadeblack);
     }
     return;
   }

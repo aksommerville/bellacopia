@@ -7,9 +7,9 @@ b1b1b1b1b1b1b1b5b6b6b6edeeeeeeefb6e99091
 c3c3c3c1c2c3c4c5b6b6b6fdfefefeffb6e99091
 d3d3d3d1d2d3d4d5b6b6b6b6b6b6b6b6b6e99091
 e6e7e8e1e2e3e4e5cacbcbcbcbcbcbcbcbfc9091
-f6f7f8f1f2f3a8f5040200010202030574069091
-050204020605b803000000010503060100059091
-0302060000010501060406040305005a56579091
+f6f7f8f1f28b8c8d040200010202030574069091
+88898a02069b9c9d000000010503060100059091
+98999a0000abacad060406040305005a56579091
 
 image image:temple
 position 1 2 1 *
@@ -44,9 +44,9 @@ fishodds @15,3 (u16:fishodds)never (u16:itemid)heartcontainer (u16:fld)hc2
 fishodds @14,3 (u16:fishodds)never (u16:itemid)heartcontainer (u16:fld)hc2
 fishodds @13,3 (u16:fishodds)never (u16:itemid)heartcontainer (u16:fld)hc2
 fishodds @12,3 (u16:fishodds)never (u16:itemid)heartcontainer (u16:fld)hc2
+compass @13,5 (u16:compass)heartcontainer (u16:fld)hc2 (u16)0
 rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
 rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
-compass @13,5 (u16:compass)heartcontainer (u16:fld)hc2 (u16)0

@@ -234,7 +234,7 @@ static int targets_filter_mdist(struct target *targetv,int targetc,int x,int y,i
 }
 
 /* Choose next target for CPU player.
- * I'm using a strategy the works inside-out. Clear the middle cell, then the intermediate layer, then the outer layer.
+ * I'm using a strategy that works inside-out. Clear the middle cell, then the intermediate layer, then the outer layer.
  * That's probably not the mathematical ideal in every case, and that's OK.
  */
  
@@ -293,8 +293,8 @@ static void player_choose_target(struct battle *battle,struct player *player) {
       CHECK1(x,y-1)
       CHECK1(x,y+1)
       #undef CHECK1
-      // Discard any target that adds more than it removes at the inner ring.
-      if (target->addinc>target->rminc) { targetc--; continue; }
+      // Discard any target that adds more than it removes at the inner ring. Unless there's a bug in the middle! Then we must tolerate embugging the inner ring.
+      if (!midc&&(target->addinc>target->rminc)) { targetc--; continue; }
       // Discard any targets that don't remove bugs, or that add bugs to a cleared ring.
       if (!(target->rmoutc+target->rminc+target->rmmidc)) { // Doesn't kill any bugs.
         targetc--;
@@ -336,6 +336,11 @@ static void player_choose_target(struct battle *battle,struct player *player) {
    */
   if (targetc<1) {
     fprintf(stderr,"***** %s:%d: No targets! *****\n",__FILE__,__LINE__);
+    int y=0; for (;y<5;y++) {
+      char row[5];
+      int x=0; for (;x<5;x++) row[x]=player->fld[y*5+x]?'X':'.';
+      fprintf(stderr,"  %.5s\n",row);
+    }
     player->targetx=2;
     player->targety=2;
     return;

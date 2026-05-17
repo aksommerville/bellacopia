@@ -47,7 +47,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [ ] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
+- - [x] Add a safe buffer around the battlefield tents, and anywhere else we newly have rsprite near a door. bus stops too.
+- - [x] Tone down the soldier's chasing a little.
+- - [x] Not Bellacopia, but do: Make a physical cheatsheet for Mysteries of the Crypt, Jam Mode.
+- - [x] ***** ./src/game/battle/battle_exterminating.c:338: No targets! *****
+- - - ...had to play 35 matches before I got one. Force it for troubleshooting.
+- - - ...due to nixing all moves that add more than remove to inner (second) ring, even if the center is occupied.
+- - - ...With that fixed, ran about 40 rounds in a row and it seems fine.
+- - [x] !!! Bus stop to temple, step aside, then do it again -- Dot disappears!
 
+- [ ] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
+- [ ] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
 - [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
