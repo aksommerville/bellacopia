@@ -60,7 +60,8 @@ struct battle_cpr {
  */
  
 static void _cpr_del(struct battle *battle) {
-  bm_song_gently(bm_song_for_outerworld()); // TODO This will screw up Arcade Mode. Figure it out.
+  if (modal_get_topmost(&modal_type_pvp)) bm_song_gently(RID_song_death_rattle);
+  else bm_song_gently(bm_song_for_outerworld());
 }
 
 /* Init player.

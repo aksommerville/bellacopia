@@ -68,6 +68,18 @@ int modal_is_resident(const struct modal *modal) {
   return 0;
 }
 
+/* Find topmost.
+ */
+ 
+struct modal *modal_get_topmost(const struct modal_type *type) {
+  int i=g.modalc;
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    if (!type||(modal->type==type)) return modal;
+  }
+  return 0;
+}
+
 /* Find the focus widget from scratch.
  */
  

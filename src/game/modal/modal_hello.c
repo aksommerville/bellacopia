@@ -112,6 +112,7 @@ static void _hello_notify(struct modal *modal,int k,int v) {
  */
  
 static void hello_begin_story(struct modal *modal,int from_save) {
+  fprintf(stderr,"%d %s %s\n",(int)egg_time_real(),__func__,from_save?"CONTINUE":"NEW");
   
   struct modal_args_story args={
     .use_save=from_save,
@@ -130,6 +131,7 @@ static void hello_begin_story(struct modal *modal,int from_save) {
  */
  
 static void hello_begin_arcade(struct modal *modal) {
+  fprintf(stderr,"%d %s\n",(int)egg_time_real(),__func__);
   
   struct modal *arcade=0;
   if (0) { // modal_type_arcade: What I expect to use in the final version, and currently a good test scaffold for battle dev.

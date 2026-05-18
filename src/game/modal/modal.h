@@ -80,6 +80,10 @@ void modals_drop_defunct();
 
 int modal_is_resident(const struct modal *modal);
 
+/* (type) null to just return the very topmost. Otherwise topmost of that type.
+ */
+struct modal *modal_get_topmost(const struct modal_type *type);
+
 /* Specific types.
  *********************************************************************/
  

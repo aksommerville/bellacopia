@@ -136,6 +136,7 @@ static void pvp_cb_battle(struct modal *battle_modal,int outcome,void *userdata)
     int srcc=text_get_string(&src,RID_strings_battle,strix);
     MODAL->lbltexid=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
     egg_texture_get_size(&MODAL->lblw,&MODAL->lblh,MODAL->lbltexid);
+    fprintf(stderr,"%d %s %.*s\n",(int)egg_time_real(),__func__,srcc,src);
     
   } else {
     MODAL->stage=STAGE_REPORT;
@@ -223,6 +224,7 @@ static void pvp_update_choose_players(struct modal *modal,double elapsed) {
   
   // SOUTH to proceed.
   if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+    fprintf(stderr,"%d pvp start playerc=%d\n",(int)egg_time_real(),MODAL->playerc);
     bm_sound(RID_sound_uiactivate);
     MODAL->lwinc=0;
     MODAL->rwinc=0;

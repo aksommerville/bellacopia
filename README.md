@@ -33,28 +33,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Persistent and more detailed logging.
 - - - [ ] Can we arrange to capture these via Romassist? Might be easier than adding some log-to-file option to Egg, and this will surely come up again for other games.
 - - [ ] Block off grossly-unfinished areas:
-- - - [x] Tundra. Access to Magnetic North but block off everything else.
-- - - [x] Southwest desert and South Jungle.
-- - - [x] Underworld. Block the whole thing, it's not needed yet. And we don't want them to find the Crystal Ball, since it doesn't give real advice yet.
-- - - [x] Cave of Cheating.
 - - - [ ] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
-- - [x] Place rpsrite everywhere else. Won't be the right ones for the area but something is better than nothing.
-- - [x] Include a switch in the Cave of Cheating to unblock everything.
-- - [x] Keep the Cave of Cheating open but make it much less prominent.
-- - [x] Usable 2-player mode. Doesn't have to be the real thing but does have to be presentable. The existing Arcade modal isn't needed.
 - - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
-- - [x] Clean up jigsaw color tables.
-- - [x] Examine and repair compass recommendations. Right now it guides you to South Jungle before North Jungle, definitely wrong.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
-- - [ ] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
-- - [x] Add a safe buffer around the battlefield tents, and anywhere else we newly have rsprite near a door. bus stops too.
-- - [x] Tone down the soldier's chasing a little.
-- - [x] Not Bellacopia, but do: Make a physical cheatsheet for Mysteries of the Crypt, Jam Mode.
-- - [x] ***** ./src/game/battle/battle_exterminating.c:338: No targets! *****
-- - - ...had to play 35 matches before I got one. Force it for troubleshooting.
-- - - ...due to nixing all moves that add more than remove to inner (second) ring, even if the center is occupied.
-- - - ...With that fixed, ran about 40 rounds in a row and it seems fine.
-- - [x] !!! Bus stop to temple, step aside, then do it again -- Dot disappears!
+- - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 
 - [ ] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
 - [ ] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
