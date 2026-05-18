@@ -9,7 +9,7 @@ static const struct story storyv[16]={
     .tileid_large=0x20,
     .strix_title=1,
     .strix_desc=17,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_mayor,
     .fld_told=NS_fld_story1,
   },
   {
@@ -17,7 +17,7 @@ static const struct story storyv[16]={
     .tileid_large=0x22,
     .strix_title=2,
     .strix_desc=18,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_war_over,
     .fld_told=NS_fld_story2,
   },
   {
@@ -25,7 +25,7 @@ static const struct story storyv[16]={
     .tileid_large=0x24,
     .strix_title=3,
     .strix_desc=19,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_kidnapped,
     .fld_told=NS_fld_story3,
   },
   {
@@ -33,7 +33,7 @@ static const struct story storyv[16]={
     .tileid_large=0x26,
     .strix_title=4,
     .strix_desc=20,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_rescued_princess,
     .fld_told=NS_fld_story4,
   },
   {
@@ -41,7 +41,7 @@ static const struct story storyv[16]={
     .tileid_large=0x28,
     .strix_title=5,
     .strix_desc=21,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_root4,
     .fld_told=NS_fld_story5,
   },
   {
@@ -49,7 +49,7 @@ static const struct story storyv[16]={
     .tileid_large=0x2a,
     .strix_title=6,
     .strix_desc=22,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_root7,
     .fld_told=NS_fld_story6,
   },
   {
@@ -57,7 +57,7 @@ static const struct story storyv[16]={
     .tileid_large=0x2c,
     .strix_title=7,
     .strix_desc=23,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_barrelhat_all,
     .fld_told=NS_fld_story7,
   },
   {
@@ -65,7 +65,7 @@ static const struct story storyv[16]={
     .tileid_large=0x2e,
     .strix_title=8,
     .strix_desc=24,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_hc3,
     .fld_told=NS_fld_story8,
   },
   {
@@ -73,7 +73,7 @@ static const struct story storyv[16]={
     .tileid_large=0x40,
     .strix_title=9,
     .strix_desc=25,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story9,
   },
   {
@@ -81,7 +81,7 @@ static const struct story storyv[16]={
     .tileid_large=0x42,
     .strix_title=10,
     .strix_desc=26,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story10,
   },
   {
@@ -89,7 +89,7 @@ static const struct story storyv[16]={
     .tileid_large=0x44,
     .strix_title=11,
     .strix_desc=27,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story11,
   },
   {
@@ -97,7 +97,7 @@ static const struct story storyv[16]={
     .tileid_large=0x46,
     .strix_title=12,
     .strix_desc=28,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story12,
   },
   {
@@ -105,7 +105,7 @@ static const struct story storyv[16]={
     .tileid_large=0x48,
     .strix_title=13,
     .strix_desc=29,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_root_all,
     .fld_told=NS_fld_story13,
   },
   {
@@ -113,7 +113,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4a,
     .strix_title=14,
     .strix_desc=30,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story14,
   },
   {
@@ -121,7 +121,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4c,
     .strix_title=15,
     .strix_desc=31,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story15,
   },
   {
@@ -129,7 +129,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4e,
     .strix_title=16,
     .strix_desc=32,
-    .fld_present=NS_fld_one,//TODO
+    .fld_present=NS_fld_zero,//TODO
     .fld_told=NS_fld_story16,
   },
 };

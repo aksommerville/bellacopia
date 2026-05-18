@@ -444,13 +444,13 @@
 #define NS_fld_zero 0 /* readonly ; generally treated as a default, not necessarily literal zero */
 #define NS_fld_one 1 /* readonly */
 #define NS_fld_alsozero 2 /* readonly ; value is always zero, but key is nonzero in case that matters */
-#define NS_fld_root1 3
-#define NS_fld_root2 4
-#define NS_fld_root3 5
-#define NS_fld_root4 6
-#define NS_fld_root5 7
-#define NS_fld_root6 8
-#define NS_fld_root7 9
+#define NS_fld_root1 3 /* meadow */
+#define NS_fld_root2 4 /* fractia */
+#define NS_fld_root3 5 /* south jungle */
+#define NS_fld_root4 6 /* temple */
+#define NS_fld_root5 7 /* battlefield */
+#define NS_fld_root6 8 /* goblins */
+#define NS_fld_root7 9 /* desert */
 #define NS_fld_hc1 10 /* heart container, at castleshop */
 #define NS_fld_toll_stick_requested 11
 #define NS_fld_toll_compass_requested 12
@@ -561,6 +561,8 @@
 #define NS_fld_bridge6done 117
 #define NS_fld_bridge7done 118
 #define NS_fld_undemo 119 /* For opening the demo-mode blockades, temporary. */
+#define NS_fld_barrelhat_all 120
+#define NS_fld_root_all 121
 
 /* "fld16" are 16 unsigned bits each.
  */

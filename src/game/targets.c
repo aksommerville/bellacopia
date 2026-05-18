@@ -310,7 +310,7 @@ int game_init_targets() {
         switch (target->fld) {
           case NS_fld_root1: desc="meadow"; break;
           case NS_fld_root2: desc="fractia"; break;
-          case NS_fld_root3: desc="south jungle"; break;//XXX
+          case NS_fld_root3: desc="south jungle"; break;
           case NS_fld_root4: desc="temple"; break;
           case NS_fld_root5: desc="battlefield"; break;
           case NS_fld_root6: desc="goblins"; break;
@@ -320,7 +320,10 @@ int game_init_targets() {
       }
       // Heart containers:
       // 1: Desert
-      // Inventory Judge and Temple Pool not listed yet! TODO
+      // 2: Temple Pool
+      // 3: Inventory Judge
+      // 4: 
+      // 5: 
     }
   }
   

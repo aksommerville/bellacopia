@@ -32,12 +32,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - [x] Order spade cables. ...Ordered 2026-05-14.
 - - [ ] Persistent and more detailed logging.
 - - - [ ] Can we arrange to capture these via Romassist? Might be easier than adding some log-to-file option to Egg, and this will surely come up again for other games.
-- - [ ] Block off grossly-unfinished areas:
-- - - [ ] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
-- - [ ] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
+- - [x] Block off grossly-unfinished areas:
+- - - [x] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
+- - - ...Athlete's Guild is blocked off. Hospital open. Even if I don't add any others, I want the CPR contest reachable.
+- - [x] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
+- - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 
+- [ ] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
 - [ ] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
 - [ ] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
 - [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
@@ -179,6 +182,24 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Power Glove: Sea monster (Labyrinth).
 - [x] Marionette: underworld, temporarily
 - Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
+
+- Stories
+- `story1` `NS_fld_mayor`
+- `story2` `NS_fld_war_over`
+- `story3` `NS_fld_kidnapped`
+- `story4` `NS_fld_recued_princess`
+- `story5` `NS_fld_root4`: Labyrinth story. Completes when you strangle the root devil, not a perfect trigger.
+- `story6` `NS_fld_root7`: Desert root devil.
+- `story7` `NS_fld_barrelhat_all`
+- `story8` `NS_fld_hc3`: Too Many Things = Pass inventory critic. Not perfect.
+- `story9` Broom Races: TODO
+- `story10` World Traveller: TODO (and not at all sure that it will be "World Traveller")
+- `story11` On Carpentry: TODO ('')
+- `story12` De Re Piscatarii: TODO ('')
+- `story13` `NS_fld_root_all`
+- `story14` The Witch With Lots Of Heart: TODO (could be anything)
+- `story15` Pocketfuls of Gold: TODO ('')
+- `story16` The Brewing of Potions: TODO ('')
 
 ## Sprites with placeholder battle
 

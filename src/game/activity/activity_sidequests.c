@@ -199,6 +199,7 @@ void begin_knitter(struct sprite *sprite) {
     if (store_get_itemid(NS_itemid_bell)) {
       begin_dialogue(31,sprite); // "Thanks again!"
     } else {
+      store_set_fld(NS_fld_barrelhat_all,1);
       struct modal *dialogue=begin_dialogue(26,sprite); // "Woo hoo, here have a bell."
       if (!dialogue) return;
       modal_dialogue_set_callback(dialogue,knitter_cb_final,0);

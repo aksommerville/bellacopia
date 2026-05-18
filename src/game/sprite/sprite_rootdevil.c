@@ -29,10 +29,24 @@ static void _rootdevil_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+static void rootdevil_check_all_done() {
+  if (!store_get_fld(NS_fld_root1)) return;
+  if (!store_get_fld(NS_fld_root2)) return;
+  if (!store_get_fld(NS_fld_root3)) return;
+  if (!store_get_fld(NS_fld_root4)) return;
+  if (!store_get_fld(NS_fld_root5)) return;
+  if (!store_get_fld(NS_fld_root6)) return;
+  if (!store_get_fld(NS_fld_root7)) return;
+  fprintf(stderr,"%d Strangled the last root devil.\n",(int)egg_time_real());
+  store_set_fld(NS_fld_root_all,1);
+}
+
 static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
   if (outcome>0) {
+    fprintf(stderr,"%d Strangled root devil %d\n",(int)egg_time_real(),SPRITE->fld);
     store_set_fld(SPRITE->fld,1);
+    rootdevil_check_all_done();
     sprite_kill_soon(sprite);
     // All Root Devils are in the outer world, and killing one changes the song.
     // Don't change for the one attached to the temple, since the pool area counts as inside, mostly.
