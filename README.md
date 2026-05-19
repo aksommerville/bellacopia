@@ -39,6 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
+- - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
 
 - [ ] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
 - [ ] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
@@ -52,15 +53,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
+- [ ] broomrace: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [x] One more huge interior zone. We have room for one more jigsaw.
 - - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle. Wait no, the Princess's castle is the Sand Castle. Make an Ice Palace.
 - - A temple with six wings, ie snowflake-shaped, where in each wing you have to fight the Ice Dragon in some Winter Olympics game. Win the Snowglobe at the end.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [ ] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
+- [x] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
-- [ ] Broom Race: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
 
 - For exploration some time in the uncertain future.
 - [ ] Make the bridges look like the stuff they're made of.
@@ -82,6 +83,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - And if you do that before the election, you already have the endorsement.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
+- - ...maybe nix this. The idea was to facilitate speed running, but honestly the random monster spawning is much more significant and wouldn't be affected by this.
 - [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
@@ -143,6 +145,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Videos.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
+- - - $130 at bannerbuzz.com.
 
 ## Quests and Prizes
 
