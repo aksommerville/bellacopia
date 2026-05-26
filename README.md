@@ -41,8 +41,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 - - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
 
-- [ ] Zookeeper's carpet doesn't always notice monsters.
-- - [ ] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead.
+- [x] Zookeeper's carpet doesn't always notice monsters.
+- - [x] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead. ...no that isn't really the issue here
+- - It's happening because I made the tiles under the LED banner safe. Scanning the carpet's range consumes all safe cells. Those cells can be solid, i think.
 - [ ] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
 - [x] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
 - [ ] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
