@@ -46,7 +46,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - It's happening because I made the tiles under the LED banner safe. Scanning the carpet's range consumes all safe cells. Those cells can be solid, i think.
 - [ ] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
 - [x] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
-- [ ] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
+- [x] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
 - [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
@@ -104,7 +104,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I think the recorded 100% Time can get reset.
 - [ ] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
 - - [ ] Fishing: Randomly maybe one or two fish are colored?
-- - [ ] Not quite the same thing, but maybe all the eating contests should guarantee a heart if you need one? apples, gobbling, hm i guess that's all so far
+- - [x] Not quite the same thing, but maybe all the eating contests should guarantee a heart if you need one? apples, gobbling, hm i guess that's all so far
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 
 - Beta test. Aim to have this underway before GDEX.

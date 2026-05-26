@@ -163,15 +163,15 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 - [ ]   Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
 - [x]   Broom Race. See `apothecary`.
-- [ ]   Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
+- [x]   Building. Mini platformer. Walk, jump, lift, and drop to reach your bell first.
 - [ ]   Burrowing. Right to move, A to dig. Dig thru the dirt.
-- [ ]   Cake Carrying. On a train that stops suddenly. L/R to balance.
+- [x]   Cake Carrying. On a train that stops suddenly. L/R to balance.
 - [ ]   Calligraphy. Paint a reference figure.
 - [ ]   Cartography. Pick a color for all the regions of a map, 4 choices, no going back.
 - [ ]   Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
-- [ ]   Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
+- [x]   Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
 - [x]   Chess. Canned scenario where you have one move to make mate. (opponent doesn't actually play)
-- [ ]   Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
+- [x]   Cheese Cutting. A to drop your guillotine, when a flying cheese is under it.
 - [x]   Chopping. Tap A as a vegetable passes on your conveyor belt.
 - [ ]   Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
 - [ ]   Clam Baking. Hold A to engage flamethrower, only when the clam is open.
@@ -179,7 +179,7 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [x]   Cobbling. Tap A to hammer nails into a shoe.
 - [ ]   Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
 - [x]   Counting. Lots of moving things and you have to count one class of them.
-- [ ]   CPR. Down to compress chest, A to breathe, against the rhythm.
+- [x]   CPR. Down to compress chest, A to breathe, against the rhythm.
 - [ ]   Crossing. Frogger.
 - [x]   Crying. Tap Down repeatedly.
 - [ ]   Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
@@ -217,54 +217,54 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
 - [ ] * Jumprope.
 - [ ] * Karate Chop. Tap A until time expires.
-- [ ]   Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
+- [x]   Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.
 - [x]   Laziness. Dodge falling eggs, points for least motion.
-- [ ]   Lawnmowing. Visit as much of a grid as possible without retracing any steps.
+- [x]   Lawnmowing. Visit as much of a grid as possible without retracing any steps.
 - [ ] * Levitation. Keep an indicator balanced.
 - [ ]   Licking. Hold A when the giant moving ice cream cone is in range.
 - [ ]   Lighting. Walk and jump to reach the candles, as an acolyte.
 - [ ]   Math. 10-key input, answer simple arithmetic problems.
-- [ ]   Mind Control. Alternate A/B to maintain control, and dpad to move your victim. Have him push the candy to you.
+- [x]   Mind Control. Alternate A/B to maintain control, and dpad to move your victim. Have him push the candy to you.
 - [ ]   Mixing. L/R to pour Blue or Red into your blender. Match a reference Purple without spilling.
 - [ ]   Morse Code. Tap out a short message with A. Key visible on screen, but you can only win higher diffs by remembering.
 - [ ]   Newspaper. Throw newspapers across the street into mailboxes.
 - [ ]   Pairing. Pick the matching sock. First to pick it gets a point.
 - [ ] * Parachute. Deploy as late as you dare, last to land alive wins.
 - [ ]   Parkour. Tap A at the right moment to wall-jump.
-- [ ]   Petrifying. Put on a Medusa mask as the knight approaches, to catch him at the right moment for a handsome statue.
+- [x]   Petrifying. Put on a Medusa mask as the knight approaches, to catch him at the right moment for a handsome statue.
 - [ ]   Photography. Tap once, as a bat flies past the moon.
 - [ ]   Piano Throwing. Tap A to charge, then B to release.
 - [ ]   Pilfering. Dig Dug style, dig up to steal carrots, fail if you break the surface.
 - [ ]   Pitching. Circle the dpad then tap A, judged on consistency of timing.
-- [ ]   Plumbing. Rotate columns in a 4x4 Pipe Dream puzzle to complete a path.
+- [x]   Plumbing. Rotate columns in a 4x4 Pipe Dream puzzle to complete a path.
 - [ ]   Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
 - [ ]   Pouring. Once chance to hold A and release. Speeds up as it goes. Disqualify if any overflow.
 - [ ]   Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
-- [ ]   Pushing. Push a statue to the target cell. Sokoban-ish.
+- [x]   Pushing. Push a statue to the target cell. Sokoban-ish.
 - [x]   Racketeering. Racquetball. Take turns whacking the ball.
 - [ ]   Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
 - [ ]   Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
 - [ ]   Rebounding. Pong. First miss loses.
 - [x]   Regex. No idea how it should work and will probably be super painful for users, we can have a "Globlin"!
 - [ ]   Remembering. Shown 9 cards, then they flip and you have to pick a given one.
-- [ ]   Rescuing. Something the firefighter does. Not sure.
+- [x]   Rescuing. Something the firefighter does. Not sure.
 - [ ]   Robohorse. L/R control the horse's two legs. QWOP-ish.
 - [ ]   Rodeo. L/R to balance on the bull or hold A to brace.
 - [ ] * Rollerskates. Jump and brake. Gets too fast if you don't brake.
 - [ ]   Rowing. Circle the dpad with lopsided speed, slower in the water.
-- [ ]   Sawing. L/R, and there's an ideal rhythm.
+- [x]   Sawing. L/R, and there's an ideal rhythm.
 - [ ]   Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
 - [ ]   Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
 - [x]   Shaking. U/D to shake your bottle, then the cork flies off when time expires. Highest cork wins.
 - [ ]   Sharing. Dpad around the crowd, touch somebody to give them a berry.
 - [ ]   Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
-- [ ]   Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
+- [x]   Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
 - [ ]   Skiing. L/R and brake, get between the flags.
 - [ ]   Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
-- [ ]   Slapping. One chance to press A, to slap a given card when it falls on the pile.
+- [x]   Slapping. One chance to press A, to slap a given card when it falls on the pile.
 - [ ]   Slicing. Tap to stop the blade and cut the pie, aiming for half.
 - [ ]   Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
-- [ ]   Smashing. Stand still, A to jump. Squash melons as they roll at you.
+- [x]   Smashing. Stand still, A to jump. Squash melons as they roll at you.
 - [ ]   Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
 - [ ]   Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
 - [ ]   Snowball Fight. Once around the dpad, then A to throw it, then repeat.
@@ -282,12 +282,12 @@ Ideally they all have simple one-word names for our refrain: "RABBIT challenges 
 - [ ]   Surrounding. Snake.
 - [ ] * Swearing. Press the button for a word bubble like "$#@!", last word wins.
 - [ ]   Swinging. Hold L/R in phase, riding a swing.
-- [ ]   Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
-- [ ]   Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
+- [x]   Telekinesis. Tap A until the bottle of Old Janx Spirit tips. (ends when either reaches a target intensity)
+- [ ]   Tempting. L/R to keep an indicator balanced and note on tune, sailor moves toward the more enchanting song.
 - [ ]   Tic Tac Toe. The whole game.
 - [x]   Throwing. Hold and release to toss a bone onto the target.
 - [x]   Topping. Hold A to pour ketchup on a giant moving hotdog.
-- [ ] * Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
+- [x] * Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
 - [ ] * Umbrella. Hold A while raining, release while not.
 - [x]   Watching. Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
 - [ ]   Watermelon. Hold A to charge and release to spit a seed, going for distance.

@@ -312,6 +312,16 @@ int game_choose_fish(int x,int y,int z) {
 
 /* Prize for regular battles.
  */
+ 
+static int is_food_contest(int battle) {
+  switch (battle) {
+    case NS_battle_apples:
+    case NS_battle_gobbling:
+    //TODO frogeating licking
+      return 1;
+  }
+  return 0;
+}
 
 int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) {
   if (!v||(a<1)) return 0;
@@ -319,17 +329,23 @@ int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) 
   //TODO Opportunity for refined logic and per-sprite exceptions.
   
   // If our hp is below the max, award a heart instead of a coin, at say 1/3 odds.
+  // Any battle where Dot competes by eating things will always award a heart.
   int hp=store_get_fld16(NS_fld16_hp);
   int hpmax=store_get_fld16(NS_fld16_hpmax);
   if (hp<hpmax) {
-    if (!(rand()%3)) {
+    if (is_food_contest(battle)||!(rand()%3)) {
       v[c++]=(struct prize){NS_itemid_heart,1};
     }
   }
   
-  // Nothing else? Give a coin, whether we can hold it or not.
+  // Nothing else? Give a coin, if we can hold it.
+  // If not, meh. It's ok to just not give a prize.
   if (!c) {
-    v[c++]=(struct prize){NS_itemid_gold,1};
+    int gold=store_get_fld16(NS_fld16_gold);
+    int goldmax=store_get_fld16(NS_fld16_goldmax);
+    if (gold<goldmax) {
+      v[c++]=(struct prize){NS_itemid_gold,1};
+    }
   }
   return c;
 }
