@@ -342,6 +342,29 @@ void begin_fishprocessor(struct sprite *sprite) {
   int redc=store_get_fld16(NS_fld16_redfish);
   int gold=store_get_fld16(NS_fld16_gold);
   
+  /* Candy and Bugspray, it's fine if you get it for the first time here.
+   * But it doesn't make sense to turn fish into Potion if there's no bottle to put the Potion in.
+   * For all three, decline to propose if inventory is full. Otherwise we'd happily take your money and fish but to no effect!
+   */
+  if (greenc) {
+    struct invstore *invstore=store_get_itemid(NS_itemid_candy);
+    if (invstore&&(invstore->quantity>=invstore->limit)) {
+      greenc=0;
+    }
+  }
+  if (bluec) {
+    struct invstore *invstore=store_get_itemid(NS_itemid_bugspray);
+    if (invstore&&(invstore->quantity>=invstore->limit)) {
+      bluec=0;
+    }
+  }
+  if (redc) {
+    struct invstore *invstore=store_get_itemid(NS_itemid_potion);
+    if (!invstore||(invstore->quantity>=invstore->limit)) {
+      redc=0;
+    }
+  }
+  
   // No options, show a different message.
   if (!greenc&&!bluec&&!redc) {
     begin_dialogue(34,sprite);
