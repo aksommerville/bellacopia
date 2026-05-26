@@ -505,3 +505,11 @@ void modal_battle_add_consequence(struct modal *modal,int itemid,int d) {
   consequence->itemid=itemid;
   consequence->d=d;
 }
+
+/* Trivial accessors.
+ */
+
+struct battle *modal_battle_get_battle(struct modal *modal) {
+  if (!modal||(modal->type!=&modal_type_battle)) return 0;
+  return MODAL->battle;
+}

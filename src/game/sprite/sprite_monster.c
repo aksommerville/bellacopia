@@ -481,6 +481,10 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
   if (outcome>0) {
     struct prize prizev[8];
     int prizec=game_get_prizes(prizev,8,SPRITE->battle,sprite->arg);
+    struct battle *battle=modal_battle_get_battle(modal);
+    if (battle&&battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
     struct prize *prize=prizev;
     for (;prizec-->0;prize++) {
       game_get_item(prize->itemid,prize->quantity);

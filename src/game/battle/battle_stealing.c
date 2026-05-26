@@ -719,6 +719,21 @@ static void _stealing_render(struct battle *battle) {
   // Could render the clock if we like. I don't really feel a need for it.
 }
 
+/* Get prizes.
+ */
+ 
+static int _stealing_get_prizes(struct prize *v,int a,struct battle *battle) {
+  if (a<1) return 0;
+  if (battle->outcome==1) {
+    int goldc=BATTLE->playerv[0].score;
+    if (goldc>0) {
+      v[0]=(struct prize){.itemid=NS_itemid_gold,.quantity=goldc};
+      return 1;
+    }
+  }
+  return 0;
+}
+
 /* Type definition.
  */
  
@@ -735,4 +750,5 @@ const struct battle_type battle_type_stealing={
   .init=_stealing_init,
   .update=_stealing_update,
   .render=_stealing_render,
+  .get_prizes=_stealing_get_prizes,
 };

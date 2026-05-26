@@ -169,6 +169,7 @@ struct modal_args_fishwife {
  * This does not effect any changes, it only talks about them.
  */
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d);
+struct battle *modal_battle_get_battle(struct modal *modal);
 
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
 struct invstore *modal_pause_get_highlighted_item(); // The inventory vellum persists its position across modals. You can query that.

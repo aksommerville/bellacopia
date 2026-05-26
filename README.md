@@ -102,10 +102,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - [ ] I think the recorded 100% Time can get reset.
-- [ ] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
-- - [ ] Fishing: Randomly maybe one or two fish are colored?
+- [x] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
+- - [x] Fishing: Randomly maybe one or two fish are colored?
 - - [x] Not quite the same thing, but maybe all the eating contests should guarantee a heart if you need one? apples, gobbling, hm i guess that's all so far
+- [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
+- [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

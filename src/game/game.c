@@ -340,7 +340,8 @@ int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) 
   
   // Nothing else? Give a coin, if we can hold it.
   // If not, meh. It's ok to just not give a prize.
-  if (!c) {
+  // Do not award gold for the stealing contest; it's handled differently.
+  if (!c&&(battle!=NS_battle_stealing)) {
     int gold=store_get_fld16(NS_fld16_gold);
     int goldmax=store_get_fld16(NS_fld16_goldmax);
     if (gold<goldmax) {

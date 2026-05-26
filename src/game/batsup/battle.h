@@ -9,6 +9,7 @@
 struct battle;
 struct battle_type;
 struct battle_args;
+struct prize;
 
 #define BATTLE_UNIVERSAL_TIMEOUT 60.0
 
@@ -46,6 +47,11 @@ struct battle_type {
    */
   void (*update)(struct battle *battle,double elapsed);
   void (*render)(struct battle *battle);
+  
+  /* Populate any prizes that ought to be awarded after a 1-player victory.
+   * This should be called *in addition* to game_get_prizes().
+   */
+  int (*get_prizes)(struct prize *v,int a,struct battle *battle);
 };
 
 const struct battle_type *battle_type_by_id(int battle); // NS_battle_*

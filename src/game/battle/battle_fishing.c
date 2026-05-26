@@ -35,11 +35,15 @@ struct battle_fishing {
     int mass;
     int col; // 0..3 = Dot L, Dot R, Cat L, Cat R
     int cat_prefer; // Cat should catch this one, whether heavier or not.
+    uint32_t color; // Zero for plain fish.
+    int haulp; // 0..2, only relevant if color nonzero.
   } fishv[FISH_LIMIT];
   int fishc;
   double spawnclock;
   int decisionv[DECISION_COUNT]; // Nonzero if the cat will choose correctly on that round. The actual masses etc are chosen jit.
   int decisionp;
+  int colorv[DECISION_COUNT]; // Parallel to (decisionv). Zero or NS_itemid_*fish. If nonzero, put a colored fish somewhere in this row.
+  int haulv[3]; // How many caught of (green,blue,red) respectively.
   double end_cooldown;
 };
 
@@ -61,6 +65,17 @@ static int fishing_random_zero_decision(struct battle *battle) {
     if (!BATTLE->decisionv[p]) return p;
   }
   return 0;
+}
+
+static void fishing_place_color(struct battle *battle,int itemid) {
+  int panic=200;
+  while (panic-->0) {
+    int p=rand()%DECISION_COUNT;
+    if (!BATTLE->colorv[p]) {
+      BATTLE->colorv[p]=itemid;
+      return;
+    }
+  }
 }
 
 /* New.
@@ -115,6 +130,16 @@ static int _fishing_init(struct battle *battle) {
     }
   }
   
+  /* In the one-player case, decide which rows will contain a colored fish and what color.
+   * The decision as to which of the four fish is made when the row spawns.
+   * One of each color.
+   */
+  if (battle->args.lctl&&!battle->args.rctl) {
+    fishing_place_color(battle,NS_itemid_greenfish);
+    fishing_place_color(battle,NS_itemid_bluefish);
+    fishing_place_color(battle,NS_itemid_redfish);
+  }
+  
   return 0;
 }
 
@@ -164,33 +189,41 @@ static void fishing_spawn(struct battle *battle) {
   }
   
   // Spawn.
-  fish=BATTLE->fishv+BATTLE->fishc++;
-  fish->x=COL0X;
-  fish->y=-8.0;
-  fish->col=0;
-  fish->mass=massa;
-  fish->tileid=tileida;
-  fish->xform=rand()&EGG_XFORM_XREV;
+  struct fish *manl=BATTLE->fishv+BATTLE->fishc++;
+  manl->x=COL0X;
+  manl->y=-8.0;
+  manl->col=0;
+  manl->mass=massa;
+  manl->tileid=tileida;
+  manl->xform=rand()&EGG_XFORM_XREV;
+  manl->color=0;
+  manl->haulp=0;
   
-  fish=BATTLE->fishv+BATTLE->fishc++;
-  fish->x=COL1X;
-  fish->y=-8.0;
-  fish->col=1;
-  fish->mass=massb;
-  fish->tileid=tileidb;
-  fish->xform=rand()&EGG_XFORM_XREV;
+  struct fish *manr=BATTLE->fishv+BATTLE->fishc++;
+  manr->x=COL1X;
+  manr->y=-8.0;
+  manr->col=1;
+  manr->mass=massb;
+  manr->tileid=tileidb;
+  manr->xform=rand()&EGG_XFORM_XREV;
+  manr->color=0;
+  manr->haulp=0;
   
   struct fish *catl=BATTLE->fishv+BATTLE->fishc++;
   catl->x=COL2X;
   catl->y=-8.0;
   catl->col=2;
   catl->xform=rand()&EGG_XFORM_XREV;
+  catl->color=0;
+  catl->haulp=0;
   
   struct fish *catr=BATTLE->fishv+BATTLE->fishc++;
   catr->x=COL3X;
   catr->y=-8.0;
   catr->col=3;
   catr->xform=rand()&EGG_XFORM_XREV;
+  catr->color=0;
+  catr->haulp=0;
   
   // The two sides don't always match left/right.
   if (rand()&1) {
@@ -203,6 +236,21 @@ static void fishing_spawn(struct battle *battle) {
     catl->tileid=tileidb;
     catr->mass=massa;
     catr->tileid=tileida;
+  }
+  
+  // If this is a color row, apply it to one of the four at random.
+  if (BATTLE->colorv[BATTLE->decisionp]) {
+    switch (rand()&3) {
+      case 0: fish=manl; break;
+      case 1: fish=manr; break;
+      case 2: fish=catl; break;
+      default: fish=catr; break;
+    }
+    switch (BATTLE->colorv[BATTLE->decisionp]) {
+      case NS_itemid_greenfish: fish->color=0x05c205ff; fish->haulp=0; break;
+      case NS_itemid_bluefish:  fish->color=0x0e71b2ff; fish->haulp=1; break;
+      case NS_itemid_redfish:   fish->color=0xd70941ff; fish->haulp=2; break;
+    }
   }
   
   // Whether the cat will choose correctly was determined in advance at init.
@@ -233,10 +281,12 @@ static void fish_update(struct battle *battle,struct fish *fish,double elapsed) 
       case 0: if (BATTLE->dot_xform&EGG_XFORM_XREV) {
           BATTLE->dot_mass+=fish->mass;
           fish->tileid=0;
+          if (fish->color) BATTLE->haulv[fish->haulp]++;
         } break;
       case 1: if (!(BATTLE->dot_xform&EGG_XFORM_XREV)) {
           BATTLE->dot_mass+=fish->mass;
           fish->tileid=0;
+          if (fish->color) BATTLE->haulv[fish->haulp]++;
         } break;
       case 2: if (BATTLE->cat_xform&EGG_XFORM_XREV) {
           BATTLE->cat_mass+=fish->mass;
@@ -366,10 +416,27 @@ static void _fishing_render(struct battle *battle) {
   graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,BATTLE->cat_srcx,BATTLE->cat_srcy,playerw,playerh,BATTLE->cat_xform);
   struct fish *fish=BATTLE->fishv;
   int i=BATTLE->fishc;
+  const uint32_t plain_fish_color=0xacb1bcff;
   for (;i-->0;fish++) {
     if (!fish->tileid) continue;
-    graf_tile(&g.graf,fish->x,(int)fish->y,fish->tileid,fish->xform);
+    uint32_t color=fish->color;
+    if (!color) color=plain_fish_color;
+    graf_fancy(&g.graf,fish->x,(int)fish->y,fish->tileid,fish->xform,0,NS_sys_tilesize,0,color);
   }
+}
+
+/* Get prizes.
+ */
+ 
+static int _fishing_get_prizes(struct prize *v,int a,struct battle *battle) {
+  if (battle->outcome>0) {
+    int c=0;
+    if (BATTLE->haulv[0]&&(c<a)) v[c++]=(struct prize){.itemid=NS_itemid_greenfish,.quantity=BATTLE->haulv[0]};
+    if (BATTLE->haulv[1]&&(c<a)) v[c++]=(struct prize){.itemid=NS_itemid_bluefish,.quantity=BATTLE->haulv[1]};
+    if (BATTLE->haulv[2]&&(c<a)) v[c++]=(struct prize){.itemid=NS_itemid_redfish,.quantity=BATTLE->haulv[2]};
+    return c;
+  }
+  return 0;
 }
 
 /* Type definition.
@@ -388,4 +455,5 @@ const struct battle_type battle_type_fishing={
   .init=_fishing_init,
   .update=_fishing_update,
   .render=_fishing_render,
+  .get_prizes=_fishing_get_prizes,
 };

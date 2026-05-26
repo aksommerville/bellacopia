@@ -81,6 +81,7 @@ int game_choose_fish(int x,int y,int z);
 /* Decide what should be awarded for winning some battle, accounting for current state.
  * (monsterarg) is the 4-byte argument to a monster sprite, or null.
  * Never returns more than (a).
+ * This is not the whole story. See battle_type.get_prizes.
  */
 struct prize {
   int itemid,quantity;
