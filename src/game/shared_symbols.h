@@ -268,6 +268,7 @@
 #define NS_activity_bridget 42 /* (u16:fld)bridgeNstart */
 #define NS_activity_brewer_single 43
 #define NS_activity_potion_book 44
+#define NS_activity_cheatstories 45
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -568,6 +569,12 @@
 #define NS_fld_barrelhat_all 120
 #define NS_fld_root_all 121
 #define NS_fld_potion_book 122
+#define NS_fld_maps_complete 123 /* Collected all the puzzle pieces. Doesn't mean they're all put together yet. */
+#define NS_fld_got_story9 124 /* XXX Pick a more meaningful symbol once we know more about the books... */
+#define NS_fld_got_story11 125
+#define NS_fld_got_story12 126
+#define NS_fld_got_story14 127
+#define NS_fld_got_story15 128
 
 /* "fld16" are 16 unsigned bits each.
  */

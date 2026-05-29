@@ -28,6 +28,7 @@ struct store {
     uint8_t x,y,xform; // (y==0xff) means it isn't got yet.
   } *jigstorev;
   int jigstorec,jigstorea;
+  int jigstore_limit; // Total count of jigstores in the game; determined dynamically the first time we need it.
   
   struct invstore {
     uint8_t itemid; // If zero, the slot is vacant. (limit,quantity) undefined.

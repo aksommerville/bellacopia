@@ -175,6 +175,7 @@ void modal_pause_click_tabs(struct modal *modal,int x,int y);
 struct invstore *modal_pause_get_highlighted_item(); // The inventory vellum persists its position across modals. You can query that.
 int modal_pause_get_inventory_position(); // => 1..INVSTORE_SIZE-1; index in (g.store.invstore)
 void modal_pause_set_inventory_position(int p);
+int get_puzzle_planes(int *v,int a); // [vellum_map.c], returns NS_plane_* for all the planes expected to contain a puzzle.
 
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.

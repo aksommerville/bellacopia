@@ -40,7 +40,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 - - Maximum completion in demo: 82%. 98% is reachable if you undemo in the Cave of Cheating. (9/16 Tree Stories, everything else can be maxed).
-- - [ ] Add something in Cave of Cheating to acquire the missing Tree Stories.
+- - ...update: Now 100% is reachable, if you cheat.
+- - [x] Add something in Cave of Cheating to acquire the missing Tree Stories.
 
 - [x] Zookeeper's carpet doesn't always notice monsters.
 - - [x] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead. ...no that isn't really the issue here

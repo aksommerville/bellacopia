@@ -655,6 +655,27 @@ struct jigstore *store_add_jigstore(int mapid) {
   g.store.jigstorec++;
   g.store.dirty=1;
   store_broadcast('j',mapid,0);
+  
+  /* If we haven't computed the total yet, do that now.
+   */
+  if (!g.store.jigstore_limit) {
+    int planev[8];
+    int planec=get_puzzle_planes(planev,8);
+    while (planec-->0) {
+      const struct plane *plane=plane_by_position(planev[planec]);
+      if (!plane) continue;
+      g.store.jigstore_limit+=plane->w*plane->h; // Puzzled planes are expected to be rectangular with no holes.
+    }
+  }
+  
+  /* If we crossed the limit, set the indicator flag.
+   */
+  if ((g.store.jigstorec>=g.store.jigstore_limit)&&!store_get_fld(NS_fld_maps_complete)) {
+    fprintf(stderr,"%.0f Collected the last puzzle piece.\n",egg_time_real());
+    store_set_fld(NS_fld_maps_complete,1);
+    //TODO Some kind of alert. They just acquired a new story.
+  }
+  
   return jigstore;
 }
 

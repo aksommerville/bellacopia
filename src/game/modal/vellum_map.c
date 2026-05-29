@@ -15,6 +15,17 @@ static struct puzzle {
   {NS_plane_icepalace,192},
 };
 
+// And ok, other components might need that puzzle list too.
+int get_puzzle_planes(int *v,int a) {
+  int c=sizeof(puzzlev)/sizeof(puzzlev[0]);
+  if (c>a) c=a;
+  if (c<=0) return 0;
+  const struct puzzle *puzzle=puzzlev;
+  int i=c;
+  for (;i-->0;puzzle++,v++) *v=puzzle->z;
+  return c;
+}
+
 struct vellum_map {
   struct vellum hdr;
   int puzzlep;
