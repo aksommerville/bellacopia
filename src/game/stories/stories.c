@@ -129,7 +129,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4e,
     .strix_title=16,
     .strix_desc=32,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_potion_book,
     .fld_told=NS_fld_story16,
   },
 };

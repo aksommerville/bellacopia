@@ -266,6 +266,8 @@
 #define NS_activity_main_quest_wrap_up 40
 #define NS_activity_statuemaze_clue 41 /* (u16:msgid)0..3 */
 #define NS_activity_bridget 42 /* (u16:fld)bridgeNstart */
+#define NS_activity_brewer_single 43
+#define NS_activity_potion_book 44
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -563,6 +565,7 @@
 #define NS_fld_undemo 119 /* For opening the demo-mode blockades, temporary. */
 #define NS_fld_barrelhat_all 120
 #define NS_fld_root_all 121
+#define NS_fld_potion_book 122
 
 /* "fld16" are 16 unsigned bits each.
  */

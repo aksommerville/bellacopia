@@ -39,7 +39,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
 - - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
-- - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
+- - Maximum completion in demo: 82%. 98% is reachable if you undemo in the Cave of Cheating. (9/16 Tree Stories, everything else can be maxed).
+- - [ ] Add something in Cave of Cheating to acquire the missing Tree Stories.
 
 - [x] Zookeeper's carpet doesn't always notice monsters.
 - - [x] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead. ...no that isn't really the issue here
@@ -101,6 +102,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
+- - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] I think the recorded 100% Time can get reset.
 - [x] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
 - - [x] Fishing: Randomly maybe one or two fish are colored?
@@ -108,6 +110,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
+- [ ] `activity_shops.c:begin_brewer_single` Cafe menu. Right now we're not showing the price or impact of the drinks.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -207,7 +210,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - `story13` `NS_fld_root_all`
 - `story14` The Witch With Lots Of Heart: TODO (could be anything)
 - `story15` Pocketfuls of Gold: TODO ('')
-- `story16` The Brewing of Potions: TODO ('')
+- `story16` The Brewing of Potions: TODO Sell directly at the potion shop.
 
 ## Sprites with placeholder battle
 

@@ -108,6 +108,101 @@ void begin_brewer(struct sprite *sprite) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
 
+/* Single-potion sales.
+ */
+ 
+static int cb_brewer_single(int optionid,void *userdata) {
+  int gold=store_get_fld16(NS_fld16_gold);
+  switch (optionid) {
+    case 127: { // 1=>1, Picker-Upper Shot
+        if (gold<1) {
+          begin_dialogue(2,0);
+          return 0;
+        }
+        store_set_fld16(NS_fld16_gold,gold-1);
+        game_get_item(NS_itemid_heart,1);
+      } return 1;
+    case 128: { // 2=>2, Demi-Tasse
+        if (gold<2) {
+          begin_dialogue(2,0);
+          return 0;
+        }
+        store_set_fld16(NS_fld16_gold,gold-2);
+        game_get_item(NS_itemid_heart,2);
+      } break;
+    case 129: { // 3=>3, Cuppa Regular
+        if (gold<3) {
+          begin_dialogue(2,0);
+          return 0;
+        }
+        store_set_fld16(NS_fld16_gold,gold-3);
+        game_get_item(NS_itemid_heart,3);
+      } break;
+    case 130: { // 5=>*, Red Potion
+        if (gold<5) {
+          begin_dialogue(2,0);
+          return 0;
+        }
+        store_set_fld16(NS_fld16_gold,gold-5);
+        game_get_item(NS_itemid_heart,10);
+      } break;
+  }
+  return 0;
+}
+ 
+void begin_brewer_single(struct sprite *sprite) {
+  /* TODO Show a menu page at the bottom like we do for regular shops, styled like a cafe menu.
+   */
+  int hp=store_get_fld16(NS_fld16_hp);
+  int hpmax=store_get_fld16(NS_fld16_hpmax);
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=(hp>=hpmax)?126:125,
+    .speaker=sprite,
+    .cb=cb_brewer_single,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,127);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,128);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,129);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,130);
+}
+
+/* Brewer's book.
+ */
+ 
+static int cb_potion_book(int optionid,void *userdata) {
+  if (optionid!=4) return 0;
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<25) {
+    begin_dialogue(2,0);
+    return 0;
+  }
+  store_set_fld16(NS_fld16_gold,gold-25);
+  store_set_fld(NS_fld_potion_book,1);
+  bm_sound(RID_sound_treasure);
+  begin_dialogue(131,0);
+  return 1;
+}
+ 
+void begin_potion_book(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_potion_book)) {
+    begin_dialogue(124,sprite);
+    return;
+  }
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=123,
+    .speaker=sprite,
+    .cb=cb_potion_book,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+}
+
 /* Blood bank.
  */
  

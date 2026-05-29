@@ -8,7 +8,7 @@
 11 Want me to carve that stick into something?
 12 Giving blood helps people in need! Sell me a heart for %0 gold?
 13 I can't take your last heart, because you would die.
-14 If you join our Frequent Shopper Rewards Club, I'll give you a bottle and you can fill it with 3 helpings of potion for just 10 gold. That's a 33% savings! Join the club?
+14 Join our Frequent Shopper Rewards Club for 10 gold?
 15 Your Frequent Shopper Rewards Club Bottle is already full!
 16 Fill your Frequent Shopper Rewards Club Bottle for 10 gold?
 17 If you catch any fish, I'll buy them from you.
@@ -131,3 +131,13 @@
 120 I want to build a bridge, but I'm short on materials. I need %0 %1. Will you give me %2?
 121 I need %0 more %1 to finish this bridge.
 122 I need %0 more %1 to finish this bridge. Will you give me %2?
+
+123 Buy my potions book for 25 G?
+124 Thanks for buying my book!
+125 Buy a cup of potion?
+126 You don't need any hearts, but I'm happy to sell you a cup of potion anyway.
+127 Picker-Upper Shot
+128 Demi-Tasse
+129 Cuppa Regular
+130 Red Potion
+131 Bought the potions book! Check your stories in the pause menu.

@@ -17,7 +17,9 @@ struct modal *begin_dialogue(int arg,struct sprite *initiator); // RID_strings_d
 
 // activity_shops.c
 void begin_carpenter(struct sprite *initiator);
-void begin_brewer(struct sprite *initiator);
+void begin_brewer(struct sprite *initiator); // No initiator.
+void begin_brewer_single(struct sprite *initiator); // No initiator.
+void begin_potion_book(struct sprite *initiator); // No initiator.
 void begin_bloodbank(struct sprite *initiator,int arg);
 void begin_fishwife(struct sprite *initiator);
 void begin_magneticnorth(struct sprite *initiator);
