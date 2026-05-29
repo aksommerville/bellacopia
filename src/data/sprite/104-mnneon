@@ -1,0 +1,4 @@
+image image:tundra_sprites
+tile 0 0
+type (u16:sprtype)mnneon
+groups (b32:sprgrp)visible,update

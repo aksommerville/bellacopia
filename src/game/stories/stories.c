@@ -73,7 +73,7 @@ static const struct story storyv[16]={
     .tileid_large=0x40,
     .strix_title=9,
     .strix_desc=25,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO Broom Races
     .fld_told=NS_fld_story9,
   },
   {
@@ -81,7 +81,7 @@ static const struct story storyv[16]={
     .tileid_large=0x42,
     .strix_title=10,
     .strix_desc=26,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO The World Traveller
     .fld_told=NS_fld_story10,
   },
   {
@@ -89,7 +89,7 @@ static const struct story storyv[16]={
     .tileid_large=0x44,
     .strix_title=11,
     .strix_desc=27,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO On Carpentry
     .fld_told=NS_fld_story11,
   },
   {
@@ -97,7 +97,7 @@ static const struct story storyv[16]={
     .tileid_large=0x46,
     .strix_title=12,
     .strix_desc=28,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO De Re Piscatarii
     .fld_told=NS_fld_story12,
   },
   {
@@ -113,7 +113,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4a,
     .strix_title=14,
     .strix_desc=30,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO The Witch With Lots of Heart
     .fld_told=NS_fld_story14,
   },
   {
@@ -121,7 +121,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4c,
     .strix_title=15,
     .strix_desc=31,
-    .fld_present=NS_fld_zero,//TODO
+    .fld_present=NS_fld_zero,//TODO Pocketfuls of Gold
     .fld_told=NS_fld_story15,
   },
   {

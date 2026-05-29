@@ -296,6 +296,7 @@
 #define NS_sprtype_bus         24 /* (u32)0 */
 #define NS_sprtype_ticker      25 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_zookeeper   26 /* (u16:fld)0 (u16)0 */
+#define NS_sprtype_mnneon      27 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -323,7 +324,8 @@
   _(pushable) \
   _(bus) \
   _(ticker) \
-  _(zookeeper)
+  _(zookeeper) \
+  _(mnneon)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
