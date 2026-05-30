@@ -69,7 +69,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 
 - For exploration some time in the uncertain future.
-- [ ] Make the bridges look like the stuff they're made of.
+- [x] Make the bridges look like the stuff they're made of.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
