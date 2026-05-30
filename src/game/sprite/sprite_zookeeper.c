@@ -1,6 +1,7 @@
 /* sprite_zookeeper.c
  * Triggers some dialogue explaining the zookeeping challenge.
  * Also responsible for detecting when a target animal has been delivered.
+ * My map must contain one `zookeeper @X,Y,W,H` command to mark the delivery zone.
  */
  
 #include "game/bellacopia.h"
@@ -57,71 +58,32 @@ static int zookeeper_wantv_add(struct sprite *sprite,int spriteid) {
   return 1;
 }
 
-/* Find my catch zone (zl,zr,zt,zb).
- * There must be a safe tile within my 3x3 box, and it must be part of a contiguous rectangle.
- * The catch zone must be all on the same map.
+/* Find catch zone.
+ * The map must contain a command `zookeeper @X,Y,W,H` marking my carpet.
+ * Limit one zookeeper per map, I don't imagine that will be a problem.
+ * Errors needn't be fatal. We'll eat logged errors and only return <0 if we failed without logging.
  */
  
-static int box_is_safe(const struct map *map,int x,int y,int w,int h) {
-  const uint8_t *row=map->v+y*NS_sys_mapw+x;
-  for (;h-->0;row+=NS_sys_mapw) {
-    const uint8_t *p=row;
-    int xi=w;
-    for (;xi-->0;p++) {
-      if (map->physics[*p]!=NS_physics_safe) return 0;
-    }
-  }
-  return 1;
-}
- 
-// (qx,qy) in meters. If we succeed, we'll have set the catch zone to a box containing (qx,qy).
-static int zookeeper_find_catch_zone_1(struct sprite *sprite,const struct plane *plane,int qx,int qy) {
-  // Confirm it's within the plane:
-  if ((qx<0)||(qy<0)) return -1;
-  int wm=plane->w*NS_sys_mapw;
-  int hm=plane->h*NS_sys_maph;
-  if ((qx>=wm)||(qy>=hm)) return -1;
-  // Confirm the focus cell is safe:
-  int lng=qx/NS_sys_mapw;
-  int lat=qy/NS_sys_maph;
-  const struct map *map=plane->v+lat*plane->w+lng;
-  if (!map->physics) return -1;
-  int subx=qx-lng*NS_sys_mapw;
-  int suby=qy-lat*NS_sys_maph;
-  if (map->physics[map->v[suby*NS_sys_mapw+subx]]!=NS_physics_safe) return -1;
-  // Expand the box:
-  int subw=1;
-  int subh=1;
-  while (subx&&box_is_safe(map,subx-1,suby,1,1)) { subx--; subw++; }
-  while (suby&&box_is_safe(map,subx,suby-1,subw,1)) { suby--; subh++; }
-  while ((subx+subw<NS_sys_mapw)&&box_is_safe(map,subx+subw,suby,1,subh)) subw++;
-  while ((suby+subh<NS_sys_maph)&&box_is_safe(map,subx,suby+subh,subw,1)) subh++;
-  // Choose floating-point inset:
-  const double inset=0.400;
-  SPRITE->zl=lng*NS_sys_mapw+subx;
-  SPRITE->zr=SPRITE->zl+subw;
-  SPRITE->zt=lat*NS_sys_maph+suby;
-  SPRITE->zb=SPRITE->zt+subh;
-  SPRITE->zl+=inset;
-  SPRITE->zt+=inset;
-  SPRITE->zr-=inset;
-  SPRITE->zb-=inset;
-  return 0;
-}
- 
 static int zookeeper_find_catch_zone(struct sprite *sprite) {
-  const struct plane *plane=plane_by_position(sprite->z);
-  if (!plane) return -1;
-  int px=(int)sprite->x;
-  int py=(int)sprite->y;
-  int suby=-2;
-  for (;suby<=2;suby++) {
-    int subx=-2;
-    for (;subx<=2;subx++) {
-      if (zookeeper_find_catch_zone_1(sprite,plane,px+subx,py+suby)>=0) return 0;
+  const double inset=0.400;
+  struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (!map) return -1;
+  int x0=map->lng*NS_sys_mapw;
+  int y0=map->lat*NS_sys_maph;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_zookeeper) {
+      int x=cmd.arg[0],y=cmd.arg[1],w=cmd.arg[2],h=cmd.arg[3];
+      SPRITE->zl=x0+x+inset;
+      SPRITE->zt=y0+y+inset;
+      SPRITE->zr=x0+x+w-inset;
+      SPRITE->zb=y0+y+h-inset;
+      return 0;
     }
   }
-  return -1;
+  fprintf(stderr,"%s:WARNING: No 'zookeeper' command in map:%d\n",__func__,map->rid);
+  return 0;
 }
 
 /* Init.
