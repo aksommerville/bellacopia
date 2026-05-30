@@ -21,6 +21,9 @@ static const int fldv_heart_container[]={
 };
 static const int fldv_buried_treasure[]={
   NS_fld_bt1,NS_fld_bt2,NS_fld_bt3,NS_fld_bt4,
+  // bt5 is a jigpiece, doesn't count.
+  NS_fld_bt6,NS_fld_bt7,NS_fld_bt8,NS_fld_bt9,NS_fld_bt10,
+  NS_fld_bt11,NS_fld_bt12,NS_fld_bt13,NS_fld_bt14,NS_fld_bt15,
 };
 static const int fldv_story_tree[]={
   NS_fld_tree1,NS_fld_tree2,NS_fld_tree3,NS_fld_tree4,NS_fld_tree5,NS_fld_tree6,NS_fld_tree7,NS_fld_tree8,

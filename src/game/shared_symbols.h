@@ -579,6 +579,16 @@
 #define NS_fld_got_story14 127
 #define NS_fld_got_story15 128
 #define NS_fld_hc4door 129
+#define NS_fld_bt6 130
+#define NS_fld_bt7 131
+#define NS_fld_bt8 132
+#define NS_fld_bt9 133
+#define NS_fld_bt10 134
+#define NS_fld_bt11 135
+#define NS_fld_bt12 136
+#define NS_fld_bt13 137
+#define NS_fld_bt14 138
+#define NS_fld_bt15 139
 
 /* "fld16" are 16 unsigned bits each.
  */

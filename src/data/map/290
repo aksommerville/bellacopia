@@ -14,3 +14,4 @@
 image image:caves
 position 8 6 2 *
 sprite @13,5 sprite:jigpiece (u32)0
+buriedtreasure @10,7 (u16:fld)bt15 (u16:itemid)gold 10 0

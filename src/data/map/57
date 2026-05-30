@@ -15,3 +15,4 @@ image image:battlefield
 position 5 4 1 *
 door @4,6 map:118 @9,8 0x0000
 rsprite sprite:soldier (u8:weight)4 (u8:limit)1 (u32)0
+buriedtreasure @13,5 (u16:fld)bt9 (u16:itemid)gold 10 0
