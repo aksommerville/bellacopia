@@ -51,6 +51,7 @@
 #define CMD_map_bump            0x65 /* u16:pos u16:activity u16:arg_or_stringsid u16:strix ; Trigger static text or activity when colliding with a solid. For signs and such. */
 #define CMD_map_triggeronce     0x66 /* u16:pos u16:fld u16:activity u16:arg ; Like a treadle, but it will only fire once ever. */
 #define CMD_map_fishodds        0x67 /* u16:pos u16:fishodds u16:itemid u16:fld ; OOB to cover the whole map, and must not use (itemid,fld) then. */
+#define CMD_map_burieddoor      0x68 /* u16:pos u16:rid u16:dstpos u16:fld */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
 
 #define CMD_sprite_noxform      0x01 /* --- ; npc */
@@ -537,7 +538,7 @@
 #define NS_fld_forest_toll 86
 #define NS_fld_hc2 87 /* Heart container in temple pool. */
 #define NS_fld_hc3 88 /* Inventory critic. */
-#define NS_fld_hc4 89 /* TODO */
+#define NS_fld_hc4 89 /* Buried in south jungle. */
 #define NS_fld_hc5 90 /* TODO */
 #define NS_fld_jig_desert_fish 91 /* One jigpiece in the desert pond where you have to fish for it. */
 #define NS_fld_jigpiece_eyeball_lake 92
@@ -577,6 +578,7 @@
 #define NS_fld_got_story12 126
 #define NS_fld_got_story14 127
 #define NS_fld_got_story15 128
+#define NS_fld_hc4door 129
 
 /* "fld16" are 16 unsigned bits each.
  */

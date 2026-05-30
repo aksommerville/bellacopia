@@ -208,11 +208,18 @@ static void _hero_collide(struct sprite *sprite,struct sprite *other) {
 static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int argc) {
   switch (opcode) {
   
-    case CMD_map_door: {
+    case CMD_map_door:
+    case CMD_map_burieddoor: {
         if ((arg[0]==SPRITE->ignoreqx)&&(arg[1]==SPRITE->ignoreqy)) {
           SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
           return;
         }
+        
+        int fld=0,activity=0;
+        if (opcode==CMD_map_burieddoor) fld=(arg[6]<<8)|arg[7];
+        else activity=(arg[6]<<8)|arg[7];
+        if (fld&&!store_get_fld(fld)) return;
+        
         SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
         if (!SPRITE->door_listener) {
           SPRITE->door_listener=camera_listen_map(hero_cb_map,sprite);
@@ -221,7 +228,6 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
         int rid=(arg[2]<<8)|arg[3];
         int dstx=arg[4];
         int dsty=arg[5];
-        int activity=(arg[6]<<8)|arg[7];
         struct map *map=map_by_id(rid);
         if (!map) { // grrr
           fprintf(stderr,"%s:%d: map:%d not found\n",__FILE__,__LINE__,rid);

@@ -26,6 +26,15 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
             }
           }
         } break;
+      case CMD_map_burieddoor: {
+          int x=cmd.arg[0],y=cmd.arg[1];
+          if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
+            int p=y*NS_sys_mapw+x;
+            int fldid=(cmd.arg[6]<<8)|cmd.arg[7];
+            if (store_get_fld(fldid)) map->v[p]=map->rov[p]+0x10;
+            else map->v[p]=map->rov[p];
+          }
+        } break;
       case CMD_map_endorsement: {
           // Basically the same as `switchable` but there's a third noop state.
           int x=cmd.arg[0],y=cmd.arg[1];

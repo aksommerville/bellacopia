@@ -115,7 +115,8 @@ static int targets_scan_map(const struct map *map) {
           target->y=map->lat*NS_sys_maph+cmd.arg[1];
         } break;
         
-      case CMD_map_door: {
+      case CMD_map_door:
+      case CMD_map_burieddoor: {
           struct door *door=targets_add_door();
           if (!door) return -1;
           door->srcmapid=map->rid;
@@ -185,8 +186,8 @@ static int targetcmp(const void *A,const void *B) {
         const int order[]={
           NS_fld_hc1, // castle shop
           NS_fld_hc2, // temple pool
-          NS_fld_hc3, // inventory critic
-          //NS_fld_hc4,
+          NS_fld_hc4, // south jungle
+          NS_fld_hc3, // inventory critic -- should be last, very hard to qualify
           //NS_fld_hc5,
         };
         return ordercmp(a->fld,b->fld,order,sizeof(order)/sizeof(int));
@@ -322,7 +323,7 @@ int game_init_targets() {
       // 1: Desert
       // 2: Temple Pool
       // 3: Inventory Judge
-      // 4: 
+      // 4: South Jungle
       // 5: 
     }
   }
@@ -511,13 +512,17 @@ static int game_find_secrets_1(struct secret *dst,int dsta,struct map *map,doubl
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
     
-      case CMD_map_door: {
-          //TODO I'm sure we'll soon want buried doors in addition to buried treasure.
-        } break;
-        
-      case CMD_map_buriedtreasure: {
-          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
-          if (store_get_fld(fld)) break; // Already got; skip it.
+      /* buriedtreasure and burieddoor are exactly the same thing, except fldid in a different place.
+       */
+      case CMD_map_buriedtreasure:
+      case CMD_map_burieddoor: {
+          int fldid;
+          if (cmd.opcode==CMD_map_burieddoor) {
+            fldid=(cmd.arg[6]<<8)|cmd.arg[7];
+          } else {
+            fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          }
+          if (store_get_fld(fldid)) break; // Already got; skip it.
           double poix=cmd.arg[0]+x0;
           double poiy=cmd.arg[1]+y0;
           double dx=x-poix;

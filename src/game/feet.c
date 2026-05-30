@@ -25,6 +25,7 @@ static void foot_press_poi(const struct poi *poi,struct sprite *sprite) {
       } break;
     case CMD_map_root: break; // Interesting to the hero, not generically.
     case CMD_map_door: break; // ''
+    case CMD_map_burieddoor: break;
     case CMD_map_triggeronce: {
         int fld=(poi->arg[2]<<8)|poi->arg[3];
         if (store_get_fld(fld)) return;
@@ -67,6 +68,7 @@ static int poi_interesting_opcode(uint8_t opcode) {
     case CMD_map_stompbox:
     //case CMD_map_root: // Since there aren't release events, this is unwieldly. Have the hero poll for it.
     case CMD_map_door:
+    case CMD_map_burieddoor:
     case CMD_map_triggeronce:
     case CMD_map_seal:
       return 1;

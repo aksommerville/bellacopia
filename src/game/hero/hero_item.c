@@ -775,6 +775,10 @@ static void telescope_update(struct sprite *sprite,double elapsed) {
 
 /* Expose anything buried at this cell.
  * Shovel uses it, and so does bomb.
+ * Returns:
+ *   0: Nothing here.
+ *   1: Found treasure and you should create a hole.
+ *   2: Found something but do not create a hole. eg burieddoor
  */
   
 int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
@@ -797,6 +801,16 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
           int quantity=cmd.arg[6];
           game_get_item(itemid,quantity);
           return 1;
+        }
+      case CMD_map_burieddoor: {
+          if (cmd.arg[0]!=col) continue;
+          if (cmd.arg[1]!=row) continue;
+          int fld=(cmd.arg[6]<<8)|cmd.arg[7];
+          if (store_get_fld(fld)) continue;
+          store_set_fld(fld,1);
+          bm_sound(RID_sound_treasure);
+          g.camera.mapsdirty=1;
+          return 2;
         }
     }
   }
@@ -842,15 +856,17 @@ static int shovel_begin(struct sprite *sprite) {
     return 0; // Already dug.
   }
   
-  // Do it.
-  struct sprite *hole=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
-  if (!hole) return 0;
   //TODO digging animation
   
-  if (sprite_hero_unbury_treasure(sprite,SPRITE->qx,SPRITE->qy)) return 1;
+  // Do it.
+  int result=sprite_hero_unbury_treasure(sprite,SPRITE->qx,SPRITE->qy);
+  if (result==2) return 1; // burieddoor, we're done
   
-  // Nothing buried here, so just make the dig sound and we're done.
-  bm_sound(RID_sound_dig);
+  struct sprite *hole=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
+  if (!hole) return 0;
+  
+  // If no result from unbury, make the sound.
+  if (!result) bm_sound(RID_sound_dig);
   return 1;
 }
 

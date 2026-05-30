@@ -58,6 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
+- - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
 - [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
@@ -189,7 +190,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] hc1: castleshop
 - [x] hc2: temple pool
 - [x] hc3: invcritic
-- [ ] hc4
+- [x] hc4: south jungle
 - [ ] hc5
 - [x] Bomb: inconvenience
 - [x] Stopwatch: underworld, temporarily
