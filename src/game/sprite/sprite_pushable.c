@@ -65,6 +65,25 @@ static void pushable_begin_move(struct sprite *sprite) {
 
 static void pushable_end_move(struct sprite *sprite) {
   SPRITE->movedx=SPRITE->movedy=0;
+  /* If we're very close to the target but not on it exactly, try nudging us on to it.
+   */
+  const double tolerance=1.0/NS_sys_tilesize;
+  double offx=sprite->x-SPRITE->targetx;
+  double offy=sprite->y-SPRITE->targety;
+  if (
+    ((offx<-0.0)||(offx>0.0)||(offy<-0.0)||(offy>0.0))&&
+    (offx>-tolerance)&&(offx<tolerance)&&
+    (offy>-tolerance)&&(offy<tolerance)
+  ) {
+    double x0=sprite->x;
+    double y0=sprite->y;
+    sprite->x=SPRITE->targetx;
+    sprite->y=SPRITE->targety;
+    if (!sprite_test_position(sprite)) {
+      sprite->x=x0;
+      sprite->y=y0;
+    }
+  }
 }
 
 static void _pushable_update(struct sprite *sprite,double elapsed) {

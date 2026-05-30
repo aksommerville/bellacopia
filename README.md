@@ -28,8 +28,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - Prepare to exhibit at CORGS, 6-7 June.
-- - [ ] Finish rewiring arcade cabinet.
+- - xxx Finish rewiring arcade cabinet.
 - - - [x] Order spade cables. ...Ordered 2026-05-14.
+- - - ...blecccch they're still wrong. Don't bother. But do get it wired before GDEX for sure.
 - - [ ] Persistent and more detailed logging.
 - - - [ ] Can we arrange to capture these via Romassist? Might be easier than adding some log-to-file option to Egg, and this will surely come up again for other games.
 - - [x] Block off grossly-unfinished areas:
