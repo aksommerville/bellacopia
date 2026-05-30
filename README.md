@@ -37,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...Athlete's Guild is blocked off. Hospital open. Even if I don't add any others, I want the CPR contest reachable.
 - - [x] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
 - - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
-- - [ ] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
+- - [x] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
 - - Maximum completion in demo: 82%. 98% is reachable if you undemo in the Cave of Cheating. (9/16 Tree Stories, everything else can be maxed).
 - - ...update: Now 100% is reachable, if you cheat.
@@ -75,6 +75,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - For exploration some time in the uncertain future.
 - [x] Make the bridges look like the stuff they're made of.
+- [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.

@@ -26,6 +26,21 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
             }
           }
         } break;
+      case CMD_map_endorsement: {
+          // Basically the same as `switchable` but there's a third noop state.
+          int x=cmd.arg[0],y=cmd.arg[1];
+          if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
+            int p=y*NS_sys_mapw+x;
+            int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+            if (!store_get_fld(NS_fld_election_start)||store_get_fld(NS_fld_mayor)) { // Not started or won: Neutral.
+              map->v[p]=map->rov[p]-0x0f;
+            } else if (store_get_fld(fldid)) { // Have endorsement.
+              map->v[p]=map->rov[p]+1;
+            } else { // Vote Cat.
+              map->v[p]=map->rov[p];
+            }
+          }
+        } break;
       case CMD_map_debugmsg: if (extras) {
           extras->debugmsg=(const char*)cmd.arg;
           extras->debugmsgc=cmd.argc;

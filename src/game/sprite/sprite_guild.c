@@ -30,7 +30,8 @@ static int _guild_init(struct sprite *sprite) {
       }
     }
   }
-  if (store_get_fld(SPRITE->fld)) sprite->tileid=SPRITE->tileid0+1;
+  int election_season=(store_get_fld(NS_fld_election_start)&&!store_get_fld(NS_fld_mayor));
+  if (election_season&&store_get_fld(SPRITE->fld)) sprite->tileid=SPRITE->tileid0+1;
   
   return 0;
 }
@@ -74,11 +75,15 @@ static int all_guild_satisfied() {
 static void guild_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
   if (outcome>0) {
-    sprite->tileid=SPRITE->tileid0+1;
-    if (!store_get_fld(SPRITE->fld)&&all_guild_satisfied()) {
+    int election_season=(store_get_fld(NS_fld_election_start)&&!store_get_fld(NS_fld_mayor));
+    if (election_season) {
+      sprite->tileid=SPRITE->tileid0+1;
+    }
+    if (election_season&&!store_get_fld(SPRITE->fld)&&all_guild_satisfied()) {
       store_set_fld(SPRITE->fld,1);
       modal_battle_add_consequence(modal,NS_itemid_text,113);
     }
+    //TODO Some other prize when it's not election season.
   } else if (outcome<0) {
     sprite->tileid=SPRITE->tileid0;
     game_hurt_hero();
