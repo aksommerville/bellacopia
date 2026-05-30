@@ -43,8 +43,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...update: Now 100% is reachable, if you cheat.
 - - [x] Add something in Cave of Cheating to acquire the missing Tree Stories.
 
+- [x] Choosing New Game after having returned to the menu does not change the background music, break_soil keeps playing. First time is fine.
+- - ...specifically, it happens if you end the first session on the start map. There was no `game_focus_map` initially, but ought to have been.
+- - Just needed to zero first at `camera_reset`
 - [x] Change zookeeper again: Provide explicit bounds for the carpet at its spawn point.
-- [ ] Take an initial stab at Dot's garden. Anything would be prettier than what we have.
+- [x] Take an initial stab at Dot's garden. Anything would be prettier than what we have.
 - [x] Zookeeper's carpet doesn't always notice monsters.
 - - [x] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead. ...no that isn't really the issue here
 - - It's happening because I made the tiles under the LED banner safe. Scanning the carpet's range consumes all safe cells. Those cells can be solid, i think.

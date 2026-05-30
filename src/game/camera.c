@@ -7,6 +7,7 @@
  */
  
 void camera_reset() {
+  memset(&g.camera,0,sizeof(struct camera));
   g.camera.listenerid_next=1;
   g.camera.map_listenerc=0;
   g.camera.cell_listenerc=0;
