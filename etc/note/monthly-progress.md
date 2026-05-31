@@ -110,6 +110,9 @@ Goals:
 - - ...Changed my mind to Ice Palace, and it's just an empty shell, but yep we got it.
 - [ ] Outerworld final shape and monsters everywhere. ...progress, but still very incomplete.
 
+Stats as of 52214bbef39f50c0834a5497bdbe36d59131f4f6, 2026-05-31:
+2:01:28
+
 ## June 2026
 
 Goals:
