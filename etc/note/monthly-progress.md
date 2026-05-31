@@ -110,26 +110,36 @@ Goals:
 - - ...Changed my mind to Ice Palace, and it's just an empty shell, but yep we got it.
 - [ ] Outerworld final shape and monsters everywhere. ...progress, but still very incomplete.
 
-Stats as of 52214bbef39f50c0834a5497bdbe36d59131f4f6, 2026-05-31:
-2:01:28
+Another slow month. I need to stop doing game jams on the side.
+Placed the ice palace, filled in a lot of the outer world, and finished most of the placeholder battles: Only the Athletes' Guild remains.
+Stories can now be acquired properly, most of them. The others, there's a cheat switch in the Cave of Cheating.
+Reaching 100% completion is pretty difficult now because there's buried treasure all over the place, but no hints for them yet. (have to use the magnifier)
+
+Stats as of eaf8fd1d23ab31b45690b4ca2be5a84b5a63f0f1, 2026-05-31:
+ - Code: 52100 lines.
+ - `rom=1234036 code=639357 image=3091436px*51 song=10:26.895*15 sound=0:23.624*73 map=84720m*353`
+ - Non-placeholder battles: 53
+ - Casual full-clear time: 1:49:13. Painful, due to the buried treasures.
 
 ## June 2026
 
 Goals:
-- [ ] 30 new battles.
+- [ ] 30 new battles. Finish Fractia first. Then start populating all the outer world regions.
 - [ ] User-friendly Arcade Mode.
 - [ ] Outer world: Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
-- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished. Allow that placeholder battles still exist.
+- [ ] Story cutscenes. Implement at least one fully.
 
 ## July 2026
 
 Goals:
 - [ ] UI all prettied up.
+- [ ] Sensible hints. Compass, crystal ball, mark-my-map.
 
 ## August 2026
 
 Goals:
 - [ ] All battles complete.
+- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished.
 
 ## September 2026
 

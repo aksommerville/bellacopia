@@ -119,6 +119,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] `activity_shops.c:begin_brewer_single` Cafe menu. Right now we're not showing the price or impact of the drinks.
+- [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
