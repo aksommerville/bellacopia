@@ -104,11 +104,11 @@ Stats as of a12ce9b64970160505fabdc526720aa3fddf35ee, 2026-05-01 (plus some dirt
 ## May 2026
 
 Goals:
-- [ ] 30 new battles. 12 placeholders still outstanding, finish those first. ...missed
+- [ ] 30 new battles. 12 placeholders still outstanding, finish those first. ...missed. Down to 4 placeholders.
 - [ ] Start cutscenes and proper story acquisition.
 - [x] Sand Castle. Use the 5th jigsaw slot, make a big castle full of side quests, in the southwestern desert. Apportion it, not expecting to have it all complete.
 - - ...Changed my mind to Ice Palace, and it's just an empty shell, but yep we got it.
-- [ ] Outerworld final shape and monsters everywhere.
+- [ ] Outerworld final shape and monsters everywhere. ...progress, but still very incomplete.
 
 ## June 2026
 

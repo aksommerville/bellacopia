@@ -156,7 +156,8 @@ static void player_thump(struct battle *battle,struct player *player) {
   if (distance<=player->thresh) {
     player->score+=player->increase;
   } else {
-    if ((player->score-=player->penalty)<=0.0) player->score=0.0;
+    //XXX Don't penalize bad strokes, it's already hard enough.
+    //if ((player->score-=player->penalty)<=0.0) player->score=0.0;
   }
 }
 

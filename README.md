@@ -226,7 +226,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - samurai: Fencing
 - dancer: Jeter
 - ballplayer: HomeRunDerby
-- clerk: Sorting
 
 ## Acknowledgements
 

@@ -27,13 +27,13 @@
   2      Climbing          Spider             Desert
   2____D Cobbling          Coblin             Goblins
   2      Conducting        Conductor          Desert
-  2      Counting          Vampire            Labyrinth
+  2____D Counting          Vampire            Labyrinth
   2____D CPR               Nurse              City
   2      Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
-  2      Dissection        Doctor             City
+  2____D Dissection        Doctor             City
   2      Distancing        Wolf               Woodland
   2      Diving            Penguin            Taiga
  R2      Dodging           Pheasant           Woodland
@@ -66,7 +66,7 @@
   2      Juggling          Octopus            Jungle
  R2      Jumprope          Joey               Desert
  R2      KarateChop        Sensei             Battlefield
-  2      Latin             Teacher            City
+  2____D Latin             Teacher            City
   2____D Lawnmowing        Gardener           Fractia
   2____D Laziness          Sloblin            Goblins
  R2      Levitation        Monk               Desert
@@ -110,7 +110,7 @@
   2____D Shuffling         Dealer             City
   2      Skiing            Reindeer           Taiga
   2      Skipping          Duck               Farm
-  2      Slapping          Gambler            City
+  2____D Slapping          Gambler            City
   2      Slicing           Ninja              Battlefield
   2      Sliding           Penguin            Taiga
   2____D Smashing          Ogre               Labyrinth
@@ -118,13 +118,13 @@
   2      SnowballFight     Snowman            Taiga
   2      Snaring           Drummer            Battlefield
   2      Sonar             Bat                Cave
-  2      Sorting           Clerk              City
+  2____D Sorting           Clerk              City
   2      Sparing           Beetle             Desert
   2____D Stacking          Waiter             Fractia
   1      Staring           Deer               Woodland
   2____D Stealing          Roblin             Goblins
   2      Steering          Buck               Farm
-  2      Stenography       Secretary          City
+  2____D Stenography       Secretary          City
  R2      Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
   2      SumoHorse         Wrestler           City
@@ -136,7 +136,7 @@
   2____D Throwing          Loblin             Goblins
   2      TicTacToe         Raccoon            Woodland
   2____D Topping           HotDogVendor       Fractia
- R2      Traffic           Cop                City
+ R2____D Traffic           Cop                City
  R2      Umbrella          Kitten             Farm
   2____D Watching          Cook               Fractia
   2      Watermelon        Aardvark           Desert

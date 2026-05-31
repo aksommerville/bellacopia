@@ -184,8 +184,8 @@ static void stenography_paper_foreground(struct battle *battle,int x,int y,int w
       if (y>yz) break;
     }
     graf_tile(&g.graf,x,y,*text,0);
-    if (with_commentary&&(BATTLE->gradeclock>0.0)) {
-      if (p<=BATTLE->gradep) {
+    if (BATTLE->gradeclock>0.0) {
+      if (with_commentary&&(p<=BATTLE->gradep)) {
         graf_tile(&g.graf,x,y,(*text==BATTLE->text[p])?0x4d:0x4e,0);
       }
       if (p==BATTLE->gradep) {
