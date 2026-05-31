@@ -40,8 +40,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
 - - [x] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
 - - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
-- - Maximum completion in demo: 82%. 98% is reachable if you undemo in the Cave of Cheating. (9/16 Tree Stories, everything else can be maxed).
-- - ...update: Now 100% is reachable, if you cheat.
+- - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
 - - [x] Add something in Cave of Cheating to acquire the missing Tree Stories.
 
 - [x] Choosing New Game after having returned to the menu does not change the background music, break_soil keeps playing. First time is fine.
@@ -227,7 +226,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - samurai: Fencing
 - dancer: Jeter
 - ballplayer: HomeRunDerby
-- doctor: Dissection
 - secretary: Stenography
 - clerk: Sorting
 
