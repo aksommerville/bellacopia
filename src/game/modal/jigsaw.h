@@ -24,6 +24,7 @@ struct jigsaw {
     uint8_t xform;
     uint8_t clusterid; // Pieces with the same nonzero clusterid must move together.
     uint8_t indicator; // Tileid in RID_image_pause if nonzero.
+    uint8_t ind_hero; // '', but only for the hero, and appears at alternate phase
   } *jigpiecev;
   int jigpiecec;
   int total; // How many real maps in plane, tabulated during load.

@@ -29,13 +29,6 @@ void begin_phonograph() {
   modal_dialogue_set_default(modal,g.song_playing);
 }
 
-/* Crystal Ball.
- */
- 
-void begin_crystal() {
-  modal_spawn(&modal_type_crystal,0,0);
-}
-
 /* Bus stop.
  * This is just when you look at a fixed bus stop, it doesn't do anything but talk.
  */

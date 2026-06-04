@@ -465,7 +465,15 @@ static void jigsaw_detect_clusters(struct jigsaw *jigsaw) {
  */
  
 static uint8_t jigsaw_choose_indicator(const struct map *map) {
-  //TODO indicators?
+
+  // Did the cartographer mark this map?
+  if (
+    (map->rid==store_get_fld16(NS_fld16_carto1))||
+    (map->rid==store_get_fld16(NS_fld16_carto2))||
+    (map->rid==store_get_fld16(NS_fld16_carto3))
+  ) return 0x1c;
+
+  //TODO other indicators?
   return 0;
 }
 
@@ -517,6 +525,7 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
       jigpiece->tileid=(row<<4)|col;
       jigpiece->xform=xform;
       jigpiece->indicator=jigsaw_choose_indicator(map);
+      jigpiece->ind_hero=0;
     }
   }
   
@@ -526,7 +535,7 @@ static int jigsaw_generate_pieces(struct jigsaw *jigsaw) {
     uint8_t tileid=(jigsaw->fy<<4)|jigsaw->fx;
     struct jigpiece *jigpiece=jigsaw_jigpiece_by_tileid(jigsaw,tileid);
     if (jigpiece) {
-      jigpiece->indicator=0x26;
+      jigpiece->ind_hero=0x26;
     }
   }
   
@@ -794,7 +803,7 @@ void jigsaw_render(struct jigsaw *jigsaw) {
   int blink=(jigsaw->blinkclock&32);
   
   /* Iterate clusters.
-   * For each cluster, draw all the shadows, then all the jigpieces.
+   * For each cluster, draw all the shadows, then all the jigpieces, then the indicators.
    * They're not technically required to group by cluster, but they effectively will, due to jigsaw_to_top().
    */
   int i=0;
@@ -815,14 +824,22 @@ void jigsaw_render(struct jigsaw *jigsaw) {
     graf_set_alpha(&g.graf,0xff);
     
     // Pieces.
+    int have_indicator=0;
     for (j=c,jigpiece=jigsaw->jigpiecev+i;j-->0;jigpiece++) {
       graf_set_input(&g.graf,jigsaw->texid);
       if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0x00ff0080);
       graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->tileid,jigpiece->xform);
       if (jigsaw->cheerclock&&(jigpiece->clusterid==jigsaw->cheercluster)) graf_set_tint(&g.graf,0);
-      if (blink&&jigpiece->indicator) {
-        graf_set_image(&g.graf,RID_image_pause);
-        graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,jigpiece->indicator,jigpiece->xform);
+      if (jigpiece->indicator||jigpiece->ind_hero) have_indicator=1;
+    }
+    
+    // Indicators.
+    if (have_indicator) {
+      graf_set_image(&g.graf,RID_image_pause);
+      for (j=c,jigpiece=jigsaw->jigpiecev+i;j-->0;jigpiece++) {
+        uint8_t indicator=blink?jigpiece->indicator:jigpiece->ind_hero;
+        if (!indicator) continue;
+        graf_tile(&g.graf,jigsaw->ox+jigpiece->x,jigsaw->oy+jigpiece->y,indicator,jigpiece->xform);
       }
     }
     

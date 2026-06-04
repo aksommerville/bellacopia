@@ -108,7 +108,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [ ] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
+- [x] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] I think the recorded 100% Time can get reset.
@@ -181,7 +181,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Worldwide broom races => ?
 - [ ] Tree stories => ?
 - [ ] Reverse Sokoban => ?
-- [ ] Bridges => ?
+- [x] Bridges => The bridges are their own prize.
 - This set of quests doesn't feel adequate. Need like a dozen more.
 
 - Prizes unassigned.
@@ -219,7 +219,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - `story13` `NS_fld_root_all`
 - `story14` The Witch With Lots Of Heart: TODO (could be anything)
 - `story15` Pocketfuls of Gold: TODO ('')
-- `story16` The Brewing of Potions: TODO Sell directly at the potion shop.
+- `story16` The Brewing of Potions: Sell directly at the potion shop.
 
 ## Sprites with placeholder battle
 

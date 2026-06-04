@@ -299,3 +299,13 @@ int maps_get_start_position(int *mapid,int *col,int *row) {
   }
   return -1;
 }
+
+/* Resolve parent mapid.
+ */
+ 
+int mapid_jigsawable(int rid) {
+  struct map *map=map_by_id(rid);
+  if (!map) return rid;
+  if (!map->parent) return rid;
+  return map->parent;
+}

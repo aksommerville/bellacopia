@@ -37,6 +37,10 @@ void begin_generic_tolltroll(struct sprite *initiator,int arg);
 void begin_invcritic(struct sprite *initiator);
 void begin_bridget(struct sprite *initiator,int arg);
 
+// activity_advice.c
+void begin_crystal();
+void begin_cartographer(struct sprite *initiator);
+
 // activity_princess.c
 void begin_king(struct sprite *initiator);
 void begin_jaildoor();
@@ -61,7 +65,6 @@ void begin_poet(struct sprite *initiator);
 
 // activity_misc.c
 void begin_phonograph();
-void begin_crystal();
 void begin_busstop(int arg);
 
 // activity_dialogue.c

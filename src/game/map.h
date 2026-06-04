@@ -78,4 +78,9 @@ struct plane *plane_by_position(int z);
  */
 int maps_get_start_position(int *mapid,int *col,int *row);
 
+/* If this map has a parent, return the parent's rid.
+ * We don't actually guarantee that it's jigsawable, but if we're assigning parent correctly it should be so.
+ */
+int mapid_jigsawable(int rid);
+
 #endif

@@ -29,6 +29,7 @@ int game_reset(int use_save) {
   camera_reset();
   feet_reset();
   spawner_reset();
+  cartographer_reset();
   g.bugspray=0.0;
   g.vanishing=0.0;
   g.flash=0.0;

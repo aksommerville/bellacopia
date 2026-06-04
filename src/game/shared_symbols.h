@@ -272,6 +272,7 @@
 #define NS_activity_brewer_single 43
 #define NS_activity_potion_book 44
 #define NS_activity_cheatstories 45
+#define NS_activity_cartographer 46
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -612,6 +613,9 @@
 #define NS_fld16_bridge5q 17
 #define NS_fld16_bridge6q 18
 #define NS_fld16_bridge7q 19
+#define NS_fld16_carto1 20 /* mapid; secret revealed by the cartographer. */
+#define NS_fld16_carto2 21
+#define NS_fld16_carto3 22
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

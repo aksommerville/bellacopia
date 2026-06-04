@@ -198,6 +198,8 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta);
 
 int bm_count_flowers(); // => 0..7
 
+void cartographer_reset(); // cartographer.c
+
 /* Encryption puzzle: cryptmsg.c
  *******************************************************************************/
 
