@@ -130,10 +130,29 @@ static void cb_carto_fld(char type,int id,int value,void *userdata) {
   if (!g.camera.map) return;
   int mapid=mapid_jigsawable(g.camera.map->rid);
   int fld16=0;
-       if (mapid==store_get_fld16(NS_fld16_carto1)) fld16=NS_fld16_carto1;
-  else if (mapid==store_get_fld16(NS_fld16_carto2)) fld16=NS_fld16_carto2;
-  else if (mapid==store_get_fld16(NS_fld16_carto3)) fld16=NS_fld16_carto3;
-  else return;
+  int mapid1=store_get_fld16(NS_fld16_carto1);
+  int mapid2=store_get_fld16(NS_fld16_carto2);
+  int mapid3=store_get_fld16(NS_fld16_carto3);
+  if (!mapid1&&!mapid2&&!mapid3) return; // Nothing highlighted right now.
+       if (mapid==mapid1) fld16=NS_fld16_carto1;
+  else if (mapid==mapid2) fld16=NS_fld16_carto2;
+  else if (mapid==mapid3) fld16=NS_fld16_carto3;
+  else {
+    // Alas, it is possible to set secret-bearing flags while standing on a different map. eg if you hookshot Bridget across the river.
+    // So when a field doesn't match the easy way, examine all carto entries.
+    carto_require();
+    const struct carto_entry *entry=carto.entryv;
+    int i=carto.entryc;
+    for (;i-->0;entry++) {
+      if (entry->fldid!=id) continue;
+           if (entry->mapid==mapid1) store_set_fld16(NS_fld16_carto1,0);
+      else if (entry->mapid==mapid2) store_set_fld16(NS_fld16_carto2,0);
+      else if (entry->mapid==mapid3) store_set_fld16(NS_fld16_carto3,0);
+      else continue;
+      break;
+    }
+    return;
+  }
   // OK, a field was set and we're on one of the highlighted maps. Is this field a secret?
   carto_require();
   int lo=0,hi=carto.entryc;
