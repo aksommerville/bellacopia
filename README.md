@@ -43,6 +43,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
 - - [x] Add something in Cave of Cheating to acquire the missing Tree Stories.
 
+- [x] Thin out the goblins a little, and make their treasure something less useful. Phonograph, maybe? Shovel should be easier to get.
 - [x] Choosing New Game after having returned to the menu does not change the background music, break_soil keeps playing. First time is fine.
 - - ...specifically, it happens if you end the first session on the start map. There was no `game_focus_map` initially, but ought to have been.
 - - Just needed to zero first at `camera_reset`
