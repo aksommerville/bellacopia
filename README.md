@@ -28,7 +28,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
-- [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
+- [x] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.

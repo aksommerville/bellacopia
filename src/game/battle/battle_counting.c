@@ -315,22 +315,29 @@ static void _counting_update(struct battle *battle,double elapsed) {
     }
   }
   
-  // Update players. If they're all phony or committed, we're done.
+  // Update players. Game ends when either player commits.
   struct player *player=BATTLE->playerv;
-  int i=2,done=1;
+  int i=2;
   for (;i-->0;player++) {
     if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
-    if (player->phony||player->committed) ;
-    else done=0;
   }
-  if (done) {
-    int lok=(BATTLE->playerv[0].guess==BATTLE->targetc);
-    int rok=(BATTLE->playerv[1].guess==BATTLE->targetc);
+  struct player *l=BATTLE->playerv;
+  struct player *r=l+1;
+  if (l->committed||r->committed) {
+    int lok=l->committed&&(l->guess==BATTLE->targetc);
+    int rok=r->committed&&(r->guess==BATTLE->targetc);
+    // If one player is phony, the other decides it.
     if (BATTLE->playerv[0].phony) { // One-player, on the right.
       battle->outcome=rok?-1:1;
     } else if (BATTLE->playerv[1].phony) { // One-player, on the left, the usual case.
       battle->outcome=lok?1:-1;
+    // If only one player is committed -- extremely likely -- that player decides it.
+    } else if (l->committed&&!r->committed) {
+      battle->outcome=lok?1:-1;
+    } else if (!l->committed&&r->committed) {
+      battle->outcome=rok?-1:1;
+    // Unusual cases when two players commit at the same moment.
     } else if ((lok&&rok)||(!lok&&!rok)) { // Both right or both wrong -- tie.
       battle->outcome=0;
     } else if (lok) {
