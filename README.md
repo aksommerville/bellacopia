@@ -41,7 +41,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [ ] Petrifying: Make knights slower, and the line of sight wider.
+- [x] Petrifying: Make knights slower, and the line of sight wider.
 
 - For exploration some time in the uncertain future.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.

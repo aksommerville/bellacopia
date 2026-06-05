@@ -12,7 +12,7 @@
 #define PLAYER_SPEED_MAX 8.000
 #define SPAWN_LIMIT 8
 #define KNIGHT_INTERVAL 1.070 /* Aim to be enharmonic against the animation interval, 0.200 */
-#define KNIGHT_SPEED 4.000
+#define KNIGHT_SPEED 3.000
 #define KNIGHT_TURN_MIN 0.500
 #define KNIGHT_TURN_MAX 1.500
 #define KNIGHT_BLOCK_TIME 0.333 /* Continue for so long when fully blocked before we accept it, to mitigate jitter. */
@@ -74,6 +74,7 @@ struct sprite_knight {
   int animframe;
   double turnclock;
   double blockclock;
+  double stopclock; // A brief hold after each change of direction.
 };
 
 /* Delete.
@@ -174,7 +175,7 @@ static void petrifying_player_dpad(struct batsup_sprite *sprite,double elapsed,i
    * Only do one per update, and only if our line of sight is uninterrupted.
    * We don't bother checking map cells because it's designed such that there's never a wall they can hide behind.
    */
-  const double radius=0.400;
+  const double radius=0.500;
   double pl=sprite->x-radius,pr=sprite->x+radius,pt=sprite->y-radius,pb=sprite->y+radius;
   if (SPRITE->facedx<0) pl=0.0;
   else if (SPRITE->facedx>0) pr=NS_sys_mapw;
@@ -390,6 +391,8 @@ static void petrifying_knight_random_direction(struct batsup_sprite *sprite) {
     case 0x08: SPRITE->facedx=1; break;
     default: SPRITE->facedy=1; break;
   }
+  
+  SPRITE->stopclock=0.500;//TODO
 }
 
 /* Nonzero if there's no other sprites uncomfortably close, ie ok to become solid.
@@ -438,7 +441,9 @@ static void petrifying_update_knight(struct batsup_sprite *sprite,double elapsed
   /* Walk in one direction until we feel like something else or get blocked.
    * Stop cold if battle complete.
    */
-  if (sprite->world->battle->outcome==-2) {
+  if (SPRITE->stopclock>0.0) {
+    SPRITE->stopclock-=elapsed;
+  } else if (sprite->world->battle->outcome==-2) {
     int turn=0;
     if (batsup_sprite_move(sprite,SPRITE->facedx*KNIGHT_SPEED*elapsed,SPRITE->facedy*KNIGHT_SPEED*elapsed)) {
       SPRITE->blockclock=0.0;
