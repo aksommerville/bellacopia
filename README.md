@@ -33,7 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
 - [ ] Handicap for monster and fishpole.
-- [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
+- [x] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?

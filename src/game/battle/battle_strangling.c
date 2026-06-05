@@ -364,6 +364,7 @@ static void _strangling_render(struct battle *battle) {
     srcy=srch*BATTLE->state;
   }
   graf_set_image(&g.graf,RID_image_battle_strangling);
+  graf_decal(&g.graf,(FBW>>1)-48,GROUNDY-5,0,320,96,16); // roots and dirt
   graf_decal(&g.graf,(FBW>>1)-(srcw>>1),GROUNDY-srch+1,srcx,srcy,srcw,srch);
   
   // Power meters left and right.
