@@ -366,6 +366,42 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0,
   },
+  [NS_itemid_cuppa1]={ // The four "cuppa" are single-serving potions at the potion shop.
+    .tileid=0xc6,
+    .hand_tileid=0,
+    .strix_name=101,
+    .strix_help=102,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
+  [NS_itemid_cuppa2]={
+    .tileid=0xc7,
+    .hand_tileid=0,
+    .strix_name=103,
+    .strix_help=104,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
+  [NS_itemid_cuppa3]={
+    .tileid=0xc8,
+    .hand_tileid=0,
+    .strix_name=105,
+    .strix_help=106,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
+  [NS_itemid_cuppatutti]={
+    .tileid=0xc9,
+    .hand_tileid=0,
+    .strix_name=107,
+    .strix_help=108,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
 };
 
 /* Get item reporting.
@@ -462,6 +498,23 @@ static void game_report_item_acquire(int itemid,int quantity) {
  
 int game_get_item(int itemid,int quantity) {
   if ((itemid<1)||(itemid>0xff)) return 0; // Valid itemid are 8 bits and not zero.
+  
+  /* Single-serving potions, and other things that need explicit handling.
+   */
+  switch (itemid) {
+    case NS_itemid_cuppa1: quantity=1; goto _single_serving_potion_;
+    case NS_itemid_cuppa2: quantity=2; goto _single_serving_potion_;
+    case NS_itemid_cuppa3: quantity=3; goto _single_serving_potion_;
+    case NS_itemid_cuppatutti: quantity=100; _single_serving_potion_: {
+        int hp=store_get_fld16(NS_fld16_hp);
+        int hpmax=store_get_fld16(NS_fld16_hpmax);
+        if (hp>=hpmax) return 0; // No need to say "Pack full", i think.
+        hp+=quantity;
+        if (hp>hpmax) hp=hpmax;
+        store_set_fld16(NS_fld16_hp,hp);
+        bm_sound(RID_sound_collect);
+      } return 1;
+  }
   
   /* If we already have it in inventory, either add quantity or do nothing.
    */
@@ -641,10 +694,19 @@ const struct item_detail *item_detail_for_equipped() {
 int possessed_quantity_for_itemid(int itemid,int *limit) {
   if (limit) *limit=0;
   
-  // Jigpiece is a little special.
-  if (itemid==NS_itemid_jigpiece) {
-    if (limit) *limit=INT_MAX;//TODO Can we get a correct count of possible jigpieces? It's complicated.
-    return g.store.jigstorec;
+  // Jigpiece and single-serving potions are a little special.
+  switch (itemid) {
+    case NS_itemid_jigpiece: {
+        if (limit) *limit=INT_MAX;//TODO Can we get a correct count of possible jigpieces? It's complicated.
+        return g.store.jigstorec;
+      }
+    case NS_itemid_cuppa1:
+    case NS_itemid_cuppa2:
+    case NS_itemid_cuppa3:
+    case NS_itemid_cuppatutti: {
+        if (limit) *limit=INT_MAX;
+        return 0;
+      }
   }
   
   // Everything else should be generic.

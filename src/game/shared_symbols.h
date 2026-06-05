@@ -183,6 +183,10 @@
 #define NS_itemid_glove 38
 #define NS_itemid_marionette 39
 #define NS_itemid_seamonster 40
+#define NS_itemid_cuppa1 41 /* Fakeish item for single-serving potions. */
+#define NS_itemid_cuppa2 42
+#define NS_itemid_cuppa3 43
+#define NS_itemid_cuppatutti 44
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -223,7 +227,11 @@
   _(crystal) \
   _(glove) \
   _(marionette) \
-  _(seamonster)
+  _(seamonster) \
+  _(cuppa1) \
+  _(cuppa2) \
+  _(cuppa3) \
+  _(cuppatutti)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
