@@ -27,39 +27,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- Prepare to exhibit at CORGS, 6-7 June.
-- - xxx Finish rewiring arcade cabinet.
-- - - [x] Order spade cables. ...Ordered 2026-05-14.
-- - - ...blecccch they're still wrong. Don't bother. But do get it wired before GDEX for sure.
-- - [ ] Persistent and more detailed logging.
-- - - [ ] Can we arrange to capture these via Romassist? Might be easier than adding some log-to-file option to Egg, and this will surely come up again for other games.
-- - [x] Block off grossly-unfinished areas:
-- - - [x] Fractia Hospital and Athletes' Guild, if we don't finish their battles.
-- - - ...Athlete's Guild is blocked off. Hospital open. Even if I don't add any others, I want the CPR contest reachable.
-- - [x] Start without stories. (or if we can implement triggers and cutscenes in time, do it, but that's a lot).
-- - - ...actually I guess if just the trigger is in place I can live with that. Better to get the proper trigger flags, as long as I'm changing things.
-- - [x] Don't show endorsement banners and don't win endorsements, unless the election is actually running.
-- - [x] CPR Contest must not change song on the way out, or must change it to what was actually playing before. Doesn't matter in story mode, but arcade mode it does.
-- - Maximum completion in demo: 82%. 100% is reachable if you undemo in the Cave of Cheating.
-- - [x] Add something in Cave of Cheating to acquire the missing Tree Stories.
-
-- [x] Thin out the goblins a little, and make their treasure something less useful. Phonograph, maybe? Shovel should be easier to get.
-- [x] Choosing New Game after having returned to the menu does not change the background music, break_soil keeps playing. First time is fine.
-- - ...specifically, it happens if you end the first session on the start map. There was no `game_focus_map` initially, but ought to have been.
-- - Just needed to zero first at `camera_reset`
-- [x] Change zookeeper again: Provide explicit bounds for the carpet at its spawn point.
-- [x] Take an initial stab at Dot's garden. Anything would be prettier than what we have.
-- [x] Zookeeper's carpet doesn't always notice monsters.
-- - [x] Can we do a last-chance check when monster sprite triggers the battle, if one of us is standing on the carpet, capture instead. ...no that isn't really the issue here
-- - It's happening because I made the tiles under the LED banner safe. Scanning the carpet's range consumes all safe cells. Those cells can be solid, i think.
 - [ ] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
-- [x] Fish processor proposes turning red fish into potions even when you don't have a bottle. You should have to buy the bottle first.
-- [x] Don't earn gold off a battle if your purse is full, it's ok to have no prize.
 - [ ] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
-- [ ] We're treating L1/R1 equivalent to L2/R2 in the pause modal, so we ought to do the same for swapping items. Or why not just alias them globally, is that doable?
 - [ ] Handicap for monster and fishpole.
 - [ ] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
@@ -67,21 +39,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] broomrace: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
-- [x] One more huge interior zone. We have room for one more jigsaw.
-- - Maybe an ice palace up in the tundra? Or a sand palace in the desert? <-- Sand Castle. Wait no, the Princess's castle is the Sand Castle. Make an Ice Palace.
-- - A temple with six wings, ie snowflake-shaped, where in each wing you have to fight the Ice Dragon in some Winter Olympics game. Win the Snowglobe at the end.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [x] Add some safe buffer around the goblins' secret door. I've bumped into monsters immediately on passing thru.
 - [ ] Petrifying: Make knights slower, and the line of sight wider.
 
 - For exploration some time in the uncertain future.
-- [x] Make the bridges look like the stuff they're made of.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
-- [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?"
+- [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
@@ -91,17 +58,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Racketeering contest badly needs more juice when you hit the ball.
-- [ ] fractia: Don't show the outdoor endorser signs or allow endorser battles except when the election is running.
-- [ ] ^ Actually do allow endorser battles outside the election: They get more difficult each time, and if you beat the whole guild there's a one-time prize.
-- - And if you do that before the election, you already have the endorsement.
+- [ ] Make something happen if you beat a guild outside the election.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
-- [ ] Obscure but easy action to force deterministic behavior from the cryptmsg, labyrinth and similar private PRNGs. I'm picturing, circle a statue three times. Probly in the Temple?
-- - ...maybe nix this. The idea was to facilitate speed running, but honestly the random monster spawning is much more significant and wouldn't be affected by this.
-- [ ] Also an offeratory box where you can drop a coin, then the next time you go fishing you'll catch a red fish.
+- [ ] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - [ ] More spells. Not sure what...
-- [x] 2 more outerworld songs. See `completion.c:bm_song_for_outerworld()`
 - [ ] Properer graphics for Crystal Ball. Very rough today.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
@@ -109,13 +71,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [x] Cartographer: For a small fee, mark 3 undiscovered secrets on the map.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] I think the recorded 100% Time can get reset.
-- [x] Stealing contest: Actually win all the coins you steal. And are there other opportunities to "break the wall" like that?
-- - [x] Fishing: Randomly maybe one or two fish are colored?
-- - [x] Not quite the same thing, but maybe all the eating contests should guarantee a heart if you need one? apples, gobbling, hm i guess that's all so far
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
@@ -173,7 +131,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Hat the barrels => Bell
 - [ ] Catch em all => (incremental; multiple)
 - [x] Rescue the Princess => purse+100
-- [x] Decipher the goblins' text => Shovel
+- [x] Decipher the goblins' text => Phonograph
 - [x] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
 - [ ] The toad and the boulder => no prize?
@@ -198,7 +156,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Bus Stop: inconvenience
 - [x] Snowglobe: underworld, temporarily
 - [x] Tape Measure: underworld, temporarily
-- [x] Phonograph: underworld, temporarily
+- [x] Phonograph: Goblins' cave.
 - [x] Crystal Ball: underworld, temporarily
 - [x] Power Glove: Sea monster (Labyrinth).
 - [x] Marionette: underworld, temporarily

@@ -51,8 +51,18 @@ void egg_client_notify(int k,int v) {
  
 void egg_client_update(double elapsed) {
 
+  /* Record the prior input state and capture next.
+   * Also some light universal mangling of input.
+   */
   memcpy(g.pvinput,g.input,sizeof(g.input));
   egg_input_get_all(g.input,sizeof(g.input)/sizeof(g.input[0]));
+  int *v=g.input;
+  int i=sizeof(g.input)/sizeof(g.input[0]);
+  for (;i-->0;v++) {
+    // (L1,R1)==(L2,R2). Might come up if you've accepted default mapping and the guesser guessed wrong. We never use the 2's.
+    if ((*v)&(EGG_BTN_L1|EGG_BTN_L2)) (*v)|=(EGG_BTN_L1|EGG_BTN_L2);
+    if ((*v)&(EGG_BTN_R1|EGG_BTN_R2)) (*v)|=(EGG_BTN_R1|EGG_BTN_R2);
+  }
   
   modals_update(elapsed);
   modals_drop_defunct();

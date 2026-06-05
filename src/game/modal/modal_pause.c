@@ -203,11 +203,9 @@ static void _pause_update(struct modal *modal,double elapsed) {
     }
   }
   
-  // L1 and R1 to change pages. What the heck, let's allow L2 and R2 as well.
+  // L1 and R1 to change pages.
   if ((g.input[1]&EGG_BTN_L1)&&!(g.pvinput[1]&EGG_BTN_L1)) pause_change_page(modal,-1);
   if ((g.input[1]&EGG_BTN_R1)&&!(g.pvinput[1]&EGG_BTN_R1)) pause_change_page(modal,1);
-  if ((g.input[1]&EGG_BTN_L2)&&!(g.pvinput[1]&EGG_BTN_L2)) pause_change_page(modal,-1);
-  if ((g.input[1]&EGG_BTN_R2)&&!(g.pvinput[1]&EGG_BTN_R2)) pause_change_page(modal,1);
   
   // Update vella.
   int i=MODAL->vellumc;
