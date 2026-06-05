@@ -377,6 +377,9 @@ static void player_render(struct battle *battle,struct player *player) {
   graf_set_image(&g.graf,RID_image_battle_early);
   graf_tile(&g.graf,XEND+8,y,0xa9,0);
   
+  // The cook.
+  graf_decal(&g.graf,PLEFTX,player->y-40,player->srcx+(player->chopping?32:0),player->srcy,32,48);
+  
   // Vegetables on the belt.
   struct veg *veg=BATTLE->vegv;
   int i=BATTLE->vegc;
@@ -384,9 +387,6 @@ static void player_render(struct battle *battle,struct player *player) {
     if (veg->who!=player->who) continue;
     graf_decal(&g.graf,veg->x,veg->y,veg->srcx,veg->srcy,veg->w,veg->h);
   }
-  
-  // The cook.
-  graf_decal(&g.graf,PLEFTX,player->y-40,player->srcx+(player->chopping?32:0),player->srcy,32,48);
   
   // Score indicator.
   graf_decal(&g.graf,XEND+40,player->y-24,160,144,32,32);

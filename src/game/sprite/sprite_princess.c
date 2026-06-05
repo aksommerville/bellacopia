@@ -30,9 +30,27 @@ static int _princess_init(struct sprite *sprite) {
    */
   if (store_get_fld(NS_fld_rescued_princess)) return -1;
   
+  /* Check my sequence tag. Is this the right spawn point for the narrative context?
+   */
+  int seq=(sprite->argc>=4)?sprite->arg[0]:0;
+  switch (seq) {
+    case 0: break; // Shouldn't use this, but zero will mean "always spawn".
+    case 1: { // In the jail cell.
+        if (store_get_fld(NS_fld_princess_outside)) return -1;
+      } break;
+    case 2: { // At the cave's entrance.
+        if (!store_get_fld(NS_fld_princess_outside)) return -1;
+      } break;
+    default: {
+        fprintf(stderr,"Illegal value %d for princess seq.\n",seq);
+        return -1;
+      }
+  }
+  
   /* If there's already another Princess, nix this new one. Lord knows, one is plenty.
    * This can happen when we're following Dot but Dot goes back to the dungeon for some reason.
    * We are in monsterlike group, and that should be a pretty small one.
+   * Also, now that there's a front-door spawn point, it comes up a lot.
    */
   struct sprite **otherp=GRP(monsterlike)->sprv;
   int i=GRP(monsterlike)->sprc;

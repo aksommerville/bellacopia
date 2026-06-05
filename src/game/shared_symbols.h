@@ -281,6 +281,7 @@
 #define NS_activity_potion_book 44
 #define NS_activity_cheatstories 45
 #define NS_activity_cartographer 46
+#define NS_activity_exit_cave 47
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -295,7 +296,7 @@
 #define NS_sprtype_bonfire     10 /* (u32)0 */
 #define NS_sprtype_tolltroll   11 /* (u16:cost)0 (u16:fld)0 ; Zeroes for the three-part fetch quest */
 #define NS_sprtype_toast       12 /* (u32)0 */
-#define NS_sprtype_princess    13 /* (u32)0 */
+#define NS_sprtype_princess    13 /* (u8)seq (u24)0 ; seq is (0,1,2)=(any,jail,frontdoor) */
 #define NS_sprtype_setfld      14 /* (u16:fld) (u16)0 */
 #define NS_sprtype_ornament2x2 15 /* (u32)0 */
 #define NS_sprtype_tvnews      16 /* (u32)0 */
@@ -598,6 +599,7 @@
 #define NS_fld_bt13 137
 #define NS_fld_bt14 138
 #define NS_fld_bt15 139
+#define NS_fld_princess_outside 140 /* Princess has escaped the cave; if not returned yet, she respawns at its entrance. */
 
 /* "fld16" are 16 unsigned bits each.
  */

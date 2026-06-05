@@ -260,8 +260,8 @@ static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *
         int transition=NS_transition_spotlight;
         camera_cut(rid,dstx,dsty,transition);
         
-        // If there's an activity, trigger it now.
-        if (activity) game_begin_activity(activity,0,0);
+        // If there's an activity, trigger it now, with me as initiator.
+        if (activity) game_begin_activity(activity,0,sprite);
       } break;
   }
 }
@@ -338,4 +338,9 @@ void sprite_hero_warp_busstop(struct sprite *sprite,int busstop) {
 int sprite_hero_is_injured(struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
   return (SPRITE->hurt>0.0)?1:0;
+}
+
+int sprite_hero_is_escorting_princess(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  return SPRITE->respawn_princess;
 }

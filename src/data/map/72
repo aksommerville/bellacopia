@@ -22,3 +22,4 @@ root @3,6 (u16:fld)root6
 root @3,5 (u16:fld)root6
 sprite @3,4 sprite:rootdevil (u16:fld)root6 (u16)0
 door @14,1 map:122 @9,9 0x0000
+sprite @14,4 sprite:princess (u8)2 (u24)0

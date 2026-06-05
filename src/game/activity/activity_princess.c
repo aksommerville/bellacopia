@@ -104,6 +104,20 @@ void begin_escape() {
   store_set_fld(NS_fld_escaped,1);
 }
 
+/* Exit cave: Similar to escape, but triggers every time when you leave the cave by its front door.
+ * This is how we decide to spawn the princess outside instead of at her cell.
+ * No such consideration if you take her out the secret door -- do something that stupid and you're on your own.
+ * "escape" doesn't really need to exist now that we have this but whatever.
+ */
+ 
+void begin_exit_cave(struct sprite *hero) {
+  int already=store_get_fld(NS_fld_princess_outside);
+  int escorting=sprite_hero_is_escorting_princess(hero);
+  if (escorting&&!already) {
+    store_set_fld(NS_fld_princess_outside,1);
+  }
+}
+
 /* Cryptmsg: One of the seven obelisks giving encrypted clues in the goblins' cave.
  */
  
