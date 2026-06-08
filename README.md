@@ -28,13 +28,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Add an intermediate checkpoint when rescuing the Princess. If you get her out of the cave, she restarts at the cave's entrance.
-- [x] Counting contest, 2-player: First to answer correctly should win. Currently, the other player gets a chance after, it seems unfair.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
 - [ ] Handicap for monster and fishpole.
-- [x] Strangling contest animation. It's all coded and ready, but the two animation frames are identical.
 - [ ] Animate digging with shovel.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
@@ -42,7 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [x] Petrifying: Make knights slower, and the line of sight wider.
+- [ ] Turnaround mitigation, immediately after you pass thru a door.
 
 - For exploration some time in the uncertain future.
 - [ ] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?
@@ -81,7 +78,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
-- [x] `activity_shops.c:begin_brewer_single` Cafe menu. Right now we're not showing the price or impact of the drinks.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 

@@ -11,7 +11,7 @@
 8181818181818194919191919191919191919191
 9191919191919191919191919191919191919191
 
-image image:meadow
+image image:mountains
 position 2 7 1 *
 sprite @8,4 sprite:jigpiece (u32)0
 root @2,1 (u16:fld)root3

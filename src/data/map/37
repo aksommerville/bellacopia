@@ -11,7 +11,7 @@
 3531353125352531313132040302000003000600
 2525313125313531313532030304060200040401
 
-image image:meadow
+image image:mountains
 position 0 6 1 *
 sprite @11,4 sprite:jigpiece (u32)0
 root @17,6 (u16:fld)root3

@@ -14,7 +14,6 @@ Balancing. Walk to the goal with a tomato on your head.
 Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 Burrowing. Right to move, A to dig. Dig thru the dirt.
-Cheating. Three-card monte but you'll always lose. A to punch the guy, and win.
 Clam Baking. Hold A to engage flamethrower, only when the clam is open.
 Climbing. L/R and A/B, maintaining one "point of contact" at all times.
 Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
@@ -55,9 +54,7 @@ Rowing. Circle the dpad with lopsided speed, slower in the water.
 Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
 Sharing. Dpad around the crowd, touch somebody to give them a berry.
 Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
-Shuffling. Tap to commit. First pick a cut point, then merge phase. Ideal is exactly half on both.
 Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
-Slapping. One chance to press A, to slap a given card when it falls on the pile.
 Slicing. Tap to stop the blade and cut the pie, aiming for half.
 Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
 Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
@@ -68,12 +65,10 @@ Sumo Horse. Metronome. One player dances with only Left and Right, then the othe
 Surrounding. Snake.
 Swearing. Press the button for a word bubble like "$#@!", last word wins.
 Swinging. Hold L/R in phase, riding a swing.
-Traffic. Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
 Umbrella. Hold A while raining, release while not.
 Watermelon. Hold A to charge and release to spit a seed, going for distance.
 
 ## Hard
-CPR.
 Whining. Get mama bear's attention by tapping U when she's looking and A when not.
 Wining. Big pile of grapes that you jump on to squash.
 Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself. Score is how close to center.
@@ -83,7 +78,6 @@ Cartography. Pick a color for all the regions of a map, 4 choices, no going back
 Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
 Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
 Dance Off. Tiny rhythm game on the dpad.
-Dissection. Dpad to place scalpel, then hold A to select a direction, then tap A to select length. Cut the arteries but don't touch the organs.
 Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
@@ -98,14 +92,11 @@ Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the midd
 Skiing. L/R and brake, get between the flags.
 Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
 Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
-Sorting. Columns-ish, put falling things in like piles.
 Sparing. Bowling, second throw only.
 Steering. Drag race with only L/R, dodging critters etc.
-Stenography. Tap all the buttons in order, following a sheet.
 Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.
 Tic Tac Toe. The whole game.
 Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
 Wrecking. Mini platformer full of fragile things and you have a giant hammer.
 Calligraphy. Paint a reference figure.
 Morse Code. Tap out a short message with A. Key visible on screen, but you can only win higher diffs by remembering.
-Latin. Show a Linnean plant or animal name and three pictures. First to pick it right gets a point. Repeat a few times.

@@ -137,11 +137,15 @@ Goals:
 
 ## August 2026
 
+LowRez and js13k are this month, and I am doing both. So don't expect a lot of Bellacopia progress.
+
 Goals:
 - [ ] All battles complete.
-- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished.
 
 ## September 2026
+
+Goals:
+- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished.
 
 ## October 2026
 
