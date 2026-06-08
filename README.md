@@ -24,6 +24,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...well that's kind of back-burnered now, don't worry, i'm on it.
 - 2026-03-02: Dividing time for a while, making a game and judging Uplifting Jam #7.
 - 2026-05-02: Slower than I hoped, mostly because I keep getting distracted by game jams. But I still think we'll finish this year.
+- 2026-06-07: Public showing at CORGS Con. Pleasantly surprised by how little guidance anyone needed.
 
 ## TODO
 
@@ -44,6 +45,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Petrifying: Make knights slower, and the line of sight wider.
 
 - For exploration some time in the uncertain future.
+- [ ] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?
+- [ ] Swing the stick like a sword, and briefly stun monsters.
+- [ ] Cartographer doesn't belong in Cheapside. Put him somewhere at least a little difficult to reach. Would make sense next to the Linguist, maybe?
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
