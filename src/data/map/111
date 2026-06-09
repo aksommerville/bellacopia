@@ -17,4 +17,3 @@ position 2 1 0 0
 parent map:5
 sprite @3,7 sprite:jigpiece (u32)0
 door @16,4 map:294 @10,5 0x0000
-sprite @9,4 sprite:cartographer (u16:activity)cartographer (u16:activity_arg)0
