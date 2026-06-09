@@ -94,6 +94,7 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y);
 void sprite_hero_warp_busstop(struct sprite *sprite,int busstop);
 int sprite_hero_is_injured(struct sprite *sprite);
 int sprite_hero_is_escorting_princess(const struct sprite *sprite); // True only during transitions. Intended for door activities to consume.
+uint8_t sprite_hero_get_facedir(const struct sprite *sprite);
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

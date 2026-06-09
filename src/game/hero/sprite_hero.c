@@ -345,3 +345,11 @@ int sprite_hero_is_escorting_princess(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
   return SPRITE->respawn_princess;
 }
+
+uint8_t sprite_hero_get_facedir(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  if (SPRITE->facedx<0) return 0x10;
+  if (SPRITE->facedy>0) return 0x08;
+  if (SPRITE->facedy<0) return 0x40;
+  return 0x02;
+}

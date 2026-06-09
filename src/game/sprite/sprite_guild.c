@@ -7,6 +7,8 @@ struct sprite_guild {
   int name_strix; // RID_strings_battle
   int fld;
   double cooldown;
+  uint8_t pvhero;
+  int await_hero_orientation_change;
 };
 
 #define SPRITE ((struct sprite_guild*)sprite)
@@ -40,6 +42,7 @@ static int _guild_init(struct sprite *sprite) {
  */
  
 static void _guild_update(struct sprite *sprite,double elapsed) {
+  uint8_t horient=0;
   // Face the hero. Our natural orientation is right.
   if (GRP(hero)->sprc>0) {
     struct sprite *hero=GRP(hero)->sprv[0];
@@ -47,6 +50,11 @@ static void _guild_update(struct sprite *sprite,double elapsed) {
     double dx=hero->x-sprite->x;
     if (dx>margin) sprite->xform=0;
     else if (dx<-margin) sprite->xform=EGG_XFORM_XREV;
+    horient=sprite_hero_get_facedir(hero);
+  }
+  if (horient!=SPRITE->pvhero) {
+    SPRITE->pvhero=horient;
+    SPRITE->await_hero_orientation_change=0;
   }
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
@@ -95,7 +103,13 @@ static void guild_cb_battle(struct modal *modal,int outcome,void *userdata) {
  */
  
 static void _guild_collide(struct sprite *sprite,struct sprite *other) {
+
+  /* It's easy to reenter a guild contest by accident, and that can be a real bummer if you just spent some effort to win it.
+   * So we do an extra-strength cooldown: Dot's orientation has to change before we can trigger again.
+   */
   if (SPRITE->cooldown>0.0) return;
+  if (SPRITE->await_hero_orientation_change) return;
+  
   struct modal_args_battle args={
     .battle=SPRITE->battle,
     .args={
@@ -120,6 +134,7 @@ static void _guild_collide(struct sprite *sprite,struct sprite *other) {
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;
   SPRITE->cooldown=0.500;
+  SPRITE->await_hero_orientation_change=1;
 }
 
 /* Type definition.
