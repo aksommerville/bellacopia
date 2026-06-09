@@ -14,5 +14,3 @@ a1a1a1a1a1a1a203020203040006050205010102
 image image:desert
 position 5 8 1 *
 sprite @14,5 sprite:jigpiece (u32)0
-compass @12,8 (u16:compass)heartcontainer (u16:fld)hc1 (u16)0
-sprite @12,8 sprite:castleshop (u16:activity)castleshop (u16:activity_arg)0

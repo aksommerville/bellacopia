@@ -594,6 +594,7 @@ int game_get_item(int itemid,int quantity) {
       store_set_fld16(NS_fld16_hp,store_get_fld16(NS_fld16_hp)+1);
     }
     game_report_item_quantity_add(itemid,quantity);
+    g.camera.mapsdirty=1;
     return 1;
   }
   
