@@ -14,4 +14,4 @@
 image image:caves
 position 1 6 2 *
 sprite @2,4 sprite:jigpiece (u32)0
-sprite @9,2 sprite:ton (u32)0
+sprite @9,2 sprite:pound (u32)0

@@ -203,9 +203,10 @@ static void _hero_collide(struct sprite *sprite,struct sprite *other) {
 /* POI.
  * Treadles and such work generically. Others can actuate them, not just Dot, and that's 1000% by design.
  * Doors are only for Dot, and there will probably be others like it in the future.
+ * Nonstatic because we trigger this artificially for door-reverse mitigation.
  */
  
-static void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int argc) {
+void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int argc) {
   switch (opcode) {
   
     case CMD_map_door:

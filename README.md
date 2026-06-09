@@ -39,7 +39,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [ ] Turnaround mitigation, immediately after you pass thru a door.
+- [x] Turnaround mitigation, immediately after you pass thru a door.
+- [ ] Fishwife should sell in addition to buying, plus I don't like her UI.
+- [x] Stories vellum: Mark unused books on the shelf.
 
 - For exploration some time in the uncertain future.
 - [ ] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?

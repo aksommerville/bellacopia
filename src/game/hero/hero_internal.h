@@ -66,6 +66,8 @@ struct sprite_hero {
 
 void hero_render(struct sprite *sprite,int x,int y);
 
+void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int argc);
+
 // hero_motion.c
 void hero_motion_update(struct sprite *sprite,double elapsed);
 

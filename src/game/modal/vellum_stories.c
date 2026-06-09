@@ -13,6 +13,7 @@ struct vellum_stories {
   struct vellum hdr;
   const struct story *storyv[16];
   int storyc;
+  int toldv[16]; // Parallel to (storyv).
   struct label {
     int texid;
     int x,y,w,h; // (x,y) relative to vellum
@@ -106,6 +107,7 @@ static void stories_activate(struct vellum *vellum) {
   }
   const struct story *story=VELLUM->storyv[stories_storyp];
   game_tell_story(story);
+  VELLUM->toldv[stories_storyp]=store_get_fld(story->fld_told);
 }
 
 /* Move cursor.
@@ -163,6 +165,9 @@ static void _stories_render(struct vellum *vellum,int x,int y,int w,int h) {
     int sy=ty;
     if (i==stories_storyp) sy-=3;
     graf_tile(&g.graf,tx,sy,story->tileid_small,0);
+    if (!VELLUM->toldv[i]) {
+      graf_tile(&g.graf,tx-5,sy-12,0x04,0);
+    }
   }
   
   /* Dot's finger under the selected story.
@@ -183,7 +188,7 @@ static void _stories_render(struct vellum *vellum,int x,int y,int w,int h) {
     graf_tile(&g.graf,x+90+NS_sys_tilesize,y+20+NS_sys_tilesize,ti+0x11,0);
     
     // "New" sunburst if not yet told.
-    if (!store_get_fld(selected->fld_told)) {
+    if (!VELLUM->toldv[stories_storyp]) {
       graf_tile(&g.graf,x+87,y+15,0x03,0);
       graf_tile(&g.graf,x+87-NS_sys_tilesize,y+15,0x02,0);
     }
@@ -234,6 +239,7 @@ struct vellum *vellum_new_stories(struct modal *parent) {
     const struct story *story=story_by_index_present(p);
     if (!story) break;
     VELLUM->storyv[VELLUM->storyc++]=story;
+    if (store_get_fld(story->fld_told)) VELLUM->toldv[p]=1;
     if (VELLUM->storyc>=16) break;
   }
   stories_refresh_labels(vellum);

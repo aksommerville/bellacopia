@@ -150,6 +150,8 @@ static void hero_check_bumps(struct sprite *sprite) {
   if (!map) return;
   x%=NS_sys_mapw;
   y%=NS_sys_maph;
+  int mex=((int)sprite->x)%NS_sys_mapw;
+  int mey=((int)sprite->y)%NS_sys_maph;
   struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
@@ -179,6 +181,18 @@ static void hero_check_bumps(struct sprite *sprite) {
           if (cmd.arg[1]!=y) break;
           int busstop=(cmd.arg[2]<<8)|cmd.arg[3];
           game_begin_activity(NS_activity_busstop,busstop,0);
+        } break;
+      case CMD_map_door:
+      case CMD_map_burieddoor: {
+          if (cmd.arg[0]!=mex) break;
+          if (cmd.arg[1]!=mey) break;
+          int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+          int dstx=cmd.arg[4];
+          int dsty=cmd.arg[5];
+          int fld=(cmd.arg[6]<<8)|cmd.arg[7];
+          if ((cmd.opcode==CMD_map_burieddoor)&&!store_get_fld(fld)) break;
+          SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
+          _hero_tread_poi(sprite,cmd.opcode,cmd.arg,cmd.argc);
         } break;
     }
   }
