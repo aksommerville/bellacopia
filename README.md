@@ -40,7 +40,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [x] Turnaround mitigation, immediately after you pass thru a door.
-- [ ] Fishwife should sell in addition to buying, plus I don't like her UI.
+- [x] Fishwife should sell in addition to buying, plus I don't like her UI.
 - [x] Stories vellum: Mark unused books on the shelf.
 
 - For exploration some time in the uncertain future.

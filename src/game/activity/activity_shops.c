@@ -207,56 +207,6 @@ void begin_bloodbank(struct sprite *sprite,int price) {
 }
 
 /* Fishwife.
- */
- 
-static int fishwife_gather_price(int *fishc) {
-  int greenc=store_get_fld16(NS_fld16_greenfish);
-  int bluec=store_get_fld16(NS_fld16_bluefish);
-  int redc=store_get_fld16(NS_fld16_redfish);
-  if (fishc) *fishc=greenc+bluec+redc;
-  return greenc+bluec*5+redc*20;
-}
- 
-static int cb_fishwife(int option,void *userdata) {
-  if (option!=4) return 0;
-  int price=fishwife_gather_price(0);
-  int gold=store_get_fld16(NS_fld16_gold);
-  int goldmax=store_get_fld16(NS_fld16_goldmax);
-  if ((gold+=price)>=goldmax) gold=goldmax;
-  store_set_fld16(NS_fld16_gold,gold);
-  store_set_fld16(NS_fld16_greenfish,0);
-  store_set_fld16(NS_fld16_bluefish,0);
-  store_set_fld16(NS_fld16_redfish,0);
-  bm_sound(RID_sound_collect);
-  return 1;
-}
- 
-void begin_fishwife_old(struct sprite *sprite) {//XXX Replace with options for how many to sell
-  int fishc=0;
-  int price=fishwife_gather_price(&fishc);
-  if (fishc<1) { // "Bring me fish"
-    begin_dialogue(17,sprite);
-    return;
-  }
-  struct text_insertion insv[]={
-    {.mode='i',.i=fishc},
-    {.mode='i',.i=price},
-  };
-  struct modal_args_dialogue args={
-    .rid=RID_strings_dialogue,
-    .strix=18,
-    .speaker=sprite,
-    .insv=insv,
-    .insc=2,
-    .cb=cb_fishwife,
-  };
-  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
-  if (!modal) return;
-  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
-  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
-}
-
-/* Fishwife.
  * Let the modal do all the work.
  */
  

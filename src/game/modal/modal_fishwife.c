@@ -1,6 +1,6 @@
 #include "game/bellacopia.h"
 
-#define ROW_LIMIT 3
+#define ROW_LIMIT 4
 #define ROWH 12
 #define LIMIT_LIMIT 10
 #define FISH_X_SPACING 8
@@ -13,15 +13,16 @@ struct modal_fishwife {
   
   struct row {
     uint8_t tileid; // RID_image_pause
-    int q,limit;
-    int price;
+    int q; // Negative if Dot's buying, positive if Dot's selling.
+    int limit; // Positive only. How many can Dot sell?
+    int buy_price;
+    int sell_price;
     int itemid;
     int fld16;
+    int selectable;
   } rowv[ROW_LIMIT];
   int rowc;
   int rowp;
-  
-  int total;
 };
 
 #define MODAL ((struct modal_fishwife*)modal)
@@ -44,37 +45,43 @@ static void fishwife_generate_prompt(struct modal *modal,int rid,int strix) {
   egg_texture_get_size(&MODAL->promptw,&MODAL->prompth,MODAL->prompttexid);
 }
 
-/* Add a fish row if we have at least one.
+/* Add a fish row.
  */
  
-static void fishwife_add_row_if_present(struct modal *modal,int itemid,int price) {
+static void fishwife_add_row(struct modal *modal,int itemid,int buy_price,int sell_price) {
   if (MODAL->rowc>=ROW_LIMIT) return;
   const struct item_detail *detail=item_detail_for_itemid(itemid);
   if (!detail) return;
   int q=store_get_fld16(detail->fld16);
-  if (!q) return;
   if (q>LIMIT_LIMIT) q=LIMIT_LIMIT;
   struct row *row=MODAL->rowv+MODAL->rowc++;
   row->tileid=detail->tileid;
-  row->q=q;
+  row->q=0;
   row->limit=q;
-  row->price=price;
+  row->buy_price=buy_price;
+  row->sell_price=sell_price;
   row->itemid=itemid;
   row->fld16=detail->fld16;
+  row->selectable=(itemid!=NS_itemid_gold);
 }
 
 /* Recalculate total.
  */
  
 static void fishwife_recalc(struct modal *modal) {
-  MODAL->total=0;
-  struct row *row=MODAL->rowv;
-  int i=MODAL->rowc;
-  for (;i-->0;row++) MODAL->total+=row->q*row->price;
-  // Clamp at 9999, mostly for display purposes. It will never be that high.
-  // Don't clamp at the purse size -- that's the player's problem.
-  if (MODAL->total<0) MODAL->total=0;
-  if (MODAL->total>9999) MODAL->total=9999;
+  if (MODAL->rowc<1) return;
+  struct row *goldrow=MODAL->rowv;
+  if (goldrow->itemid!=NS_itemid_gold) return; // oops?
+  goldrow->q=0;
+  struct row *row=MODAL->rowv+1;
+  int i=MODAL->rowc-1;
+  for (;i-->0;row++) {
+    if (row->q<0) { // Dot's buying.
+      goldrow->q+=row->buy_price*-row->q;
+    } else if (row->q>0) { // Dot's selling.
+      goldrow->q-=row->sell_price*row->q;
+    }
+  }
 }
 
 /* Init.
@@ -90,18 +97,20 @@ static int _fishwife_init(struct modal *modal,const void *args,int argslen) {
     fishwife_generate_prompt(modal,ARGS->rid,ARGS->strix);
   }
   
-  /* Create rows only for those colors of fish that we have.
+  /* Create a row for each fish color.
    */
-  fishwife_add_row_if_present(modal,NS_itemid_greenfish,1);
-  fishwife_add_row_if_present(modal,NS_itemid_bluefish,5);
-  fishwife_add_row_if_present(modal,NS_itemid_redfish,20);
+  fishwife_add_row(modal,NS_itemid_gold,0,0);
+  fishwife_add_row(modal,NS_itemid_greenfish,2,1);
+  fishwife_add_row(modal,NS_itemid_bluefish,10,5);
+  fishwife_add_row(modal,NS_itemid_redfish,30,20);
+  MODAL->rowp=1;
   
   /* And the final layout.
    */
   MODAL->boxw=MODAL->promptw+8;
   int minw=32+LIMIT_LIMIT*FISH_X_SPACING;
   if (MODAL->boxw<minw) MODAL->boxw=minw;
-  MODAL->boxh=4+MODAL->prompth+ROWH*MODAL->rowc+15;
+  MODAL->boxh=4+MODAL->prompth+ROWH*MODAL->rowc+4;
   MODAL->boxx=(FBW>>1)-(MODAL->boxw>>1);
   MODAL->boxy=(FBH>>1)-(MODAL->boxh>>1);
   MODAL->promptx=(FBW>>1)-(MODAL->promptw>>1);
@@ -131,17 +140,40 @@ static void fishwife_dismiss(struct modal *modal) {
  
 static void fishwife_commit(struct modal *modal) {
   fishwife_recalc(modal); // Just to be sure.
-  if (MODAL->total) {
+  if (MODAL->rowc>=1) {
+    /* First validate each row.
+     * Negative quantities are being acquired by Dot, positive are being given away.
+     * Both directions have relevant limits.
+     */
     struct row *row=MODAL->rowv;
     int i=MODAL->rowc;
     for (;i-->0;row++) {
-      if (!row->q) continue;
-      int q=store_get_fld16(row->fld16);
-      q-=row->q;
-      if (q<0) q=0;
-      store_set_fld16(row->fld16,q);
+      if (row->q<0) { // Will acquiring it exceed my limit?
+        int have,limit;
+        have=possessed_quantity_for_itemid(row->itemid,&limit);
+        if (have>limit+row->q) { // Can't carry this many. (this means you can't overflow your purse either, when selling)
+          bm_sound(RID_sound_reject);
+          return;
+        }
+      } else if (row->q>0) { // Do I actually have this many? Should have been enforced previously, but let's be sure.
+        int have=possessed_quantity_for_itemid(row->itemid,0);
+        if (row->q>have) { // Can't sell things we don't have, or buy things with money we don't have.
+          bm_sound(RID_sound_reject);
+          return;
+        }
+      }
     }
-    game_get_item(NS_itemid_gold,MODAL->total);
+    /* Everything is legal, so commit it.
+     */
+    for (row=MODAL->rowv,i=MODAL->rowc;i-->0;row++) {
+      if (row->q<0) {
+        game_get_item(row->itemid,-row->q);
+      } else if (row->q>0) {
+        int have=store_get_fld16(row->fld16);
+        have-=row->q;
+        store_set_fld16(row->fld16,have);
+      }
+    }
   }
   modal->defunct=1;
 }
@@ -152,9 +184,13 @@ static void fishwife_commit(struct modal *modal) {
 static void fishwife_move(struct modal *modal,int d) {
   if (MODAL->rowc<1) return;
   bm_sound(RID_sound_uimotion);
-  MODAL->rowp+=d;
-  if (MODAL->rowp<0) MODAL->rowp=MODAL->rowc-1;
-  else if (MODAL->rowp>=MODAL->rowc) MODAL->rowp=0;
+  int panic=MODAL->rowc;
+  while (panic-->0) {
+    MODAL->rowp+=d;
+    if (MODAL->rowp<0) MODAL->rowp=MODAL->rowc-1;
+    else if (MODAL->rowp>=MODAL->rowc) MODAL->rowp=0;
+    if (MODAL->rowv[MODAL->rowp].selectable) return;
+  }
 }
 
 /* Adjust focussed value.
@@ -163,9 +199,13 @@ static void fishwife_move(struct modal *modal,int d) {
 static void fishwife_adjust(struct modal *modal,int d) {
   if ((MODAL->rowp<0)||(MODAL->rowp>=MODAL->rowc)) return;
   struct row *row=MODAL->rowv+MODAL->rowp;
+  if (!row->selectable) return;
   row->q+=d;
-  if (row->q<0) {
-    row->q=0;
+  // You can't offer to sell fish you don't have. But the buy quantity is unlimited.
+  // (we'll check that you can afford it at checkout, not here).
+  // Well actually, let's at least clamp them to 2 digits.
+  if (row->q<-99) {
+    row->q=-99;
     bm_sound(RID_sound_reject);
     return;
   } else if (row->q>row->limit) {
@@ -204,35 +244,67 @@ static void _fishwife_render(struct modal *modal) {
   graf_fill_rect(&g.graf,MODAL->boxx,MODAL->boxy,MODAL->boxw,MODAL->boxh,0x000000ff);
   graf_set_input(&g.graf,MODAL->prompttexid);
   graf_decal(&g.graf,MODAL->promptx,MODAL->prompty,0,0,MODAL->promptw,MODAL->prompth);
-  graf_set_image(&g.graf,RID_image_pause);
   
   // Row highlight.
   int y=MODAL->prompty+MODAL->prompth;
   if ((MODAL->rowp>=0)&&(MODAL->rowp<MODAL->rowc)) {
-    graf_tile(&g.graf,MODAL->boxx+9,y+MODAL->rowp*ROWH+8,0x25,0);
+    graf_fill_rect(&g.graf,MODAL->boxx+20,y+MODAL->rowp*ROWH+4,MODAL->boxw-40,9,0x204060ff);
   }
   
   // Rows content.
+  graf_set_image(&g.graf,RID_image_pause);
   y+=8;
+  int need_text=0;
+  int midx=MODAL->boxx+(MODAL->boxw>>1);
   struct row *row=MODAL->rowv;
   int i=MODAL->rowc;
   for (;i-->0;row++,y+=ROWH) {
-    int x=MODAL->boxx+24;
-    int xi=row->q;
-    for (;xi-->0;x+=FISH_X_SPACING) {
-      graf_tile(&g.graf,x,y,row->tileid,0);
+    graf_tile(&g.graf,midx,y,row->tileid,0);
+    if (row->q<0) { // Dot's buying this. Put a leftward arrow on the right.
+      graf_tile(&g.graf,midx+16,y,0x1d,EGG_XFORM_XREV);
+      need_text=1;
+    } else if (row->q>0) { // Dot's selling this. Put a rightward arrow on the left.
+      graf_tile(&g.graf,midx-16,y,0x1d,0);
+      need_text=1;
     }
   }
   
-  // Bottom line.
-  // Current constants (limit 10; prices 1,5,20) yield a max of 260. We allow up to 9999.
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  int x=MODAL->boxx+13;
-  graf_tile(&g.graf,x,y,'=',0); x+=8;
-  if (MODAL->total>=1000) { graf_tile(&g.graf,x,y,'0'+(MODAL->total/1000)%10,0); x+=8; }
-  if (MODAL->total>=100) { graf_tile(&g.graf,x,y,'0'+(MODAL->total/100)%10,0); x+=8; }
-  if (MODAL->total>=10) { graf_tile(&g.graf,x,y,'0'+(MODAL->total/10)%10,0); x+=8; }
-  graf_tile(&g.graf,x,y,'0'+MODAL->total%10,0); x+=8;
+  // Row text.
+  if (need_text) {
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    for (row=MODAL->rowv,i=MODAL->rowc,y=MODAL->prompty+MODAL->prompth+9;i-->0;row++,y+=ROWH) {
+      int n=0,x=midx;
+      if (row->q<0) { // Dot's buying this. Put the positive quantity on the left.
+        n=-row->q;
+        x-=18;
+      } else if (row->q>0) { // Dot's selling this. Put the positive quantity on the right.
+        n=row->q;
+        x+=18;
+      }
+      if (n>=1000) {
+        graf_tile(&g.graf,x+8,y,'-',0);
+        graf_tile(&g.graf,x,y,'-',0);
+        graf_tile(&g.graf,x-8,y,'-',0);
+      } else if (n>=100) {
+        graf_tile(&g.graf,x+8,y,'0'+n%10,0);
+        graf_tile(&g.graf,x,y,'0'+(n/10)%10,0);
+        graf_tile(&g.graf,x-8,y,'0'+n/100,0);
+      } else if (n>=10) {
+        graf_tile(&g.graf,x+4,y,'0'+n%10,0);
+        graf_tile(&g.graf,x-4,y,'0'+n/10,0);
+      } else if (n>0) {
+        graf_tile(&g.graf,x,y,'0'+n,0);
+      }
+    }
+  }
+  
+  // Dot and the Fishwife.
+  int icony=MODAL->prompty+MODAL->prompth;
+  icony+=(MODAL->boxy+MODAL->boxh-icony)>>1;
+  graf_set_image(&g.graf,RID_image_hero);
+  graf_tile(&g.graf,MODAL->boxx+10,icony,0x12,EGG_XFORM_XREV);
+  graf_set_image(&g.graf,RID_image_meadow_sprites);
+  graf_tile(&g.graf,MODAL->boxx+MODAL->boxw-10,icony,0x26,EGG_XFORM_XREV);
 }
 
 /* Type definition.
