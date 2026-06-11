@@ -47,14 +47,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [x] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?
 - [ ] Swing the stick like a sword, and briefly stun monsters.
-- [ ] Cartographer doesn't belong in Cheapside. Put him somewhere at least a little difficult to reach. Would make sense next to the Linguist, maybe?
+- [x] Cartographer doesn't belong in Cheapside. Put him somewhere at least a little difficult to reach. Would make sense next to the Linguist, maybe?
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
-- [ ] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
+- [x] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
