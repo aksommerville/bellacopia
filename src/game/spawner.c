@@ -21,6 +21,44 @@ static uint16_t primev[]={
 1229,1231,1237,1249,1259,
 };
 
+/* Helper for reading rsprite commands from a map: Either loose commands or pulled from its rsprite resource.
+ * Initialize (map) and the rest zero.
+ */
+ 
+struct rsprite_reader {
+  const struct map *map;
+  struct cmdlist_reader reader;
+  int state;
+};
+
+#define RSPRITE_READER_STATE_INIT 0
+#define RSPRITE_READER_STATE_MAPCMD 1
+#define RSPRITE_READER_STATE_RSPRITECMD 2
+
+static int rsprite_reader_next(struct cmdlist_entry *cmd,struct rsprite_reader *reader) {
+  if (reader->state==RSPRITE_READER_STATE_INIT) {
+    if (reader->map->cmd_has_rsprite) {
+      reader->state=RSPRITE_READER_STATE_MAPCMD;
+      reader->reader=(struct cmdlist_reader){.v=reader->map->cmd,.c=reader->map->cmdc};
+    } else {
+      reader->state=RSPRITE_READER_STATE_RSPRITECMD;
+      reader->reader=(struct cmdlist_reader){.v=reader->map->rspritev,.c=reader->map->rspritec};
+    }
+  }
+  for (;;) {
+    while (cmdlist_reader_next(cmd,&reader->reader)>0) {
+      if (cmd->opcode==CMD_map_rsprite) return 1; // NB we might be reading an rsprite res; the "rsprite" command is the same in both.
+    }
+    if (reader->state==RSPRITE_READER_STATE_MAPCMD) {
+      reader->state=RSPRITE_READER_STATE_RSPRITECMD;
+      reader->reader=(struct cmdlist_reader){.v=reader->map->rspritev,.c=reader->map->rspritec};
+      continue;
+    }
+    break;
+  }
+  return 0;
+}
+
 /* Reset one spawnmap.
  */
  
@@ -32,9 +70,9 @@ static void spawnmap_reset(struct spawnmap *spawnmap,struct map *map) {
   if (!map) return;
   
   // Add up rsprite weights. Get out if zero.
-  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct rsprite_reader reader={.map=map};
   struct cmdlist_entry cmd={0};
-  while (cmdlist_reader_next(&cmd,&reader)>0) {
+  while (rsprite_reader_next(&cmd,&reader)>0) {
     if (cmd.opcode==CMD_map_rsprite) {
       uint8_t weight=cmd.arg[2];
       if (!weight) {
@@ -116,7 +154,7 @@ static int spawnmap_over_limit(const void *arg,int limit) {
  */
  
 static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,double x,double y) {
-  
+
   /* Reject if there's a solid sprite within 1 m cardinally.
    * Don't bother with the hitboxes, keep it as neat as possible.
    */
@@ -141,9 +179,9 @@ static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,d
    */
   const uint8_t *arg=0;
   int acc=0;
-  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct rsprite_reader reader={.map=map};
   struct cmdlist_entry cmd;
-  while (cmdlist_reader_next(&cmd,&reader)>0) {
+  while (rsprite_reader_next(&cmd,&reader)>0) {
     if (cmd.opcode==CMD_map_rsprite) {
       acc+=cmd.arg[2];
       if (acc>spawnmap->choice) {

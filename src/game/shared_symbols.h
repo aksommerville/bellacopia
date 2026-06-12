@@ -31,6 +31,7 @@
 #define CMD_map_barrelhat       0x24 /* u16:pos ; Must also be switchable */
 #define CMD_map_pylon           0x25 /* u16:pos ; Used only by labyrinth, marks the top-left pylon so we can infer the rest. */
 #define CMD_map_statuemaze      0x26 /* u16:pos ; Used only by statuemaze, marks the position of the first statue. */
+#define CMD_map_rspriteres      0x27 /* u16:rid ; Limit one per map. May combine with a la carte 'rsprite' commands. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -44,7 +45,7 @@
 #define CMD_map_zookeeper       0x4b /* u32:bounds ; For sprite_zookeeper, marks the carpet. */
 #define CMD_map_endorsement     0x4c /* u16:pos u16:fld ; Fractia endorsement banners. 3 states. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
-#define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg */
+#define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg ; Must remain identical to the "rsprite" command in rsprite resources. */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
@@ -53,6 +54,8 @@
 #define CMD_map_fishodds        0x67 /* u16:pos u16:fishodds u16:itemid u16:fld ; OOB to cover the whole map, and must not use (itemid,fld) then. */
 #define CMD_map_burieddoor      0x68 /* u16:pos u16:rid u16:dstpos u16:fld */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */
+
+#define CMD_rsprite_rsprite     0x61 /* u16:rid u8:weight u8:limit u32:arg ; Intentionally identical to map's "rsprite" command. You can read rsprite res as maps. */
 
 #define CMD_sprite_noxform      0x01 /* --- ; npc */
 #define CMD_sprite_image        0x20 /* u16:rid */

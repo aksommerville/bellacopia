@@ -21,3 +21,4 @@ root @17,3 (u16:fld)root3
 root @17,2 (u16:fld)root3
 root @17,1 (u16:fld)root3
 door @5,7 map:236 @6,7 0x0000
+rspriteres rsprite:southjungle

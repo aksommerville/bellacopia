@@ -14,3 +14,4 @@ a99999fda6afa9a9ac97a79c98a59696a9ae9996
 image image:desert
 position 2 9 1 *
 sprite @8,2 sprite:jigpiece (u32)0
+rspriteres rsprite:westdesert

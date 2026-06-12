@@ -34,4 +34,4 @@ switchable2 @12,3 (u16:fld)war_over
 switchable2 @13,3 (u16:fld)war_over
 switchable2 @14,3 (u16:fld)war_over
 switchable2 @15,2 (u16:fld)war_over
-rsprite sprite:soldier (u8:weight)4 (u8:limit)1 (u32)0
+rspriteres rsprite:battlefield

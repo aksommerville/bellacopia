@@ -34,4 +34,4 @@ root @19,3 (u16:fld)root5
 root @19,2 (u16:fld)root5
 root @19,1 (u16:fld)root5
 switchable2 @16,8 (u16:fld)war_over
-rsprite sprite:soldier (u8:weight)4 (u8:limit)2 (u32)0
+rspriteres rsprite:battlefield

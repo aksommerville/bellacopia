@@ -30,8 +30,4 @@ root @10,4 (u16:fld)root5
 root @10,3 (u16:fld)root5
 root @10,2 (u16:fld)root5
 root @10,1 (u16:fld)root5
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
+rspriteres rsprite:tundra

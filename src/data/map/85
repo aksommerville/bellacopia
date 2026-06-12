@@ -18,3 +18,4 @@ sprite @11,9 sprite:pound (u32)0
 sprite @9,9 sprite:pound (u32)0
 sprite @10,9 sprite:pound (u32)0
 sprite @8,5 sprite:ton (u32)0
+rspriteres rsprite:westdesert

@@ -16,3 +16,4 @@ position 3 1 1 *
 sprite @11,6 sprite:jigpiece (u32)0
 bump @6,4 (u16:activity)tree (u16:fld)tree15 (u16)0
 switchable @6,4 (u16:fld)tree15
+rspriteres rsprite:tundra

@@ -28,7 +28,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Eliminate the rsprite command and replace with a new resource type that maps can refer to.
+- [x] Eliminate the rsprite command and replace with a new resource type that maps can refer to.
+- - Or keep the a la carte command, but add a new one. We might have one-off maps that need an exceptional extra sprite.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
@@ -37,9 +38,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking.
 - [ ] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
 - [ ] broomrace: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next.
+- [ ] broomrace: Opponent should gradually dial down to the correct position, when she chooses an error position, ie she should eventually get it.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
+- [ ] Check ladders in the outerworld, they probably all need some safe buffer.
 
 - For exploration some time in the uncertain future.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.

@@ -34,11 +34,7 @@ root @4,6 (u16:fld)root1
 root @3,6 (u16:fld)root1
 root @2,6 (u16:fld)root1
 root @1,6 (u16:fld)root1
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
 sprite @5,1 sprite:ticker (u16:fld)zoo1_0 (u16)0
 sprite @3,5 sprite:zookeeper (u16:fld)zoo1_0 (u16)0
 zookeeper @4,2,6,3
+rspriteres rsprite:meadow

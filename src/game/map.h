@@ -23,6 +23,9 @@ struct map {
   int parent; // Zero or map rid.
   uint8_t dark,wind,cameralock;
   int fishodds,fishitemid,fishfld;
+  const uint8_t *rspritev; // rsprite resource, captured at load.
+  int rspritec;
+  int cmd_has_rsprite; // Nonzero if (cmd) also has loose rsprite commands.
 };
 
 /* Run thru (map)'s commands and update its (v) against (rov) and current state.

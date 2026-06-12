@@ -15,3 +15,4 @@ image image:tundra
 position 1 0 1 *
 sprite @13,6 sprite:jigpiece (u32)0
 buriedtreasure @10,7 (u16:fld)bt6 (u16:itemid)gold 10 0
+rspriteres rsprite:tundra

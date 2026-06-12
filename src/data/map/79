@@ -18,8 +18,4 @@ bump @9,5 (u16:activity)tree (u16:fld)tree12 (u16)0
 switchable @9,5 (u16:fld)tree12
 switchable @0,2 (u16:fld)bridge4done
 sprite @1,1 sprite:bridget (u16:activity)bridget (u16:fld)bridge4start
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
+rspriteres rsprite:mountains

@@ -14,3 +14,4 @@ a1a1a20206045052060404010505a0a184919191
 image image:desert
 position 3 8 1 *
 sprite @14,8 sprite:jigpiece (u32)0
+rspriteres rsprite:westdesert

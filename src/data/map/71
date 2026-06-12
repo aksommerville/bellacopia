@@ -15,8 +15,4 @@ image image:mountains
 position 9 5 1 *
 sprite @2,5 sprite:jigpiece (u32)0
 triggeronce @8,7 (u16:fld)kidnapped (u16:activity)kidnap (u16)0
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
+rspriteres rsprite:mountains

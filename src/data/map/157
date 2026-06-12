@@ -26,7 +26,4 @@ seal @5,4 (u16)3
 seal @4,4 (u16)3
 seal @4,5 (u16)3
 seal @5,5 (u16)3
-rsprite sprite:loblin (u8:weight)10 (u8:limit)1 (u32)0
-rsprite sprite:roblin (u8:weight)10 (u8:limit)1 (u32)0
-rsprite sprite:snoblin (u8:weight)10 (u8:limit)1 (u32)0
-rsprite sprite:boblin (u8:weight)10 (u8:limit)1 (u32)0
+rspriteres rsprite:goblinsback

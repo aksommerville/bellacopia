@@ -14,12 +14,8 @@ bd799ffca59dae76edeb977698aeaca797a79996
 image image:desert
 position 6 9 1 *
 sprite @6,8 sprite:jigpiece (u32)0
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
 compass @3,4 (u16:compass)heartcontainer (u16:fld)hc1 (u16)0
 bump @3,4 (u16:activity)castleshop (u16)0 (u16)0
 switchable @5,3 (u16:fld)hc1
 switchable @5,4 (u16:fld)hc1
+rspriteres rsprite:eastdesert

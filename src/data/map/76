@@ -25,3 +25,4 @@ switchable @5,8 (u16:fld)tundra_secret_entrance
 buriedtreasure @4,1 (u16:fld)bt7 (u16:itemid)gold 10 0
 switchable @16,1 (u16:fld)barrelhat3
 barrelhat @16,1
+rspriteres rsprite:tundra

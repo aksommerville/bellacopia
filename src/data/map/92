@@ -14,8 +14,4 @@ a1a2060505040504061005010504060305040002
 image image:desert
 position 7 8 1 *
 sprite @5,5 sprite:jigpiece (u32)0
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
-rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:soldier (u8:weight)1 (u8:limit)1 (u32)0
+rspriteres rsprite:eastdesert

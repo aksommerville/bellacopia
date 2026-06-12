@@ -35,3 +35,4 @@ root @16,3 (u16:fld)root3
 root @17,3 (u16:fld)root3
 root @18,3 (u16:fld)root3
 sprite @8,3 sprite:tolltroll (u32)0
+rspriteres rsprite:southjungle

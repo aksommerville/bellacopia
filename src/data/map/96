@@ -21,3 +21,4 @@ fishodds @6,6 (u16:fishodds)rich (u16:itemid)jigpiece (u16:fld)jig_desert_fish
 fishodds @6,7 (u16:fishodds)rich (u16:itemid)jigpiece (u16:fld)jig_desert_fish
 fishodds @5,7 (u16:fishodds)rich (u16:itemid)jigpiece (u16:fld)jig_desert_fish
 fishodds @4,7 (u16:fishodds)rich (u16:itemid)jigpiece (u16:fld)jig_desert_fish
+rspriteres rsprite:westdesert

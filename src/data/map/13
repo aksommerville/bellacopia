@@ -14,3 +14,4 @@ a1a1a22021213431252531313531353321212280
 image image:tundra
 position 1 1 1 *
 sprite @11,4 sprite:jigpiece (u32)0
+rspriteres rsprite:tundra

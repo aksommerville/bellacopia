@@ -133,11 +133,15 @@ export class EditWorldModal {
     if (!map) return "";
     let result = "";
     for (const cmd of map.cmd.commands) {
-      if (cmd[0] !== "rsprite") continue;
-      if (result) result += ",";
-      const name = (cmd[1] || "").replace("sprite:", "");
-      const weight = (cmd[2] || "").replace(/\(.*\)/, "");
-      result += name + "*" + weight;
+      if (cmd[0] === "rsprite") {
+        if (result) result += ",";
+        const name = (cmd[1] || "").replace("sprite:", "");
+        const weight = (cmd[2] || "").replace(/\(.*\)/, "");
+        result += name + "*" + weight;
+      } else if (cmd[0] === "rspriteres") {
+        if (result) result += ",";
+        result += cmd[1];
+      }
     }
     return result;
   }
@@ -330,18 +334,25 @@ export class EditWorldModal {
     
       case "rsprite": { // u16:rid u8:weight u8:limit u32:arg
           if (option === "OTHER") {
-            return this.dom.modalText("Sprite name or ID:", "").then(rsp => {
+            return this.dom.modalText("Replace all rsprite and rspriteres. Sprite name or ID:", "").then(rsp => {
               if (!rsp) return false;
-              const cmd = map.cmd.commands.find(c => c[0] === "rsprite");
-              if (cmd) cmd[2] = rsp;
-              else map.cmd.commands.push(["rsprite", `sprite:${rsp}`, "(u8:weight)10 (u8:limit)1 (u32)0"]);
+              for (let i=map.cmd.commands.length; i-->0; ) {
+                if ((map.cmd.commands[i][0] === "rsprite") || (map.cmd.commands[i][0] === "rspriteres")) {
+                  map.cmd.commands.splice(i, 1);
+                }
+              }
+              if (rsp.startsWith("rsprite:")) {
+                map.cmd.commands.push(["rspriteres", rsp]);
+              } else {
+                map.cmd.commands.push(["rsprite", `sprite:${rsp}`, "(u8:weight)10 (u8:limit)1 (u32)0"]);
+              }
               return true;
             });
           }
           if (option === "NONE") {
             let result = false;
             for (let i=map.cmd.commands.length; i-->0; ) {
-              if (map.cmd.commands[i][0] === "rsprite") {
+              if ((map.cmd.commands[i][0] === "rsprite") || (map.cmd.commands[i][0] === "rspriteres")) {
                 map.cmd.commands.splice(i, 1);
                 result = true;
               }
@@ -350,15 +361,20 @@ export class EditWorldModal {
           }
           // Drop all rsprite commands.
           for (let i=map.cmd.commands.length; i-->0; ) {
-            if (map.cmd.commands[i][0] === "rsprite") {
+            if ((map.cmd.commands[i][0] === "rsprite") || (map.cmd.commands[i][0] === "rspriteres")) {
               map.cmd.commands.splice(i, 1);
             }
           }
           // Add a new command for each in (option).
           // We really ought to copy the other args, but they weren't captured in the repr and... meh. Use defaults.
           for (const src of option.split(',')) {
-            const [name, weight] = src.split("*");
-            map.cmd.commands.push(["rsprite", `sprite:${name}`, `(u8:weight)${weight}`, "(u8:limit)1", "(u32)0"]);
+            const sepp = src.indexOf("*");
+            if (sepp >= 0) { // Loose rsprite.
+              const [name, weight] = src.split("*");
+              map.cmd.commands.push(["rsprite", `sprite:${name}`, `(u8:weight)${weight}`, "(u8:limit)1", "(u32)0"]);
+            } else { // Presumably resource reference.
+              map.cmd.commands.push(["rspriteres", src]);
+            }
           }
         } return true;
         

@@ -34,3 +34,4 @@ root @4,9 (u16:fld)root3
 root @3,9 (u16:fld)root3
 root @2,9 (u16:fld)root3
 root @1,9 (u16:fld)root3
+rspriteres rsprite:southjungle

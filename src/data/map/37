@@ -21,3 +21,4 @@ root @17,9 (u16:fld)root3
 root @17,8 (u16:fld)root3
 root @17,7 (u16:fld)root3
 sprite @17,6 sprite:rootdevil (u16:fld)root3 (u16)0
+rspriteres rsprite:southjungle
