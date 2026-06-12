@@ -392,6 +392,29 @@ static void hero_render_snowglobe(struct sprite *sprite,int x,int y) {
   hero_render_errata(sprite,x,y);
 }
 
+/* Stick. Dot uses her Hookshot face, and there's one tile that goes adjacent.
+ */
+ 
+static void hero_render_stick(struct sprite *sprite,int x,int y) {
+  uint8_t tileid=0x16;
+  uint8_t stileid=0xc4;
+  uint8_t xform=0;
+  if (SPRITE->facedx<0) {
+    tileid+=2;
+    stileid+=2;
+  } else if (SPRITE->facedx>0) {
+    tileid+=2;
+    stileid+=2;
+    xform=EGG_XFORM_XREV;
+  } else if (SPRITE->facedy<0) {
+    tileid+=1;
+    stileid+=1;
+  }
+  graf_tile(&g.graf,x,y,tileid,xform);
+  graf_tile(&g.graf,x+SPRITE->facedx*NS_sys_tilesize,y+SPRITE->facedy*NS_sys_tilesize,stileid,xform);
+  hero_render_errata(sprite,x,y);
+}
+
 /* Render, main entry point.
  */
  
@@ -428,6 +451,7 @@ void hero_render(struct sprite *sprite,int x,int y) {
     case NS_itemid_tapemeasure: hero_render_tapemeasure(sprite,x,y); break; // And proceed with regular update.
     case NS_itemid_marionette: hero_render_marionette(sprite,x,y); return;
     case NS_itemid_snowglobe: hero_render_snowglobe(sprite,x,y); return;
+    case NS_itemid_stick: hero_render_stick(sprite,x,y); return;
   }
   
   /* When the shovel is armed, draw a preview square.

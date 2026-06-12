@@ -11,6 +11,8 @@
 #define TEMPT_SPEED 4.0 /* m/s */
 #define DAZE_TIME 2.0 /* Plus FLASH_TIME. */
 #define NEUTER_TIME 1.0
+#define SHOCK_TIME 0.500 /* For getting whacked. */
+#define SHOCK_SPEED 16.0
 
 static void monster_idle_begin(struct sprite *sprite);
 static void monster_walk_begin(struct sprite *sprite);
@@ -26,7 +28,9 @@ struct sprite_monster {
   double radius,radius2;
   double speed;
   double animclock;
-  double dazeclock; // For after the flash spell.
+  double dazeclock; // For after the flash spell or stick whack.
+  double dazedx,dazedy; // Motion from the stick whack.
+  double dazeddx,dazeddy;
   double neuterclock; // Counts down initially. We move and all, but won't chase.
   int spent;
   int name_strix; // RID_strings_battle
@@ -364,6 +368,7 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
       if (other->type==&sprite_type_hero) {
         if (g.bugspray>0.0) continue;
         if (g.vanishing>0.0) continue;
+        if (sprite_hero_get_item_in_play(other)==NS_itemid_stick) continue; // Stop advancing when she wields the stick, it's scary.
       }
       double dx=other->x-sprite->x;
       double dy=other->y-sprite->y;
@@ -412,6 +417,9 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
   if (g.flash>0.0) { SPRITE->dazeclock=DAZE_TIME; return; }
   else if (SPRITE->dazeclock>0.0) {
     SPRITE->dazeclock-=elapsed;
+    SPRITE->dazedx+=SPRITE->dazeddx*elapsed;
+    SPRITE->dazedy+=SPRITE->dazeddy*elapsed;
+    sprite_move(sprite,SPRITE->dazedx*elapsed,SPRITE->dazedy*elapsed);
     return;
   }
 
@@ -528,6 +536,7 @@ static void monster_cb_princess(struct modal *modal,int outcome,void *userdata) 
  
 static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->spent) return;
+  if (SPRITE->dazeclock>0.0) return;
   const struct battle_type *type=battle_type_by_id(SPRITE->battle);
   if (!type) return;
   struct modal_args_battle args={
@@ -580,3 +589,27 @@ const struct sprite_type sprite_type_monster={
   .update=_monster_update,
   .collide=_monster_collide,
 };
+
+/* Get whacked.
+ */
+ 
+void sprite_monster_shock(struct sprite *sprite,double x,double y) {
+  if (!sprite||(sprite->type!=&sprite_type_monster)) return;
+  SPRITE->dazeclock=SHOCK_TIME;
+  double dx=sprite->x-x;
+  double dy=sprite->y-y;
+  double d2=dx*dx+dy*dy;
+  if (d2<=0.001) {
+    SPRITE->dazedx=0.0;
+    SPRITE->dazedy=0.0;
+    SPRITE->dazeddx=0.0;
+    SPRITE->dazeddy=0.0;
+  } else {
+    double d=sqrt(d2);
+    SPRITE->dazedx=(dx*SHOCK_SPEED)/d;
+    SPRITE->dazedy=(dy*SHOCK_SPEED)/d;
+    double ddv=SHOCK_SPEED/SHOCK_TIME;
+    SPRITE->dazeddx=(-dx*ddv)/d;
+    SPRITE->dazeddy=(-dy*ddv)/d;
+  }
+}

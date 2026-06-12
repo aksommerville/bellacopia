@@ -95,6 +95,7 @@ void sprite_hero_warp_busstop(struct sprite *sprite,int busstop);
 int sprite_hero_is_injured(struct sprite *sprite);
 int sprite_hero_is_escorting_princess(const struct sprite *sprite); // True only during transitions. Intended for door activities to consume.
 uint8_t sprite_hero_get_facedir(const struct sprite *sprite);
+int sprite_hero_get_item_in_play(const struct sprite *sprite); // Not the held item; only nonzero when actively in use.
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();
@@ -102,6 +103,8 @@ struct sprite *sprite_toast_get_any();
 void sprite_marionette_set_input(struct sprite *sprite,int dx,int dy);
 
 int sprite_ticker_set_text(struct sprite *sprite,const char *src,int srcc);
+
+void sprite_monster_shock(struct sprite *sprite,double x,double y); // For whacking with a stick.
 
 /* Sprite group.
  *******************************************************************/

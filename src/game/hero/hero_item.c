@@ -1134,6 +1134,61 @@ static int snowglobe_begin(struct sprite *sprite) {
   return 1;
 }
 
+/* Stick. Swing like a sword.
+ */
+ 
+static void stick_update(struct sprite *sprite,double elapsed) {
+  SPRITE->stickclock+=elapsed;
+  
+  // Button released, a certain tasteful interval must elapse before we allow dropping.
+  if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    if (SPRITE->stickclock>=0.333) {
+      SPRITE->itemid_in_progress=0;
+      return;
+    }
+  }
+  
+  // Another longer interval, and we drop even if the button is held. Her arm gets tired, can't hold it forever.
+  if (SPRITE->stickclock>=1.000) {
+    SPRITE->itemid_in_progress=0;
+    return;
+  }
+  
+  // Holding of the stick is entirely decorative. Damage is dealt at the moment of the swing only.
+}
+
+static int stick_begin(struct sprite *sprite) {
+  SPRITE->itemid_in_progress=NS_itemid_stick;
+  SPRITE->stickclock=0.0;
+  
+  /* Find moveable sprites in my whack zone.
+   */
+  int whackc=0;
+  double wx=sprite->x+SPRITE->facedx;
+  double wy=sprite->y+SPRITE->facedy;
+  const double thresh=0.500;
+  struct sprite **otherp=GRP(moveable)->sprv;
+  int i=GRP(moveable)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    if (other->type!=&sprite_type_monster) continue; // Actually it's not all moveables: Only "monster" are eligible.
+    double dx=other->x-wx;
+    double dy=other->y-wy;
+    if ((dx<-thresh)||(dx>thresh)) continue;
+    if ((dy<-thresh)||(dy>thresh)) continue;
+    whackc++;
+    sprite_monster_shock(other,sprite->x,sprite->y); // From my position, not the stick's. Otherwise they go foul a lot.
+  }
+  
+  if (whackc) {
+    bm_sound(RID_sound_whack);
+  } else {
+    bm_sound(RID_sound_swing_racket);
+  }
+  return 1;
+}
+
 /* Swap items with inventory.
  */
  
@@ -1200,6 +1255,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_tapemeasure: tapemeasure_update(sprite,elapsed); break;
       case NS_itemid_marionette: marionette_update(sprite,elapsed); break;
       case NS_itemid_snowglobe: snowglobe_update(sprite,elapsed); break;
+      case NS_itemid_stick: stick_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;
@@ -1214,7 +1270,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
     case NS_itemid_magnifier: magnifier_update(sprite,elapsed); break;
   }
   
-  /* L1/R2 to change equipped item.
+  /* L1/R1 to change equipped item.
    */
   if ((g.input[0]&EGG_BTN_L1)&&!(g.pvinput[0]&EGG_BTN_L1)) hero_change_item(sprite,-1);
   else if ((g.input[0]&EGG_BTN_R1)&&!(g.pvinput[0]&EGG_BTN_R1)) hero_change_item(sprite,1);
@@ -1258,6 +1314,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_crystal: result=crystal_begin(sprite); break;
       case NS_itemid_marionette: result=marionette_begin(sprite); break;
       case NS_itemid_snowglobe: result=snowglobe_begin(sprite); break;
+      case NS_itemid_stick: result=stick_begin(sprite); break;
     }
     if (!result) {
       bm_sound(RID_sound_reject);

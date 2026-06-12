@@ -46,7 +46,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - For exploration some time in the uncertain future.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [x] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?
-- [ ] Swing the stick like a sword, and briefly stun monsters.
+- [x] Swing the stick like a sword, and briefly stun monsters.
 - [x] Cartographer doesn't belong in Cheapside. Put him somewhere at least a little difficult to reach. Would make sense next to the Linguist, maybe?
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.

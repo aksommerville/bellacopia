@@ -5,7 +5,6 @@
  
 static int item_prevents_motion(uint8_t itemid) {
   switch (itemid) {
-    //case NS_itemid_broom: // Broom motion is a whole different thing.
     case NS_itemid_wand:
     case NS_itemid_fishpole:
     case NS_itemid_hookshot:
@@ -14,6 +13,7 @@ static int item_prevents_motion(uint8_t itemid) {
     case NS_itemid_busstop:
     case NS_itemid_marionette:
     case NS_itemid_snowglobe:
+    case NS_itemid_stick:
       return 1;
   }
   return 0;

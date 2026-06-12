@@ -353,3 +353,8 @@ uint8_t sprite_hero_get_facedir(const struct sprite *sprite) {
   if (SPRITE->facedy<0) return 0x40;
   return 0x02;
 }
+
+int sprite_hero_get_item_in_play(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  return SPRITE->itemid_in_progress;
+}
