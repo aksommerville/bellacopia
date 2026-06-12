@@ -129,6 +129,9 @@ Goals:
 - [ ] Outer world: Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
 - [ ] Story cutscenes. Implement at least one fully.
 
+Added cartographer, so reaching 100% is easy again (in fact it's more fun than it was before, it's a real treasure hunt!).
+ROM crossed the auspicious "1234567" size.
+
 ## July 2026
 
 Goals:

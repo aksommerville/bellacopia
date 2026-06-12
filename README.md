@@ -28,6 +28,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Eliminate the rsprite command and replace with a new resource type that maps can refer to.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
@@ -39,22 +40,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [x] Turnaround mitigation, immediately after you pass thru a door.
-- [x] Fishwife should sell in addition to buying, plus I don't like her UI.
-- [x] Stories vellum: Mark unused books on the shelf.
 
 - For exploration some time in the uncertain future.
+- [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
-- [x] Mitigation against re-entering a guild contest: Can we have them track Dot's orientation, and you have to turn before the next trigger?
-- [x] Swing the stick like a sword, and briefly stun monsters.
-- [x] Cartographer doesn't belong in Cheapside. Put him somewhere at least a little difficult to reach. Would make sense next to the Linguist, maybe?
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
-- [x] Spread barrels out. It's OK to cluster them near the knitter, but the cluster in Fractia right now is annoying.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
@@ -83,6 +78,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
+- [ ] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
