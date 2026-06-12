@@ -613,3 +613,8 @@ void sprite_monster_shock(struct sprite *sprite,double x,double y) {
     SPRITE->dazeddy=(-dy*ddv)/d;
   }
 }
+
+int sprite_monster_is_spent(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_monster)) return 0;
+  return SPRITE->spent;
+}

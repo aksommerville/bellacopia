@@ -1177,6 +1177,7 @@ static int stick_begin(struct sprite *sprite) {
     double dy=other->y-wy;
     if ((dx<-thresh)||(dx>thresh)) continue;
     if ((dy<-thresh)||(dy>thresh)) continue;
+    if (sprite_monster_is_spent(other)) continue; // Not unusual for us to trigger on the same frame as the monster collision. Call it a miss.
     whackc++;
     sprite_monster_shock(other,sprite->x,sprite->y); // From my position, not the stick's. Otherwise they go foul a lot.
   }
