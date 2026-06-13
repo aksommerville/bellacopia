@@ -185,7 +185,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- wrestler: SumoHorse
 - samurai: Fencing
 - dancer: Jeter
 - ballplayer: HomeRunDerby
