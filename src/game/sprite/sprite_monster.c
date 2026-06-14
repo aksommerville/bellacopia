@@ -558,7 +558,7 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
     }
     args.args.lctl=1;
     args.args.lface=NS_face_dot;
-    //TODO difficulty and bias
+    args.args.bias=bm_battle_bias(SPRITE->battle);
     args.cb=monster_cb_battle;
   } else if (other->type==&sprite_type_princess) {
     if (!type->support_cvc) {

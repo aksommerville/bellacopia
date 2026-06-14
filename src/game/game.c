@@ -365,3 +365,13 @@ void game_hurt_hero() {
     bm_sound(RID_sound_ouch);
   }
 }
+
+/* Bias for a new battle.
+ */
+ 
+uint8_t bm_battle_bias(int battleid) {
+  if (g.store.invstorev[0].itemid==NS_itemid_glove) {
+    return 0x40;
+  }
+  return 0x80;
+}

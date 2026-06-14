@@ -16,6 +16,7 @@
 #define DECAY_BEST      400.0
 #define FUDGE_WORST      40.0
 #define FUDGE_BEST        2.0
+#define FUDGE_TIME        5.0
 
 struct battle_broomrace {
   struct battle hdr;
@@ -41,6 +42,7 @@ struct battle_broomrace {
     int thingseq;
     double thingx,thingy;
     double fudge;
+    double fudgeclock; // Resets when new items appear. Fudge only counts for so long.
     double animclock;
     int animframe;
   } playerv[2];
@@ -143,6 +145,17 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
     player->indt=0;
     player->ingas=0;
     return;
+  }
+  
+  if (player->fudgeclock>0.0) {
+    if ((player->fudgeclock-=elapsed)<0.0) {
+      player->fudgeclock=0.0;
+      player->thingx=BATTLE->thingx;
+      player->thingy=BATTLE->thingy;
+    }
+    double n=player->fudgeclock/FUDGE_TIME;
+    targetx=player->thingx*n+BATTLE->thingx*(1.0-n);
+    targety=player->thingy*n+BATTLE->thingy*(1.0-n);
   }
   
   double targett=atan2(targetx-player->x,player->y-targety);
@@ -322,6 +335,7 @@ static void _broomrace_update(struct battle *battle,double elapsed) {
     BATTLE->thingx=10.0+(rand()%(FBW-20));
     BATTLE->thingy=10.0+(rand()%(FBH-20));
     BATTLE->thingseq++;
+    l->fudgeclock=r->fudgeclock=FUDGE_TIME;
   }
 }
 

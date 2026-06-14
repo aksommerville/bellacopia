@@ -36,6 +36,8 @@ int game_warp(int mapid,int transition);
 
 void game_hurt_hero();
 
+uint8_t bm_battle_bias(int battleid);
+
 /* Inventory: inventory.c
  *********************************************************************************/
 

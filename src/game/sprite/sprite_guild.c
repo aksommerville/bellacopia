@@ -125,7 +125,7 @@ static void _guild_collide(struct sprite *sprite,struct sprite *other) {
   if (other->type==&sprite_type_hero) {
     args.args.lctl=1;
     args.args.lface=NS_face_dot;
-    //TODO difficulty and bias
+    args.args.bias=bm_battle_bias(SPRITE->battle);
     args.cb=guild_cb_battle;
   } else {
     return;
