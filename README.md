@@ -82,6 +82,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 - [ ] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
+- [ ] chess: Do more to highlight the enemy king's position at startup.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -185,7 +186,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## Sprites with placeholder battle
 
-- samurai: Fencing
 - dancer: Jeter
 
 ## Acknowledgements

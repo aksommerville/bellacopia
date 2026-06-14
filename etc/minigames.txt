@@ -42,7 +42,7 @@
   2____D Exterminating     Soldier            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
-  2      Fencing           Samurai            City
+  2____D Fencing           Samurai            City
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
   2____D Fishing           Leopard            Jungle
