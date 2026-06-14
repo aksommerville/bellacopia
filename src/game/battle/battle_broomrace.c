@@ -4,7 +4,7 @@
 
 #include "game/bellacopia.h"
 
-#define RADIUS 12.0
+#define RADIUS 9.0
 #define THING_LIMIT 5
 #define TURNSPEED_WORST 2.000
 #define TURNSPEED_BEST  4.000
@@ -25,6 +25,7 @@ struct battle_broomrace {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
     int blackout;
+    int srcy;
     double skill; // 0..1, reverse of each other.
     int indt,ingas; // Human and CPU controllers set this, the rest is generic.
     double facet; // Radians, display angle. Zero is up.
@@ -40,6 +41,8 @@ struct battle_broomrace {
     int thingseq;
     double thingx,thingy;
     double fudge;
+    double animclock;
+    int animframe;
   } playerv[2];
   
   double thingx;
@@ -79,11 +82,15 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   } else { // CPU.
   }
   switch (face) {
+    // 64 is Moon Song, if we want it.
     case NS_face_monster: {
+        player->srcy=192;
       } break;
     case NS_face_dot: {
+        player->srcy=0;
       } break;
     case NS_face_princess: {
+        player->srcy=128;
       } break;
   }
 }
@@ -216,6 +223,28 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->dx=player->dy=0.0;
   }
   
+  // If velocity above some threshold, animate.
+  double dx2=player->dx*player->dx;
+  double dy2=player->dy*player->dy;
+  double d2=dx2+dy2;
+  if (d2>=100.0) {
+    // If far from the direction of travel, use the side-slide frames.
+    double motiont=atan2(player->dx,-player->dy);
+    double offt=motiont-player->facet;
+    while (offt<-M_PI) offt+=M_PI*2.0;
+    while (offt>M_PI) offt-=M_PI*2.0;
+    if (offt>=0.500) {
+      player->animframe=2;
+    } else if (offt<=-0.500) {
+      player->animframe=3;
+    } else if ((player->animclock-=elapsed)<=0.0) {
+      player->animclock+=0.150;
+      if (++(player->animframe)>=2) player->animframe=0;
+    }
+  } else {
+    player->animframe=0;
+  }
+  
   // Pick up things.
   if ((player->thingc<THING_LIMIT)&&BATTLE->thingtile) {
     const double radius=10.0;
@@ -300,13 +329,14 @@ static void _broomrace_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render(struct battle *battle,struct player *player) {
+  int srcx=player->animframe*64,srcy=player->srcy;
   graf_set_filter(&g.graf,1);
   graf_set_tint(&g.graf,0x000000ff);
   graf_set_alpha(&g.graf,0x80);
-  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y+4,112,80,64,sin(player->facet),cos(player->facet),0.5);
+  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y+4,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
   graf_set_tint(&g.graf,0);
   graf_set_alpha(&g.graf,0xff);
-  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y,112,80,64,sin(player->facet),cos(player->facet),0.5);
+  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
   graf_set_filter(&g.graf,0);
 }
 
@@ -321,9 +351,11 @@ static void _broomrace_render(struct battle *battle) {
     graf_tile(&g.graf,(int)BATTLE->thingx,(int)BATTLE->thingy,BATTLE->thingtile,0);
   }
   
+  graf_set_image(&g.graf,RID_image_broomrace);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
+  graf_set_image(&g.graf,RID_image_battle_labyrinth);
   graf_set_alpha(&g.graf,0x80);
   int y=10;
   int x=10;
