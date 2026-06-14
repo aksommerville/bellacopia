@@ -22,11 +22,9 @@ Diving. R/L to move, hold A to jump. Easier to move before releasing A.
 Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
 Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
 Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
-Fencing. Tap A at optimal rhythm to add planks to a fence.
 Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
 Hurdles. Track and Field. Tap A to run, and Up to jump.
 Imitation. Simon Says. (like Sumo Horse but no timing, full dpad, and you're both following an NPC Simon).
-Jeter. Rotate automatically, hold A to charge, then release to throw the ballerina. Pillows to the right and briars to the left.
 Jewelry. Rings and necklaces fall from the sky. L/R to walk, then B/A to hold up a hand for rings, or neither to collect a necklace. And dodge the bird with a magnet.
 Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
 Jumprope.
@@ -61,7 +59,6 @@ Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a
 Snowball Fight. Once around the dpad, then A to throw it, then repeat.
 Staring. Dpad to keep your eyes on the foe's.
 Stirring. Circle the dpad.
-Sumo Horse. Metronome. One player dances with only Left and Right, then the other player must repeat it.
 Surrounding. Snake.
 Swearing. Press the button for a word bubble like "$#@!", last word wins.
 Swinging. Hold L/R in phase, riding a swing.
@@ -81,7 +78,6 @@ Dance Off. Tiny rhythm game on the dpad.
 Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
-Home Run Derby. A at the right moment, ball lands in 1BH, 2BH, 3BH, or HR.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
 Joust. Joust, the video game. You on a broom, and he on Pegasus.
 Math. 10-key input, answer simple arithmetic problems.

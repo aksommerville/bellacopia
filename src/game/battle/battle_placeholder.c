@@ -57,6 +57,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
 static int _placeholder_init(struct battle *battle) {
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   // or in simpler cases: BATTLE->difficulty=battle_scalar_difficulty(battle);
+  // And I keep getting this backward: At HIGH skill, the player is favored to win. High bias means high skill for the CPU and low skill for Dot.
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   return 0;

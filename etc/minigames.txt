@@ -60,7 +60,7 @@
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
   2      Imitation         Monkey             Jungle
-  2      Jeter             Dancer             City
+  2____D Jeter             Dancer             City
   2      Jewelry           Princess           City
   2      Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle

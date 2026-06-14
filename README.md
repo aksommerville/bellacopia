@@ -25,6 +25,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-03-02: Dividing time for a while, making a game and judging Uplifting Jam #7.
 - 2026-05-02: Slower than I hoped, mostly because I keep getting distracted by game jams. But I still think we'll finish this year.
 - 2026-06-07: Public showing at CORGS Con. Pleasantly surprised by how little guidance anyone needed.
+- 2026-06-14: Finally finished the placeholder battles, and I'm devoting June and July to Bellacopia. No jams or conventions.
 
 ## TODO
 
@@ -183,10 +184,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - `story14` The Witch With Lots Of Heart: TODO (could be anything)
 - `story15` Pocketfuls of Gold: TODO ('')
 - `story16` The Brewing of Potions: Sell directly at the potion shop.
-
-## Sprites with placeholder battle
-
-- dancer: Jeter
 
 ## Acknowledgements
 
