@@ -457,8 +457,8 @@ void hero_render(struct sprite *sprite,int x,int y) {
   /* When the shovel is armed, draw a preview square.
    */
   if (g.store.invstorev[0].itemid==NS_itemid_shovel) {
-    int shx=SPRITE->qx*NS_sys_tilesize-g.camera.rx+(NS_sys_tilesize>>1);
-    int shy=SPRITE->qy*NS_sys_tilesize-g.camera.ry+(NS_sys_tilesize>>1);
+    int shx=SPRITE->shovelx*NS_sys_tilesize-g.camera.rx+(NS_sys_tilesize>>1);
+    int shy=SPRITE->shovely*NS_sys_tilesize-g.camera.ry+(NS_sys_tilesize>>1);
     uint8_t xform=0;
     switch ((g.framec/10)&3) {
       case 1: xform=EGG_XFORM_SWAP|EGG_XFORM_XREV; break;

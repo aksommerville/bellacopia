@@ -50,7 +50,7 @@
 #define CMD_map_compass         0x63 /* u16:pos u16:compass u16:fld u16:reserved ; For compass targets that can't be inferred generically. */
 #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
 #define CMD_map_bump            0x65 /* u16:pos u16:activity u16:arg_or_stringsid u16:strix ; Trigger static text or activity when colliding with a solid. For signs and such. */
-#define CMD_map_triggeronce     0x66 /* u16:pos u16:fld u16:activity u16:arg ; Like a treadle, but it will only fire once ever. */
+#define CMD_map_triggeronce     0x66 /* u16:pos u16:fld u16:activity u16:arg ; Like a treadle, but it will only fire once ever. Only if hero touches, and doesn't matter if you're flying. */
 #define CMD_map_fishodds        0x67 /* u16:pos u16:fishodds u16:itemid u16:fld ; OOB to cover the whole map, and must not use (itemid,fld) then. */
 #define CMD_map_burieddoor      0x68 /* u16:pos u16:rid u16:dstpos u16:fld */
 #define CMD_map_debugmsg        0xe0 /* ...:text ; Drawn hackfully over the map's image. For use during dev. */

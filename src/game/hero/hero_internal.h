@@ -17,7 +17,9 @@ struct sprite_hero {
   int walkanimframe;
   int blocked; // Relevant only when (walking); we're fully blocked.
   double potionclock; // Animating potion.
+  int shovelx,shovely;
   int qx,qy,root; // Stays fresh passively while divining rod armed. Otherwise (-1,-1,0). Most POI interactions use feet. Shovel too.
+  int qnew; // Nonzero for one frame at hero_item_update,motion,hazards, if (qx,qy) changed.
   struct divining_alert {
     int x,y; // plane pixels, to the center of the cell.
     uint8_t tileid;

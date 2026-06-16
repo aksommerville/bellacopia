@@ -103,16 +103,12 @@ static int divining_begin(struct sprite *sprite) {
 }
 
 static void divining_update(struct sprite *sprite,double elapsed) {
-  int qx=(int)sprite->x;
-  int qy=(int)sprite->y;
-  if ((qx==SPRITE->qx)&&(qy==SPRITE->qy)) return;
-  SPRITE->qx=qx;
-  SPRITE->qy=qy;
+  if (!SPRITE->qnew) return;
   SPRITE->root=0;
   const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
   if (map) {
-    qx-=map->lng*NS_sys_mapw;
-    qy-=map->lat*NS_sys_maph;
+    int qx=SPRITE->qx-map->lng*NS_sys_mapw;
+    int qy=SPRITE->qy-map->lat*NS_sys_maph;
     struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
     struct cmdlist_entry cmd;
     while (cmdlist_reader_next(&cmd,&reader)) {
@@ -821,17 +817,18 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
  */
  
 static void shovel_update(struct sprite *sprite,double elapsed) {
-  SPRITE->qx=(int)(sprite->x+SPRITE->facedx*0.750);
-  SPRITE->qy=(int)(sprite->y+SPRITE->facedy*0.750);
+  SPRITE->shovelx=(int)(sprite->x+SPRITE->facedx*0.750);
+  SPRITE->shovely=(int)(sprite->y+SPRITE->facedy*0.750);
 }
  
 static int shovel_begin(struct sprite *sprite) {
 
   // Confirm map cell is vacant or safe.
-  struct map *map=map_by_sprite_position(SPRITE->qx,SPRITE->qy,sprite->z);
+  shovel_update(sprite,0.0);
+  struct map *map=map_by_sprite_position(SPRITE->shovelx,SPRITE->shovely,sprite->z);
   if (!map) return 0;
-  int col=SPRITE->qx%NS_sys_mapw;
-  int row=SPRITE->qy%NS_sys_maph;
+  int col=SPRITE->shovelx%NS_sys_mapw;
+  int row=SPRITE->shovely%NS_sys_maph;
   uint8_t physics=map->physics[map->v[row*NS_sys_mapw+col]];
   switch (physics) {
     case NS_physics_vacant:
@@ -841,8 +838,8 @@ static int shovel_begin(struct sprite *sprite) {
   }
   
   // Check whether there's already a hole there.
-  double x=SPRITE->qx+0.5;
-  double y=SPRITE->qy+0.5;
+  double x=SPRITE->shovelx+0.5;
+  double y=SPRITE->shovely+0.5;
   struct sprite **otherp=GRP(visible)->sprv;
   int i=GRP(visible)->sprc;
   for (;i-->0;otherp++) {
@@ -859,7 +856,7 @@ static int shovel_begin(struct sprite *sprite) {
   //TODO digging animation
   
   // Do it.
-  int result=sprite_hero_unbury_treasure(sprite,SPRITE->qx,SPRITE->qy);
+  int result=sprite_hero_unbury_treasure(sprite,SPRITE->shovelx,SPRITE->shovely);
   if (result==2) return 1; // burieddoor, we're done
   
   struct sprite *hole=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
@@ -875,11 +872,6 @@ static int shovel_begin(struct sprite *sprite) {
  */
  
 static void magnifier_update(struct sprite *sprite,double elapsed) {
-  int qx=(int)sprite->x;
-  int qy=(int)sprite->y;
-  if ((qx==SPRITE->qx)&&(qy==SPRITE->qy)) return;
-  SPRITE->qx=qx;
-  SPRITE->qy=qy;
 }
 
 static double nearest_secret_distance2(const struct secret *v,int c,double x,double y) {

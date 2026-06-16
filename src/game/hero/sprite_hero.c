@@ -122,6 +122,33 @@ static void hero_cb_map(struct map *map,int focus,void *userdata) {
   }
 }
 
+/* Check triggers, when (qx,qy) changed.
+ * There's generic 'feet' for treadles and stompboxes, but we need something else for narrative triggers, since Dot might be flying.
+ */
+ 
+static void hero_check_triggers(struct sprite *sprite) {
+  struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (!map) return;
+  int x=SPRITE->qx%NS_sys_mapw;
+  int y=SPRITE->qy%NS_sys_maph;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_triggeronce: {
+          if (cmd.arg[0]!=x) break;
+          if (cmd.arg[1]!=y) break;
+          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (store_get_fld(fld)) break;
+          int activity=(cmd.arg[4]<<8)|cmd.arg[5];
+          int arg=(cmd.arg[6]<<8)|cmd.arg[7];
+          store_set_fld(fld,1);
+          game_begin_activity(activity,arg,sprite);
+        } break;
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -176,6 +203,17 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
   // End of vanishment can defer and run arbitrarily long. (why we're doing it here repeatedly, instead of momentarily at game_update)
   if (!(sprite->physics&(1<<NS_physics_vanishable))&&(g.vanishing<=0.0)) {
     hero_unvanish(sprite);
+  }
+  
+  // Check quantized position.
+  SPRITE->qnew=0;
+  int qx=(int)sprite->x;
+  int qy=(int)sprite->y;
+  if ((qx!=SPRITE->qx)||(qy!=SPRITE->qy)) {
+    SPRITE->qnew=1;
+    SPRITE->qx=qx;
+    SPRITE->qy=qy;
+    hero_check_triggers(sprite);
   }
 
   hero_item_update(sprite,elapsed);
