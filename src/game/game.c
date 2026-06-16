@@ -8,6 +8,20 @@
  
 static void game_cb_store(char type,int id,int value,void *userdata) {
   if (g.completion>=2) return; // Already complete, nothing more for us to track.
+  
+  if (type=='6') switch (id) {
+    case NS_fld16_gold: {
+        // You're allowed to acquire gold for minimalist completion, but not allowed to spend it.
+        // We enforce that generically.
+        if (value<g.goldtrack) store_set_fld(NS_fld_minimalist_disqualify,1);
+        g.goldtrack=value;
+      } break;
+    // Not allowed to acquire or spend fish. We could check the fields when testing minimalist, but then we might miss a spend.
+    case NS_fld16_greenfish:
+    case NS_fld16_bluefish:
+    case NS_fld16_redfish: store_set_fld(NS_fld_minimalist_disqualify,1); break;
+  }
+  
   switch (type) {
     // fld16 doesn't influence completion so we ignore those.
     case 'j': g.jigstate=0; // pass
@@ -37,6 +51,7 @@ int game_reset(int use_save) {
   g.gameover=0;
   g.song_override_outerworld=0;
   g.jigstate=0;
+  g.goldtrack=0;
   g.completion=game_get_completion();
   g.completion_listener=store_listen(0,game_cb_store,0);
   return 0;

@@ -879,6 +879,7 @@ void jigsaw_grab(struct jigsaw *jigsaw) {
   jigsaw->grab=jigsaw_to_top(jigsaw,jigsaw->hover);
   jigsaw->hover=0;
   bm_sound(RID_sound_jigsaw_grab);
+  store_set_fld(NS_fld_minimalist_disqualify,1); // Touching the map disqualifies minimalist. Tho you are allowed to pick up pieces.
 }
 
 /* Release.
@@ -933,6 +934,7 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
   } else {
     bm_sound(RID_sound_jigsaw_rotate);
   }
+  store_set_fld(NS_fld_minimalist_disqualify,1); // Touching the map disqualifies minimalist. Tho you are allowed to pick up pieces.
 }
 
 /* Motion.

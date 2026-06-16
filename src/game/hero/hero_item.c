@@ -1160,6 +1160,7 @@ static void stick_update(struct sprite *sprite,double elapsed) {
 static int stick_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_stick;
   SPRITE->stickclock=0.0;
+  store_set_fld(NS_fld_minimalist_disqualify,1); // Minimalist: You're allowed to pick up a stick, but not allowed to use it.
   
   /* Find moveable sprites in my whack zone.
    */

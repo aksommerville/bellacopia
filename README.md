@@ -38,6 +38,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [ ] Check ladders in the outerworld, they probably all need some safe buffer.
+- [x] Permit jigpieces and stick for minimalist completion, but add a disqualify flag and set it if the stick is wielded, puzzle assembled, or money spent.
+- [ ] !!! Monsters can trigger the kidnap cutscene.
 
 - For exploration some time in the uncertain future.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.

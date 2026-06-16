@@ -345,6 +345,7 @@ static struct bridget_context {
 static int bridget_cb(int optionid,void *userdata) {
   if ((optionid==4)&&bridgetctx.bridgetdata&&bridgetctx.quantity) {
     if (game_lose_item(bridgetctx.bridgetdata->itemid,bridgetctx.quantity)>=0) {
+      store_set_fld(NS_fld_minimalist_disqualify,1); // Minimalist: Might have just spent stick, fish, or gold.
       int nq=store_get_fld16(bridgetctx.bridgetdata->fld16q)-bridgetctx.quantity;
       if (nq<0) nq=0;
       store_set_fld16(bridgetctx.bridgetdata->fld16q,nq);

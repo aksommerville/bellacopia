@@ -86,6 +86,7 @@ extern struct g {
   int completion; // 0,1,2 = none,any%,100%
   int completion_dirty;
   int jigstate; // -1,0,1 = incomplete,unknown,complete. Optimization to spare us examining the whole jigstore when anything changes.
+  int goldtrack;
 } g;
 
 /* Misc global API.

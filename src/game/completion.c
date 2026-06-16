@@ -102,12 +102,20 @@ int game_get_completion() {
 int game_is_minimalist_complete() {
   int n,d;
   
+  // There's a special flag to disqualify the minimalist prize. In normal play, this should get set pretty fast.
+  if (store_get_fld(NS_fld_minimalist_disqualify)) return 0;
+  
   // Any flowers unset, the main quest is incomplete so our answer is 0.
   n=FLDV_COUNT(&d,fldv_flowers); if (n<d) return 0;
   
-  // Check all the other completable things. Anything at all present, our answer is 0.
+  // Check all the other completable things. Anything at all* present, our answer is 0.
+  // [*] Except some things.
   const struct invstore *invstore=g.store.invstorev;
-  for (n=INVSTORE_SIZE;n-->0;invstore++) if (invstore->itemid) return 0;
+  for (n=INVSTORE_SIZE;n-->0;invstore++) {
+    if (!invstore->itemid) continue;
+    if (invstore->itemid==NS_itemid_stick) continue; // You're allowed to have a stick, since they're hard to avoid. You're not allowed to use it.
+    return 0; // Any other item is a violation.
+  }
   if (FLDV_COUNT(0,fldv_side_quest)) return 0;
   if (BUCKETFLDV_COUNT(0,bucketfldv_side_quest)) return 0;
   if (FLDV_COUNT(0,fldv_heart_container)) return 0;
@@ -115,7 +123,9 @@ int game_is_minimalist_complete() {
   if (FLDV_COUNT(0,fldv_story_tree)) return 0;
   if (FLDV_COUNT(0,fldv_zookeeper)) return 0;
   if (FLDV_COUNT(0,fldv_bridge)) return 0;
-  if (jigstore_has_anything()) return 0;
+  
+  // You're allowed to pick up jigpieces. You're *not* allowed to touch them; that should set minimalist_disqualify.
+  //if (jigstore_has_anything()) return 0;
   
   // OK, main quest complete and nothing else!
   return 1;
