@@ -29,18 +29,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Eliminate the rsprite command and replace with a new resource type that maps can refer to.
-- - Or keep the a la carte command, but add a new one. We might have one-off maps that need an exceptional extra sprite.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
-- [x] Handicap for monster and fishpole.
-- - Wearing Power Glove should improve your bias.
+- - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
 - [ ] Animate digging with shovel.
-- [x] Battle wrapper: Issue a warning before timing out. And 60 s feels too long. Gather some stats on how long they are actually taking. ...meh
-- [x] broomrace: Player faces. And can we do cool swooshing frames like apothecary?
-- [x] broomrace: Can we show a hint where the next item will appear? So you can decide to forfeit one for a better position on the next. ...meh
-- [x] broomrace: Opponent should gradually dial down to the correct position, when she chooses an error position, ie she should eventually get it.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
