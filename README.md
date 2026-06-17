@@ -76,7 +76,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
-- [ ] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
+- [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
+- - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
+- [x] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
 - [x] chess: Do more to highlight the enemy king's position at startup.
 
 - Beta test. Aim to have this underway before GDEX.
