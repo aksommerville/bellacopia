@@ -26,6 +26,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-05-02: Slower than I hoped, mostly because I keep getting distracted by game jams. But I still think we'll finish this year.
 - 2026-06-07: Public showing at CORGS Con. Pleasantly surprised by how little guidance anyone needed.
 - 2026-06-14: Finally finished the placeholder battles, and I'm devoting June and July to Bellacopia. No jams or conventions.
+- 2026-06-17: Played thru, letting the Crystal Ball drive. 2h20 to full clear. It made some very bad choices, like, I'd have bought the broom way earlier.
 
 ## TODO
 
@@ -63,8 +64,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - [ ] More spells. Not sure what...
-- [ ] Properer graphics for Crystal Ball. Very rough today.
-- [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
+- [x] Properer graphics for Crystal Ball. Very rough today.
+- [x] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [x] The temple's pool needs a sunbathing monk with a pina colada.
@@ -80,6 +81,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
 - [x] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
 - [x] chess: Do more to highlight the enemy king's position at startup.
+- [ ] Big signs to make the city names unmistakable.
+- [ ] Nerf the building contest.
+- [ ] What happens if you warp out of jail? Wand or bus stop. It should count as escaping.
+- [ ] When does `cryptmsg_require` get called? I was about halfway thru and `cryptmsg_seed` was already set, despite never having seen an encrypted message or stood on a seal.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -100,6 +105,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Map edges on plane zero must be solid.
 - [ ] Continuous root paths leading to each root devil.
 - [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
+- Manual validation before release.
+- [ ] Minimal completion possible.
+- [ ] 100% completion possible.
+- [ ] Crystal Ball, compass, and cartographer always give sane advice.
+- [ ] Every battle plays sensibly in arcade mode.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.

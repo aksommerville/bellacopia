@@ -160,6 +160,11 @@ int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double
  */
 int game_get_advice(char *dst,int dsta);
 
+/* Nonzero if the cartographer can currently tell you something.
+ * (crystal ball uses this).
+ */
+int cartographer_has_advice();
+
 /* Completion: completion.c
  **************************************************************************************/
 

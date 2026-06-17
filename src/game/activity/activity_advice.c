@@ -285,3 +285,11 @@ void begin_cartographer(struct sprite *initiator) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
+
+/* Does the cartographer have anything to tell us?
+ */
+ 
+int cartographer_has_advice() {
+  int dummy=0;
+  return cartographer_get_mapids(&dummy,1,0);
+}

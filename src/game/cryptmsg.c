@@ -257,6 +257,7 @@ int cryptmsg_get(char *dst,int dsta,int which) {
     case 50: case 51: dstc=cryptmsg_fmt_item(dst,dsta,src,srcc,cryptmsg.leafitem); break;
     default: dstc=srcc; memcpy(dst,src,srcc); break;
   }
+  store_set_fld(NS_fld_started_crypto,1);
   return cryptmsg_encrypt(dst,dstc);
 }
 

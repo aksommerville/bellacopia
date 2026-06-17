@@ -603,7 +603,8 @@
 #define NS_fld_bt15 139
 #define NS_fld_princess_outside 140 /* Princess has escaped the cave; if not returned yet, she respawns at its entrance. */
 #define NS_fld_minimalist_disqualify 141 /* Swing the stick, spend gold or fish, anything that disqualifies the minimalist prize. */
-#define NS_fld_bt16 140 /* Jigpiece in labyrinth. */
+#define NS_fld_bt16 142 /* Jigpiece in labyrinth. */
+#define NS_fld_started_crypto 143 /* Nonzero if we've shown some Old Goblish, ever. */
 
 /* "fld16" are 16 unsigned bits each.
  */
