@@ -34,14 +34,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
 - - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
 - [ ] Animate digging with shovel.
+- [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
+- - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [ ] Check ladders in the outerworld, they probably all need some safe buffer.
-- [x] Permit jigpieces and stick for minimalist completion, but add a disqualify flag and set it if the stick is wielded, puzzle assembled, or money spent.
-- [x] !!! Monsters can trigger the kidnap cutscene.
-
-- For exploration some time in the uncertain future.
+- [ ] chopping: Try adding one real item. Fish, coin, vanishing cream, .... If you win the game and don't chop it, you get it.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -58,6 +57,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] Make something happen if you beat a guild outside the election.
+- [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
@@ -70,8 +70,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The temple's pool needs a sunbathing monk with a pina colada.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
-- - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] I think the recorded 100% Time can get reset.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
@@ -79,7 +77,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 - [ ] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
-- [ ] chess: Do more to highlight the enemy king's position at startup.
+- [x] chess: Do more to highlight the enemy king's position at startup.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

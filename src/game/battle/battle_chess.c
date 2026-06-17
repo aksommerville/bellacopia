@@ -19,6 +19,9 @@
 #define LABEL_AGREE 188
 #define LABEL_REFUSE 189
 
+#define TAUNT_TIME  2.500 /* Includes the warp-in and sticking out the tongue. */
+#define TONGUE_TIME 1.000
+
 struct battle_chess {
   struct battle hdr;
   struct chess_game chess_game;
@@ -105,7 +108,7 @@ static int _chess_init(struct battle *battle) {
     BATTLE->use_clock=0;
     
   } else { // Man vs CPU or CPU vs CPU.
-    BATTLE->king_taunt=1.0;
+    BATTLE->king_taunt=TAUNT_TIME;
     double difficulty=battle_scalar_difficulty(battle);
     if (chess_game_init(&BATTLE->chess_game,'1',difficulty)<0) return -1;
     BATTLE->use_clock=1;
@@ -631,6 +634,7 @@ static void _chess_render(struct battle *battle) {
   
   // Pieces. Not interleaved with the board, because those are tiles and these are fancies.
   const uint8_t *boardp=BATTLE->chess_game.board;
+  int warpx=-1,warpy=-1;
   for (yi=8,dsty=dsty0;yi-->0;dsty+=NS_sys_tilesize) {
     dstx=dstx0;
     int xi=8;
@@ -643,6 +647,11 @@ static void _chess_render(struct battle *battle) {
         // Kings get some special treatment.
         if (((*boardp)&PIECE_ROLE_MASK)==PIECE_KING) {
           if (!((*boardp)&PIECE_WHITE)&&(BATTLE->king_taunt>0.0)) {
+            if (BATTLE->king_taunt>TONGUE_TIME) {
+              warpx=dstx;
+              warpy=dsty;
+              continue;
+            }
             tileid=0x0b;
           } else if (battle->outcome>-2) {
             if ((*boardp)&PIECE_WHITE) { // White King. Is he surrendered?
@@ -661,6 +670,30 @@ static void _chess_render(struct battle *battle) {
         uint32_t color=((*boardp)&PIECE_WHITE)?BATTLE->playerv[0].color:BATTLE->playerv[1].color;
         graf_fancy(&g.graf,dstx,dsty+dy,tileid,xform,0,NS_sys_tilesize,0,color);
       }
+    }
+  }
+  
+  // At the very start, the enemy king warps in, to guide the eye.
+  if (warpx>=0) {
+    const double dur=TAUNT_TIME-TONGUE_TIME;
+    const double radius=200.0;
+    const double HALF_ROOT_TWO=0.7071067811865476;
+    double t=(BATTLE->king_taunt-TONGUE_TIME)/dur; // 0..1 = near..far
+    t*=t; // Curve radius.
+    int dcard=(int)(radius*t);
+    int ddiag=(int)(radius*t*HALF_ROOT_TWO);
+    uint8_t tileid=PIECE_KING+1;
+    uint32_t color=BATTLE->playerv[1].color;
+    if (g.framec&1) {
+      graf_fancy(&g.graf,warpx      ,warpy-dcard,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx      ,warpy+dcard,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx-dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx+dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
+    } else {
+      graf_fancy(&g.graf,warpx-ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx+ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx-ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(&g.graf,warpx+ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
     }
   }
   
