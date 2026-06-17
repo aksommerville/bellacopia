@@ -67,7 +67,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
-- [ ] The temple's pool needs a sunbathing monk with a pina colada.
+- [x] The temple's pool needs a sunbathing monk with a pina colada.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] I think the recorded 100% Time can get reset.
