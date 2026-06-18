@@ -19,3 +19,5 @@ switchable @13,4 (u16:fld)bridge5done
 switchable @12,4 (u16:fld)bridge5done
 switchable @16,2 (u16:fld)barrelhat9
 barrelhat @16,2
+race @19,5 5 2
+track @19,8 5 3

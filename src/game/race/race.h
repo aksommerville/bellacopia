@@ -8,7 +8,7 @@
 
 int race_begin(int raceid);
 void race_end();
-void race_check_completion();
+void race_check_completion(int stop_soon);
 void race_update(double elapsed);
 double race_get_countdown();
 

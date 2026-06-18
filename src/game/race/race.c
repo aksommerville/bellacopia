@@ -86,7 +86,6 @@ static int race_add_map(struct race *race,struct map *map) {
  */
  
 static int race_decode(struct race *race,const uint8_t *v,int c) {
-  fprintf(stderr,"%s race:%d, c=%d...\n",__func__,race->rid,c);
   
   // Defaults.
   race->plane=-1;
@@ -99,7 +98,6 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
   struct cmdlist_reader reader={.v=v,.c=c};
   struct cmdlist_entry cmd;
   while (cmdlist_reader_next(&cmd,&reader)>0) {
-    fprintf(stderr,"  cmd 0x%02x argc=%d\n",cmd.opcode,cmd.argc);
     switch (cmd.opcode) {
       case CMD_race_plane: race->plane=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_race_laps: race->lapc=(cmd.arg[0]<<8)|cmd.arg[1]; break;
@@ -180,13 +178,11 @@ static struct race *race_get(int rid) {
   
   // Load store if we haven't yet.
   if (!races.ready) {
-    fprintf(stderr,"%s(%d), loading store...\n",__func__,rid);
     races.ready=1;
     int resp=res_search(EGG_TID_race,0);
     if (resp<0) resp=-resp-1;
     const struct rom_entry *res=g.resv+resp;
     for (;(resp<g.resc)&&(res->tid==EGG_TID_race);resp++,res++) {
-      fprintf(stderr,"race:%d, %d bytes\n",res->rid,res->c);
       if (races.racec>=RACE_RES_LIMIT) {
         fprintf(stderr,"%s:%d: Too many races, limit %d.\n",__FILE__,__LINE__,RACE_RES_LIMIT);
         break;
@@ -332,7 +328,8 @@ void race_end() {
  * Sprites will call this when one racer finishes.
  */
  
-void race_check_completion() {
+void race_check_completion(int stop_soon) {
+  if (stop_soon) races.cooldown=10.0;
   struct sprite **p=GRP(update)->sprv;
   int i=GRP(update)->sprc;
   for (;i-->0;p++) {

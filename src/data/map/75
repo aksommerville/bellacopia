@@ -15,3 +15,5 @@ image image:desert
 position 9 9 1 *
 sprite @4,2 sprite:jigpiece (u32)0
 rspriteres rsprite:eastdesert
+race @1,1 5 4
+track @0,1 5 7

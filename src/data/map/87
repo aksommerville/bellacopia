@@ -15,3 +15,4 @@ image image:desert
 position 2 8 1 *
 sprite @6,4 sprite:jigpiece (u32)0
 rspriteres rsprite:westdesert
+track @7,3 4 4

@@ -295,12 +295,9 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
     if (d2<CHECKPOINT_RADIUS2) {
       if (!SPRITE->checkpointp) { // Reached checkpoint zero -- advance lap or end race.
         if (SPRITE->lapp>=SPRITE->lapc) {
-          fprintf(stderr,"*** end of race *** last lap %.03f, total %.03f\n",SPRITE->laptime,SPRITE->racetime);
           SPRITE->finished=1;
-          race_check_completion();
+          race_check_completion(SPRITE->human);
           return;
-        } else {
-          fprintf(stderr,"lap time %.03f\n",SPRITE->laptime);
         }
         if ((SPRITE->lapp==1)||(SPRITE->laptime<SPRITE->laptime_best)) SPRITE->laptime_best=SPRITE->laptime;
         SPRITE->lapp++;

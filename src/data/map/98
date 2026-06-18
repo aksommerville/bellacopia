@@ -16,3 +16,4 @@ position 5 9 1 *
 busstop @13,7 (u16:busstop)castle
 door @10,7 map:354 @9,10 0x0000
 door @9,7 map:354 @9,10 0x0000
+track @1,10 5 4

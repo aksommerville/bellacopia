@@ -1,0 +1,3 @@
+plane (u16:plane)outerworld
+laps (u16)3
+target (u16:sec)60

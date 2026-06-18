@@ -14,3 +14,6 @@
 image image:caves
 position 2 2 2 *
 sprite @8,5 sprite:jigpiece (u32)0
+sprite @10,6 sprite:moonsong (u16:activity)moonsong race:downstairs_lake
+race @10,7 2 0
+track @10,7 2 0

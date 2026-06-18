@@ -17,3 +17,6 @@ sprite @5,5 sprite:jigpiece (u32)0
 rspriteres rsprite:eastdesert
 race @4,0 1 0
 track @4,0 1 0
+sprite @9,7 sprite:moonsong (u16:activity)moonsong race:desert_run
+race @9,8 5 0
+track @9,8 5 0

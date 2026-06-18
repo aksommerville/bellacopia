@@ -14,3 +14,5 @@
 image image:caves
 position 3 3 2 *
 sprite @11,10 sprite:jigpiece (u32)0
+race @4,1 2 3
+track @4,1 2 3

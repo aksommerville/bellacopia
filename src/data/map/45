@@ -15,3 +15,4 @@ image image:meadow
 position 2 3 1 *
 sprite @9,5 sprite:jigpiece (u32)0
 rspriteres rsprite:isthmus
+track @10,7 4 9

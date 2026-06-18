@@ -17,3 +17,4 @@ sprite @6,4 sprite:jigpiece (u32)0
 switchable @6,0 (u16:fld)bridge2done
 sprite @7,1 sprite:bridget (u16:activity)bridget (u16:fld)bridge2start
 rspriteres rsprite:eastdesert
+track @5,5 5 1

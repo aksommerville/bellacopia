@@ -39,22 +39,23 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Sound effects.
 - - [x] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
 - - - ...made jigpiece non-solid and detect pickup by proximity instead of collision. Works better this way.
-- - [ ] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
+- - [x] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
 - - [ ] Music.
 - - [ ] Can we make monsters bounce when you hit them?
-- - [ ] Wait for both racers to finish, currently terminating when the first one finishes.
-- - - [ ] But don't wait forever, if the human is really far ahead.
+- - [x] Wait for both racers to finish, currently terminating when the first one finishes.
+- - - [x] But don't wait forever, if the human is really far ahead. Moon might have got stuck on a tree or something.
 - - [x] Warmup and cooldown.
 - - [ ] Record completion and best time.
 - - [ ] Acquire story after all complete.
-- - [ ] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense.
-- - [ ] Full set of races. Say five or six?
+- - [x] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense. ...no
+- - [x] Full set of races. Say five or six?
 - - - [x] Round the Meadow
-- - - [ ] Downstairs Lake
-- - - [ ] Across the Tundra
-- - - [ ] Seaside Circle (around Botire)
-- - - [ ] Desert Run
-- - - [ ] North edge of downstairs, would that make a fun race?
+- - - [x] Downstairs Lake
+- - - [x] Across the Tundra
+- - - [x] Seaside Circle (around Botire)
+- - - [x] Desert Run
+- - - [x] North edge of downstairs, would that make a fun race?
+- - [ ] Sprites: Animation and swoosh frames.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
