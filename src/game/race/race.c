@@ -5,7 +5,8 @@
  */
  
 #define RACE_RES_LIMIT 16
-#define CHECKPOINT_LIMIT 32
+#define CHECKPOINT_LIMIT 8
+#define TRACK_LIMIT 32
  
 static struct races {
   int ready;
@@ -20,6 +21,11 @@ static struct races {
       double x,y; // In plane meters, center of marked tile.
     } checkpointv[CHECKPOINT_LIMIT];
     int checkpointc; // All races have at least two, or we choke at init.
+    struct track {
+      int mapid;
+      double x,y;
+    } trackv[TRACK_LIMIT];
+    int trackc;
   } racev[RACE_RES_LIMIT];
   int racec;
   struct race *race; // WEAK, points into (racev) when active. Must match (g.raceid).
@@ -51,6 +57,23 @@ static int race_add_map(struct race *race,struct map *map) {
           checkpoint->x=map->lng*NS_sys_mapw+cmd.arg[0]+0.5;
           checkpoint->y=map->lat*NS_sys_maph+cmd.arg[1]+0.5;
         } break;
+      case CMD_map_track: {
+          if (cmd.arg[2]!=race->rid) break; // Checkpoint for some other race.
+          int seq=cmd.arg[3];
+          if ((seq<0)||(seq>=TRACK_LIMIT)) {
+            fprintf(stderr,"race:%d invalid track sequence %d. Must be in 0..%d (or update TRACK_LIMIT in %s)\n",race->rid,seq,TRACK_LIMIT-1,__FILE__);
+            return -1;
+          }
+          if (seq>=race->trackc) race->trackc=seq+1;
+          struct track *track=race->trackv+seq;
+          if (track->x>0.0) {
+            fprintf(stderr,"race:%d duplicate track sequence %d (map:%d and map:%d)\n",race->rid,seq,track->mapid,map->rid);
+            return -1;
+          }
+          track->mapid=map->rid;
+          track->x=map->lng*NS_sys_mapw+cmd.arg[0]+0.5;
+          track->y=map->lat*NS_sys_maph+cmd.arg[1]+0.5;
+        } break;
     }
   }
   return 0;
@@ -68,6 +91,7 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
   race->lapc=1;
   race->target=0;
   race->checkpointc=0;
+  race->trackc=0;
   
   // Read commands.
   struct cmdlist_reader reader={.v=v,.c=c};
@@ -96,6 +120,7 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
   /* Validate:
    *  - Must have at least 2 checkpoints.
    *  - Checkpoint sequence must be fully populated. Detect via (x<0.5), that can only happen if skipped.
+   *  - Track has exactly the same requirements as checkpoint.
    *  - lapc at least 1.
    * Not validating that checkpoints are on passable terrain or that there exists a path between them. Just don't make tracks like that, m'k?
    * Not validating target time. I think we should allow zero as some special "untimed race", maybe we'll want something like that.
@@ -113,6 +138,17 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
   for (i=race->checkpointc;i-->0;checkpoint++,seq++) {
     if (checkpoint->x<0.5) {
       fprintf(stderr,"race:%d missing checkpoint %d\n",race->rid,seq);
+      return -1;
+    }
+  }
+  if (race->trackc<2) {
+    fprintf(stderr,"race:%d needs at least 2 track points, as CMD_map_track in plane %d\n",race->rid,race->plane);
+    return -1;
+  }
+  struct track *track=race->trackv;
+  for (i=race->trackc,seq=0;i-->0;track++,seq++) {
+    if (track->x<0.5) {
+      fprintf(stderr,"race:%d missing track point %d\n",race->rid,seq);
       return -1;
     }
   }
@@ -280,7 +316,9 @@ int race_begin(int raceid) {
 
 /* End race.
  */
- 
+//TODO race needs a cooldown and warmup interval
+//TODO music
+
 void race_end() {
   fprintf(stderr,"%s\n",__func__);
   race_restore_game_sprites();
@@ -307,6 +345,20 @@ int race_get_checkpoint(double *x,double *y,int p) {
   if (p>=races.race->checkpointc) return -1;
   *x=races.race->checkpointv[p].x;
   *y=races.race->checkpointv[p].y;
+  return 0;
+}
+
+int race_get_trackc() {
+  if (!races.race) return 0;
+  return races.race->trackc;
+}
+
+int race_get_track(double *x,double *y,int p) {
+  if (!races.race) return -1;
+  if (p<0) return -1;
+  if (p>=races.race->trackc) return -1;
+  *x=races.race->trackv[p].x;
+  *y=races.race->trackv[p].y;
   return 0;
 }
 

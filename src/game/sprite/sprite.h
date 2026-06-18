@@ -26,6 +26,7 @@ struct sprite {
   double hbl,hbr,hbt,hbb; // Hitbox relative to (x,y). (l,t) are usually negative.
   uint32_t physics; // Bits, (1<<NS_physics_*), which ones are impassable.
   int solid,floating; // Group hints. These are managed magically when adding and removing groups. For things we poll frequently.
+  int ignore_other_sprites; // Solid, but only against static solids.
   int rid;
   const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
   int cmdc,argc;
@@ -109,6 +110,8 @@ void sprite_monster_shock(struct sprite *sprite,double x,double y); // For whack
 int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is a monster, and has already triggered its battle.
 
 int sprite_npc_get_activity(const struct sprite *sprite);
+
+int sprite_racer_get_checkpointp(const struct sprite *sprite);
 
 /* Sprite group.
  *******************************************************************/

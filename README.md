@@ -30,6 +30,28 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Broom races.
+- - [x] !!! Moon can get stuck inside another sprite if it spawns on top of her.
+- - - Nuked it: CPU racers will just not participate in sprite-on-sprite collisions.
+- - [x] CPU player.
+- - [x] Separate from the checkpoints, we need a similar "track" list detailing a known-safe path for CPU racers. Finer detail than the checkpoints.
+- - - [x] If we had this, could we do fully naive steering? Just turn toward the next track point?
+- - [ ] Sound effects.
+- - [ ] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
+- - [ ] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
+- - [ ] Music.
+- - [ ] Can we make monsters bounce when you hit them?
+- - [ ] Warmup and cooldown.
+- - [ ] Record completion and best time.
+- - [ ] Acquire story after all complete.
+- - [ ] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense.
+- - [ ] Full set of races. Say five or six?
+- - - [x] Round the Meadow
+- - - [ ] Downstairs Lake
+- - - [ ] Across the Tundra
+- - - [ ] Seaside Circle (around Botire)
+- - - [ ] Desert Run
+- - - [ ] North edge of downstairs, would that make a fun race?
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.

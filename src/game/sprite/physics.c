@@ -72,12 +72,13 @@ static int sprite_detect_collisions(
   
   /* Check other solid sprites.
    */
-  {
+  if (!sprite->ignore_other_sprites) {
     struct sprite **otherp=GRP(solid)->sprv;
     int otherc=GRP(solid)->sprc;
     for (;otherc-->0;otherp++) {
       struct sprite *other=*otherp;
       if (!other->solid) continue;
+      if (other->ignore_other_sprites) continue;
       if (other->defunct) continue;
       if (other==sprite) continue;
       double ol=other->x+other->hbl; if (ol>=r) continue;

@@ -12,13 +12,21 @@ struct sprite_racer {
   int steer; // -1,0,1 = deasil,neutral,clockwise
   int accel; // 0,1. If we had a brake or reverse, it would be -1, but I think we're not doing that.
   
+  int obsx,obsy; // General controller sets momentarily when movement was obstructed.
+  
+  // Extra state for CPU controller.
+  double obsclock; // Counts down after obstruction detected.
+  double obst; // Aim for this angle to escape obstruction.
+  int trackp,trackc;
+  double trackax,trackay,trackbx,trackby; // From (a) to (b), current leg of the track. (trackp) refers to (b).
+  double samplex,sampley,sampleclock;
+  
   double facet;
   int frame; // (0,1,2,3)=(normal,rush,turnleft,turnright)
   int elevation; // (0,1)=(lo,hi), are we above water? Controls the shadow depth.
   double steer_speed; // rad/s. Volatile, final answer.
   double top_speed; // m/s. Holds fairly constant, but adjusts per bells.
   double speed; // m/s. Highly volatile, adjusts each frame per input and steering.
-  double accel_rate; // XXX m/s**2, must be positive.
   double decel_rate; // m/s**2, must be negative. Deceleration is constant, so it should be substantially less significant than acceleration.
   double steer_penalty; // Multiplier.
   double dx,dy; // m/s inertia.
@@ -81,24 +89,28 @@ static int _racer_init(struct sprite *sprite) {
   if (race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp)<0) return -1;
   SPRITE->steer_speed=5.000;
   SPRITE->top_speed=18.0;
-  SPRITE->accel_rate=200.0;
   SPRITE->decel_rate=-8.0;
   SPRITE->steer_penalty=0.750;
   
   if (!SPRITE->human) {
-    //TODO Prep CPU racer.
+    // CPU players are faster and won't collide with other sprites. But they are also laughably bad at turning. I think it kind of works out.
+    SPRITE->steer_speed=10.0;
+    SPRITE->top_speed=28.0;
+    SPRITE->decel_rate=-12.0;
+    SPRITE->steer_penalty=0.900;
+    sprite->ignore_other_sprites=1;
+    SPRITE->trackc=race_get_trackc();
+    if (SPRITE->trackc<2) return -1;
+    SPRITE->trackp=1;
+    // The initial A point is our position, not necessarily the exact track position.
+    SPRITE->trackax=sprite->x;
+    SPRITE->trackay=sprite->y;
+    if (race_get_track(&SPRITE->trackbx,&SPRITE->trackby,SPRITE->trackp)<0) return -1;
+    SPRITE->samplex=sprite->x;
+    SPRITE->sampley=sprite->y;
   }
   
   return 0;
-}
-
-/* Turn.
- */
- 
-static void racer_turn(struct sprite *sprite,double elapsed,double d) {
-  SPRITE->facet+=d*elapsed*5.000; // TODO Turn speed control.
-  if (SPRITE->facet<-M_PI) SPRITE->facet+=M_PI*2.0;
-  if (SPRITE->facet>M_PI) SPRITE->facet-=M_PI*2.0;
 }
 
 /* Update, human control.
@@ -115,17 +127,62 @@ static void racer_update_man(struct sprite *sprite,double elapsed,int input,int 
   } else {
     SPRITE->accel=0;
   }
-  //XXX Press WEST to end the race.
-  if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) {
-    race_end();
-  }
 }
 
 /* Update, CPU control.
  */
  
 static void racer_update_cpu(struct sprite *sprite,double elapsed) {
-  //TODO
+
+  /* If within a meter of point B, advance to the next.
+   */
+  double dx=SPRITE->trackbx-sprite->x;
+  double dy=SPRITE->trackby-sprite->y;
+  double d2=dx*dx+dy*dy;
+  if (d2<1.000) {
+    if (++(SPRITE->trackp)>=SPRITE->trackc) SPRITE->trackp=0;
+    SPRITE->trackax=SPRITE->trackbx;
+    SPRITE->trackay=SPRITE->trackby;
+    race_get_track(&SPRITE->trackbx,&SPRITE->trackby,SPRITE->trackp);
+  }
+  
+  /* If we're far off the track, our target is the nearest on-track point.
+   * Otherwise it's point B.
+   */
+  double mex=sprite->x-SPRITE->trackax;
+  double mey=sprite->y-SPRITE->trackay;
+  double bx=SPRITE->trackbx-SPRITE->trackax;
+  double by=SPRITE->trackby-SPRITE->trackay;
+  double tracklen=sqrt(bx*bx+by*by);
+  double rej=(mex*by-bx*mey)/tracklen;
+  double proj=(mex*bx+mey*by)/tracklen;
+  double targetx,targety;
+  if (proj<0.0) {
+    targetx=SPRITE->trackax;
+    targety=SPRITE->trackay;
+  } else if (proj>tracklen) {
+    targetx=SPRITE->trackbx;
+    targety=SPRITE->trackby;
+  } else if ((rej<-1.0)||(rej>1.0)) {
+    double nproj=proj/tracklen;
+    targetx=SPRITE->trackax+bx*nproj;
+    targety=SPRITE->trackay+by*nproj;
+  } else {
+    targetx=SPRITE->trackbx;
+    targety=SPRITE->trackby;
+  }
+  
+  /* Take the angle to our target.
+   */
+  double targett=atan2(targetx-sprite->x,sprite->y-targety);
+  double dt=targett-SPRITE->facet;
+  while (dt>M_PI) dt-=M_PI*2.0;
+  while (dt<-M_PI) dt+=M_PI*2.0;
+  if (dt<-0.010) SPRITE->steer=-1;
+  else if (dt>0.010) SPRITE->steer=1;
+  else SPRITE->steer=0;
+  if ((dt>-1.000)&&(dt<1.000)) SPRITE->accel=1;
+  else SPRITE->accel=0;
 }
 
 /* Update.
@@ -174,11 +231,6 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
   if (SPRITE->accel) {
     double target=SPRITE->top_speed;
     if (SPRITE->steer) target*=SPRITE->steer_penalty;
-    if (SPRITE->speed<target) {//XXX
-      if ((SPRITE->speed+=SPRITE->accel_rate*elapsed)>=target) SPRITE->speed=target;
-    } else if (SPRITE->speed>target) {
-      if ((SPRITE->speed-=SPRITE->accel_rate*elapsed)<=target) SPRITE->speed=target;
-    }
     SPRITE->speed=target;
     SPRITE->dx+=sin(SPRITE->facet)*elapsed*SPRITE->speed;
     SPRITE->dy-=cos(SPRITE->facet)*elapsed*SPRITE->speed;
@@ -199,13 +251,16 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
    * When motion on one axis is blocked, flip and reduce it.
    * Our collisions are one-dimensional axis-aligned rectangles, not the circles you'd expect.
    */
+  SPRITE->obsx=SPRITE->obsy=0;
   if (motion) {
     //fprintf(stderr,"d=%+f,%+f m/s\n",SPRITE->dx,SPRITE->dy);
     const double bounce=-0.500;
     if (!sprite_move(sprite,SPRITE->dx*elapsed,0.0)) {
+      SPRITE->obsx=1;
       SPRITE->dx*=bounce;
     }
     if (!sprite_move(sprite,0.0,SPRITE->dy*elapsed)) {
+      SPRITE->obsy=1;
       SPRITE->dy*=bounce;
     }
   }
@@ -233,9 +288,9 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
   double dy=SPRITE->cpy-sprite->y;
   d2=dx*dx+dy*dy;
   if (d2<CHECKPOINT_RADIUS2) {
-    fprintf(stderr,"racer %p reached checkpoint %d of lap %d/%d\n",sprite,SPRITE->checkpointp,SPRITE->lapp,SPRITE->lapc);
     if (!SPRITE->checkpointp) { // Reached checkpoint zero -- advance lap or end race.
       if (SPRITE->lapp>=SPRITE->lapc) {
+        //TODO Terminate when everyone is finished, not just me
         fprintf(stderr,"*** end of race *** last lap %.03f, total %.03f\n",SPRITE->laptime,SPRITE->racetime);
         race_end();
         return;
@@ -251,6 +306,8 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
     race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp);
   }
 }
+
+//TODO Ensure jigpieces either can be collected (preferable), or are not solid against racers (acceptable).
 
 /* Render.
  */
@@ -269,6 +326,26 @@ static void _racer_render(struct sprite *sprite,int x,int y) {
   graf_set_alpha(&g.graf,0xff);
   graf_decal_rotate(&g.graf,x,y,srcx,SPRITE->srcy,64,sint,cost,0.333);
   graf_set_filter(&g.graf,0);
+  
+  /* For humans, an indicator pointing to the next checkpoint.
+   */
+  if (SPRITE->human) {
+    double dx=SPRITE->cpx-sprite->x;
+    double dy=SPRITE->cpy-sprite->y;
+    double d2=dx*dx+dy*dy;
+    if (d2>CHECKPOINT_RADIUS2) {
+      double distance=sqrt(d2);
+      double indradius=40.0;
+      int indx=x+dx*indradius/distance;
+      int indy=y+dy*indradius/distance;
+      int alpha=(g.framec&0x10)?0xc0:0x40;
+      int rotation=(int)((atan2(dx,-dy)*128.0)/M_PI);
+      graf_set_image(&g.graf,RID_image_pause);
+      graf_set_filter(&g.graf,1);
+      graf_fancy(&g.graf,indx,indy,0x9b,0,rotation&0xff,NS_sys_tilesize,0,0x00ff0000|alpha);
+      graf_set_filter(&g.graf,0);
+    }
+  }
 }
 
 /* Type definition.
@@ -281,3 +358,11 @@ const struct sprite_type sprite_type_racer={
   .update=_racer_update,
   .render=_racer_render,
 };
+
+/* Public accessors.
+ */
+ 
+int sprite_racer_get_checkpointp(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return -1;
+  return SPRITE->checkpointp;
+}

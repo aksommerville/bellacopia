@@ -204,6 +204,7 @@ static void story_refresh_overlay(struct modal *modal) {
 }
 
 /* Overlay with HP, gold, etc.
+ * Shows during normal play.
  */
  
 static void story_render_overlay(struct modal *modal) {
@@ -234,12 +235,27 @@ static void story_render_overlay(struct modal *modal) {
   #undef BAR
 }
 
+/* Overlay when an open-world race is running.
+ * Camera shows the checkpoints and sprites but anything else is up to us.
+ * (the thing that distinguishes responsibility here is that we only draw unscrolled things, and camera scrolled).
+ */
+ 
+static void story_render_race_overlay(struct modal *modal) {
+  //TODO Lap
+  //TODO Clock
+  //TODO Arrow pointing to next checkpoint
+}
+
 /* Render.
  */
  
 static void _story_render(struct modal *modal) {
   camera_render();
-  story_render_overlay(modal);
+  if (g.raceid) {
+    story_render_race_overlay(modal);
+  } else {
+    story_render_overlay(modal);
+  }
 }
 
 /* Type definition.
