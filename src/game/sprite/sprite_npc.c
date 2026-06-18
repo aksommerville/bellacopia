@@ -18,7 +18,7 @@ struct sprite_npc {
 static int _npc_init(struct sprite *sprite) {
   SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
-  if (game_activity_sprite_should_abort(SPRITE->activity,sprite->type)) return -1;
+  if (game_activity_sprite_should_abort(SPRITE->activity,SPRITE->activity_arg,sprite->type)) return -1;
   
   /* Certain activities imply tileid+1 when some flag is set, or a similar change.
    */
@@ -79,3 +79,11 @@ const struct sprite_type sprite_type_npc={
   .update=_npc_update,
   .collide=_npc_collide,
 };
+
+/* Public accessors.
+ */
+ 
+int sprite_npc_get_activity(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_npc)) return 0;
+  return SPRITE->activity;
+}

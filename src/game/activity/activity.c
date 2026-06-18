@@ -65,6 +65,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_cheatstories: store_set_fld(NS_fld_got_story9,1); store_set_fld(NS_fld_got_story11,1); store_set_fld(NS_fld_got_story12,1); store_set_fld(NS_fld_got_story14,1); store_set_fld(NS_fld_got_story15,1); break;
     case NS_activity_cartographer: begin_cartographer(initiator); break;
     case NS_activity_exit_cave: begin_exit_cave(initiator); break;
+    case NS_activity_moonsong: begin_moonsong(initiator,arg); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }
@@ -74,9 +75,14 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
 /* Abort sprite?
  */
  
-int game_activity_sprite_should_abort(int activity,const struct sprite_type *type) {
+int game_activity_sprite_should_abort(int activity,int arg,const struct sprite_type *type) {
   switch (activity) {
     case NS_activity_wargate: if (store_get_fld(NS_fld_war_over)) return 1; return 0;
+    case NS_activity_moonsong: {
+        if (g.raceid) return 1; // Race is running, so we already should have Moon on a broom. Don't make two of her!
+        if (!store_get_itemid(NS_itemid_broom)) return 1;
+        //TODO Check arg. If nonzero, abort when that race is complete. (0) is present only when they're all complete.
+      } return 0;
   }
   return 0;
 }

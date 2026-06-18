@@ -129,6 +129,7 @@ int game_welcome_map(struct map *map) {
       struct sprite *sprite=*p;
       if (sprite->defunct) continue;
       if (sprite->type==&sprite_type_hero) continue; // never her
+      if (sprite->type==&sprite_type_racer) continue; // or her
       if (sprite->z!=g.camera.z) {
         sprite_kill_soon(sprite);
         continue;

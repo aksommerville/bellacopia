@@ -35,6 +35,7 @@ struct sprite {
  * To delete a sprite, assign it to the "deathrow" group.
  * To create one, use sprite_spawn().
  * sprite_new does add to the global groups, but also returns a STRONG reference.
+ * Note that (arg) is retained weakly. It must be immortal.
  */
 void sprite_del(struct sprite *sprite);
 struct sprite *sprite_new(
@@ -106,6 +107,8 @@ int sprite_ticker_set_text(struct sprite *sprite,const char *src,int srcc);
 
 void sprite_monster_shock(struct sprite *sprite,double x,double y); // For whacking with a stick.
 int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is a monster, and has already triggered its battle.
+
+int sprite_npc_get_activity(const struct sprite *sprite);
 
 /* Sprite group.
  *******************************************************************/

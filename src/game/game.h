@@ -97,7 +97,7 @@ int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg);
  */
 void game_begin_activity(int activity,int arg,struct sprite *initiator);
 
-int game_activity_sprite_should_abort(int activity,const struct sprite_type *type);
+int game_activity_sprite_should_abort(int activity,int arg,const struct sprite_type *type);
 
 /* Partner to NS_activity_tolltroll, so the sprite can set its appearance.
  * Returns itemid, or zero if the troll has already been paid off.

@@ -41,3 +41,4 @@ root @18,4 (u16:fld)root7
 switchable @17,7 (u16:fld)barrelhat5
 barrelhat @17,7
 busstop @13,3 (u16:busstop)cheapside
+sprite @4,9 sprite:moonsong (u16:activity)moonsong (u16:activity_arg)1

@@ -3,6 +3,7 @@
  */
  
 #include "activity_internal.h"
+#include "game/race/race.h"
 
 /* Toll Troll (the main quest one).
  */
@@ -444,4 +445,29 @@ void begin_bridget(struct sprite *initiator,int arg) {
     modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
     modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
   }
+}
+
+/* Moon Song.
+ */
+ 
+static int moonsong_cb(int optionid,void *userdata) {
+  if (optionid!=4) return 0;
+  int raceid=(int)(uintptr_t)userdata;
+  race_begin(raceid);
+  return 0;
+}
+ 
+void begin_moonsong(struct sprite *initiator,int arg) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=137,
+    .speaker=initiator,
+    .cb=moonsong_cb,
+    .userdata=(void*)(uintptr_t)arg,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  //TODO If (!arg), pick a race.
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }

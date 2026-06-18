@@ -87,6 +87,7 @@ extern struct g {
   int completion_dirty;
   int jigstate; // -1,0,1 = incomplete,unknown,complete. Optimization to spare us examining the whole jigstore when anything changes.
   int goldtrack;
+  int raceid; // Nonzero if an open world race is in progress.
 } g;
 
 /* Misc global API.

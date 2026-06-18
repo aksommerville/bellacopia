@@ -218,3 +218,14 @@ Record everything that someone might object to on moral grounds, so we can decla
 - Casino.
 - Strangling Contest.
 - Dead babies splattered on the sidewalk: Rescuing Contest.
+
+## Gameplay that changes between campaigns
+
+Be sure to note all these things prominently in the docs, so people don't assume they're constant.
+Maybe point out that buried treasure, bridges, and races *are* constant.
+
+- Old Goblish alphabet.
+- Assignment of encrypted messages to stones. Same messages every time, mostly, but in random places.
+- Choice of items and battle for the goblin seals.
+- Rules and layout of the statue maze.
+- Layout of the labyrinth. (actually not constant even within one campaign).

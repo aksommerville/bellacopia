@@ -134,6 +134,7 @@
 #define NS_face_monster 0 /* "The monster", whatever the game prefers. */
 #define NS_face_dot 1
 #define NS_face_princess 2
+#define NS_face_moonsong 3 /* For open world races only. */
 
 #define NS_fishodds_default 0 /* All colors possible, green much more likely. */
 #define NS_fishodds_never   1 /* No fish here, ever. */
@@ -285,6 +286,7 @@
 #define NS_activity_cheatstories 45
 #define NS_activity_cartographer 46
 #define NS_activity_exit_cave 47
+#define NS_activity_moonsong 48 /* (u16:raceid)0 */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -314,6 +316,7 @@
 #define NS_sprtype_ticker      25 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_zookeeper   26 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_mnneon      27 /* (u32)0 */
+#define NS_sprtype_racer       28 /* (u8:human)0 (u8:face)monster (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -342,7 +345,8 @@
   _(bus) \
   _(ticker) \
   _(zookeeper) \
-  _(mnneon)
+  _(mnneon) \
+  _(racer)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
