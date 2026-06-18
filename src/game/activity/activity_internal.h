@@ -68,6 +68,7 @@ void begin_poet(struct sprite *initiator);
 // activity_misc.c
 void begin_phonograph();
 void begin_busstop(int arg);
+void begin_pauserace();
 
 // activity_dialogue.c
 void begin_statuemaze_clue(struct sprite *initiator,int arg);

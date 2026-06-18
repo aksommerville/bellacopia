@@ -1,4 +1,5 @@
 #include "activity_internal.h"
+#include "game/race/race.h"
 
 /* Phonograph.
  */
@@ -77,4 +78,27 @@ int busstop_name_by_index(int p) {
   int c=sizeof(busstop_metadatav)/sizeof(struct busstop_metadata);
   if (p>=c) return 0;
   return busstop_metadatav[p].strix;
+}
+
+/* Pause, while race running.
+ * This isn't involved enough to deserve its own modal, like regular pause.
+ */
+ 
+static int pauserace_cb(int optionid,void *userdata) {
+  if (optionid==141) {
+    race_end();
+  }
+  return 0;
+}
+ 
+void begin_pauserace() {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=139,
+    .cb=pauserace_cb,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,140);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,141);
 }

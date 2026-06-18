@@ -25,13 +25,21 @@ static int _jigpiece_init(struct sprite *sprite) {
   return 0;
 }
 
-/* Collide.
+/* Update.
  */
  
-static void _jigpiece_collide(struct sprite *sprite,struct sprite *other) {
-  if (other->type==&sprite_type_hero) {
-    if (game_get_item(NS_itemid_jigpiece,SPRITE->mapid)) {
-      sprite_kill_soon(sprite);
+static void _jigpiece_update(struct sprite *sprite,double elapsed) {
+  if (GRP(hero)->sprc>=1) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    const double radius=0.750;
+    double dx=hero->x-sprite->x;
+    if ((dx>=-radius)&&(dx<=radius)) {
+      double dy=hero->y-sprite->y;
+      if ((dy>=-radius)&&(dy<=radius)) {
+        if (game_get_item(NS_itemid_jigpiece,SPRITE->mapid)) {
+          sprite_kill_soon(sprite);
+        }
+      }
     }
   }
 }
@@ -43,5 +51,5 @@ const struct sprite_type sprite_type_jigpiece={
   .name="jigpiece",
   .objlen=sizeof(struct sprite_jigpiece),
   .init=_jigpiece_init,
-  .collide=_jigpiece_collide,
+  .update=_jigpiece_update,
 };

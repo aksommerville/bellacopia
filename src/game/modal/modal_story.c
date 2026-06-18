@@ -4,6 +4,7 @@
  */
 
 #include "game/bellacopia.h"
+#include "game/race/race.h"
 
 struct modal_story {
   struct modal hdr;
@@ -96,7 +97,8 @@ static void _story_update(struct modal *modal,double elapsed) {
 
   // AUX1 to pause.
   if ((g.input[0]&EGG_BTN_AUX1)&&!(g.pvinput[0]&EGG_BTN_AUX1)) {
-    modal_spawn(&modal_type_pause,0,0);
+    if (g.raceid) game_begin_activity(NS_activity_pauserace,0,0);
+    else modal_spawn(&modal_type_pause,0,0);
     return;
   }
   
@@ -119,6 +121,7 @@ static void _story_update(struct modal *modal,double elapsed) {
   sprite_group_kill_all(GRP(deathrow));
   
   // Other updatey things.
+  if (g.raceid) race_update(elapsed);
   game_update(elapsed_most);
   feet_update();
   camera_update(elapsed);
@@ -235,15 +238,69 @@ static void story_render_overlay(struct modal *modal) {
   #undef BAR
 }
 
+/* Render "MM:SS.mmm", with position given as the center of the last digit.
+ */
+ 
+static void story_render_time(int x,int y,double f) {
+  int ms=(int)(f*1000.0);
+  if (ms<0) ms=0;
+  int sec=ms/1000; ms%=1000;
+  int min=sec/60; sec%=60;
+  if (min>99) {
+    min=99;
+    sec=99;
+    ms=999;
+  }
+  graf_tile(&g.graf,x,y,'0'+ms%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+(ms/10)%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+ms/100,0); x-=8;
+  graf_tile(&g.graf,x,y,'.',0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+sec%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+sec/10,0); x-=8;
+  graf_tile(&g.graf,x,y,':',0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+min%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+min/10,0);
+}
+
 /* Overlay when an open-world race is running.
  * Camera shows the checkpoints and sprites but anything else is up to us.
  * (the thing that distinguishes responsibility here is that we only draw unscrolled things, and camera scrolled).
  */
  
 static void story_render_race_overlay(struct modal *modal) {
-  //TODO Lap
-  //TODO Clock
-  //TODO Arrow pointing to next checkpoint
+  
+  /* Initial countdown.
+   */
+  double s=race_get_countdown();
+  if (s>0.0) {
+    int ms=(int)(s*1000.0);
+    if (ms<0) ms=0;
+    int si=ms/1000+1;
+    if (si>9) si=9;
+    ms%=1000;
+    if (ms>=250) {
+      graf_set_image(&g.graf,RID_image_fonttiles);
+      graf_tile(&g.graf,FBW>>1,FBH>>1,'0'+si,0);
+    }
+    
+  /* Stats.
+   */
+  } else {
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    struct race_status status={0};
+    race_get_status(&status);
+    if (status.lapp>status.lapc) { // Finished.
+      story_render_time((FBW>>1)+36-4,FBH>>1,status.racetime);
+      if (status.opponenttime>0.0) {
+        story_render_time((FBW>>1)+36-4,(FBH>>1)+8,status.opponenttime);
+      }
+    } else if (status.lapp>0) { // In progress.
+      graf_tile(&g.graf, 6,6,'0'+status.lapp,0);
+      graf_tile(&g.graf,14,6,'/',0);
+      graf_tile(&g.graf,22,6,'0'+status.lapc,0);
+      story_render_time(FBW-6,6,status.racetime);
+    }
+  }
 }
 
 /* Render.

@@ -66,6 +66,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_cartographer: begin_cartographer(initiator); break;
     case NS_activity_exit_cave: begin_exit_cave(initiator); break;
     case NS_activity_moonsong: begin_moonsong(initiator,arg); break;
+    case NS_activity_pauserace: begin_pauserace(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

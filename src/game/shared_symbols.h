@@ -293,6 +293,7 @@
 #define NS_activity_cartographer 46
 #define NS_activity_exit_cave 47
 #define NS_activity_moonsong 48 /* (u16:raceid)0 */
+#define NS_activity_pauserace 49
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */

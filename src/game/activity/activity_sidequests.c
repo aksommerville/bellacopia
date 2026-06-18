@@ -460,7 +460,7 @@ static int moonsong_cb(int optionid,void *userdata) {
 void begin_moonsong(struct sprite *initiator,int arg) {
   struct modal_args_dialogue args={
     .rid=RID_strings_dialogue,
-    .strix=137,
+    .strix=(g.store.invstorev[0].itemid==NS_itemid_broom)?137:138,
     .speaker=initiator,
     .cb=moonsong_cb,
     .userdata=(void*)(uintptr_t)arg,

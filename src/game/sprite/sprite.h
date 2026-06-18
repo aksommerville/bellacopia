@@ -112,6 +112,11 @@ int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is 
 int sprite_npc_get_activity(const struct sprite *sprite);
 
 int sprite_racer_get_checkpointp(const struct sprite *sprite);
+int sprite_racer_is_finished(const struct sprite *sprite);
+int sprite_racer_is_human(const struct sprite *sprite);
+double sprite_racer_get_lap_time(const struct sprite *sprite);
+double sprite_racer_get_race_time(const struct sprite *sprite);
+int sprite_racer_get_lapp(const struct sprite *sprite);
 
 /* Sprite group.
  *******************************************************************/

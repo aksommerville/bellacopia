@@ -29,6 +29,8 @@ static struct races {
   } racev[RACE_RES_LIMIT];
   int racec;
   struct race *race; // WEAK, points into (racev) when active. Must match (g.raceid).
+  double countdown;
+  double cooldown;
 } races={0};
 
 /* Add one map's commands to a new race.
@@ -251,7 +253,6 @@ static void race_restore_game_sprites() {
       sprite_group_add(GRP(visible),sprite);
       sprite_group_add(GRP(update),sprite);
       sprite_group_add(GRP(solid),sprite);
-      //TODO why is moon getting deleted during the race?
     } else if (sprite->type==&sprite_type_racer) {
       sprite_kill_soon(sprite);
     }
@@ -311,19 +312,53 @@ int race_begin(int raceid) {
     race_restore_game_sprites();
     return -1;
   }
+  races.countdown=2.999;
+  races.cooldown=0.0;
+  bm_song_gently(0);
   return 0;
 }
 
 /* End race.
  */
-//TODO race needs a cooldown and warmup interval
-//TODO music
 
 void race_end() {
-  fprintf(stderr,"%s\n",__func__);
   race_restore_game_sprites();
   g.raceid=0;
   races.race=0;
+  bm_song_gently(bm_song_for_outerworld());
+}
+
+/* Check completion.
+ * Sprites will call this when one racer finishes.
+ */
+ 
+void race_check_completion() {
+  struct sprite **p=GRP(update)->sprv;
+  int i=GRP(update)->sprc;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->type!=&sprite_type_racer) continue;
+    if (!sprite_racer_is_finished(sprite)) return;
+  }
+  races.cooldown=3.0;
+}
+
+/* Update.
+ */
+ 
+void race_update(double elapsed) {
+  if (races.countdown>0.0) {
+    races.countdown-=elapsed;
+    if (races.countdown<=0.0) {
+      bm_song_gently(RID_song_death_rattle);//TODO song for races
+    }
+  }
+  if (races.cooldown>0.0) {
+    races.cooldown-=elapsed;
+    if (races.cooldown<=0.0) {
+      race_end();
+    }
+  }
 }
 
 /* Trivial accessors against active race.
@@ -365,4 +400,36 @@ int race_get_track(double *x,double *y,int p) {
 int race_get_target_time() {
   if (!races.race) return 0;
   return races.race->target;
+}
+
+double race_get_countdown() {
+  return races.countdown;
+}
+
+/* Get status pertinent to the human racer.
+ */
+ 
+void race_get_status(struct race_status *status) {
+  if (!races.race) {
+    status->lapp=0;
+    status->lapc=0;
+    status->laptime=0.0;
+    status->racetime=0.0;
+    status->opponenttime=0.0;
+  } else {
+    status->lapc=races.race->lapc;
+    struct sprite **p=GRP(update)->sprv;
+    int i=GRP(update)->sprc;
+    for (;i-->0;p++) {
+      struct sprite *sprite=*p;
+      if (sprite->type!=&sprite_type_racer) continue;
+      if (sprite_racer_is_human(sprite)) {
+        status->lapp=sprite_racer_get_lapp(sprite);
+        status->laptime=sprite_racer_get_lap_time(sprite);
+        status->racetime=sprite_racer_get_race_time(sprite);
+      } else {
+        status->opponenttime=sprite_racer_get_race_time(sprite);
+      }
+    }
+  }
 }

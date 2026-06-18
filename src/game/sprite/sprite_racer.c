@@ -12,8 +12,6 @@ struct sprite_racer {
   int steer; // -1,0,1 = deasil,neutral,clockwise
   int accel; // 0,1. If we had a brake or reverse, it would be -1, but I think we're not doing that.
   
-  int obsx,obsy; // General controller sets momentarily when movement was obstructed.
-  
   // Extra state for CPU controller.
   double obsclock; // Counts down after obstruction detected.
   double obst; // Aim for this angle to escape obstruction.
@@ -38,6 +36,8 @@ struct sprite_racer {
   double cpx,cpy;
   double racetime;
   double laptime;
+  double laptime_best;
+  int finished;
 };
 
 #define SPRITE ((struct sprite_racer*)sprite)
@@ -190,13 +190,20 @@ static void racer_update_cpu(struct sprite *sprite,double elapsed) {
  
 static void _racer_update(struct sprite *sprite,double elapsed) {
 
-  SPRITE->laptime+=elapsed;
-  SPRITE->racetime+=elapsed;
-
-  /* Operating like most battles, we have a man or cpu controller first, just making the decisions.
+  /* If finished, we do let normal physics wind down.
+   * But the controllers no longer get to play.
    */
-  if (SPRITE->human) racer_update_man(sprite,elapsed,g.input[SPRITE->human],g.pvinput[SPRITE->human]);
-  else racer_update_cpu(sprite,elapsed);
+  if (SPRITE->finished) {
+    SPRITE->steer=0;
+    SPRITE->accel=0;
+  } else if (race_get_countdown()>0.0) {
+    return;
+  } else {
+    SPRITE->laptime+=elapsed;
+    SPRITE->racetime+=elapsed;
+    if (SPRITE->human) racer_update_man(sprite,elapsed,g.input[SPRITE->human],g.pvinput[SPRITE->human]);
+    else racer_update_cpu(sprite,elapsed);
+  }
   
   /* Steering.
    */
@@ -251,16 +258,13 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
    * When motion on one axis is blocked, flip and reduce it.
    * Our collisions are one-dimensional axis-aligned rectangles, not the circles you'd expect.
    */
-  SPRITE->obsx=SPRITE->obsy=0;
   if (motion) {
     //fprintf(stderr,"d=%+f,%+f m/s\n",SPRITE->dx,SPRITE->dy);
     const double bounce=-0.500;
     if (!sprite_move(sprite,SPRITE->dx*elapsed,0.0)) {
-      SPRITE->obsx=1;
       SPRITE->dx*=bounce;
     }
     if (!sprite_move(sprite,0.0,SPRITE->dy*elapsed)) {
-      SPRITE->obsy=1;
       SPRITE->dy*=bounce;
     }
   }
@@ -284,30 +288,32 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
   
   /* Checkpoint?
    */
-  double dx=SPRITE->cpx-sprite->x;
-  double dy=SPRITE->cpy-sprite->y;
-  d2=dx*dx+dy*dy;
-  if (d2<CHECKPOINT_RADIUS2) {
-    if (!SPRITE->checkpointp) { // Reached checkpoint zero -- advance lap or end race.
-      if (SPRITE->lapp>=SPRITE->lapc) {
-        //TODO Terminate when everyone is finished, not just me
-        fprintf(stderr,"*** end of race *** last lap %.03f, total %.03f\n",SPRITE->laptime,SPRITE->racetime);
-        race_end();
-        return;
-      } else {
-        fprintf(stderr,"lap time %.03f\n",SPRITE->laptime);
+  if (!SPRITE->finished) {
+    double dx=SPRITE->cpx-sprite->x;
+    double dy=SPRITE->cpy-sprite->y;
+    d2=dx*dx+dy*dy;
+    if (d2<CHECKPOINT_RADIUS2) {
+      if (!SPRITE->checkpointp) { // Reached checkpoint zero -- advance lap or end race.
+        if (SPRITE->lapp>=SPRITE->lapc) {
+          fprintf(stderr,"*** end of race *** last lap %.03f, total %.03f\n",SPRITE->laptime,SPRITE->racetime);
+          SPRITE->finished=1;
+          race_check_completion();
+          return;
+        } else {
+          fprintf(stderr,"lap time %.03f\n",SPRITE->laptime);
+        }
+        if ((SPRITE->lapp==1)||(SPRITE->laptime<SPRITE->laptime_best)) SPRITE->laptime_best=SPRITE->laptime;
+        SPRITE->lapp++;
+        SPRITE->laptime=0.0;
       }
-      SPRITE->lapp++;
-      SPRITE->laptime=0.0;
+      if (SPRITE->human) bm_sound(RID_sound_collect);
+      if (++(SPRITE->checkpointp)>=SPRITE->checkpointc) {
+        SPRITE->checkpointp=0;
+      }
+      race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp);
     }
-    if (++(SPRITE->checkpointp)>=SPRITE->checkpointc) {
-      SPRITE->checkpointp=0;
-    }
-    race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp);
   }
 }
-
-//TODO Ensure jigpieces either can be collected (preferable), or are not solid against racers (acceptable).
 
 /* Render.
  */
@@ -329,7 +335,7 @@ static void _racer_render(struct sprite *sprite,int x,int y) {
   
   /* For humans, an indicator pointing to the next checkpoint.
    */
-  if (SPRITE->human) {
+  if (SPRITE->human&&!SPRITE->finished) {
     double dx=SPRITE->cpx-sprite->x;
     double dy=SPRITE->cpy-sprite->y;
     double d2=dx*dx+dy*dy;
@@ -365,4 +371,31 @@ const struct sprite_type sprite_type_racer={
 int sprite_racer_get_checkpointp(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_racer)) return -1;
   return SPRITE->checkpointp;
+}
+
+int sprite_racer_is_finished(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return 0;
+  return SPRITE->finished;
+}
+
+int sprite_racer_is_human(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return 0;
+  return SPRITE->human;
+}
+
+double sprite_racer_get_lap_time(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return 0.0;
+  if (SPRITE->finished) return SPRITE->laptime_best;
+  return SPRITE->laptime;
+}
+
+double sprite_racer_get_race_time(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return 0.0;
+  return SPRITE->racetime;
+}
+
+int sprite_racer_get_lapp(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return 0;
+  if (SPRITE->finished) return SPRITE->lapc+1;
+  return SPRITE->lapp;
 }

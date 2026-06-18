@@ -36,12 +36,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] CPU player.
 - - [x] Separate from the checkpoints, we need a similar "track" list detailing a known-safe path for CPU racers. Finer detail than the checkpoints.
 - - - [x] If we had this, could we do fully naive steering? Just turn toward the next track point?
-- - [ ] Sound effects.
-- - [ ] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
+- - [x] Sound effects.
+- - [x] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
+- - - ...made jigpiece non-solid and detect pickup by proximity instead of collision. Works better this way.
 - - [ ] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
 - - [ ] Music.
 - - [ ] Can we make monsters bounce when you hit them?
-- - [ ] Warmup and cooldown.
+- - [ ] Wait for both racers to finish, currently terminating when the first one finishes.
+- - - [ ] But don't wait forever, if the human is really far ahead.
+- - [x] Warmup and cooldown.
 - - [ ] Record completion and best time.
 - - [ ] Acquire story after all complete.
 - - [ ] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense.
