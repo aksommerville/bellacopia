@@ -44,6 +44,7 @@
 #define CMD_map_battlemark      0x4a /* u16:pos u16:id ; Generic marker for battle maps. */
 #define CMD_map_zookeeper       0x4b /* u32:bounds ; For sprite_zookeeper, marks the carpet. */
 #define CMD_map_endorsement     0x4c /* u16:pos u16:fld ; Fractia endorsement banners. 3 states. */
+#define CMD_map_race            0x4d /* u16:pos u8:raceid u8:seq */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg ; Must remain identical to the "rsprite" command in rsprite resources. */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
@@ -68,6 +69,10 @@
 #define CMD_sprite_groups       0x42 /* b32:sprgrp */
 #define CMD_sprite_monster      0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
 #define CMD_sprite_guild        0x61 /* u16:battle u16:name(RID_strings_battle) u16:fld u16:reserved ; NS_sprtype_guild */
+
+#define CMD_race_plane     0x20 /* u16:plane */
+#define CMD_race_laps      0x21 /* u16:c */
+#define CMD_race_target    0x22 /* u16:s */
 
 #define NS_tilesheet_physics 1
 #define NS_tilesheet_jigctab 2 /* rgb332 */
@@ -316,7 +321,7 @@
 #define NS_sprtype_ticker      25 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_zookeeper   26 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_mnneon      27 /* (u32)0 */
-#define NS_sprtype_racer       28 /* (u8:human)0 (u8:face)monster (u16)0 */
+#define NS_sprtype_racer       28 /* (u8:human)0 (u8:face)monster (u8)dir (u8)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \

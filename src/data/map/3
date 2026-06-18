@@ -33,3 +33,4 @@ root @3,5 (u16:fld)root2
 root @2,5 (u16:fld)root2
 root @1,5 (u16:fld)root2
 rspriteres rsprite:meadow
+race @18,4 1 3

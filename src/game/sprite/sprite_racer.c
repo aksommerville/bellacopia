@@ -1,6 +1,8 @@
 #include "game/bellacopia.h"
 #include "game/race/race.h"
 
+#define CHECKPOINT_RADIUS2 4.0
+
 struct sprite_racer {
   struct sprite hdr;
   int human,face;
@@ -20,6 +22,14 @@ struct sprite_racer {
   double decel_rate; // m/s**2, must be negative. Deceleration is constant, so it should be substantially less significant than acceleration.
   double steer_penalty; // Multiplier.
   double dx,dy; // m/s inertia.
+  
+  // Race state.
+  int lapc,checkpointc;
+  int lapp; // from one
+  int checkpointp; // from zero
+  double cpx,cpy;
+  double racetime;
+  double laptime;
 };
 
 #define SPRITE ((struct sprite_racer*)sprite)
@@ -30,6 +40,7 @@ struct sprite_racer {
 static int _racer_init(struct sprite *sprite) {
   SPRITE->human=sprite->arg[0];
   SPRITE->face=sprite->arg[1];
+  uint8_t orient=sprite->arg[2];
   if ((SPRITE->human<0)||(SPRITE->human>2)) return -1;
   // We allow Princess and the Green Witch, tho I don't plan to use these in outer-world races.
   // Likewise, it wouldn't take much from here to support multiplayer, if we ever want that.
@@ -48,6 +59,13 @@ static int _racer_init(struct sprite *sprite) {
   sprite->hbl=sprite->hbt=-0.400;
   sprite->hbr=sprite->hbb= 0.400;
   
+  switch (orient) {
+    case 0x40: SPRITE->facet=0.0; break;
+    case 0x10: SPRITE->facet=M_PI*-0.5; break;
+    case 0x08: SPRITE->facet=M_PI*0.5; break;
+    case 0x02: SPRITE->facet=M_PI; break;
+  }
+  
   if (sprite_group_add(GRP(visible),sprite)<0) return -1;
   if (sprite_group_add(GRP(update),sprite)<0) return -1;
   if (sprite_group_add(GRP(solid),sprite)<0) return -1;
@@ -55,6 +73,12 @@ static int _racer_init(struct sprite *sprite) {
     if (sprite_group_add(GRP(hero),sprite)<0) return -1;
   }
   
+  SPRITE->lapp=1;
+  SPRITE->checkpointp=1; // We start on checkpoint zero, so one is the first to target.
+  SPRITE->lapc=race_get_lapc();
+  SPRITE->checkpointc=race_get_checkpointc();
+  if ((SPRITE->lapc<1)||(SPRITE->checkpointc<2)) return -1;
+  if (race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp)<0) return -1;
   SPRITE->steer_speed=5.000;
   SPRITE->top_speed=18.0;
   SPRITE->accel_rate=200.0;
@@ -108,6 +132,9 @@ static void racer_update_cpu(struct sprite *sprite,double elapsed) {
  */
  
 static void _racer_update(struct sprite *sprite,double elapsed) {
+
+  SPRITE->laptime+=elapsed;
+  SPRITE->racetime+=elapsed;
 
   /* Operating like most battles, we have a man or cpu controller first, just making the decisions.
    */
@@ -198,6 +225,30 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
         SPRITE->elevation=1;
       }
     }
+  }
+  
+  /* Checkpoint?
+   */
+  double dx=SPRITE->cpx-sprite->x;
+  double dy=SPRITE->cpy-sprite->y;
+  d2=dx*dx+dy*dy;
+  if (d2<CHECKPOINT_RADIUS2) {
+    fprintf(stderr,"racer %p reached checkpoint %d of lap %d/%d\n",sprite,SPRITE->checkpointp,SPRITE->lapp,SPRITE->lapc);
+    if (!SPRITE->checkpointp) { // Reached checkpoint zero -- advance lap or end race.
+      if (SPRITE->lapp>=SPRITE->lapc) {
+        fprintf(stderr,"*** end of race *** last lap %.03f, total %.03f\n",SPRITE->laptime,SPRITE->racetime);
+        race_end();
+        return;
+      } else {
+        fprintf(stderr,"lap time %.03f\n",SPRITE->laptime);
+      }
+      SPRITE->lapp++;
+      SPRITE->laptime=0.0;
+    }
+    if (++(SPRITE->checkpointp)>=SPRITE->checkpointc) {
+      SPRITE->checkpointp=0;
+    }
+    race_get_checkpoint(&SPRITE->cpx,&SPRITE->cpy,SPRITE->checkpointp);
   }
 }
 

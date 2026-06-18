@@ -12,6 +12,15 @@ struct sprite_npc {
 
 #define SPRITE ((struct sprite_npc*)sprite)
 
+/* Delete.
+ */
+ 
+static void _npc_del(struct sprite *sprite) {
+  if (SPRITE->activity==NS_activity_moonsong) {//XXX
+    fprintf(stderr,"%s %p moonsong\n",__func__,sprite);
+  }
+}
+
 /* Init.
  */
  
@@ -19,6 +28,9 @@ static int _npc_init(struct sprite *sprite) {
   SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
   if (game_activity_sprite_should_abort(SPRITE->activity,SPRITE->activity_arg,sprite->type)) return -1;
+  if (SPRITE->activity==NS_activity_moonsong) {//XXX
+    fprintf(stderr,"%s %p moonsong\n",__func__,sprite);
+  }
   
   /* Certain activities imply tileid+1 when some flag is set, or a similar change.
    */
@@ -75,6 +87,7 @@ static void _npc_collide(struct sprite *sprite,struct sprite *other) {
 const struct sprite_type sprite_type_npc={
   .name="npc",
   .objlen=sizeof(struct sprite_npc),
+  .del=_npc_del,
   .init=_npc_init,
   .update=_npc_update,
   .collide=_npc_collide,

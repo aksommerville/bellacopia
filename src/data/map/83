@@ -28,3 +28,4 @@ root @12,7 (u16:fld)root7
 root @12,6 (u16:fld)root7
 sprite @12,5 sprite:rootdevil (u16:fld)root7 (u16)0
 rspriteres rsprite:eastdesert
+race @1,0 1 4

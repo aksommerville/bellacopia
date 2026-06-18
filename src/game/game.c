@@ -130,6 +130,7 @@ int game_welcome_map(struct map *map) {
       if (sprite->defunct) continue;
       if (sprite->type==&sprite_type_hero) continue; // never her
       if (sprite->type==&sprite_type_racer) continue; // or her
+      if ((sprite->type==&sprite_type_npc)&&g.raceid&&(sprite_npc_get_activity(sprite)==NS_activity_moonsong)) continue; // Don't delete Moon during a race.
       if (sprite->z!=g.camera.z) {
         sprite_kill_soon(sprite);
         continue;
