@@ -7,7 +7,7 @@ static const int fldv_flowers[]={
   NS_fld_root1,NS_fld_root2,NS_fld_root3,NS_fld_root4,NS_fld_root5,NS_fld_root6,NS_fld_root7,
 };
 static const int fldv_side_quest[]={
-  NS_fld_toll_paid,
+  //NS_fld_toll_paid, // This gates root3 but it's very easy to get around, shouldn't call it mandatory.
   NS_fld_mayor,
   NS_fld_war_over,
   NS_fld_rescued_princess,

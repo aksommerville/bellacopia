@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [ ] chopping: Try adding one real item. Fish, coin, vanishing cream, .... If you win the game and don't chop it, you get it.
+- [x] chopping: Try adding one real item. Fish, coin, vanishing cream, .... If you win the game and don't chop it, you get it.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.

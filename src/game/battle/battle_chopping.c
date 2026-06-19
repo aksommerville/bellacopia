@@ -17,6 +17,7 @@
 #define CPU_COOLDOWN_MAX 0.120
 #define CPU_COOLUP_MIN   0.060
 #define CPU_COOLUP_MAX   0.120
+#define PRIZE_LIMIT 8
 
 struct battle_chopping {
   struct battle hdr;
@@ -41,6 +42,8 @@ struct battle_chopping {
     double cooldown; // CPU only; holds knife down for a fixed interval.
     double kcooldown,kcoolup; // CPU only; cooldown and coolup times per handicap.
     double kcooldownextra,kcoolupextra;
+    int prizev[PRIZE_LIMIT]; // itemid
+    int prizec;
   } playerv[2];
   
   struct veg {
@@ -52,6 +55,7 @@ struct battle_chopping {
     int srcy;
     int who; // 0,1. Which player.
     int defunct;
+    int itemid; // Nonzero if we are a special vegetable that shouldn't be chopped.
   } vegv[VEG_LIMIT];
   int vegc;
 };
@@ -170,13 +174,24 @@ static void veg_init(struct battle *battle,struct veg *veg,struct player *player
   veg->h=16;
   veg->who=player->who;
   veg->defunct=0;
-  switch (rand()%6) { // Veg image is purely decorative, and we don't make the two partners match.
-    case 0: veg->srcx=128; veg->srcy=112; break;
-    case 1: veg->srcx=128; veg->srcy=128; break;
-    case 2: veg->srcx=128; veg->srcy=144; break;
-    case 3: veg->srcx=144; veg->srcy=112; break;
-    case 4: veg->srcx=144; veg->srcy=128; break;
-    case 5: veg->srcx=144; veg->srcy=144; break;
+  veg->itemid=0;
+  int choice=rand()%100;
+  switch (choice) { // The first 7/100 choices are real prizes you can win, if you decline to chop them. To a CPU player, they're just fancy vegetables.
+    case 0: veg->srcx=192; veg->srcy= 96; veg->itemid=NS_itemid_match; break;
+    case 1: veg->srcx=192; veg->srcy=112; veg->itemid=NS_itemid_bugspray; break;
+    case 2: veg->srcx=192; veg->srcy=128; veg->itemid=NS_itemid_candy; break;
+    case 3: veg->srcx=192; veg->srcy=144; veg->itemid=NS_itemid_vanishing; break;
+    case 4: veg->srcx=192; veg->srcy=160; veg->itemid=NS_itemid_gold; break;
+    case 5: veg->srcx=192; veg->srcy=176; veg->itemid=NS_itemid_bluefish; break;
+    case 6: veg->srcx=192; veg->srcy=192; veg->itemid=NS_itemid_bomb; break;
+    default: switch (choice%6) { // Everything else is just a vegetable. Choose among 6 decorative faces.
+        case 0: veg->srcx=128; veg->srcy=112; break;
+        case 1: veg->srcx=128; veg->srcy=128; break;
+        case 2: veg->srcx=128; veg->srcy=144; break;
+        case 3: veg->srcx=144; veg->srcy=112; break;
+        case 4: veg->srcx=144; veg->srcy=128; break;
+        case 5: veg->srcx=144; veg->srcy=144; break;
+      } break;
   }
 }
 
@@ -188,6 +203,11 @@ static void veg_finish(struct battle *battle,struct player *player,struct veg *v
   BATTLE->check_veg=1;
   player->score++;
   bm_sound(RID_sound_collect);
+  
+  // If it has an itemid and has not been chopped (ie w==16), add it to (prizev).
+  if (veg->itemid&&(veg->w==16)&&(player->prizec<PRIZE_LIMIT)) {
+    player->prizev[player->prizec++]=veg->itemid;
+  }
   
   int dstx=rand()%(17-veg->w);
   int dsty_max=20;
@@ -404,6 +424,33 @@ static void _chopping_render(struct battle *battle) {
   player_render(battle,BATTLE->playerv+1);
 }
 
+/* Prizes.
+ */
+ 
+static int quantity_for_item(int itemid) {
+  // Match what we've drawn. Most are 1.
+  switch (itemid) {
+    case NS_itemid_match: return 5;
+    case NS_itemid_gold: return 3;
+  }
+  return 1;
+}
+
+static int _chopping_get_prizes(struct prize *v,int a,struct battle *battle) {
+  if (battle->outcome==1) {
+    int c=BATTLE->playerv[0].prizec;
+    if (c>a) c=a;
+    if (c<1) return 0;
+    int i=0; for (;i<c;i++) {
+      int itemid=BATTLE->playerv[0].prizev[i];
+      int quantity=quantity_for_item(itemid);
+      v[i]=(struct prize){.itemid=itemid,.quantity=quantity};
+    }
+    return c;
+  }
+  return 0;
+}
+
 /* Type definition.
  */
  
@@ -420,4 +467,5 @@ const struct battle_type battle_type_chopping={
   .init=_chopping_init,
   .update=_chopping_update,
   .render=_chopping_render,
+  .get_prizes=_chopping_get_prizes,
 };

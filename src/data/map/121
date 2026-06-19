@@ -12,7 +12,7 @@
 5151515151515151515151515151515151515151
 
 image image:fractia_int
-parent map:25
+parent map:26
 position 1 4 0 0
 sprite @13,7 sprite:jigpiece (u32)0
 sprite @7,5 sprite:thingwalla (u16:activity)thingwalla (u16:activity_arg)0

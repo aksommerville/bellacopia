@@ -1,5 +1,6 @@
 # R = Reference implementation exists. (bcpoc or cherteau; or maybe embedded in some other project)
 # C = Player count. 1 or 2.
+# E = Extra prizes.
 # D = Done.
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
 #RC____D NAME              OPPONENT           ZONE
@@ -21,7 +22,7 @@
   1____D Cheating          Hustler            City
   1____D Chess             Sage               Labyrinth
   2____D CheeseCutting     Executioner        Fractia
-  2____D Chopping          Goat               Farm
+  2E___D Chopping          Goat               Farm
   1      Cinematography    Filmmaker          Woodland
   2      ClamBaking        Dragon             Sea
   2      Climbing          Spider             Desert
@@ -45,7 +46,7 @@
   2____D Fencing           Samurai            City
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
-  2____D Fishing           Leopard            Jungle
+  2E___D Fishing           Leopard            Jungle
   2____D Flapjack          Cook               Fractia
  R2      Flapping          Albatross          Sea
   2      Flipping          Ostrich            Desert
@@ -122,7 +123,7 @@
   2      Sparing           Beetle             Desert
   2____D Stacking          Waiter             Fractia
   1      Staring           Deer               Woodland
-  2____D Stealing          Roblin             Goblins
+  2E___D Stealing          Roblin             Goblins
   2      Steering          Buck               Farm
   2____D Stenography       Secretary          City
  R2      Stirring          Mouse              Woodland
