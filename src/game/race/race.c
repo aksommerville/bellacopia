@@ -258,6 +258,7 @@ static void race_restore_game_sprites() {
       sprite_group_add(GRP(update),sprite);
       sprite_group_add(GRP(solid),sprite);
     } else if (sprite->type==&sprite_type_racer) {
+      sprite_group_remove(GRP(hero),sprite); // Will happen at kill, but we need it now so the camera knows which hero is real.
       sprite_kill_soon(sprite);
     }
   }
@@ -348,12 +349,12 @@ int race_begin(int raceid) {
 void race_end() {
 
   // Commit win flag and time, if improved.
+  int arg=0;
   if (races.race->winfld||races.race->timefld16) {
     struct race_status status={0};
     race_get_status(&status);
     if (status.lapp>status.lapc) { // Confirm we actually completed this race; we do get called on cancellation too.
-      int arg=0;
-      if (status.racetime<=status.opponenttime) {
+      if (!status.opponent_finished||(status.racetime<=status.opponenttime)) {
         arg|=1; // Dot wins. Ties count as winning, they're unlikely enough to not worry about it.
         if (races.race->winfld) store_set_fld(races.race->winfld,1);
       } else {
@@ -371,7 +372,6 @@ void race_end() {
           }
         }
       }
-      game_begin_activity(NS_activity_endrace,arg,0);
     }
   }
   
@@ -379,7 +379,11 @@ void race_end() {
   g.raceid=0;
   races.race=0;
   bm_song_gently(bm_song_for_outerworld());
-  //TODO Flags and wrap-up dialogue.
+  
+  // If we have something to report, trigger it. Important to do this after restoring the sprites; it impacts camera.
+  if (arg) {
+    game_begin_activity(NS_activity_endrace,arg,0);
+  }
 }
 
 /* Check completion.
@@ -414,6 +418,29 @@ void race_update(double elapsed) {
       race_end();
     }
   }
+}
+
+/* Trivial accessors against metadata.
+ */
+ 
+int race_fld_by_id(int raceid) {
+  struct race *race=race_get(raceid);
+  if (!race) return 0;
+  return race->winfld;
+}
+ 
+int race_fld_by_index(int p) {
+  if (p<0) return 0;
+  if (!races.ready) race_get(1); // Force load.
+  if (p>=races.racec) return 0;
+  return races.racev[p].winfld;
+}
+
+int race_fld16_by_index(int p) {
+  if (p<0) return 0;
+  if (!races.ready) race_get(1); // Force load.
+  if (p>=races.racec) return 0;
+  return races.racev[p].timefld16;
 }
 
 /* Trivial accessors against active race.
@@ -471,6 +498,7 @@ void race_get_status(struct race_status *status) {
     status->laptime=0.0;
     status->racetime=0.0;
     status->opponenttime=0.0;
+    status->opponent_finished=0;
   } else {
     status->lapc=races.race->lapc;
     struct sprite **p=GRP(update)->sprv;
@@ -484,6 +512,7 @@ void race_get_status(struct race_status *status) {
         status->racetime=sprite_racer_get_race_time(sprite);
       } else {
         status->opponenttime=sprite_racer_get_race_time(sprite);
+        status->opponent_finished=(sprite_racer_get_lapp(sprite)>status->lapc);
       }
     }
   }

@@ -73,7 +73,7 @@ static const struct story storyv[16]={
     .tileid_large=0x40,
     .strix_title=9,
     .strix_desc=25,
-    .fld_present=NS_fld_got_story9,//TODO Broom Races
+    .fld_present=NS_fld_broom_races_complete,
     .fld_told=NS_fld_story9,
   },
   {
@@ -150,6 +150,15 @@ const struct story *story_by_index_present(int p) {
   for (;i-->0;story++) {
     if (!store_get_fld(story->fld_present)) continue;
     if (!p--) return story;
+  }
+  return 0;
+}
+
+const struct story *story_by_fld_present(int fld_present) {
+  const struct story *story=storyv;
+  int i=16;
+  for (;i-->0;story++) {
+    if (story->fld_present==fld_present) return story;
   }
   return 0;
 }

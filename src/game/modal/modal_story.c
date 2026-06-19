@@ -115,6 +115,7 @@ static void _story_update(struct modal *modal,double elapsed) {
     if (sprite->defunct) continue;
     if (sprite->type->update) {
       if (sprite->type==&sprite_type_hero) sprite->type->update(sprite,elapsed);
+      else if ((sprite->type==&sprite_type_racer)&&sprite_racer_is_human(sprite)) sprite->type->update(sprite,elapsed);
       else sprite->type->update(sprite,elapsed_most);
     }
   }

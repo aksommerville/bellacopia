@@ -11,6 +11,9 @@ void race_end();
 void race_check_completion(int stop_soon);
 void race_update(double elapsed);
 double race_get_countdown();
+int race_fld_by_id(int raceid);
+int race_fld_by_index(int p); // 0..5; this field gets set automatically first time you win it.
+int race_fld16_by_index(int p); // fld16 containing 8ms of your best time, or zero if you haven't run it yet.
 
 /* Race accessors, valid only when a race is in progress.
  */
@@ -26,6 +29,7 @@ struct race_status {
   double laptime;
   double racetime;
   double opponenttime; // Only set after complete.
+  int opponent_finished;
 };
 void race_get_status(struct race_status *status);
 

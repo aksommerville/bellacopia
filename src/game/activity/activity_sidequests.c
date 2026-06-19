@@ -477,6 +477,7 @@ void begin_moonsong(struct sprite *initiator,int arg) {
 
 void begin_endrace(int arg) {
   g.camera.cut=1; // If we don't cut, camera lingers at the finish line while we speak, then pans after. It's awkward.
+  camera_update(0.016);
   int outcome=0,new_high_score=0,first_time=0;
   switch (arg&3) {
     case 1: outcome=1; break;
@@ -484,12 +485,45 @@ void begin_endrace(int arg) {
   }
   if (arg&4) new_high_score=1;
   if (arg&8) first_time=1;
-  if (!outcome) return; // Caller didn't declare a winner (there's no ties). We have nothing to say for this, so abort.
+  
+  /* Abort if outcome undeclared.
+   * If Dot won, check whether this is the final win.
+   * races.c manages the per-race flags, but NS_fld_broom_races_complete is our responsibility.
+   */
+  if (!outcome) return;
+  if (outcome>0) {
+    if (!store_get_fld(NS_fld_broom_races_complete)) {
+      int p=0,alldone=1;
+      for (;;p++) {
+        int fld=race_fld_by_index(p);
+        if (fld<=0) break;
+        if (!store_get_fld(fld)) {
+          alldone=0;
+          break;
+        }
+      }
+      if (alldone) {
+        store_set_fld(NS_fld_broom_races_complete,1);
+        const struct story *story=story_by_fld_present(NS_fld_broom_races_complete);
+        if (story) {
+          struct modal_args_cutscene args={
+            .strix_title=story->strix_title,
+          };
+          struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+          return;
+        }
+      }
+    }
+  }
+  
+  /* Normal reporting, four possible messages.
+   */
   struct modal_args_dialogue args={
     .rid=RID_strings_dialogue,
   };
   if (outcome>0) {
-    if (new_high_score&&!first_time) args.strix=145; // Win and high score.
+    if (g.stopwatch) args.strix=147; // Cheater!
+    else if (new_high_score&&!first_time) args.strix=145; // Win and high score.
     else args.strix=143; // Generic win.
   } else {
     if (new_high_score&&!first_time) args.strix=146; // Lose and high score.

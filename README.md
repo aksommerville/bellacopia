@@ -30,7 +30,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Broom races.
+- [x] Broom races.
 - - [x] !!! Moon can get stuck inside another sprite if it spawns on top of her.
 - - - Nuked it: CPU racers will just not participate in sprite-on-sprite collisions.
 - - [x] CPU player.
@@ -47,7 +47,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Warmup and cooldown.
 - - [x] Record completion and best time.
 - - [x] Participate in completion, stats vellum, and crystal ball.
-- - [ ] Acquire story after all complete.
+- - [x] Acquire story after all complete.
+- - [x] Make the Moon sprite look different if her race is won already.
 - - [x] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense. ...no
 - - [x] Full set of races. Say five or six?
 - - - [x] Round the Meadow

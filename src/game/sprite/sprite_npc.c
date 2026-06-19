@@ -1,4 +1,5 @@
 #include "game/bellacopia.h"
+#include "game/race/race.h"
 
 #define COOLDOWN 0.500
 
@@ -8,6 +9,8 @@ struct sprite_npc {
   int activity_arg;
   int noxform;
   double cooldown;
+  int store_listener;
+  uint8_t tileid0;
 };
 
 #define SPRITE ((struct sprite_npc*)sprite)
@@ -16,12 +19,36 @@ struct sprite_npc {
  */
  
 static void _npc_del(struct sprite *sprite) {
+  store_unlisten(SPRITE->store_listener);
+}
+
+/* Prepare Moon Song.
+ * Set her tile if won, and if not, install a listener in case it changes.
+ * Our nature is that we will always be present when that field gets set.
+ */
+ 
+static void npc_moonsong_cb(char type,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  if ((type=='f')&&value&&(id==race_fld_by_id(SPRITE->activity_arg))) {
+    sprite->tileid=SPRITE->tileid0+1;
+  }
+}
+ 
+static void npc_prepare_moonsong(struct sprite *sprite) {
+  int fld=race_fld_by_id(SPRITE->activity_arg);
+  if (!fld) return;
+  if (store_get_fld(fld)) {
+    sprite->tileid=SPRITE->tileid0+1;
+  } else {
+    SPRITE->store_listener=store_listen('f',npc_moonsong_cb,sprite);
+  }
 }
 
 /* Init.
  */
  
 static int _npc_init(struct sprite *sprite) {
+  SPRITE->tileid0=sprite->tileid;
   SPRITE->activity=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
   if (game_activity_sprite_should_abort(SPRITE->activity,SPRITE->activity_arg,sprite->type)) return -1;
@@ -31,6 +58,7 @@ static int _npc_init(struct sprite *sprite) {
   switch (SPRITE->activity) {
     case NS_activity_logproblem1: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
     case NS_activity_logproblem2: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
+    case NS_activity_moonsong: npc_prepare_moonsong(sprite); break;
   }
   
   struct cmdlist_reader reader;

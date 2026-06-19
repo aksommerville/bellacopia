@@ -308,6 +308,7 @@ struct story {
 
 const struct story *story_by_index(int p);
 const struct story *story_by_index_present(int p); // Contiguous (p) but only returns present stories.
+const struct story *story_by_fld_present(int fld_present);
 
 /* Run the cutscene or whatever, and if there's an unsatisfied tree nearby, mark both tree and story satisfied.
  */
