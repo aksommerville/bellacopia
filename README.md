@@ -114,7 +114,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Big signs to make the city names unmistakable.
 - [ ] Nerf the building contest.
 - [ ] What happens if you warp out of jail? Wand or bus stop. It should count as escaping.
-- [ ] When does `cryptmsg_require` get called? I was about halfway thru and `cryptmsg_seed` was already set, despite never having seen an encrypted message or stood on a seal.
+- [x] When does `cryptmsg_require` get called? I was about halfway thru and `cryptmsg_seed` was already set, despite never having seen an encrypted message or stood on a seal.
+- - Losing any battle sets it.
+- - We haven't been checking whether you're standing on the Star Seal! Losing the correct battle while holding the correct item will open it, whevever you are.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

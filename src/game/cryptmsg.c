@@ -71,8 +71,8 @@ static void cryptmsg_require() {
     NS_itemid_bugspray,
     NS_itemid_vanishing,
     NS_itemid_pepper,
+    NS_itemid_bomb,
     // Can't use potion, because it's not possible to use it twice.
-    //TODO bomb is a reasonable option, but it's not placed yet.
   };
   cryptmsg.boneitem=RAND(sizeof(itemidv));
   cryptmsg.leafitem=RAND(sizeof(itemidv)-1);
@@ -96,15 +96,25 @@ static void cryptmsg_require() {
     NS_itemid_vanishing,
     NS_itemid_compass,
     NS_itemid_telescope,
-    // Can't be shovel, since that's what we're guarding.
+    NS_itemid_bomb,
+    NS_itemid_stopwatch,
+    NS_itemid_busstop,
+    NS_itemid_snowglobe,
+    NS_itemid_tapemeasure,
+    NS_itemid_crystal,
+    NS_itemid_glove,
+    NS_itemid_marionette,
+    NS_itemid_shovel,
+    // Can't be phonograph, since that's what we're guarding.
     // Can't be barrelhat, since that vanishes irreversibly after completing that side quest.
     // And also don't use bell, just because I don't like requiring them to complete the barrel-hat quest first.
     // Don't include match or pepper, because that is what they would probably have equipped without intervention.
     // And of course, only inventoriables.
-    // TODO Further possibilities, once we place them: bomb stopwatch busstop snowglobe tapemeasure phonograph crystal glove marionette
+    // I've included some difficult ones like Snowglobe and Marionette. That's highly debatable.
   };
-  // All the goblin games are candidates, and they all have rsprite by the Star Door.
-  // But I'm still on the fence whether to require a specific battle, or just "lose any battle".
+  // All the goblin games are candidates. Ensure that the ones chosen here are rsprite'd near the star seal.
+  // Advisable to use a much smaller set than the caves generally, because it's annoying trying to spawn one from a large set.
+  // Also bias towards the really easy ones like Erudition and Apples -- one doesn't lose these by accident.
   uint8_t starbattlev[]={
     NS_battle_throwing,
     NS_battle_stealing,
@@ -340,6 +350,7 @@ void cryptmsg_notify_item(int itemid) {
 
 int cryptmsg_check_star_door(int battle,int itemid) {
   if (!cryptmsg.seed&&!store_get_fld(NS_fld_kidnapped)) return 0; // Don't initialize cryptmsg if you haven't been to the caves yet. (optimization only)
+  if (!cryptmsg.sealcv[3]) return 0; // Not standing on the Star Seal.
   if (store_get_fld(NS_fld_stardoor)) return 0;
   cryptmsg_require();
   if (battle!=cryptmsg.starbattle) return 0;
