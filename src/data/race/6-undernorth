@@ -1,3 +1,5 @@
 plane (u16:plane)tunnel1
 laps (u16)3
 target (u16:sec)60
+win (u16:fld)race6win
+time (u16:fld16)race6time

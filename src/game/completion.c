@@ -35,6 +35,9 @@ static const int fldv_zookeeper[]={ // Zookeeper bits count individually, tho we
 static const int fldv_bridge[]={
   NS_fld_bridge1done,NS_fld_bridge2done,NS_fld_bridge3done,NS_fld_bridge4done,NS_fld_bridge5done,NS_fld_bridge6done,NS_fld_bridge7done,
 };
+static const int fldv_broomrace[]={
+  NS_fld_race1win,NS_fld_race2win,NS_fld_race3win,NS_fld_race4win,NS_fld_race5win,NS_fld_race6win,
+};
 
 /* Digest field lists.
  */
@@ -86,6 +89,7 @@ int game_get_completion() {
   d=0; n=FLDV_COUNT(&d,fldv_story_tree); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_zookeeper); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_bridge); if (n<d) return 1;
+  d=0; n=FLDV_COUNT(&d,fldv_broomrace); if (n<d) return 1;
   const struct invstore *invstore=g.store.invstorev;
   for (n=INVSTORE_SIZE;n-->0;invstore++) if (!invstore->itemid) return 1;
   
@@ -123,6 +127,7 @@ int game_is_minimalist_complete() {
   if (FLDV_COUNT(0,fldv_story_tree)) return 0;
   if (FLDV_COUNT(0,fldv_zookeeper)) return 0;
   if (FLDV_COUNT(0,fldv_bridge)) return 0;
+  if (FLDV_COUNT(0,fldv_broomrace)) return 0; // uhhhh we already know you don't have a broom, so this would be weird if set
   
   // You're allowed to pick up jigpieces. You're *not* allowed to touch them; that should set minimalist_disqualify.
   //if (jigstore_has_anything()) return 0;
@@ -225,6 +230,15 @@ int game_get_completables(struct completable *dst,int dsta) {
     comp->strix=42;
     comp->denom=0;
     comp->numer=FLDV_COUNT(&comp->denom,fldv_bridge);
+  }
+  dstc++;
+  
+  // Broom races.
+  if (dstc<dsta) {
+    struct completable *comp=dst+dstc;
+    comp->strix=43;
+    comp->denom=0;
+    comp->numer=FLDV_COUNT(&comp->denom,fldv_broomrace);
   }
   dstc++;
   

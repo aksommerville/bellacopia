@@ -74,6 +74,8 @@
 #define CMD_race_plane     0x20 /* u16:plane */
 #define CMD_race_laps      0x21 /* u16:c */
 #define CMD_race_target    0x22 /* u16:s */
+#define CMD_race_win       0x24 /* u16:fld */
+#define CMD_race_time      0x25 /* u16:fld16 */
 
 #define NS_tilesheet_physics 1
 #define NS_tilesheet_jigctab 2 /* rgb332 */
@@ -294,6 +296,7 @@
 #define NS_activity_exit_cave 47
 #define NS_activity_moonsong 48 /* (u16:raceid)0 */
 #define NS_activity_pauserace 49
+#define NS_activity_endrace 50 /* Calling race_end() triggers this. 0x0001=dot wins, 0x0002=moon wins, 0x0004=new high score, 0x0008=first time */
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -616,6 +619,13 @@
 #define NS_fld_minimalist_disqualify 141 /* Swing the stick, spend gold or fish, anything that disqualifies the minimalist prize. */
 #define NS_fld_bt16 142 /* Jigpiece in labyrinth. */
 #define NS_fld_started_crypto 143 /* Nonzero if we've shown some Old Goblish, ever. */
+#define NS_fld_race1win 144 /* round_the_meadow */
+#define NS_fld_race2win 145 /* downstairs_lake */
+#define NS_fld_race3win 146 /* across_the_tundra */
+#define NS_fld_race4win 147 /* seaside_circle */
+#define NS_fld_race5win 148 /* desert_run */
+#define NS_fld_race6win 149 /* undernorth */
+#define NS_fld_moonsong_intro 150
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -642,6 +652,12 @@
 #define NS_fld16_carto1 20 /* mapid; secret revealed by the cartographer. */
 #define NS_fld16_carto2 21
 #define NS_fld16_carto3 22
+#define NS_fld16_race1time 23 /* 8ms ; round_the_meadow */
+#define NS_fld16_race2time 24 /* 8ms ; downstairs_lake */
+#define NS_fld16_race3time 25 /* 8ms ; across_the_tundra */
+#define NS_fld16_race4time 26 /* 8ms ; seaside_circle */
+#define NS_fld16_race5time 27 /* 8ms ; desert_run */
+#define NS_fld16_race6time 28 /* 8ms ; undernorth */
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

@@ -37,6 +37,7 @@ void begin_generic_tolltroll(struct sprite *initiator,int arg);
 void begin_invcritic(struct sprite *initiator);
 void begin_bridget(struct sprite *initiator,int arg);
 void begin_moonsong(struct sprite *initiator,int arg);
+void begin_endrace(int arg);
 
 // activity_advice.c
 void begin_crystal();

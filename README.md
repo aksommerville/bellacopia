@@ -40,12 +40,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
 - - - ...made jigpiece non-solid and detect pickup by proximity instead of collision. Works better this way.
 - - [x] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
-- - [ ] Music.
-- - [ ] Can we make monsters bounce when you hit them?
+- - [x] Music. ...death_rattle is fine, for now at least. We'll be revisiting music globally in the near future.
+- - [x] Can we make monsters bounce when you hit them? ...meh
 - - [x] Wait for both racers to finish, currently terminating when the first one finishes.
 - - - [x] But don't wait forever, if the human is really far ahead. Moon might have got stuck on a tree or something.
 - - [x] Warmup and cooldown.
-- - [ ] Record completion and best time.
+- - [x] Record completion and best time.
+- - [x] Participate in completion, stats vellum, and crystal ball.
 - - [ ] Acquire story after all complete.
 - - [x] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense. ...no
 - - [x] Full set of races. Say five or six?
@@ -55,7 +56,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - [x] Seaside Circle (around Botire)
 - - - [x] Desert Run
 - - - [x] North edge of downstairs, would that make a fun race?
-- - [ ] Sprites: Animation and swoosh frames.
+- - [x] Sprites: Animation and swoosh frames.
+- - [x] Unceremoniously kill monsters near Dot at the end of the race.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
@@ -98,6 +100,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] I think the recorded 100% Time can get reset.
+- - Confirmed! And we do need to fix this. It's perfectly normal to spend a stick, then find another. Right now, picking up another replaces your 100% time.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.

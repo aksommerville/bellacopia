@@ -15,6 +15,8 @@ static struct races {
     int plane;
     int lapc;
     int target; // sec
+    int winfld;
+    int timefld16;
     uint8_t startdir; // 0x40,0x10,0x08,0x02. Which direction to face initially, determined by relative positions of first two checkpoints.
     struct checkpoint {
       int mapid;
@@ -93,6 +95,8 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
   race->target=0;
   race->checkpointc=0;
   race->trackc=0;
+  race->winfld=0;
+  race->timefld16=0;
   
   // Read commands.
   struct cmdlist_reader reader={.v=v,.c=c};
@@ -102,6 +106,8 @@ static int race_decode(struct race *race,const uint8_t *v,int c) {
       case CMD_race_plane: race->plane=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_race_laps: race->lapc=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_race_target: race->target=(cmd.arg[0]<<8)|cmd.arg[1]; break;
+      case CMD_race_win: race->winfld=(cmd.arg[0]<<8)|cmd.arg[1]; break;
+      case CMD_race_time: race->timefld16=(cmd.arg[0]<<8)|cmd.arg[1]; break;
     }
   }
   
@@ -236,11 +242,13 @@ static void race_hide_game_sprites() {
 }
 
 static void race_restore_game_sprites() {
+  struct sprite *hero=0;
   struct sprite **p=GRP(keepalive)->sprv;
   int i=GRP(keepalive)->sprc;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->type==&sprite_type_hero) {
+      hero=sprite;
       sprite_group_add(GRP(visible),sprite);
       sprite_group_add(GRP(update),sprite);
       sprite_group_add(GRP(solid),sprite);
@@ -251,6 +259,26 @@ static void race_restore_game_sprites() {
       sprite_group_add(GRP(solid),sprite);
     } else if (sprite->type==&sprite_type_racer) {
       sprite_kill_soon(sprite);
+    }
+  }
+  /* One more thing: Any monsters that wandered near our landing site, zap them.
+   * They are probably visible, the user will see this happen. But letting them live is pretty annoying.
+   * This is a separate pass because the hero isn't necessarily first in any list.
+   */
+  if (hero) {
+    const double killradius=2.0;
+    const double killradius2=killradius*killradius;
+    for (p=GRP(update)->sprv,i=GRP(update)->sprc;i-->0;p++) {
+      struct sprite *sprite=*p;
+      if (sprite->type==&sprite_type_monster) {
+        double dx=sprite->x-hero->x;
+        if ((dx<-killradius)||(dx>killradius)) continue;
+        double dy=sprite->y-hero->y;
+        if ((dy<-killradius)||(dy>killradius)) continue;
+        double d2=dx*dx+dy*dy;
+        if (d2>killradius2) continue;
+        sprite_kill_soon(sprite);
+      }
     }
   }
 }
@@ -318,10 +346,40 @@ int race_begin(int raceid) {
  */
 
 void race_end() {
+
+  // Commit win flag and time, if improved.
+  if (races.race->winfld||races.race->timefld16) {
+    struct race_status status={0};
+    race_get_status(&status);
+    if (status.lapp>status.lapc) { // Confirm we actually completed this race; we do get called on cancellation too.
+      int arg=0;
+      if (status.racetime<=status.opponenttime) {
+        arg|=1; // Dot wins. Ties count as winning, they're unlikely enough to not worry about it.
+        if (races.race->winfld) store_set_fld(races.race->winfld,1);
+      } else {
+        arg|=2; // Moon wins.
+      }
+      if (races.race->timefld16) {
+        int time8ms=(int)(status.racetime*8000.0);
+        if (time8ms>0xffff) time8ms=0xffff;
+        if (time8ms>0) {
+          int pvtime=store_get_fld16(races.race->timefld16);
+          if (!pvtime) arg|=8; // First time.
+          if (!pvtime||(time8ms<pvtime)) {
+            arg|=4; // New high score (or first play).
+            store_set_fld16(races.race->timefld16,time8ms);
+          }
+        }
+      }
+      game_begin_activity(NS_activity_endrace,arg,0);
+    }
+  }
+  
   race_restore_game_sprites();
   g.raceid=0;
   races.race=0;
   bm_song_gently(bm_song_for_outerworld());
+  //TODO Flags and wrap-up dialogue.
 }
 
 /* Check completion.
@@ -329,7 +387,7 @@ void race_end() {
  */
  
 void race_check_completion(int stop_soon) {
-  if (stop_soon) races.cooldown=10.0;
+  if (stop_soon) races.cooldown=5.0; // Dot is done. Give Moon a few seconds, but do stop without her before long.
   struct sprite **p=GRP(update)->sprv;
   int i=GRP(update)->sprc;
   for (;i-->0;p++) {

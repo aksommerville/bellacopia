@@ -465,9 +465,35 @@ void begin_moonsong(struct sprite *initiator,int arg) {
     .cb=moonsong_cb,
     .userdata=(void*)(uintptr_t)arg,
   };
+  if (!store_get_fld(NS_fld_moonsong_intro)) {
+    store_set_fld(NS_fld_moonsong_intro,1);
+    args.strix=142;
+  }
   struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
   if (!modal) return;
-  //TODO If (!arg), pick a race.
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+}
+
+void begin_endrace(int arg) {
+  g.camera.cut=1; // If we don't cut, camera lingers at the finish line while we speak, then pans after. It's awkward.
+  int outcome=0,new_high_score=0,first_time=0;
+  switch (arg&3) {
+    case 1: outcome=1; break;
+    case 2: outcome=-1; break;
+  }
+  if (arg&4) new_high_score=1;
+  if (arg&8) first_time=1;
+  if (!outcome) return; // Caller didn't declare a winner (there's no ties). We have nothing to say for this, so abort.
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+  };
+  if (outcome>0) {
+    if (new_high_score&&!first_time) args.strix=145; // Win and high score.
+    else args.strix=143; // Generic win.
+  } else {
+    if (new_high_score&&!first_time) args.strix=146; // Lose and high score.
+    else args.strix=144; // Generic lose.
+  }
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }

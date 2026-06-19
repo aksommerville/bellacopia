@@ -601,7 +601,7 @@ static int any_fld_unset(int a,int z) {
   return 0;
 }
 
-/* General context-sensitive advice.
+/* General context-sensitive advice, for crystal ball.
  */
 
 // RID_strings_advice. Never fails to return something sensible.
@@ -635,14 +635,21 @@ static int game_get_advice_strix() {
    * I guess interleave the various kinds of target. So we'll suggest a heart container, then a zookeeper, then a bridge, keep it fresh.
    * Don't advise on buried treasure or jigpieces. There are other ways to hint toward those.
    */
+  int have_broom=(store_get_itemid(NS_itemid_broom)?1:0);
   if (!store_get_fld(NS_fld_hc1)) return 14; // Castleshop heart container.
   if (!store_get_fld(NS_fld_rescued_princess)) return 15; // Rescue the Princess!
+  if (have_broom&&!store_get_fld(NS_fld_race1win)) return 69; // Cheapside race.
   if (!store_get_fld(NS_fld_barrelhat1)||!store_get_fld(NS_fld_barrelhat2)||!store_get_fld(NS_fld_barrelhat4)) return 16; // Botire barrel hats.
+  if (have_broom&&!store_get_fld(NS_fld_race2win)) return 70; // Downstairs lake race.
   if (!store_get_fld(NS_fld_potion_book)) return 17; // Buy the potions book.
+  if (have_broom&&!store_get_fld(NS_fld_race3win)) return 71; // Tundra race.
   if (!store_get_fld(NS_fld_bridge1done)) return 18; // Stick bridge by forest.
+  if (have_broom&&!store_get_fld(NS_fld_race4win)) return 72; // Botire race.
   if (any_fld_unset(NS_fld_zoo1_0,NS_fld_zoo1_3)) return 19; // Meadow zookeeper.
+  if (have_broom&&!store_get_fld(NS_fld_race5win)) return 73; // Desert race.
   if (!store_get_itemid(NS_itemid_fishpole)) return 38; // Recommend fishpole before recommending anything underwater!
   if (!store_get_fld(NS_fld_hc2)) return 20; // Temple pool heart container.
+  if (have_broom&&!store_get_fld(NS_fld_race6win)) return 74; // North underground race.
   if (!store_get_fld(NS_fld_barrelhat3)||!store_get_fld(NS_fld_barrelhat7)) return 21; // Tundra barrels. They're not close to each other but whatever.
   if (!store_get_fld(NS_fld_bridge6done)||!store_get_fld(NS_fld_bridge7done)) return 22; // Telescope and Green Fish bridges off Botire.
   if (!store_get_fld(NS_fld_hc4)) return 23; // South jungle heart container.

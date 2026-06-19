@@ -28,6 +28,8 @@ struct sprite_racer {
   double decel_rate; // m/s**2, must be negative. Deceleration is constant, so it should be substantially less significant than acceleration.
   double steer_penalty; // Multiplier.
   double dx,dy; // m/s inertia.
+  double animclock;
+  int animframe;
   
   // Race state.
   int lapc,checkpointc;
@@ -189,6 +191,7 @@ static void racer_update_cpu(struct sprite *sprite,double elapsed) {
  */
  
 static void _racer_update(struct sprite *sprite,double elapsed) {
+  SPRITE->frame=0;
 
   /* If finished, we do let normal physics wind down.
    * But the controllers no longer get to play.
@@ -283,6 +286,26 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
       if ((physics==NS_physics_water)||(physics==NS_physics_hole)) {
         SPRITE->elevation=1;
       }
+    }
+  }
+  
+  /* Animate.
+   */
+  double mag2=SPRITE->dx*SPRITE->dx+SPRITE->dy*SPRITE->dy;
+  if (mag2<5.0) SPRITE->frame=0; // Slow or stopped, remain still.
+  else { // Compare movement to face angle.
+    double movet=atan2(SPRITE->dx,-SPRITE->dy);
+    double dt=movet-SPRITE->facet;
+    while (dt<-M_PI) dt+=M_PI*2.0;
+    while (dt>M_PI) dt-=M_PI*2.0;
+    if (dt<-M_PI*0.250) SPRITE->frame=3;
+    else if (dt>M_PI*0.250) SPRITE->frame=2;
+    else {
+      if ((SPRITE->animclock-=elapsed)<=0.0) {
+        SPRITE->animclock+=0.300;
+      }
+      if (SPRITE->animclock>=0.150) SPRITE->frame=1;
+      else SPRITE->frame=0;
     }
   }
   
