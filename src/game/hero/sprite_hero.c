@@ -363,6 +363,12 @@ void sprite_hero_warp_busstop(struct sprite *sprite,int busstop) {
   struct cmdlist_entry cmd={0};
   struct map *map=find_busstop(&cmd,busstop);
   if (!map) return;
+  
+  // If we were kidnapped and not yet escaped, this counts as escaping. (all bus stops are outside the goblins' cave)
+  if (!store_get_fld(NS_fld_escaped)&&store_get_fld(NS_fld_kidnapped)) {
+    store_set_fld(NS_fld_escaped,1);
+  }
+  
   SPRITE->busstop_col=cmd.arg[0];
   SPRITE->busstop_row=cmd.arg[1]+1;
   SPRITE->doorx=map->lng*NS_sys_mapw+SPRITE->busstop_col+0.5;

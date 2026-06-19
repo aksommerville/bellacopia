@@ -15,6 +15,7 @@
 #define GRAVITY_LIMIT 10.0 /* m/s */
 #define WALKSPEED_LO 5.0
 #define WALKSPEED_HI 7.0
+#define WALKSPEED_CPU_PENALTY 0.500
 
 struct battle_building {
   struct battle hdr;
@@ -622,6 +623,7 @@ static struct batsup_sprite *player_spawn(struct battle *battle,int x,int id,dou
     SPRITE->inputp=ctl;
   } else { // CPU
     sprite->update=cpu_update;
+    SPRITE->walkspeed*=WALKSPEED_CPU_PENALTY;
   }
   switch (face) {
     case NS_face_dot: sprite->tileid=0x30; break;

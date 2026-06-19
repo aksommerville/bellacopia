@@ -112,8 +112,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
 - [x] chess: Do more to highlight the enemy king's position at startup.
 - [ ] Big signs to make the city names unmistakable.
-- [ ] Nerf the building contest.
-- [ ] What happens if you warp out of jail? Wand or bus stop. It should count as escaping.
+- [x] Nerf the building contest.
+- [x] What happens if you warp out of jail? Wand or bus stop. It should count as escaping.
+- - Confirmed, neither wand nor busstop sets as escaping. (confirm by escaping that way, then dying: should restart at home, not in jail).
 - [x] When does `cryptmsg_require` get called? I was about halfway thru and `cryptmsg_seed` was already set, despite never having seen an encrypted message or stood on a seal.
 - - Losing any battle sets it.
 - - We haven't been checking whether you're standing on the Star Seal! Losing the correct battle while holding the correct item will open it, whevever you are.

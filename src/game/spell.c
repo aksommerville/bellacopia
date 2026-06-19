@@ -12,6 +12,12 @@ void spell_flash() {
  */
  
 void spell_home() {
+
+  // If we were kidnapped and not yet escaped, this counts as escaping.
+  if (!store_get_fld(NS_fld_escaped)&&store_get_fld(NS_fld_kidnapped)) {
+    store_set_fld(NS_fld_escaped,1);
+  }
+
   g.song_override_outerworld=0;
   game_warp(RID_map_start,NS_transition_fadeblack);
 }
