@@ -12,8 +12,8 @@
 5151515151515151515151515151515151515151
 
 image image:fractia_int
-door @9,8 map:25 @13,6 0x0000
 parent map:25
 position 1 4 0 0
 sprite @13,7 sprite:jigpiece (u32)0
 sprite @7,5 sprite:thingwalla (u16:activity)thingwalla (u16:activity_arg)0
+door @9,8 map:26 @12,6 0x0000

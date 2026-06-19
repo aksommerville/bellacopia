@@ -19,3 +19,4 @@ sprite @5,3 sprite:wrestler (u32)0
 sprite @11,7 sprite:samurai (u32)0
 sprite @5,7 sprite:dancer (u32)0
 sprite @11,3 sprite:ballplayer (u32)0
+sprite @4,5 sprite:jigpiece (u32)0

@@ -14,13 +14,6 @@
 image image:fractia
 position 6 3 1 *
 sprite @3,2 sprite:jigpiece (u32)0
-root @17,11 (u16:fld)root2
-root @19,7 (u16:fld)root2
-root @18,7 (u16:fld)root2
-root @17,7 (u16:fld)root2
-root @17,8 (u16:fld)root2
-root @17,9 (u16:fld)root2
-root @17,10 (u16:fld)root2
 switchable @3,6 (u16:fld)barrelhat8
 barrelhat @3,6
 endorsement @10,6 (u16:fld)endorse_food

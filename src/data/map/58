@@ -13,11 +13,6 @@
 
 image image:fractia
 position 6 4 1 *
-root @19,2 (u16:fld)root2
-root @17,0 (u16:fld)root2
-root @17,1 (u16:fld)root2
-root @17,2 (u16:fld)root2
-root @18,2 (u16:fld)root2
 endorsement @10,0 (u16:fld)endorse_public
 endorsement @16,6 (u16:fld)endorse_casino
 door @8,0 map:165 @9,7 0x0000

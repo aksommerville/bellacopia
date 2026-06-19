@@ -15,7 +15,6 @@ image image:fractia_int
 door @10,9 map:26 @6,6 0x0000
 position 2 4 0 0
 parent map:26
-sprite @14,4 sprite:jigpiece (u32)0
 sprite @6,4 sprite:doctor (u32)0
 sprite @5,7 sprite:fractia_nurse (u32)0
 sprite @12,5 sprite:secretary (u32)0

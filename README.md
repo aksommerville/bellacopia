@@ -30,46 +30,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Broom races.
-- - [x] !!! Moon can get stuck inside another sprite if it spawns on top of her.
-- - - Nuked it: CPU racers will just not participate in sprite-on-sprite collisions.
-- - [x] CPU player.
-- - [x] Separate from the checkpoints, we need a similar "track" list detailing a known-safe path for CPU racers. Finer detail than the checkpoints.
-- - - [x] If we had this, could we do fully naive steering? Just turn toward the next track point?
-- - [x] Sound effects.
-- - [x] Confirm jigpieces aren't a problem -- either pick them up or skip over them, or hide them.
-- - - ...made jigpiece non-solid and detect pickup by proximity instead of collision. Works better this way.
-- - [x] AUX1: A new "quit race?" modal, don't go into regular modal_pause.
-- - [x] Music. ...death_rattle is fine, for now at least. We'll be revisiting music globally in the near future.
-- - [x] Can we make monsters bounce when you hit them? ...meh
-- - [x] Wait for both racers to finish, currently terminating when the first one finishes.
-- - - [x] But don't wait forever, if the human is really far ahead. Moon might have got stuck on a tree or something.
-- - [x] Warmup and cooldown.
-- - [x] Record completion and best time.
-- - [x] Participate in completion, stats vellum, and crystal ball.
-- - [x] Acquire story after all complete.
-- - [x] Make the Moon sprite look different if her race is won already.
-- - [x] Are we going to hide Moon after each race is complete? I was thinking that at first, but now not sure it makes sense. ...no
-- - [x] Full set of races. Say five or six?
-- - - [x] Round the Meadow
-- - - [x] Downstairs Lake
-- - - [x] Across the Tundra
-- - - [x] Seaside Circle (around Botire)
-- - - [x] Desert Run
-- - - [x] North edge of downstairs, would that make a fun race?
-- - [x] Sprites: Animation and swoosh frames.
-- - [x] Unceremoniously kill monsters near Dot at the end of the race.
-- [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
-- - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
-- - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
-- - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
 - [ ] Animate digging with shovel.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [ ] Check ladders in the outerworld, they probably all need some safe buffer.
 - [ ] chopping: Try adding one real item. Fish, coin, vanishing cream, .... If you win the game and don't chop it, you get it.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
@@ -79,25 +45,21 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
-- [ ] Remove the fake French text, or even better, get it translated correctly.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
-- [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
-- - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
+- - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
+- - UPDATE: Power Glove does this now, and that's probably enough.
 - [ ] More spells. Not sure what...
-- [x] Properer graphics for Crystal Ball. Very rough today.
-- [x] Content for Crystal Ball. `targets.c:game_get_advice()`. Should follow roughly the same pattern as the compass, choose the logical next step.
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
-- [x] The temple's pool needs a sunbathing monk with a pina colada.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] I think the recorded 100% Time can get reset.
@@ -106,18 +68,31 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
-- [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
-- [x] Move the Labyrinth's exit to the southeast corner, and add at least one more landmark somewhere.
-- [x] chess: Do more to highlight the enemy king's position at startup.
-- [ ] Big signs to make the city names unmistakable.
-- [x] Nerf the building contest.
-- [x] What happens if you warp out of jail? Wand or bus stop. It should count as escaping.
-- - Confirmed, neither wand nor busstop sets as escaping. (confirm by escaping that way, then dying: should restart at home, not in jail).
-- [x] When does `cryptmsg_require` get called? I was about halfway thru and `cryptmsg_seed` was already set, despite never having seen an encrypted message or stood on a seal.
-- - Losing any battle sets it.
-- - We haven't been checking whether you're standing on the Star Seal! Losing the correct battle while holding the correct item will open it, whevever you are.
+- [x] Big signs to make the city names unmistakable.
+- [ ] sorting: Both sides should get exactly the same draw. Use a private PRNG.
+
+- [x] Segfault. In Fractia after strangling the root devil, had just left Athlete's Guild with divining rod armed, and I'd gotten into a battle outside on the frame just before entering.
+- - But I suspect it just needs a clean build; there's been a lot of changes lately. See if it repros.
+malloc(): unaligned tcache chunk detected
+Aborted (core dumped)
+- - Caused another segfault by entering battle as I entered the red captain's tent. Hard to repro.
+corrupted double-linked list (not small)
+Aborted (core dumped)
+- - Clean build, and I did repro the exact battle-on-the-last-frame-before-a-door situation (it's visually noticeable). No segfault. Let's call it a dirty build thing.
+
+- TODO Punted items, assess closer to release.
+- [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
+- - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
+- [ ] Remove the fake French text, or even better, get it translated correctly.
+- [ ] Check ladders in the outerworld, they probably all need some safe buffer.
+- [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
+- - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
+- - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
+- - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
+- [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
+- - Punt this until the entire set of dialogue is more or less finished.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
