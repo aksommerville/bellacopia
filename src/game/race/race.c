@@ -361,7 +361,7 @@ void race_end() {
         arg|=2; // Moon wins.
       }
       if (races.race->timefld16) {
-        int time8ms=(int)(status.racetime*8000.0);
+        int time8ms=(int)(status.racetime*(1000.0/8.0));
         if (time8ms>0xffff) time8ms=0xffff;
         if (time8ms>0) {
           int pvtime=store_get_fld16(races.race->timefld16);

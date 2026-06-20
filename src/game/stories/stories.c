@@ -89,7 +89,7 @@ static const struct story storyv[16]={
     .tileid_large=0x44,
     .strix_title=11,
     .strix_desc=27,
-    .fld_present=NS_fld_got_story11,//TODO On Carpentry
+    .fld_present=NS_fld_carpenter_book,
     .fld_told=NS_fld_story11,
   },
   {

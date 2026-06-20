@@ -12,6 +12,26 @@ static int cb_carpenter(int itemid,int quantity,int price,void *userdata) {
   if (!invstore) return -1; // Where'd the stick go?
   invstore->itemid=invstore->quantity=invstore->limit=0;
   store_broadcast('i',NS_itemid_stick,0);
+  
+  /* After completing a purchase, if all of my things have been bought, give her the book.
+   * Note that it's unlikely but possible to buy all my permanent things, then buy matches for the first time somewhere else.
+   * (that's a crazy thing to do but it's possible).
+   * And it's no problem: Just buy matches from me any time, and this will still trigger.
+   * Careful here: The item you just bought is not actually present in inventory yet.
+   */
+  if (!store_get_fld(NS_fld_carpenter_book)) {
+    if (
+      ((itemid==NS_itemid_match)||store_get_itemid(NS_itemid_match))&&
+      ((itemid==NS_itemid_divining)||store_get_itemid(NS_itemid_divining))&&
+      ((itemid==NS_itemid_wand)||store_get_itemid(NS_itemid_wand))&&
+      ((itemid==NS_itemid_fishpole)||store_get_itemid(NS_itemid_fishpole))&&
+      ((itemid==NS_itemid_broom)||store_get_itemid(NS_itemid_broom))
+    ) {
+      begin_dialogue(130,0);
+      store_set_fld(NS_fld_carpenter_book,1);
+    }
+  }
+  
   return 0; // Proceed with purchase. And if the stick was equipped, its replacement should go in the same slot, which is nice.
 }
  

@@ -35,20 +35,19 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [x] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - - You'd think it can't happen, since you need the World Traveller story to reach 100%, but it can: You get the story on acquiring the last map piece, not assembling it.
-- [ ] My `raceNtime` are evidently all saving as 65535.
+- [x] My `raceNtime` are evidently all saving as 65535.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Acquire stories.
-- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`
+- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
-- [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
@@ -79,6 +78,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 
 - TODO Punted items, assess closer to release.
+- [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Review song and sound levels, right now they're pretty heterogenous.
 - [ ] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.

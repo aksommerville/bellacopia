@@ -602,8 +602,8 @@
 #define NS_fld_potion_book 122
 #define NS_fld_maps_complete 123 /* Collected all the puzzle pieces. Doesn't mean they're all put together yet. */
 #define NS_fld_broom_races_complete 124
-#define NS_fld_got_story11 125 /* XXX Pick a more meaningful symbol once we know more about the books... */
-#define NS_fld_got_story12 126
+#define NS_fld_carpenter_book 125
+#define NS_fld_got_story12 126 /* XXX Pick a more meaningful symbol once we know more about the books... */
 #define NS_fld_got_story14 127
 #define NS_fld_got_story15 128
 #define NS_fld_hc4door 129
