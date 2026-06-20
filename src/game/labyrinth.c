@@ -13,6 +13,7 @@
  */
 
 #include "bellacopia.h"
+#include "game/batsup/prng.h"
 
 /* Private globals.
  */
@@ -33,7 +34,7 @@ struct {
 
   // Private PRNG. The seed gets saved as NS_fld16_labyrinth_seed.
   int seed;
-  int prng;
+  struct prng prng;
   
   // Plane geometry. This could all be captured at build time but meh. We'll build it up once per run.
   struct plane *plane; // If null, this whole block needs generated.
@@ -103,18 +104,6 @@ static void lab_draw_wall(struct map *map,int x,int y,int w,int h,int wall) {
       *dstp=tileid;
     }
   }
-}
-
-/* Pseudorandom integer from our private generator.
- * Always in (0..range-1).
- */
- 
-static int lab_rand(int range) {
-  if (range<2) return 0;
-  lab.prng^=lab.prng<<13;
-  lab.prng^=lab.prng>>17;
-  lab.prng^=lab.prng<<5;
-  return (lab.prng&0x7fffffff)%range;
 }
 
 /* Are these coords present in (omitv)?
@@ -317,7 +306,7 @@ static void lab_drunk_snake(int x,int y) {
   if ((y>0)&&(cell[-lab.colc]&CELL_VERT)&&!(cell[-lab.colc]&CELL_REACHABLE)) movev[movec++]=(struct move){x,y-1};
   if ((y<lab.rowc-1)&&(cell[0]&CELL_VERT)&&!(cell[lab.colc]&CELL_REACHABLE)) movev[movec++]=(struct move){x,y+1};
   if (movec<1) return;
-  int movep=lab_rand(movec);
+  int movep=prng_range(&lab.prng,movec);
   struct move *move=movev+movep;
   uint8_t *ncell=lab.cellv+move->y*lab.colc+move->x;
   (*ncell)|=CELL_REACHABLE;
@@ -331,7 +320,7 @@ static void lab_drunk_snake(int x,int y) {
 static void lab_build_walls() {
 
   // Reset PRNG.
-  lab.prng=lab.seed|(lab.seed<<16);
+  lab.prng.v=lab.seed|(lab.seed<<16);
   
   // Initialize (cellv). We start with every possible wall present.
   int cellc=lab.colc*lab.rowc;
@@ -355,8 +344,8 @@ static void lab_build_walls() {
    * We'll mark that cell reachable by fiat.
    * Note that we also must check for walls removed by omit; there may be more initially-reachable cells.
    */
-  int startx=lab_rand(lab.colc);
-  int starty=lab_rand(lab.rowc);
+  int startx=prng_range(&lab.prng,lab.colc);
+  int starty=prng_range(&lab.prng,lab.rowc);
   int startp=starty*lab.colc+startx;
   lab_extend_reachability(startx,starty,startp);
   
@@ -397,7 +386,7 @@ static void lab_build_walls() {
     if (!candidatec) break;
     
     // Pick a demolition candidate.
-    int candidatep=lab_rand(candidatec);
+    int candidatep=prng_range(&lab.prng,candidatec);
     struct wall *wall=candidatev+candidatep;
     lab.cellv[wall->y*lab.colc+wall->x]&=~wall->bit;
     

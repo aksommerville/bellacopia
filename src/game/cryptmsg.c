@@ -1,4 +1,5 @@
 #include "bellacopia.h"
+#include "game/batsup/prng.h"
 
 /* Crypto sidequest state.
  * This is all volatile. We rebuild it from a 16-bit seed on demand.
@@ -43,13 +44,8 @@ static void cryptmsg_require() {
   }
   
   // That seed is for a single-use PRNG.
-  uint32_t prng=cryptmsg.seed|(cryptmsg.seed<<16);
-  #define RAND(range) ({ \
-    prng^=prng<<13; \
-    prng^=prng>>17; \
-    prng^=prng<<5; \
-    ((prng&0x7fffffff)%(range)); \
-  })
+  struct prng prng={cryptmsg.seed|(cryptmsg.seed<<16)};
+  #define RAND(range) prng_range(&prng,range)
   
   // Generate the alphabet.
   //fprintf(stderr,"Alphabet:\n");

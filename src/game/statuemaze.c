@@ -1,4 +1,5 @@
 #include "bellacopia.h"
+#include "game/batsup/prng.h"
 
 #define STATUEMAZE_RULE_NONE 0 /* No danger. */
 #define STATUEMAZE_RULE_ALL  1 /* All directions forbidden. */
@@ -15,7 +16,7 @@ static struct {
    * If (seed) doesn't match NS_fld16_statuemaze_seed, we must rebuild.
    */
   int seed;
-  int prng;
+  struct prng prng;
   
   /* STATUEMAZE_RULE_* indexed by STATUEMAZE_APPEARANCE_*, both in 0..4.
    * Any of the statues can have any of the rules applied to it; they all get applied exactly once.
@@ -28,17 +29,6 @@ static struct {
   uint8_t grid[STATUEMAZE_COLC*STATUEMAZE_ROWC];
   
 } sm={0};
-
-/* Private PRNG.
- */
- 
-static int sm_rand(int range) {
-  if (range<2) return 0;
-  sm.prng^=sm.prng<<13;
-  sm.prng^=sm.prng>>17;
-  sm.prng^=sm.prng<<5;
-  return (sm.prng&0x7fffffff)%range;
-}
 
 /* Blocked bits, from our enumerated rules.
  */
@@ -75,13 +65,13 @@ void statuemaze_require() {
   
   // Reset.
   memset(&sm,0,sizeof(sm));
-  sm.seed=sm.prng=trueseed;
+  sm.seed=sm.prng.v=trueseed;
   
   /* Assign rules randomly to appearances.
    * There are 5! (==120) possible arrangements.
    */
   int tmp[5]={0,1,2,3,4};
-  int choice=sm_rand(120);
+  int choice=prng_range(&sm.prng,120);
   int appearance=5;
   while (appearance-->0) {
     int tmpp=choice%(appearance+1);
@@ -95,7 +85,7 @@ void statuemaze_require() {
    * Four rows. So 2 bits 5 times. Generate the whole thing in one tick of the RNG.
    * If all five columns come up equal, force them otherwise.
    */
-  int passrow_template=sm_rand(1024);
+  int passrow_template=prng_range(&sm.prng,1024);
   if (
     (((passrow_template>>2)&3)==(passrow_template&3))&&
     (((passrow_template>>4)&3)==(passrow_template&3))&&
@@ -152,18 +142,18 @@ void statuemaze_require() {
   /* XXX Dump what we got so far.
    */
   if (0) {
-  for (y=0;y<7;y++) {
-    char tmp[20];
-    int tmpc=0;
-    const uint8_t *src=grid+y*9;
-    for (x=0;x<9;x++,src++) {
-      if (*src==undecided) { tmp[tmpc++]=' '; tmp[tmpc++]=' '; }
-      else if (*src==passable) { tmp[tmpc++]='-'; tmp[tmpc++]='_'; }
-      else if (*src==impassable) { tmp[tmpc++]='x'; tmp[tmpc++]='X'; }
-      else { tmp[tmpc++]='?'; tmp[tmpc++]='!'; }
+    for (y=0;y<7;y++) {
+      char tmp[20];
+      int tmpc=0;
+      const uint8_t *src=grid+y*9;
+      for (x=0;x<9;x++,src++) {
+        if (*src==undecided) { tmp[tmpc++]=' '; tmp[tmpc++]=' '; }
+        else if (*src==passable) { tmp[tmpc++]='-'; tmp[tmpc++]='_'; }
+        else if (*src==impassable) { tmp[tmpc++]='x'; tmp[tmpc++]='X'; }
+        else { tmp[tmpc++]='?'; tmp[tmpc++]='!'; }
+      }
+      fprintf(stderr,"%.*s\n",tmpc,tmp);
     }
-    fprintf(stderr,"%.*s\n",tmpc,tmp);
-  }
   }
   
   /* Now visit each of the statue positions and choose a rule for it.
@@ -189,7 +179,7 @@ void statuemaze_require() {
       if (s) candidatev[candidatec++]=STATUEMAZE_RULE_DOWN;
       if (!candidatec) candidatev[candidatec++]=STATUEMAZE_RULE_NONE; // use the NONE statue only if nothing else works.
       // Pick a rule.
-      int rule=candidatev[sm_rand(candidatec)];
+      int rule=candidatev[prng_range(&sm.prng,candidatec)];
       int appearance=sm.appearance_by_rule[rule];
       *dst=(appearance<<4)|statuemaze_bits_for_rule(rule);
     }

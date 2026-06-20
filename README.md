@@ -71,7 +71,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
 - [x] Big signs to make the city names unmistakable.
-- [ ] sorting: Both sides should get exactly the same draw. Use a private PRNG.
+- [x] sorting: Both sides should get exactly the same draw. Use a private PRNG.
 
 - [x] Segfault. In Fractia after strangling the root devil, had just left Athlete's Guild with divining rod armed, and I'd gotten into a battle outside on the frame just before entering.
 - - But I suspect it just needs a clean build; there's been a lot of changes lately. See if it repros.

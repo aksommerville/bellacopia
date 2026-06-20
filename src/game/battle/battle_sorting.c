@@ -3,6 +3,7 @@
  */
 
 #include "game/bellacopia.h"
+#include "game/batsup/prng.h"
 
 #define THING_LIMIT 128
 #define TOAST_LIMIT 6
@@ -28,6 +29,7 @@ struct battle_sorting {
     int drop_poison;
     double xspeed,yspeed,fastspeed;
     int score;
+    struct prng prng; // Only for choosing thing colors. Positions and anything else should use regular rand().
     
     /* The one falling thing is not yet a member of (thingv).
      */
@@ -110,6 +112,13 @@ static void player_init(struct battle *battle,struct player *player,int human,in
  */
  
 static int _sorting_init(struct battle *battle) {
+
+  // Important: All players begin with their (prng) equal. The value doesn't matter, random is good, but must be the same.
+  int seed=rand();
+  struct player *player=BATTLE->playerv;
+  int i=2;
+  for (;i-->0;player++) player->prng.v=seed;
+
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
@@ -290,7 +299,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->thingx=8.0+(rand()%(player->fldw-16));
     player->thingy=8.0;
     const int colorc=sizeof(colorv)/sizeof(colorv[0]);
-    int colorp=rand()%colorc;
+    int colorp=prng_range(&player->prng,colorc);
     player->thingcolor=colorv[colorp];
   }
 }
