@@ -24,6 +24,7 @@ static int _hero_init(struct sprite *sprite) {
   SPRITE->compassx=SPRITE->compassy=-1.0;
   SPRITE->compassz=-1;
   SPRITE->store_listener=store_listen('f',hero_cb_store,sprite);
+  SPRITE->shovel_fault_time=-999.999;
   return 0;
 }
 
@@ -153,6 +154,7 @@ static void hero_check_triggers(struct sprite *sprite) {
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
+  SPRITE->alwaysclock+=elapsed;
 
   if (SPRITE->busstop_clock>0.0) {
     if ((SPRITE->busstop_clock-=elapsed)<=0.0) {

@@ -813,6 +813,34 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
   return 0;
 }
 
+/* Dig up some angry bones.
+ */
+ 
+static void cb_hero_shovelthrowing(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+ 
+static void hero_summon_skeleton(struct sprite *sprite) {
+  struct modal_args_battle args={
+    .battle=NS_battle_shovelthrowing,
+    .cb=cb_hero_shovelthrowing,
+    .right_name=224, // "Skeleton"
+    .args={
+      .difficulty=0x80, // Not relevant.
+      .bias=0x80, // Not relevant.
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_monster,
+    },
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return;
+}
+
 /* Shovel. Update is passive.
  */
  
@@ -867,13 +895,29 @@ static int shovel_begin(struct sprite *sprite) {
   
   // Do it.
   int result=sprite_hero_unbury_treasure(sprite,SPRITE->shovelx,SPRITE->shovely);
-  if (result==2) return 1; // burieddoor, we're done
+  if (result==2) { // burieddoor, we're done
+    SPRITE->shovel_fault_time=-999.999;
+    return 1;
+  }
   
   struct sprite *hole=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
   if (!hole) return 0;
   
-  // If no result from unbury, make the sound.
-  if (!result) bm_sound(RID_sound_dig);
+  // If no result from unbury, make the sound. And maybe summon a skeleton.
+  if (!result) {
+    bm_sound(RID_sound_dig);
+    double since_last_fault=SPRITE->alwaysclock-SPRITE->shovel_fault_time;
+    if (since_last_fault<5.000) { // Two false digs within 5 seconds. Summon a skeleton!
+      SPRITE->shovel_fault_time=-999.999;
+      hero_summon_skeleton(sprite);
+      SPRITE->shovelclock=0.0;
+      SPRITE->itemid_in_progress=0;
+    } else {
+      SPRITE->shovel_fault_time=SPRITE->alwaysclock;
+    }
+  } else {
+    SPRITE->shovel_fault_time=-999.999;
+  }
   return 1;
 }
 

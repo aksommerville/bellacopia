@@ -415,6 +415,7 @@
 #define NS_battle_broomrace 55
 #define NS_battle_armwrestling 56
 #define NS_battle_seamonster 57
+#define NS_battle_shovelthrowing 58
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -472,7 +473,8 @@
   _(chess) \
   _(broomrace) \
   _(armwrestling) \
-  _(seamonster)
+  _(seamonster) \
+  _(shovelthrowing)
 
 /* "fld" are single bits.
  */

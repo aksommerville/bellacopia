@@ -31,7 +31,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Animate digging with shovel.
-- [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
+- [x] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
