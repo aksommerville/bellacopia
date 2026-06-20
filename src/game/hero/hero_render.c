@@ -508,7 +508,20 @@ void hero_render(struct sprite *sprite,int x,int y) {
   /* A few items make exceptions to tileid or xform.
    * Doesn't affect the broader layout.
    */
-  if (itemtileid==0x71) { // Divining Rod. If (root), 0x86..0x89 pingponging.
+  if (itemtileid==0x8f) { // Shovel. If digging, don't draw the item overlay, and use a different frame for Dot.
+    if (SPRITE->shovelclock>0.0) {
+      itemtileid=0;
+      if (SPRITE->facedx<0) { tileid=0xc9; xform=0; }
+      else if (SPRITE->facedx>0) { tileid=0xc9; xform=EGG_XFORM_XREV; }
+      else if (SPRITE->facedy<0) { tileid=0xc8; xform=0; }
+      else { tileid=0xc7; xform=0; }
+      if (SPRITE->shovelclock<0.300) tileid+=0x10;
+      // Plus some loose dirt above her head (regardless of orientation).
+      if (SPRITE->shovelclock<0.400) {
+        graf_tile(&g.graf,x,y-NS_sys_tilesize,(SPRITE->shovelclock<0.200)?0xd6:0xd5,0);
+      }
+    }
+  } else if (itemtileid==0x71) { // Divining Rod. If (root), 0x86..0x89 pingponging.
     if (SPRITE->root) {
       int frame=(g.framec/5)%6;
       switch (frame) {

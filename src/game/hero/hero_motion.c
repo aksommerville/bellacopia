@@ -14,6 +14,7 @@ static int item_prevents_motion(uint8_t itemid) {
     case NS_itemid_marionette:
     case NS_itemid_snowglobe:
     case NS_itemid_stick:
+    case NS_itemid_shovel:
       return 1;
   }
   return 0;

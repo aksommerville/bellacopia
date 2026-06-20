@@ -817,11 +817,18 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
  */
  
 static void shovel_update(struct sprite *sprite,double elapsed) {
+  if (SPRITE->shovelclock>0.0) {
+    SPRITE->shovelclock-=elapsed;
+    if (SPRITE->shovelclock<=0.0) {
+      SPRITE->itemid_in_progress=0;
+    }
+  }
   SPRITE->shovelx=(int)(sprite->x+SPRITE->facedx*0.750);
   SPRITE->shovely=(int)(sprite->y+SPRITE->facedy*0.750);
 }
  
 static int shovel_begin(struct sprite *sprite) {
+  if (SPRITE->shovelclock>0.0) return 0;
 
   // Confirm map cell is vacant or safe.
   shovel_update(sprite,0.0);
@@ -853,7 +860,10 @@ static int shovel_begin(struct sprite *sprite) {
     return 0; // Already dug.
   }
   
-  //TODO digging animation
+  // Animate and block motion.
+  SPRITE->shovelclock=0.500;
+  SPRITE->itemid_in_progress=NS_itemid_shovel;
+  SPRITE->walking=0;
   
   // Do it.
   int result=sprite_hero_unbury_treasure(sprite,SPRITE->shovelx,SPRITE->shovely);
@@ -1250,6 +1260,7 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_marionette: marionette_update(sprite,elapsed); break;
       case NS_itemid_snowglobe: snowglobe_update(sprite,elapsed); break;
       case NS_itemid_stick: stick_update(sprite,elapsed); break;
+      case NS_itemid_shovel: shovel_update(sprite,elapsed); break;
       default: fprintf(stderr,"%s:%d:ERROR: Item %d is in progress but has no update handler.\n",__FILE__,__LINE__,SPRITE->itemid_in_progress);
     }
     return;

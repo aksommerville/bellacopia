@@ -30,13 +30,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Animate digging with shovel.
+- [x] Animate digging with shovel.
 - [ ] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
 - [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- [x] chopping: Try adding one real item. Fish, coin, vanishing cream, .... If you win the game and don't chop it, you get it.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -70,19 +69,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
-- [x] Big signs to make the city names unmistakable.
-- [x] sorting: Both sides should get exactly the same draw. Use a private PRNG.
-
-- [x] Segfault. In Fractia after strangling the root devil, had just left Athlete's Guild with divining rod armed, and I'd gotten into a battle outside on the frame just before entering.
-- - But I suspect it just needs a clean build; there's been a lot of changes lately. See if it repros.
-malloc(): unaligned tcache chunk detected
-Aborted (core dumped)
-- - Caused another segfault by entering battle as I entered the red captain's tent. Hard to repro.
-corrupted double-linked list (not small)
-Aborted (core dumped)
-- - Clean build, and I did repro the exact battle-on-the-last-frame-before-a-door situation (it's visually noticeable). No segfault. Let's call it a dirty build thing.
 
 - TODO Punted items, assess closer to release.
+- [ ] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Remove the fake French text, or even better, get it translated correctly.

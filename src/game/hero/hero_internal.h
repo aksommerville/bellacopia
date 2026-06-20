@@ -53,6 +53,7 @@ struct sprite_hero {
   int tapez;
   double snowglobeclock;
   double stickclock;
+  double shovelclock;
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.
