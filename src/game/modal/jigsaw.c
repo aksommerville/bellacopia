@@ -275,6 +275,7 @@ static void jigsaw_dirty(struct jigsaw *jigsaw,struct jigpiece *jigpiece) {
   jigstore->y=jigpiece->y;
   jigstore->xform=jigpiece->xform;
   g.store.dirty=1;
+  store_broadcast('j',map->rid,0);
 }
 
 /* Cluster and jigpiece primitives.
@@ -889,12 +890,15 @@ void jigsaw_release(struct jigsaw *jigsaw) {
   if (!jigsaw->grab) return;
   jigsaw->hover=jigsaw->grab;
   jigsaw->grab=0;
+  int maybedone=0;
   if (jigsaw_check_connections_all(jigsaw,jigsaw->hover)) {
     bm_sound(RID_sound_jigsaw_connect);
+    maybedone=1;
   } else {
     bm_sound(RID_sound_jigsaw_drop);
   }
   jigsaw_force_legal_positions(jigsaw);
+  if (maybedone) bm_poll_completion();
 }
 
 /* Rotate.
@@ -929,12 +933,13 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
       jigsaw_dirty(jigsaw,other);
     }
   }
+  store_set_fld(NS_fld_minimalist_disqualify,1); // Touching the map disqualifies minimalist. Tho you are allowed to pick up pieces.
   if (jigsaw_check_connections_all(jigsaw,jigpiece)) {
     bm_sound(RID_sound_jigsaw_connect);
+    bm_poll_completion();
   } else {
     bm_sound(RID_sound_jigsaw_rotate);
   }
-  store_set_fld(NS_fld_minimalist_disqualify,1); // Touching the map disqualifies minimalist. Tho you are allowed to pick up pieces.
 }
 
 /* Motion.

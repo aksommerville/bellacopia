@@ -57,6 +57,44 @@ int game_reset(int use_save) {
   return 0;
 }
 
+/* Poll for completion.
+ * Normally executes during game_update when (g.completion_dirty), but can also be triggered manually eg by maps vellum.
+ */
+ 
+void bm_poll_completion() {
+  g.completion_dirty=0;
+  int activity=0,set_minimalist=0;
+  int ncompletion=game_get_completion();
+  if (ncompletion==g.completion) return;
+  // Finished main quest?
+  if ((ncompletion>=1)&&(g.completion<=0)) {
+    double *cl=store_require_clock(NS_clock_mainclear);
+    if (cl) {
+      *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
+      g.store.dirty=1;
+      activity=NS_activity_main_quest_wrap_up;
+      if ((ncompletion==1)&&game_is_minimalist_complete()) {
+        set_minimalist=1;
+      }
+    }
+  }
+  // Reached 100%?
+  if ((ncompletion>=2)&&(g.completion<=1)) {
+    double *cl=store_require_clock(NS_clock_fullclear);
+    if (cl) {
+      if (*cl>0.0) {
+        fprintf(stderr,"%s:%d:!!!!! Was about to set NS_clock_fullclear when it's already set. (just confirming: yep this is possible.)\n",__FILE__,__LINE__);
+      } else {
+        *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
+      }
+      g.store.dirty=1;
+    }
+  }
+  g.completion=ncompletion;
+  if (set_minimalist) store_set_fld(NS_fld_minimalist,1);
+  if (activity) game_begin_activity(activity,0,0);
+}
+
 /* Generate update.
  */
  
@@ -84,33 +122,7 @@ void game_update(double elapsed) {
   
   // Check completion if something changed.
   if (g.completion_dirty) {
-    int activity=0,set_minimalist=0;
-    int ncompletion=game_get_completion();
-    if (ncompletion==g.completion) return;
-    // Finished main quest?
-    if ((ncompletion>=1)&&(g.completion<=0)) {
-      double *cl=store_require_clock(NS_clock_mainclear);
-      if (cl) {
-        *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
-        g.store.dirty=1;
-        activity=NS_activity_main_quest_wrap_up;
-        if ((ncompletion==1)&&game_is_minimalist_complete()) {
-          fprintf(stderr,"%s: Minimalist completion!\n",__func__);
-          set_minimalist=1;
-        }
-      }
-    }
-    // Reached 100%?
-    if ((ncompletion>=2)&&(g.completion<=1)) {
-      double *cl=store_require_clock(NS_clock_fullclear);
-      if (cl) {
-        *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
-        g.store.dirty=1;
-      }
-    }
-    g.completion=ncompletion;
-    if (set_minimalist) store_set_fld(NS_fld_minimalist,1);
-    if (activity) game_begin_activity(activity,0,0);
+    bm_poll_completion();
   }
 }
 

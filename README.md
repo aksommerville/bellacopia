@@ -33,7 +33,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Animate digging with shovel.
 - [x] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
 - - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
-- [ ] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
+- [x] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
+- - You'd think it can't happen, since you need the World Traveller story to reach 100%, but it can: You get the story on acquiring the last map piece, not assembling it.
+- [ ] My `raceNtime` are evidently all saving as 65535.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
@@ -53,6 +55,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
 - [ ] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
+- - Not just fish. You buy good luck, and your good lucks are visible like lit matches or vanishing cream.
+- - Good lucks get spent on: Any battle, any fishing, false digging.
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - - UPDATE: Power Glove does this now, and that's probably enough.
@@ -61,16 +65,21 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [ ] I think the recorded 100% Time can get reset.
+- [x] I think the recorded 100% Time can get reset.
 - - Confirmed! And we do need to fix this. It's perfectly normal to spend a stick, then find another. Right now, picking up another replaces your 100% time.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
+- - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
+- [ ] 0.250 feels too close for panning, and I've hard-coded that all over the place. Pull out to a constant, then widen a bit.
+- [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
+- [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 
 - TODO Punted items, assess closer to release.
+- [ ] Review song and sound levels, right now they're pretty heterogenous.
 - [ ] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
