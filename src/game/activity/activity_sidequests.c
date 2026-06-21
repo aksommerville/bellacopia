@@ -531,3 +531,14 @@ void begin_endrace(int arg) {
   }
   struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
+
+/* Run the cutscenes for hearts book or gold book.
+ */
+ 
+void begin_hearts_book() {
+  fprintf(stderr,"TODO %s\n",__func__);
+}
+ 
+void begin_gold_book() {
+  fprintf(stderr,"TODO %s\n",__func__);
+}

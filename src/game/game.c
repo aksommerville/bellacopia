@@ -23,10 +23,10 @@ static void game_cb_store(char type,int id,int value,void *userdata) {
   }
   
   switch (type) {
-    // fld16 doesn't influence completion so we ignore those.
     case 'j': g.jigstate=0; // pass
     case 'f':
-    case 'i': g.completion_dirty=1; break;
+    case 'i':
+    case '6': g.completion_dirty=1; break;
   }
 }
 
@@ -63,10 +63,27 @@ int game_reset(int use_save) {
  
 void bm_poll_completion() {
   g.completion_dirty=0;
-  int activity=0,set_minimalist=0;
+  int activity=0;
+  
+  // Got a new book? Only the hearts and gold books are tracked here.
+  if (last_heart_container_was_collected()) {
+    store_set_fld(NS_fld_hearts_book,1);
+    if (!activity) activity=NS_activity_hearts_book;
+  }
+  if (last_gold_upgrade_was_collected()) {
+    store_set_fld(NS_fld_gold_book,1);
+    if (!activity) activity=NS_activity_gold_book;
+  }
+  
+  // Measure completion and get out if it didn't change. Mind that we may have selected an activity already.
+  int set_minimalist=0;
   int ncompletion=game_get_completion();
-  if (ncompletion==g.completion) return;
-  // Finished main quest?
+  if (ncompletion==g.completion) {
+    if (activity) game_begin_activity(activity,0,0);
+    return;
+  }
+  
+  // Finished main quest? If we were planning to run one of the book activities, forget it, this one is more important.
   if ((ncompletion>=1)&&(g.completion<=0)) {
     double *cl=store_require_clock(NS_clock_mainclear);
     if (cl) {
@@ -78,6 +95,7 @@ void bm_poll_completion() {
       }
     }
   }
+  
   // Reached 100%?
   if ((ncompletion>=2)&&(g.completion<=1)) {
     double *cl=store_require_clock(NS_clock_fullclear);
@@ -90,6 +108,7 @@ void bm_poll_completion() {
       g.store.dirty=1;
     }
   }
+  
   g.completion=ncompletion;
   if (set_minimalist) store_set_fld(NS_fld_minimalist,1);
   if (activity) game_begin_activity(activity,0,0);

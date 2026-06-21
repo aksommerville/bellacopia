@@ -41,7 +41,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
-- [ ] Acquire stories.
+- [x] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
 - [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
@@ -67,6 +67,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] I think the recorded 100% Time can get reset.
 - - Confirmed! And we do need to fix this. It's perfectly normal to spend a stick, then find another. Right now, picking up another replaces your 100% time.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
+- - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.

@@ -205,6 +205,12 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta);
 
 int bm_count_flowers(); // => 0..7
 
+/* Nonzero if the constituent states are satisfied but the the final flag is unset.
+ * We don't set that final flag, or produce any other side effects.
+ */
+int last_heart_container_was_collected();
+int last_gold_upgrade_was_collected();
+
 void cartographer_reset(); // cartographer.c
 void bm_poll_completion(); // game.c
 

@@ -113,7 +113,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4a,
     .strix_title=14,
     .strix_desc=30,
-    .fld_present=NS_fld_got_story14,//TODO The Witch With Lots of Heart
+    .fld_present=NS_fld_hearts_book,
     .fld_told=NS_fld_story14,
   },
   {
@@ -121,7 +121,7 @@ static const struct story storyv[16]={
     .tileid_large=0x4c,
     .strix_title=15,
     .strix_desc=31,
-    .fld_present=NS_fld_got_story15,//TODO Pocketfuls of Gold
+    .fld_present=NS_fld_gold_book,
     .fld_told=NS_fld_story15,
   },
   {

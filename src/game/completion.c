@@ -320,3 +320,22 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
   #undef AVAILABLE
   return dstc;
 }
+
+/* Test some specific completion things dependent on our metadata here.
+ */
+ 
+int last_heart_container_was_collected() {
+  if (store_get_fld(NS_fld_hearts_book)) return 0; // Already done, will always be zero now.
+  int a=0;
+  int c=FLDV_COUNT(&a,fldv_heart_container);
+  if (c>=a) return 1;
+  return 0;
+}
+
+int last_gold_upgrade_was_collected() {
+  if (store_get_fld(NS_fld_gold_book)) return 0; // Already done, will always be zero now.
+  // We'll drive this one just by the scalar purse size, as opposed to the flags associated with those purse upgrades.
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  if (goldmax>=199) return 1; // Got all the purse upgrades. Keep this up to date.
+  return 0;
+}

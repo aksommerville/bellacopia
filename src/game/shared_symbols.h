@@ -298,6 +298,8 @@
 #define NS_activity_pauserace 49
 #define NS_activity_endrace 50 /* Calling race_end() triggers this. 0x0001=dot wins, 0x0002=moon wins, 0x0004=new high score, 0x0008=first time */
 #define NS_activity_fish_book 51
+#define NS_activity_hearts_book 52
+#define NS_activity_gold_book 53
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -605,8 +607,8 @@
 #define NS_fld_broom_races_complete 124
 #define NS_fld_carpenter_book 125
 #define NS_fld_fish_book 126
-#define NS_fld_got_story14 127 /* XXX Pick a more meaningful symbol once we know more about the books... */
-#define NS_fld_got_story15 128
+#define NS_fld_hearts_book 127
+#define NS_fld_gold_book 128
 #define NS_fld_hc4door 129
 #define NS_fld_bt6 130
 #define NS_fld_bt7 131

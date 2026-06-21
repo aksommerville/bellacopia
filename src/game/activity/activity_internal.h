@@ -39,6 +39,8 @@ void begin_invcritic(struct sprite *initiator);
 void begin_bridget(struct sprite *initiator,int arg);
 void begin_moonsong(struct sprite *initiator,int arg);
 void begin_endrace(int arg);
+void begin_hearts_book();
+void begin_gold_book();
 
 // activity_advice.c
 void begin_crystal();
