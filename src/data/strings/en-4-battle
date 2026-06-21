@@ -61,10 +61,10 @@
 58 Apples
 
 59 Not food!
-60 "Vermeer: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
-61 "Seurat: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
-62 "Fragonard: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
-63 "Bosch: This text is a placeholder. We will eventually replace with erudite criticism of this painting, preferably an excerpt from real art criticism, with the author's permission."
+60 "Accuracy of tone and contour, rather than the methodic accumulation of descriptive elements and their minute description, sustain the illusion of reality."
+61 "This artificial micro-pattern serves the painter as a means of order portioning and nuancing sensation beyond the familiar qualities of the objects that the colors evoke."
+62 "In Fragonard's hands art degenerates into an uncurbed lascivious play, which, however, was found compatible with serious technical achievement."
+63 "Bosch's formulations lay securely founded in Christian theology, chiefly as articulated by the church father Saint Augustine, as well as other late medieval manifestations."
 
 # Regex Contest. First the plaintext, then the regex. Regex must contain '@' once to mark the error position.
 64 Find the typo!

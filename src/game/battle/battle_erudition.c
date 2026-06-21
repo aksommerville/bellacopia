@@ -196,22 +196,22 @@ static int _erudition_init(struct battle *battle) {
    * At the limit, we can draw and criticize four paintings ourselves.
    */
   switch (rand()&3) {
-    case 0: {
+    case 0: { // Vermeer
         BATTLE->picsrcx=0;
         BATTLE->picsrcy=0;
         erudition_generate_text(battle,60);
       } break;
-    case 1: {
+    case 1: { // Seurat
         BATTLE->picsrcx=128;
         BATTLE->picsrcy=0;
         erudition_generate_text(battle,61);
       } break;
-    case 2: {
+    case 2: { // Fragonard
         BATTLE->picsrcx=0;
         BATTLE->picsrcy=96;
         erudition_generate_text(battle,62);
       } break;
-    case 3: {
+    case 3: { // Bosch
         BATTLE->picsrcx=128;
         BATTLE->picsrcy=96;
         erudition_generate_text(battle,63);

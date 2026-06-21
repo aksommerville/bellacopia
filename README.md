@@ -198,12 +198,33 @@ Unofficially collecting things I've borrowed or referred to.
 Before the first release, validate and clean up this list. And if in-game credits are warranted, do that.
 
 - Chess checkmate scenarios: https://www.chess.com/terms/checkmate-chess
-- Erudition Contest paintings, copied from Wikipedia. TODO Determine license terms.
+- Erudition Contest paintings, copied from Wikipedia.
 - - The Art of Painting; by Johannes Vermeer; 1666–1668; oil on canvas; 1.3 × 1.1 m; Kunsthistorisches Museum (Vienna, Austria)
+- - - Criticism by Jonathan Janson:
+- - - https://www.essentialvermeer.com/vermeer's_methodolgy.html
+- - - Accuracy of tone and contour, rather than the methodic accumulation of descriptive elements and their minute description, sustain the illusion of reality.
 - - A Sunday Afternoon on the Island of La Grande Jatte, 1884–1886, oil on canvas, 207.5 × 308.1 cm, Art Institute of Chicago
+- - - Criticism by Meyer Schapiro (d 1996), "Modern Art":
+- - - https://noteaccess.com/APPROACHES/Seurat.htm
+- - - This artificial micro-pattern serves the painter as a means of order portioning and nuancing sensation beyond the familiar qualities of the objects that the colors evoke.
 - - The Swing; by Jean-Honoré Fragonard; 1767–1768; oil on canvas; Wallace Collection
+- - - Criticism by Wilhelm Lubke (c 1860):
+- - - https://www.artandpopularculture.com/Jean-Honor%C3%A9_Fragonard
+- - - In his hands art degenerates into an uncurbed lascivious play, which, however, was found compatible with serious technical achievement. 
 - - The Garden of Earthly Delights; by Hieronymus Bosch; c. 1504; oil on panel, Museo del Prado
-- Erudition Contest text. TODO Not acquired yet.
+- - - Criticism by Larry Silver:
+- - - https://jhna.org/articles/jheronimus-bosch-issue-of-origins/
+- - - Bosch's formulations lay securely founded in Christian theology, chiefly as articulated by the church father Saint Augustine, as well as other late medieval manifestations.
+- - The Fragonard quote is public domain, being published around 1860.
+- - The Seurat quote is not, but I haven't been able to find an email for Meyer Schapiro's estate to ask for permission.
+- - The Vermeer and Bosch quotes are both modern with living authors (far as i know); try to contact their authors.
+- - - Vermeer: Jonathan Janson: ...
+- - - Bosch: Larry Silver: ...
+- - All four images were copied from Wikipedia, and Wikipedia asserts that all four are Public Domain.
+- - We will of course give all four painters a screen credit.
+- Quoth Wikipedia:
+- - The official position taken by the Wikimedia Foundation is that "faithful reproductions of two-dimensional public domain works of art are public domain".
+- - This photographic reproduction is therefore also considered to be in the public domain in the United States. 
 - Telekinesis Contest: Reference to the old janx spirit drinking game in Hitchhiker's Guide to the Galaxy.
 
 ## Morally Questionable
