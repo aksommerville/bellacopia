@@ -324,7 +324,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     
     if ((player->screechclock-=elapsed)<=0.0) {
       player->screechclock+=0.150;
-      bm_sound_pan(RID_sound_screech,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_screech,player->who?PLAYER_PAN:-PLAYER_PAN);
     }
   } else {
     player->animclock=0.0;
@@ -347,7 +347,7 @@ static void baby_update(struct battle *battle,struct baby *baby,double elapsed) 
   /* Beginning the jump?
    */
   if (!baby->jumped) {
-    bm_sound_pan(RID_sound_throw,baby->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_throw,baby->who?PLAYER_PAN:-PLAYER_PAN);
     if (!baby->adult) {
       struct window *window=BATTLE->windowv;
       int i=BATTLE->windowc;
@@ -386,12 +386,12 @@ static void baby_update(struct battle *battle,struct baby *baby,double elapsed) 
   if (baby->y>BATTLE->bgvtxv[BGCOLC*(BGROWC-2)].y) {
     struct player *player=BATTLE->playerv+baby->who;
     if (baby->bounced) {
-      bm_sound_pan(RID_sound_collect,baby->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_collect,baby->who?PLAYER_PAN:-PLAYER_PAN);
       baby->outcome=1;
       baby->y=BATTLE->bgvtxv[BGCOLC*(BGROWC-1)].y-4;
       player->score++;
     } else {
-      bm_sound_pan(RID_sound_splat,baby->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_splat,baby->who?PLAYER_PAN:-PLAYER_PAN);
       baby->outcome=-1;
       baby->y=BATTLE->bgvtxv[BGCOLC*(BGROWC-2)].y+(NS_sys_tilesize>>1);
     }
@@ -405,7 +405,7 @@ static void baby_update(struct battle *battle,struct baby *baby,double elapsed) 
     double distance=baby->x-player->x;
     if (distance<0.0) distance=-distance;
     if (distance<20.0) {
-      bm_sound_pan(RID_sound_jump,baby->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_jump,baby->who?PLAYER_PAN:-PLAYER_PAN);
       baby->bounced=1;
       player->bounceclock=0.500;
       baby->dy=-40.0;

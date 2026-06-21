@@ -493,25 +493,25 @@ static void player_activate(struct battle *battle,struct player *player) {
       struct player *other=player->who?(BATTLE->playerv+0):(BATTLE->playerv+1);
       if (other->buzz) {
         // Other guy buzzed in. Wait your turn!
-        bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
         return;
       }
       // Buzz in.
       player->buzz=1;
       player->sad=0;
       player_update_face(battle,player);
-      bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
       return;
     }
   }
 
   player->buzz=0;
   if (player->fingerp==BATTLE->correctp) {
-    bm_sound_pan(RID_sound_treasure,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_treasure,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->starc++;
     player->sad=0;
   } else {
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->poopc++;
     player->sad=1;
   }
@@ -532,7 +532,7 @@ static void player_move(struct battle *battle,struct player *player,int d) {
       struct player *other=player->who?(BATTLE->playerv+0):(BATTLE->playerv+1);
       if (other->buzz) {
         // Other guy buzzed in. Wait your turn!
-        bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
         return;
       }
       // Buzz in.
@@ -546,7 +546,7 @@ static void player_move(struct battle *battle,struct player *player,int d) {
   if (player->fingerp<0) player->fingerp=2;
   else if (player->fingerp>2) player->fingerp=0;
   player->vfinger->y=BATTLE->vtxv[15+player->fingerp*6].y;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
   if (player->sad) { // Drop the sadness from the last play, we're back to business now.
     player->sad=0;
     player_update_face(battle,player);

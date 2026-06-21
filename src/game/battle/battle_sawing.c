@@ -211,7 +211,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->pvdir=player->dir;
     player->rate=player->rate_init;
     player->efficacy=player->efficacy_init;
-    bm_sound_pan(RID_sound_saw,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_saw,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
   
   /* Accelerate rate and efficacy.
@@ -225,7 +225,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   player->phase+=player->dir*player->rate*elapsed;
   if ((player->phase<-1.0)||(player->phase>1.0)) {
     player->penalty=player->penalty_time;
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     return;
   }
   

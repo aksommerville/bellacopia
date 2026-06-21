@@ -125,7 +125,7 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
   player->row+=dy;
   if (player->row<0) player->row=0;
   else if (player->row>1) player->row=1;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Update human player.

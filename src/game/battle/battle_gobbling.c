@@ -300,13 +300,13 @@ static void player_gobble(struct battle *battle,struct player *player) {
     if (distance>20) nearest=0;
   }
   if (!nearest) { // Nothing in range.
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
   } else if (tileid_is_food(nearest->tileid)) { // Eat.
     nearest->tileid=0;
     player->gobble=GOBBLE_TIME;
-    bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
   } else { // Eat something that isn't food -- you lose.
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     battle->outcome=player->who?1:-1;
     BATTLE->end_cooldown=END_COOLDOWN;
     player->highlight_poison=nearest->tileid;

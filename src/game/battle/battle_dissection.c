@@ -282,7 +282,7 @@ static void dissection_check_cuts(struct battle *battle,struct player *player) {
   #undef GETDISTANCE
   if (!(player->cutted&mask)&&(cp>-vessel_radius)&&(cp<vessel_radius)) {
     player->cutted|=mask;
-    bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
 }
 
@@ -294,7 +294,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   // Decorative animation of the organs.
   if ((player->animclock+=elapsed)>=player->animperiod) {
     player->animclock=0.0;
-    bm_sound_pan(RID_sound_heartbeat,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_heartbeat,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
   
   // With a cut organ, animate blood. No further updating in this case.
@@ -353,7 +353,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     if (player->y<0.0) player->y=0.0; else if (player->y>FLDH) player->y=FLDH;
     dissection_check_cuts(battle,player);
     if (player->cutted&CUTTED_BAD) {
-      bm_sound_pan(RID_sound_fart,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_fart,player->who?PLAYER_PAN:-PLAYER_PAN);
     }
     
   /* Rotate back and forth if button released.

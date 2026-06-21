@@ -155,13 +155,13 @@ static void check_cut(struct battle *battle,struct player *player) {
     if ((dx<-10.0)||(dx>10.0)) continue;
     double dy=cheese->y-focusy;
     if ((dy<-10.0)||(dy>10.0)) continue;
-    bm_sound_pan(RID_sound_slice,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_slice,player->who?PLAYER_PAN:-PLAYER_PAN);
     cheese->splatter=SPLATTER_TIME;
     player->score++;
     return;
   }
   
-  bm_sound_pan(RID_sound_chop,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_chop,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Update human player.
@@ -247,7 +247,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   /* Not in motion, so if input is nonzero, begin the drop.
    */
   if (player->input) {
-    bm_sound_pan(RID_sound_deploy,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_deploy,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->droppage=0.001;
     player->droppaged=player->drop_rate;
   }

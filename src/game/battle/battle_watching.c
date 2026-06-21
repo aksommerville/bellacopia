@@ -160,10 +160,10 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
   }
   
   if ((nface==player->facedir)&&(nposition==player->position)) {
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     return;
   }
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
   
   struct pot *pvpot=player_get_pot(player);
   player->facedir=nface;

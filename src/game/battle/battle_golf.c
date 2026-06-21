@@ -98,7 +98,7 @@ static int _golf_init(struct battle *battle) {
  */
  
 static void player_whack(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_whack,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
   player->flying=1;
   double n=player->swing_angle/TMAX;
   double speed=n*SPEED_MAX+(1.0-n)*SPEED_MIN;
@@ -114,7 +114,7 @@ static void player_whack(struct battle *battle,struct player *player) {
  */
  
 static void player_swing(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_swing_racket,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_swing_racket,player->who?PLAYER_PAN:-PLAYER_PAN);
   player->swung=1;
   player->swing_angle=player->clubt;
 }

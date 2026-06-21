@@ -84,7 +84,7 @@ static void player_swap_1(struct battle *battle,struct player *player,int x,int 
 }
  
 static void player_swap(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
   player_swap_1(battle,player,player->cx,player->cy-1);
   player_swap_1(battle,player,player->cx-1,player->cy);
   player_swap_1(battle,player,player->cx,player->cy);
@@ -106,7 +106,7 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
   player->cy+=dy;
   if (player->cx<-1) player->cx=-1; else if (player->cx>FLDW) player->cx=FLDW;
   if (player->cy<-1) player->cy=-1; else if (player->cy>FLDH) player->cy=FLDH;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Update human player.

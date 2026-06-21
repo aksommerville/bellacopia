@@ -86,7 +86,7 @@ static int _stenography_init(struct battle *battle) {
  
 static void stenography_stroke(struct battle *battle,struct player *player,uint8_t tileid) {
   if (player->textc>=BATTLE->textc) return;
-  bm_sound_pan(RID_sound_tick,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_tick,player->who?PLAYER_PAN:-PLAYER_PAN);
   player->text[player->textc++]=tileid;
 }
 

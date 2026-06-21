@@ -290,7 +290,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->jumpforce=player->jumpforce_initial;
     player->jumpok=0;
     player->seated=0;
-    bm_sound_pan(RID_sound_jump,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_jump,player->who?PLAYER_PAN:-PLAYER_PAN);
   
   // Fall to the ground, if we're not there.
   } else {

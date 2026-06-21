@@ -84,7 +84,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
     }
   } else if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) {
     player->installclock=player->worktime;
-    bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
 }
 
@@ -95,7 +95,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   if (player->cpuclock>0.0) {
     if ((player->cpuclock-=elapsed)<=0.0) {
       player->installclock=player->worktime;
-      bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
     }
   } else if (player->installclock>0.0) {
     if ((player->installclock-=elapsed)<=0.0) {

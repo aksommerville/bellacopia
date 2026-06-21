@@ -30,25 +30,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Animate digging with shovel.
-- [x] Dig in an incorrect spot, occasionally dig up a really difficult monster. To raise the cost of guessing.
-- - Maybe: "Skeleton challenges you to a Shovel Throwing Contest", he yoinks your shovel and throws it and you have to chase it. No prize.
-- [x] Full clear time doesn't register immediately, if you achieve it by finishing the maps.
-- - You'd think it can't happen, since you need the World Traveller story to reach 100%, but it can: You get the story on acquiring the last map piece, not assembling it.
-- [x] My `raceNtime` are evidently all saving as 65535.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
-- [x] Acquire stories.
 - [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
-- [ ] Usable IP for the erudition contest.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
-- [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
-- [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
 - - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
@@ -64,21 +54,24 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [x] I think the recorded 100% Time can get reset.
-- - Confirmed! And we do need to fix this. It's perfectly normal to spend a stick, then find another. Right now, picking up another replaces your 100% time.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
-- [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
-- [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
-- [ ] 0.250 feels too close for panning, and I've hard-coded that all over the place. Pull out to a constant, then widen a bit.
 - [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 
+- Battle repairs.
+- [ ] Usable IP for the erudition contest.
+- [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
+- [ ] Racketeering contest badly needs more juice when you hit the ball.
+- [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
+- [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
+
 - TODO Punted items, assess closer to release.
+- [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Review song and sound levels, right now they're pretty heterogenous.

@@ -136,7 +136,7 @@ static void sorting_get_points(struct battle *battle,struct player *player,doubl
   int score=(int)(xlimit-dx);
   if (score<=0) return;
   player->score+=score;
-  bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
   
   if (BATTLE->toastc<TOAST_LIMIT) {
     struct toast *toast=BATTLE->toastv+BATTLE->toastc++;
@@ -182,7 +182,7 @@ static void sorting_drop(struct battle *battle,struct player *player,int fast,do
   if (table) floor=table->y-2.0;
   else floor=player->fldh-8.0;
   if (player->thingy>=floor) {
-    bm_sound_pan(RID_sound_bump,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_bump,player->who?PLAYER_PAN:-PLAYER_PAN);
     if (table) {
       if (table->color==player->thingcolor) {
         sorting_get_points(battle,player,player->thingx,table->x,table->y);

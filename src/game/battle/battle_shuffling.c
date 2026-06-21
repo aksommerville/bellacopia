@@ -122,7 +122,7 @@ static int _shuffling_init(struct battle *battle) {
  */
  
 static void player_merge(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
 
   /* Do exactly what happens at render, to compare positions.
    * (mergep) will be where in the front half the back half starts interleaving.
@@ -183,7 +183,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
     if (player->input_blackout) {
       if (!(g.input[player->human]&EGG_BTN_SOUTH)) player->input_blackout=0;
     } else if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) {
-      bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->cutp=(DECK_SIZE>>1)-(int)(sin(player->p)*(DECK_SIZE>>1));
       // Must leave at least one card in each half.
       if (player->cutp<1) player->cutp=1;
@@ -207,7 +207,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
     if (BATTLE->timeout<18.0) { // Chill for two seconds, just to not look rushed.
       // Then cut it on the way down:
       if ((player->pvp<player->cutat)&&(player->p>=player->cutat)) {
-        bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
         player->cutp=(DECK_SIZE>>1)-(int)(sin(player->p)*(DECK_SIZE>>1));
         // Must leave at least one card in each half.
         if (player->cutp<1) player->cutp=1;

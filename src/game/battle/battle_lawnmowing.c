@@ -192,7 +192,7 @@ static void player_update(struct batsup_sprite *sprite,double elapsed) {
       if ((tileid>=0x08)&&(tileid<0x10)) { // Tall grass.
         BATTLE->world->map->v[nqy*NS_sys_mapw+nqx]=rand()&7; // Cut grass.
         SPRITE->score++;
-        bm_sound_pan(RID_sound_collect,(sprite->id==SPRITEID_RIGHT)?0.250:-0.250);
+        bm_sound_pan(RID_sound_collect,(sprite->id==SPRITEID_RIGHT)?PLAYER_PAN:-PLAYER_PAN);
       }
     }
   } else {

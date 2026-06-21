@@ -284,7 +284,7 @@ static void player_press(struct battle *battle,struct player *player) {
       return;
     }
   }
-  bm_sound_pan(RID_sound_deploy,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_deploy,player->who?PLAYER_PAN:-PLAYER_PAN);
   BATTLE->map[p]=player->upnext[player->upnextp];
   player->upnext[player->upnextp++]=random_piece();
   if (player->upnextp>=UPNEXT_SIZE) player->upnextp=0;
@@ -302,7 +302,7 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
   player->y+=dy;
   if (player->y<0) player->y=ROWC-1;
   else if (player->y>=ROWC) player->y=0;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
   // Deletion game nixes when you move.
   player->delete=0.0;
 }

@@ -247,12 +247,12 @@ static void player_drop_pumpkin(struct batsup_sprite *sprite) {
       if (player_has_no_pumpkin_space(sprite,pumpkin)) {
         pumpkin->defunct=1;
       } else {
-        if (SPRITE->inputp) bm_sound_pan(RID_sound_reject,(sprite->id==SPRID_RPLAYER)?0.250:-0.250);
+        if (SPRITE->inputp) bm_sound_pan(RID_sound_reject,(sprite->id==SPRID_RPLAYER)?PLAYER_PAN:-PLAYER_PAN);
         return;
       }
     }
     SPRITE->pumpkinid=0;
-    bm_sound_pan(RID_sound_bombdrop,(sprite->id==SPRID_RPLAYER)?0.250:-0.250);
+    bm_sound_pan(RID_sound_bombdrop,(sprite->id==SPRID_RPLAYER)?PLAYER_PAN:-PLAYER_PAN);
     pumpkin->y=ybottom;
     brick_set_carried(pumpkin,0);
   }
@@ -296,7 +296,7 @@ static void player_pickup_pumpkin(struct batsup_sprite *sprite) {
     }
   }
   if (!pumpkin) {
-    bm_sound_pan(RID_sound_reject,(sprite->id==SPRID_RPLAYER)?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,(sprite->id==SPRID_RPLAYER)?PLAYER_PAN:-PLAYER_PAN);
     return;
   }
   
@@ -311,7 +311,7 @@ static void player_pickup_pumpkin(struct batsup_sprite *sprite) {
   // Got one!
   SPRITE->pumpkinid=pumpkin->id;
   brick_set_carried(pumpkin,1);
-  bm_sound_pan(RID_sound_mount,(sprite->id==SPRID_RPLAYER)?0.250:-0.250);
+  bm_sound_pan(RID_sound_mount,(sprite->id==SPRID_RPLAYER)?PLAYER_PAN:-PLAYER_PAN);
 }
 
 static void player_update_common(struct batsup_sprite *sprite,double elapsed) {
@@ -361,7 +361,7 @@ static void player_update_common(struct batsup_sprite *sprite,double elapsed) {
   int apply_gravity=0;
   if (SPRITE->injump) {
     if (SPRITE->seated&&!SPRITE->pvinjump) {
-      bm_sound_pan(RID_sound_jump,(sprite->id==SPRID_RPLAYER)?0.250:-0.250);
+      bm_sound_pan(RID_sound_jump,(sprite->id==SPRID_RPLAYER)?PLAYER_PAN:-PLAYER_PAN);
       SPRITE->jumpclock=0.350; // TODO scale per skill?
       SPRITE->gravity=0.0;
       SPRITE->seated=0;

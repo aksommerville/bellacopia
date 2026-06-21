@@ -248,7 +248,7 @@ static void player_jump_yes(struct player *player,double elapsed) {
   if (player->face==FACE_IDLE) {
     player_set_face(player,FACE_JUMP);
     player->gravity=JUMP_INITIAL;
-    bm_sound_pan(RID_sound_jump,player->xform?0.250:-0.250);
+    bm_sound_pan(RID_sound_jump,player->xform?PLAYER_PAN:-PLAYER_PAN);
   }
   
   // Increase gravity and fall upward.

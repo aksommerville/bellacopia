@@ -235,7 +235,7 @@ static void player_speak(struct battle *battle,struct player *player) {
     return;
   }
   player->wordc++;
-  bm_sound_pan(RID_sound_chatter,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_chatter,player->who?PLAYER_PAN:-PLAYER_PAN);
   player->blackout=1;
 }
 

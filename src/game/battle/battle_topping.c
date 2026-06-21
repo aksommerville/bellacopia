@@ -155,7 +155,7 @@ static void topping_create_dribble(struct battle *battle,struct player *player) 
     case 2: dribble->tileid=0xb2; break;
     case 3: dribble->tileid=0xb3; break;
   }
-  bm_sound_pan(RID_sound_dribble,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_dribble,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Record waste.
@@ -206,11 +206,11 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->stateclock=0.250;
     player->dribbling=1;
     player->dribbleclock=0.0;
-    bm_sound_pan(RID_sound_fart,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_fart,player->who?PLAYER_PAN:-PLAYER_PAN);
   } else if (!player->dribblereq&&player->dribbling) {
     player->stateclock=0.250;
     player->dribbling=0;
-    bm_sound_pan(RID_sound_unfart,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_unfart,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
   
   // Create a new dribble, if state and clock say so.

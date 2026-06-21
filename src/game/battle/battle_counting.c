@@ -247,7 +247,7 @@ static void player_move(struct battle *battle,struct player *player,int d) {
   player->guess+=d;
   if (player->guess<0) player->guess=0;
   else if (player->guess>9) player->guess=9;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Update human player.
@@ -256,7 +256,7 @@ static void player_move(struct battle *battle,struct player *player,int d) {
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input,int pvinput) {
   if (player->committed) return;
   if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) {
-    bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->committed=1;
   }
   if (!player->committed) {
@@ -275,7 +275,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   if (player->guess<player->cpuguess) player_move(battle,player,1);
   else if (player->guess>player->cpuguess) player_move(battle,player,-1);
   else {
-    bm_sound_pan(RID_sound_uiactivate,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->committed=1;
   }
 }

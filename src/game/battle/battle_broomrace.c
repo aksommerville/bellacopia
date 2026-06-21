@@ -17,6 +17,8 @@
 #define FUDGE_WORST      40.0
 #define FUDGE_BEST        2.0
 #define FUDGE_TIME        5.0
+#define CPU_PENALTY     0.666
+#define FLDTOP             20
 
 struct battle_broomrace {
   struct battle hdr;
@@ -82,6 +84,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   if (player->human=human) { // Human.
     player->blackout=1;
   } else { // CPU.
+    player->speedmax*=CPU_PENALTY;
   }
   switch (face) {
     // 64 is Moon Song, if we want it.
@@ -265,7 +268,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     if ((dx>=-radius)&&(dx<=radius)) {
       double dy=BATTLE->thingy-player->y;
       if ((dy>=-radius)&&(dy<=radius)) {
-        bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
         player->thingv[player->thingc++]=BATTLE->thingtile;
         BATTLE->thingtile=0;
       }
@@ -333,7 +336,7 @@ static void _broomrace_update(struct battle *battle,double elapsed) {
   } else if (!BATTLE->thingtile) {
     BATTLE->thingtile=0x17+rand()%9;
     BATTLE->thingx=10.0+(rand()%(FBW-20));
-    BATTLE->thingy=10.0+(rand()%(FBH-20));
+    BATTLE->thingy=FLDTOP+10.0+(rand()%(FBH-20-FLDTOP));
     BATTLE->thingseq++;
     l->fudgeclock=r->fudgeclock=FUDGE_TIME;
   }
@@ -369,8 +372,10 @@ static void _broomrace_render(struct battle *battle) {
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
+  graf_set_input(&g.graf,0);
+  graf_fill_rect(&g.graf,0,0,FBW,FLDTOP,0x00000090);
+  
   graf_set_image(&g.graf,RID_image_battle_labyrinth);
-  graf_set_alpha(&g.graf,0x80);
   int y=10;
   int x=10;
   const int spacing=10;
@@ -379,7 +384,6 @@ static void _broomrace_render(struct battle *battle) {
   for (;i-->0;src++,x+=spacing) graf_tile(&g.graf,x,y,*src,0);
   x=FBW-10;
   for (i=BATTLE->playerv[1].thingc,src=BATTLE->playerv[1].thingv;i-->0;src++,x-=spacing) graf_tile(&g.graf,x,y,*src,0);
-  graf_set_alpha(&g.graf,0xff);
 }
 
 /* Type definition.

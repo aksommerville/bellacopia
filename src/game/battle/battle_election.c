@@ -223,7 +223,7 @@ static void player_throw(struct battle *battle,struct player *player) {
       bm_sound(RID_sound_reject);
       return;
     }
-    bm_sound_pan(RID_sound_throw,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_throw,player->who?PLAYER_PAN:-PLAYER_PAN);
   }
   
   if (BATTLE->ballotc>=BALLOT_LIMIT) return;

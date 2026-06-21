@@ -116,7 +116,7 @@ static void player_move(struct battle *battle,struct player *player,int d) {
   player->cakep+=d;
   if (player->cakep<0) player->cakep=player->cakec-1;
   else if (player->cakep>=player->cakec) player->cakep=0;
-  bm_sound_pan(RID_sound_uimotion,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
   player->flipclock=0.0;
 }
 
@@ -136,18 +136,18 @@ static int rate_cake(struct battle *battle,struct player *player,struct cake *ca
  
 static void player_flip(struct battle *battle,struct player *player) {
   if ((player->cakep<0)||(player->cakep>=player->cakec)||(player->flipclock>0.0)) {
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     return;
   }
   struct cake *cake=player->cakev+player->cakep;
   if (cake->indicator||(cake->flip>0.0)) {
-    bm_sound_pan(RID_sound_reject,player->who?0.250:-0.250);
+    bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     return;
   }
   cake->flip=0.001;
   cake->dflip=1.0;
   player->flipclock=0.500;
-  bm_sound_pan(RID_sound_jump,player->who?0.250:-0.250);
+  bm_sound_pan(RID_sound_jump,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
 /* Update human player.
@@ -224,10 +224,10 @@ static void player_update_common(struct battle *battle,struct player *player,dou
           if (cake->indicator=rate_cake(battle,player,cake)) {
             if (cake->indicator<0) {
               player->invalidc++;
-              bm_sound_pan(RID_sound_ouch,player->who?0.250:-0.250);
+              bm_sound_pan(RID_sound_ouch,player->who?PLAYER_PAN:-PLAYER_PAN);
             } else {
               player->validc++;
-              bm_sound_pan(RID_sound_collect,player->who?0.250:-0.250);
+              bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
             }
             cake->indicatorclock=1.000;
           } else {
@@ -244,7 +244,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
       // Dead-man switch: If the cook-side doneness exceeds 2, kill the cake.
       if (cake->doneness[cake->side]>=2.0) {
         player->invalidc++;
-        bm_sound_pan(RID_sound_ouch,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_ouch,player->who?PLAYER_PAN:-PLAYER_PAN);
         cake->indicator=-1;
         cake->indicatorclock=1.000;
       }

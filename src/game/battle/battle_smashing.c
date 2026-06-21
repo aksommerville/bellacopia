@@ -148,7 +148,7 @@ static int smashing_generate_bgtex(struct battle *battle) {
   
   int cliffl=(FBW>>1)-20;
   int cliffr=(FBW>>1)+20;
-  uint32_t floorcolor=0x006020ff;
+  uint32_t floorcolor=0x402010ff;
   
   graf_set_output(&g.graf,BATTLE->bgtexid);
   graf_fill_rect(&g.graf,0,0,cliffl,BATTLE->bgh,floorcolor);
@@ -355,7 +355,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   if (player->input&&!player->pvinput) {
     player->pvinput=1;
     if (player->seated) { // Begin jump.
-      bm_sound_pan(RID_sound_jump,player->who?0.250:-0.250);
+      bm_sound_pan(RID_sound_jump,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->jumping=1;
       player->seated=0;
       player->gravity=0.0;
@@ -405,12 +405,12 @@ static void player_update_common(struct battle *battle,struct player *player,dou
       double dx=veg->x-player->x;
       if ((dx<-radius)||(dx>radius)) continue;
       if (player->seated||player->jumping) {
-        bm_sound_pan(RID_sound_ouch,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_ouch,player->who?PLAYER_PAN:-PLAYER_PAN);
         battle->outcome=player->who?1:-1;
         veg->still=1;
         break;
       } else {
-        bm_sound_pan(RID_sound_pop,player->who?0.250:-0.250);
+        bm_sound_pan(RID_sound_pop,player->who?PLAYER_PAN:-PLAYER_PAN);
         veg->vegid=0;
         player->score++;
         smashing_generate_particles(battle,veg);
@@ -620,7 +620,7 @@ static void vegetable_render(struct battle *battle,struct vegetable *veg) {
  
 static void _smashing_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80b0d0ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x805020ff);
   graf_set_input(&g.graf,BATTLE->bgtexid);
   graf_decal(&g.graf,0,FBH-BATTLE->bgh,0,0,BATTLE->bgw,BATTLE->bgh);
   graf_set_image(&g.graf,RID_image_battle_labyrinth2);
@@ -631,9 +631,11 @@ static void _smashing_render(struct battle *battle) {
   scoreboard_render(battle,BATTLE->playerv+0);
   scoreboard_render(battle,BATTLE->playerv+1);
   
+  graf_set_filter(&g.graf,1);
   struct vegetable *veg=BATTLE->vegetablev;
   int i=2;
   for (;i-->0;veg++) vegetable_render(battle,veg);
+  graf_set_filter(&g.graf,0);
   
   graf_set_input(&g.graf,0);
   struct particle *particle=BATTLE->particlev;
