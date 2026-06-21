@@ -97,7 +97,7 @@ static const struct story storyv[16]={
     .tileid_large=0x46,
     .strix_title=12,
     .strix_desc=28,
-    .fld_present=NS_fld_got_story12,//TODO De Re Piscatarii
+    .fld_present=NS_fld_fish_book,
     .fld_told=NS_fld_story12,
   },
   {

@@ -28,6 +28,7 @@ void begin_fishprocessor(struct sprite *initiator);
 void begin_castleshop(struct sprite *initiator);
 void begin_templeshop(struct sprite *initiator);
 void begin_inconvenience(struct sprite *initiator);
+void begin_fish_book();
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);
@@ -60,6 +61,7 @@ void begin_board_of_elections(struct sprite *initiator);
 // activity_cheat.c
 void begin_cheat_store(struct sprite *initiator,int arg);
 void begin_cheat_giveaway(struct sprite *initiator,int arg);
+void begin_cheatstories();
 
 // activity_war.c
 void begin_capnred(struct sprite *initiator);

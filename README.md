@@ -78,6 +78,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 
 - TODO Punted items, assess closer to release.
+- [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Review song and sound levels, right now they're pretty heterogenous.
 - [ ] Should there be a visible indication where a buried treasure has already been collected?

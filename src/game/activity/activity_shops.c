@@ -421,6 +421,39 @@ void begin_fishprocessor(struct sprite *sprite) {
   #undef ADD
 }
 
+/* Fish book, at the processor's shop.
+ */
+ 
+static int cb_fish_book(int optionid,void *userdata) {
+  if (optionid!=4) return 0;
+  const int price=100;
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<price) {
+    begin_dialogue(2,0);
+    return 0;
+  }
+  gold-=price;
+  store_set_fld16(NS_fld16_gold,gold);
+  bm_sound(RID_sound_treasure);
+  store_set_fld(NS_fld_fish_book,1);
+  begin_dialogue(149,0);
+  g.camera.mapsdirty=1;
+  return 0;
+}
+ 
+void begin_fish_book() {
+  if (store_get_fld(NS_fld_fish_book)) return;
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=148,
+    .cb=cb_fish_book,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+}
+
 /* Castleshop. A shop by the castle.
  */
  

@@ -297,6 +297,7 @@
 #define NS_activity_moonsong 48 /* (u16:raceid)0 */
 #define NS_activity_pauserace 49
 #define NS_activity_endrace 50 /* Calling race_end() triggers this. 0x0001=dot wins, 0x0002=moon wins, 0x0004=new high score, 0x0008=first time */
+#define NS_activity_fish_book 51
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -603,8 +604,8 @@
 #define NS_fld_maps_complete 123 /* Collected all the puzzle pieces. Doesn't mean they're all put together yet. */
 #define NS_fld_broom_races_complete 124
 #define NS_fld_carpenter_book 125
-#define NS_fld_got_story12 126 /* XXX Pick a more meaningful symbol once we know more about the books... */
-#define NS_fld_got_story14 127
+#define NS_fld_fish_book 126
+#define NS_fld_got_story14 127 /* XXX Pick a more meaningful symbol once we know more about the books... */
 #define NS_fld_got_story15 128
 #define NS_fld_hc4door 129
 #define NS_fld_bt6 130

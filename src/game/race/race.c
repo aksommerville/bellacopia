@@ -220,15 +220,39 @@ static struct race *race_get(int rid) {
   return 0;
 }
 
+/* Unceremoniously kill any monsters near the hero.
+ */
+ 
+static void race_zap_monsters(struct sprite *hero) {
+  const double killradius=2.0;
+  const double killradius2=killradius*killradius;
+  struct sprite **p=GRP(update)->sprv;
+  int i=GRP(update)->sprc;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->type==&sprite_type_monster) {
+      double dx=sprite->x-hero->x;
+      if ((dx<-killradius)||(dx>killradius)) continue;
+      double dy=sprite->y-hero->y;
+      if ((dy<-killradius)||(dy>killradius)) continue;
+      double d2=dx*dx+dy*dy;
+      if (d2>killradius2) continue;
+      sprite_kill_soon(sprite);
+    }
+  }
+}
+
 /* Hide and neutralize the real-game Dot and Moon sprites.
  */
  
 static void race_hide_game_sprites() {
+  struct sprite *hero=0;
   struct sprite **p=GRP(keepalive)->sprv;
   int i=GRP(keepalive)->sprc;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->type==&sprite_type_hero) {
+      hero=sprite;
       sprite_group_remove(GRP(visible),sprite);
       sprite_group_remove(GRP(update),sprite);
       sprite_group_remove(GRP(solid),sprite);
@@ -239,6 +263,7 @@ static void race_hide_game_sprites() {
       sprite_group_remove(GRP(solid),sprite);
     }
   }
+  if (hero) race_zap_monsters(hero);
 }
 
 static void race_restore_game_sprites() {
@@ -266,22 +291,7 @@ static void race_restore_game_sprites() {
    * They are probably visible, the user will see this happen. But letting them live is pretty annoying.
    * This is a separate pass because the hero isn't necessarily first in any list.
    */
-  if (hero) {
-    const double killradius=2.0;
-    const double killradius2=killradius*killradius;
-    for (p=GRP(update)->sprv,i=GRP(update)->sprc;i-->0;p++) {
-      struct sprite *sprite=*p;
-      if (sprite->type==&sprite_type_monster) {
-        double dx=sprite->x-hero->x;
-        if ((dx<-killradius)||(dx>killradius)) continue;
-        double dy=sprite->y-hero->y;
-        if ((dy<-killradius)||(dy>killradius)) continue;
-        double d2=dx*dx+dy*dy;
-        if (d2>killradius2) continue;
-        sprite_kill_soon(sprite);
-      }
-    }
-  }
+  if (hero) race_zap_monsters(hero);
 }
 
 /* Spawn the racer sprites.
@@ -399,7 +409,7 @@ void race_check_completion(int stop_soon) {
     if (sprite->type!=&sprite_type_racer) continue;
     if (!sprite_racer_is_finished(sprite)) return;
   }
-  races.cooldown=3.0;
+  races.cooldown=2.0;
 }
 
 /* Update.

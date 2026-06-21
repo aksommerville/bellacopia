@@ -62,13 +62,13 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_bridget: begin_bridget(initiator,arg); break;
     case NS_activity_brewer_single: begin_brewer_single(initiator); break;
     case NS_activity_potion_book: begin_potion_book(initiator); break;
-    //XXX cheatstories must stop existing, once we create the remaining triggers
-    case NS_activity_cheatstories: store_set_fld(NS_fld_got_story12,1); store_set_fld(NS_fld_got_story14,1); store_set_fld(NS_fld_got_story15,1); break;
+    case NS_activity_cheatstories: begin_cheatstories(); break;
     case NS_activity_cartographer: begin_cartographer(initiator); break;
     case NS_activity_exit_cave: begin_exit_cave(initiator); break;
     case NS_activity_moonsong: begin_moonsong(initiator,arg); break;
     case NS_activity_pauserace: begin_pauserace(); break;
     case NS_activity_endrace: begin_endrace(arg); break;
+    case NS_activity_fish_book: begin_fish_book(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

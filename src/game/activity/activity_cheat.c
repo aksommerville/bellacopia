@@ -108,3 +108,18 @@ void begin_cheat_giveaway(struct sprite *initiator,int arg) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
+
+/* Cheatstories: Extra stuff.
+ * Initially was just the extra stories that aren't assigned but now I'm just dumping things in it.
+ */
+ 
+void begin_cheatstories() {
+  store_set_fld(NS_fld_got_story14,1);
+  store_set_fld(NS_fld_got_story15,1);
+  
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  if (goldmax<199) {
+    fprintf(stderr,"*** bumping purse to 199 G, as if you'd rescued the Princess ***\n");
+    store_set_fld16(NS_fld16_goldmax,199);
+  }
+}
