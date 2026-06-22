@@ -61,8 +61,18 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
   }
 }
 
-// We don't care what order you fight the root devils, their difficulty increases with each one you defeat.
+/* We don't care what order you fight the root devils, their difficulty increases with each one you defeat.
+ * Since we're not using bm_battle_bias(), it's on us to check NS_fld16_goodluck too.
+ */
 static uint8_t rootdevil_choose_bias() {
+
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>0) {
+    goodluckc--;
+    store_set_fld16(NS_fld16_goodluck,goodluckc);
+    return 0x10;
+  }
+
   int winc=0;
   if (store_get_fld(NS_fld_root1)) winc++;
   if (store_get_fld(NS_fld_root2)) winc++;

@@ -185,16 +185,7 @@ static void erudition_generate_text(struct battle *battle,int strix) {
  */
 
 static int _erudition_init(struct battle *battle) {
-  
-  /* Paintings are probably temporary. The current four were copied from Wikipedia:
-   * The Art of Painting; by Johannes Vermeer; 1666–1668; oil on canvas; 1.3 × 1.1 m; Kunsthistorisches Museum (Vienna, Austria)
-   * A Sunday Afternoon on the Island of La Grande Jatte, 1884–1886, oil on canvas, 207.5 × 308.1 cm, Art Institute of Chicago
-   * The Swing; by Jean-Honoré Fragonard; 1767–1768; oil on canvas; Wallace Collection
-   * The Garden of Earthly Delights; by Hieronymus Bosch; c. 1504; oil on panel, Museo del Prado
-   * TODO
-   * As with the criticism text, we need to be very careful to ensure we have the right to use this content. I haven't done so yet.
-   * At the limit, we can draw and criticize four paintings ourselves.
-   */
+
   switch (rand()&3) {
     case 0: { // Vermeer
         BATTLE->picsrcx=0;

@@ -299,6 +299,18 @@ static void game_touch_fish_position(int x,int y,int z) {
  */
  
 static int game_apply_fishodds(int fishodds) {
+
+  /* Regardless of everything, if there's any goodluck remaining: Spend a goodluck, zero the clock, and return a red fish.
+   * If there's a special fishable item, it took precedence already (see game_choose_fish()).
+   */
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>0) {
+    goodluckc--;
+    store_set_fld16(NS_fld16_goodluck,goodluckc);
+    g.fishclock=0.0;
+    return NS_itemid_redfish;
+  }
+
   switch (fishodds) {
     case NS_fishodds_never: return 0;
     case NS_fishodds_green: if (game_touch_fishclock()) return 0; return NS_itemid_greenfish;
@@ -418,6 +430,12 @@ void game_hurt_hero() {
  */
  
 uint8_t bm_battle_bias(int battleid) {
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>0) {
+    goodluckc--;
+    store_set_fld16(NS_fld16_goodluck,goodluckc);
+    return 0x10;
+  }
   if (g.store.invstorev[0].itemid==NS_itemid_glove) {
     return 0x40;
   }

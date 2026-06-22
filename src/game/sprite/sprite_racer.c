@@ -110,6 +110,17 @@ static int _racer_init(struct sprite *sprite) {
     if (race_get_track(&SPRITE->trackbx,&SPRITE->trackby,SPRITE->trackp)<0) return -1;
     SPRITE->samplex=sprite->x;
     SPRITE->sampley=sprite->y;
+    
+    /* If Dot has a goodluck, spend it and reduce Moon's speed dramatically.
+     */
+    int goodluckc=store_get_fld16(NS_fld16_goodluck);
+    if (goodluckc>0) {
+      goodluckc--;
+      store_set_fld16(NS_fld16_goodluck,goodluckc);
+      SPRITE->steer_speed=5.0;
+      SPRITE->top_speed=14.0;
+      SPRITE->decel_rate=-6.0;
+    }
   }
   
   return 0;

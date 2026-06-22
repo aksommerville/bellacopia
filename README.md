@@ -43,9 +43,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
 - - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
-- [ ] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
+- [x] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
 - - Not just fish. You buy good luck, and your good lucks are visible like lit matches or vanishing cream.
-- - Good lucks get spent on: Any battle, any fishing, false digging.
+- - [x] Battle (ensure Root Devils and Guilds work same as monster)
+- - [x] Fishing
+- - [x] Broom race
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - - UPDATE: Power Glove does this now, and that's probably enough.
@@ -69,8 +71,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Racketeering contest badly needs more juice when you hit the ball.
 - [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
+- [ ] homerunderby: Show the continuous tie-break score somehow too.
+- [ ] jeter: Dancer's arms could connect better to her shoulders.
 
 - TODO Punted items, assess closer to release.
+- [ ] Home Run Derby pleases me so good, I want to make a whole baseball minigame. Is that crazy? Can we work it in there somewhere?
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
 - [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
@@ -218,8 +223,9 @@ Before the first release, validate and clean up this list. And if in-game credit
 - - The Fragonard quote is public domain, being published around 1860.
 - - The Seurat quote is not, but I haven't been able to find an email for Meyer Schapiro's estate to ask for permission.
 - - The Vermeer and Bosch quotes are both modern with living authors (far as i know); try to contact their authors.
-- - - Vermeer: Jonathan Janson: ...
-- - - Bosch: Larry Silver: ...
+- - - Vermeer: Jonathan Janson
+- - - Bosch: Larry Silver
+- - - Emailed both 2026-06-21.
 - - All four images were copied from Wikipedia, and Wikipedia asserts that all four are Public Domain.
 - - We will of course give all four painters a screen credit.
 - Quoth Wikipedia:

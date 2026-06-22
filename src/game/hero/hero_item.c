@@ -314,7 +314,6 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
     } else {
       int x=(int)sprite->x+SPRITE->facedx;
       int y=(int)sprite->y+SPRITE->facedy;
-      //TODO Handle non-fish items, eg Heart Container will be used once.
       if (SPRITE->fish=game_choose_fish(x,y,sprite->z)) {
         bm_sound(RID_sound_fishpole_catch);
         SPRITE->fishclock=FISH_FLY_TIME;

@@ -148,6 +148,8 @@ static void story_refresh_overlay(struct modal *modal) {
   egg_texture_clear(MODAL->overlay.texid);
   graf_set_output(&g.graf,MODAL->overlay.texid);
   
+  //graf_fill_rect(&g.graf,0,0,1000,1000,0xffffffc0);//XXX so i can see the full available bounds
+  
   int hp=store_get_fld16(NS_fld16_hp);
   int hpmax=store_get_fld16(NS_fld16_hpmax);
   int gold=store_get_fld16(NS_fld16_gold);
@@ -177,6 +179,10 @@ static void story_refresh_overlay(struct modal *modal) {
   int i=0;
   for (;i<hp;i++,x+=8) graf_tile(&g.graf,x,y,0x28,0);
   for (;i<hpmax;i++,x+=8) graf_tile(&g.graf,x,y,0x27,0);
+  
+  x=22;
+  y=22;
+  for (i=store_get_fld16(NS_fld16_goodluck);i-->0;x+=8) graf_tile(&g.graf,x,y,0x1e,0);
   
   uint32_t color;
   if (gold<=0) color=0xb0b0b0ff;

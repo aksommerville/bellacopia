@@ -1,0 +1,22 @@
+Draft of an email I'll send to Jonathan Janson and Larry Silver, to beg permission to use their Vermeer and Bosch quotes.
+
+I'm a hobbyist video game developer.
+Currently working on a large adventure game "Bellacopia Maleficia", composed of tiny games themed to some opponent.
+One of these minigames is called the Erudition Contest, in which the player taps a button to make the hero spout erudite criticism of a famous painting.
+
+Searching the internet for pithy remarks on [Vermeer's "The Art of Painting" | Bosch's "The Garden of Earthly Delights"], I found this quote of yours:
+"Accuracy of tone and contour, rather than the methodic accumulation of descriptive elements and their minute description, sustain the illusion of reality."
+(found at https://www.essentialvermeer.com/vermeer's_methodolgy.html)
+"Bosch's formulations lay securely founded in Christian theology, chiefly as articulated by the church father Saint Augustine, as well as other late medieval manifestations.
+(found at https://jhna.org/articles/jheronimus-bosch-issue-of-origins/)
+
+May I have your permission to include this quote in the game?
+I will be giving the game away for free; I promise not to make any money off it, if that makes a difference.
+You will of course get a mention in the game's credits roll, and a credit in any external documention of the game.
+
+Attached screencaps of the four Erudition Contests (I don't yet have permission to use any of these quotes, so they might change).
+You can also play an unfinished build of the game on my web site: https://aksommerville.com/bellacopia
+The Erudition Contest is accessible via Arcade Mode, or by entering the cave due East from the starting point (take a broom from the Cave of Cheating, at the upper left of the first screen).
+
+Warmest regards,
+AK Sommerville

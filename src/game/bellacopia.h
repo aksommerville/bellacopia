@@ -30,6 +30,7 @@
 
 #define SPELL_LIMIT 8
 #define FLASH_TIME 1.000
+#define GOODLUCK_LIMIT 4
 
 #define PLAYER_PAN 0.400 /* Use this anywhere we have a distinct "left side and right side". */
 

@@ -49,7 +49,7 @@ void begin_carpenter(struct sprite *sprite) {
   };
   struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
   if (!modal) return;
-  // Matches are always available, even if you can't hold any more. Ten for penny, what a deal!
+  // Matches are always available, even if you can't hold any more. Ten for a penny, what a deal!
   modal_shop_add_item(modal,NS_itemid_match,1,10);
   // The other things are singletons. Only show if we don't have it yet.
   if (!store_get_itemid(NS_itemid_divining)) modal_shop_add_item(modal,NS_itemid_divining,3,0);
@@ -495,8 +495,8 @@ void begin_templeshop(struct sprite *sprite) {
   modal_shop_add_item(modal,NS_itemid_heart,3,0);
   modal_shop_add_item(modal,NS_itemid_bugspray,1,0);
   modal_shop_add_item(modal,NS_itemid_vanishing,6,0);
-  modal_shop_add_item(modal,NS_itemid_magnifier,10,0);//TODO maybe here?
-  modal_shop_add_item(modal,NS_itemid_telescope,10,0);//TODO maybe here?
+  modal_shop_add_item(modal,NS_itemid_magnifier,10,0);
+  modal_shop_add_item(modal,NS_itemid_telescope,10,0);
 }
 
 /* The Inconvenience Store, at the very southwest corner of the world.
@@ -515,4 +515,41 @@ void begin_inconvenience(struct sprite *sprite) {
   modal_shop_add_item(modal,NS_itemid_bomb,3,0);
   modal_shop_add_item(modal,NS_itemid_jigpiece,20,93);
   modal_shop_add_item(modal,NS_itemid_busstop,10,0);
+}
+
+/* Statue of the Crocodile God, in the temple, for buying good luck.
+ */
+ 
+static int cb_crocodile(int optionid,void *userdata) {
+  if (optionid!=89) return 0;
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>=GOODLUCK_LIMIT) return 0; // oy when did that happen?
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<10) {
+    begin_dialogue(2,0);
+    return 0;
+  }
+  gold-=10;
+  store_set_fld16(NS_fld16_gold,gold);
+  goodluckc++;
+  store_set_fld16(NS_fld16_goodluck,goodluckc);
+  bm_sound(RID_sound_treasure);
+  return 1;
+}
+ 
+void begin_crocodile() {
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>=GOODLUCK_LIMIT) {
+    begin_dialogue(87,0); // Too much luck, sorry.
+    return;
+  }
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=88,
+    .cb=cb_crocodile,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,89);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }

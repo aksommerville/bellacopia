@@ -300,6 +300,7 @@
 #define NS_activity_fish_book 51
 #define NS_activity_hearts_book 52
 #define NS_activity_gold_book 53
+#define NS_activity_crocodile 54
 
 #define NS_sprtype_dummy        0 /* (u32)0 */
 #define NS_sprtype_hero         1 /* (u32)0 */
@@ -663,6 +664,7 @@
 #define NS_fld16_race4time 26 /* 8ms ; seaside_circle */
 #define NS_fld16_race5time 27 /* 8ms ; desert_run */
 #define NS_fld16_race6time 28 /* 8ms ; undernorth */
+#define NS_fld16_goodluck 29
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
