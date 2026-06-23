@@ -54,7 +54,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] More spells. Not sure what...
 - [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
-- [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
@@ -64,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
 - [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
+- [ ] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
 
 - Battle repairs.
 - [ ] Usable IP for the erudition contest.
@@ -75,6 +75,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 
 - TODO Punted items, assess closer to release.
+- [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] Home Run Derby pleases me so good, I want to make a whole baseball minigame. Is that crazy? Can we work it in there somewhere?
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
@@ -116,6 +117,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] 100% completion possible.
 - [ ] Crystal Ball, compass, and cartographer always give sane advice.
 - [ ] Every battle plays sensibly in arcade mode.
+- [ ] Validate Ice Palace wall manually. It has lots of awkward cross-map edges, and I'm probably going to break them when adding details.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.

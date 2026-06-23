@@ -15,3 +15,4 @@ image image:icepalace
 position 1 1 7 *
 sprite @12,2 sprite:jigpiece (u32)0
 song song:igloo
+sprite @10,2 sprite:icedragon (u8:seq)3 (u24)0

@@ -1,0 +1,4 @@
+image image:icepalace_sprites
+tile 16 0
+type (u16:sprtype)icedragon
+groups (b32:sprgrp)visible,update,solid,moveable

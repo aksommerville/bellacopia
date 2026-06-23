@@ -331,6 +331,7 @@
 #define NS_sprtype_zookeeper   26 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_mnneon      27 /* (u32)0 */
 #define NS_sprtype_racer       28 /* (u8:human)0 (u8:face)monster (u8)dir (u8)0 */
+#define NS_sprtype_icedragon   29 /* (u8:seq)0 (u24)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -360,7 +361,8 @@
   _(ticker) \
   _(zookeeper) \
   _(mnneon) \
-  _(racer)
+  _(racer) \
+  _(icedragon)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -665,6 +667,7 @@
 #define NS_fld16_race5time 27 /* 8ms ; desert_run */
 #define NS_fld16_race6time 28 /* 8ms ; undernorth */
 #define NS_fld16_goodluck 29
+#define NS_fld16_iceseq 30 /* 0..6, how many times we've beaten the Ice Dragon. */
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
