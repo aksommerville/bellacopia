@@ -32,7 +32,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
-- - [ ] Ski jump. Hold and release.
+- - [x] Ski jump. Hold and release.
 - - [ ] Curling.
 - - [ ] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
 - - [ ] Bobsleigh.
@@ -273,3 +273,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Egg is awesome.
 - Stitching together single-screen maps was probably a mistake. I think one map per plane would have worked smoother.
 - The "activity" abstraction works great, I should do something similar in every big game.
+- Monthly goals and reports, my estimates were all way off, but this seems a healthy practice. Make a habit of it for large games.

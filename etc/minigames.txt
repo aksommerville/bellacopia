@@ -7,6 +7,7 @@
   2____D Apples            Boblin             Goblins
   2____D ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
+  2      Bobsleigh         IceDragon          IcePalace
   2      BodySlam          Yak                Taiga
   2      Bombing           Grenadier          Battlefield
   2____D Boomerang         Koala              Desert
@@ -32,6 +33,7 @@
   2____D CPR               Nurse              City
   2      Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
+  2      Curling           IceDragon          IcePalace
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
   2____D Dissection        Doctor             City
@@ -44,6 +46,7 @@
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
   2____D Fencing           Samurai            City
+  2      FigureSkating     IceDragon          IcePalace
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
   2E___D Fishing           Leopard            Jungle
@@ -57,6 +60,7 @@
   2____D Golf              Unicorn            Labyrinth
   2      Harvesting        Picker             Farm
   2____D Hiring            Joblin             Goblins
+  2      Hockey            IceDragon          IcePalace
   2____D HomeRunDerby      Ballplayer         City
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
@@ -110,6 +114,7 @@
   2      Shovelling        Miner              Cave
   2____D Shuffling         Dealer             City
   2      Skiing            Reindeer           Taiga
+  2____D SkiJump           IceDragon          IcePalace
   2      Skipping          Duck               Farm
   2____D Slapping          Gambler            City
   2      Slicing           Ninja              Battlefield
@@ -117,6 +122,7 @@
   2____D Smashing          Ogre               Labyrinth
   2      Snorkel           Seal               Taiga
   2      SnowballFight     Snowman            Taiga
+  2      Snowboard         IceDragon          IcePalace
   2      Snaring           Drummer            Battlefield
   2      Sonar             Bat                Cave
   2____D Sorting           Clerk              City

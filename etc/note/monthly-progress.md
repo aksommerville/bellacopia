@@ -130,7 +130,9 @@ Goals:
 - [ ] Story cutscenes. Implement at least one fully.
 
 Added cartographer, so reaching 100% is easy again (in fact it's more fun than it was before, it's a real treasure hunt!).
+In that spirit, also got the crystal ball working. Both cartographer and crystal ball will need routine touch-up as we add more things.
 ROM crossed the auspicious "1234567" size.
+Finished the Fractia battles, finally!
 
 ## July 2026
 
