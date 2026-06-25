@@ -32,6 +32,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
+- - [ ] Ski jump. Hold and release.
+- - [ ] Curling.
+- - [ ] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
+- - [ ] Bobsleigh.
+- - [ ] Figure skating. Follow dpad prompts.
+- - [ ] Snowboard. Think Slalom?
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -224,12 +230,12 @@ Before the first release, validate and clean up this list. And if in-game credit
 - - - Bosch's formulations lay securely founded in Christian theology, chiefly as articulated by the church father Saint Augustine, as well as other late medieval manifestations.
 - - The Fragonard quote is public domain, being published around 1860.
 - - The Seurat quote is not, but I haven't been able to find an email for Meyer Schapiro's estate to ask for permission.
-- - The Vermeer and Bosch quotes are both modern with living authors (far as i know); try to contact their authors.
-- - - Vermeer: Jonathan Janson
-- - - Bosch: Larry Silver
+- - The Vermeer and Bosch quotes are both modern with living authors; try to contact their authors.
+- - - Vermeer: Jonathan Janson. Affirmative 2026-06-24.
+- - - Bosch: Larry Silver. Affirmative 2026-06-21.
 - - - Emailed both 2026-06-21.
 - - All four images were copied from Wikipedia, and Wikipedia asserts that all four are Public Domain.
-- - We will of course give all four painters a screen credit.
+- - We will of course give all four painters and authors a screen credit.
 - Quoth Wikipedia:
 - - The official position taken by the Wikimedia Foundation is that "faithful reproductions of two-dimensional public domain works of art are public domain".
 - - This photographic reproduction is therefore also considered to be in the public domain in the United States. 
@@ -259,3 +265,11 @@ Maybe point out that buried treasure, bridges, and races *are* constant.
 - Choice of items and battle for the goblin seals.
 - Rules and layout of the statue maze.
 - Layout of the labyrinth. (actually not constant even within one campaign).
+
+## Lessons Learned
+
+Collecting lil dev things here, since it's such a large project. Write up a neat recap around release time.
+
+- Egg is awesome.
+- Stitching together single-screen maps was probably a mistake. I think one map per plane would have worked smoother.
+- The "activity" abstraction works great, I should do something similar in every big game.
