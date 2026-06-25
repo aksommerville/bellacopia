@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Ice Dragon. 6 battles.
 - - [x] Ski jump. Hold and release.
 - - [x] Curling.
-- - [ ] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
+- - [x] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
 - - [ ] Bobsleigh.
 - - [ ] Figure skating. Follow dpad prompts.
 - - [ ] Snowboard. Think Slalom?
