@@ -40,7 +40,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
   switch (face) {
     case NS_face_monster: {
-        player->color=0x808080ff;//TODO per monster
+        player->color=0xe0f6f1ff;
       } break;
     case NS_face_dot: {
         player->color=0x411775ff;

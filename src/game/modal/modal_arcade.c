@@ -8,7 +8,7 @@
 
 #include "game/bellacopia.h"
 
-#define PRESELECT_BATTLE NS_battle_skijump
+#define PRESELECT_BATTLE NS_battle_curling
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
@@ -201,7 +201,7 @@ static int _arcade_init(struct modal *modal,const void *arg,int argc) {
   // Let us appoint one battle as starting point, for when I'm developing a new battle dozens of spaces into the list.
   if (PRESELECT_BATTLE) {
     MODAL->battle=PRESELECT_BATTLE;
-    MODAL->scroll=(PRESELECT_BATTLE/ROWC)*ROWC;
+    MODAL->scroll=((PRESELECT_BATTLE-1)/ROWC)*ROWC;
   }
   
   arcade_rebuild_labels(modal);

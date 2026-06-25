@@ -33,7 +33,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Populate Ice Palace.
 - [ ] Ice Dragon. 6 battles.
 - - [x] Ski jump. Hold and release.
-- - [ ] Curling.
+- - [x] Curling.
 - - [ ] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
 - - [ ] Bobsleigh.
 - - [ ] Figure skating. Follow dpad prompts.
