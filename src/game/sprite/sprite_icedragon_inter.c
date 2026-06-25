@@ -9,6 +9,7 @@
 
 struct sprite_icedragon_inter {
   struct sprite hdr;
+  double ndx,ndy; // Unit vector, for acceleration.
   double dx,dy;
   double ttl;
   double animclock;
@@ -55,14 +56,16 @@ static int _icedragon_inter_init(struct sprite *sprite) {
   
   /* Prepare travel vector.
    */
-  const double speed=9.0; // m/s, good if it's a little faster than Dot.
-  SPRITE->dx=dstx-sprite->x;
-  SPRITE->dy=dsty-sprite->y;
-  double d2=SPRITE->dx*SPRITE->dx+SPRITE->dy*SPRITE->dy;
+  const double speed=4.0; // m/s, initial speed only
+  SPRITE->ndx=dstx-sprite->x;
+  SPRITE->ndy=dsty-sprite->y;
+  double d2=SPRITE->ndx*SPRITE->ndx+SPRITE->ndy*SPRITE->ndy;
   if (d2<1.0) return -1;
   double distance=sqrt(d2);
-  SPRITE->dx*=speed/distance;
-  SPRITE->dy*=speed/distance;
+  SPRITE->ndx/=distance;
+  SPRITE->ndy/=distance;
+  SPRITE->dx=SPRITE->ndx*speed;
+  SPRITE->dy=SPRITE->ndy*speed;
   
   sprite_group_add(GRP(visible),sprite);
   sprite_group_add(GRP(update),sprite);
@@ -77,6 +80,9 @@ static void _icedragon_inter_update(struct sprite *sprite,double elapsed) {
     SPRITE->animclock+=0.200;
     if (++(SPRITE->animframe)>=2) SPRITE->animframe=0;
   }
+  const double accel=5.000;
+  SPRITE->dx+=SPRITE->ndx*accel*elapsed;
+  SPRITE->dy+=SPRITE->ndy*accel*elapsed;
   sprite->x+=SPRITE->dx*elapsed;
   sprite->y+=SPRITE->dy*elapsed;
 }

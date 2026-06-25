@@ -107,7 +107,32 @@ static void icedragon_dot_wins(struct sprite *sprite) {
   } else {
     // Show a decorative me, flying toward the next instance.
     struct sprite *inter=sprite_spawn(sprite->x,sprite->y,0,0,0,&sprite_type_icedragon_inter,0,0);
-    fprintf(stderr,"%s: inter=%p\n",__func__,inter);
+  }
+}
+
+/* Battle callback.
+ */
+ 
+static void icedragon_cb_battle(struct modal *modal,int outcome,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (outcome>0) {
+    /* I think the victory is its own reward? We can do prizes like monster if we want.
+    struct prize prizev[8];
+    int prizec=game_get_prizes(prizev,8,SPRITE->battle,sprite->arg);
+    struct battle *battle=modal_battle_get_battle(modal);
+    if (battle&&battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
+    /**/
+    icedragon_dot_wins(sprite);
+  } else if (outcome<0) {
+    game_hurt_hero();
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
   }
 }
 
@@ -116,8 +141,42 @@ static void icedragon_dot_wins(struct sprite *sprite) {
  
 static void _icedragon_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->state!=STATE_OCCUPIED) return;
+  
+  /* Schedule of battles.
+   */
+  int battleid=0;
+  switch (SPRITE->seq) {
+    case 1: battleid=NS_battle_skijump; break;
+    case 2: battleid=NS_battle_curling; break;
+    case 3: battleid=NS_battle_figureskating; break;
+    case 4: battleid=NS_battle_bobsleigh; break;
+    case 5: battleid=NS_battle_snowboard; break;
+    case 6: battleid=NS_battle_hockey; break;
+  }
+  if (!battleid) return;
+  const struct battle_type *type=battle_type_by_id(battleid);
+  if (!type) return;
+  
+  /* Enter battle.
+   */
+  struct modal_args_battle args={
+    .battle=battleid,
+    .args={
+      .difficulty=0x80,
+      .bias=bm_battle_bias(battleid),
+      .lctl=1,
+      .lface=NS_face_dot,
+      .rctl=0,
+      .rface=NS_face_monster,
+    },
+    .userdata=sprite,
+    .right_name=226,
+    .cb=icedragon_cb_battle,
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return;
   //TODO Enter battle.
-  icedragon_dot_wins(sprite);
+  //icedragon_dot_wins(sprite);
 }
 
 /* Render.

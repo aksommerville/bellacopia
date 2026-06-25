@@ -424,6 +424,12 @@
 #define NS_battle_armwrestling 56
 #define NS_battle_seamonster 57
 #define NS_battle_shovelthrowing 58
+#define NS_battle_skijump 59
+#define NS_battle_curling 60
+#define NS_battle_figureskating 61
+#define NS_battle_bobsleigh 62
+#define NS_battle_snowboard 63
+#define NS_battle_hockey 64
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -482,7 +488,13 @@
   _(broomrace) \
   _(armwrestling) \
   _(seamonster) \
-  _(shovelthrowing)
+  _(shovelthrowing) \
+  _(skijump) \
+  _(curling) \
+  _(figureskating) \
+  _(bobsleigh) \
+  _(snowboard) \
+  _(hockey)
 
 /* "fld" are single bits.
  */

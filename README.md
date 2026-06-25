@@ -179,7 +179,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Bomb: inconvenience
 - [x] Stopwatch: underworld, temporarily
 - [x] Bus Stop: inconvenience
-- [x] Snowglobe: underworld, temporarily
+- [x] Snowglobe: Ice Palace.
 - [x] Tape Measure: underworld, temporarily
 - [x] Phonograph: Goblins' cave.
 - [x] Crystal Ball: underworld, temporarily
