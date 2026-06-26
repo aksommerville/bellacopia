@@ -35,7 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Ski jump. Hold and release.
 - - [x] Curling.
 - - [x] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
-- - [ ] Bobsleigh.
+- - [x] Bobsleigh.
 - - [ ] Figure skating. Follow dpad prompts.
 - - [ ] Snowboard. Think Slalom?
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
