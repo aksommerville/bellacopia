@@ -31,14 +31,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] Populate Ice Palace.
-- [x] Ice Dragon. 6 battles.
-- - [x] Ski jump. Hold and release.
-- - [x] Curling.
-- - [x] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
-- - [x] Bobsleigh.
-- - [x] Figure skating. Follow dpad prompts.
-- - [x] Snowboard. Think Slalom?
-- [x] Re-engage with Ice Dragon after defeating. Otherwise you can't play these battles again, and they're great.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -50,11 +42,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
 - - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
 - [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
-- [x] Offeratory box in the temple where you can drop a coin, then the next time you go fishing you'll catch a red fish.
-- - Not just fish. You buy good luck, and your good lucks are visible like lit matches or vanishing cream.
-- - [x] Battle (ensure Root Devils and Guilds work same as monster)
-- - [x] Fishing
-- - [x] Broom race
 - [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - - UPDATE: Power Glove does this now, and that's probably enough.

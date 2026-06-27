@@ -8,19 +8,19 @@
   2____D ArmWrestling      Minotaur           Labyrinth
  R2      Balacing          Orangutan          Jungle
   2____D Bobsleigh         IceDragon          IcePalace
-  2      BodySlam          Yak                Taiga
+  2      BodySlam          Yak                Tundra
   2      Bombing           Grenadier          Battlefield
   2____D Boomerang         Koala              Desert
   2      Bouncing          Squirrel           Woodland
   2      Breaching         Whale              Sea
  R2____D BroomRace         Witch              Labyrinth
-  2____D Building          Contractor         City
+  2____D Building          Contractor         Fractia
   2      Burrowing         Mole               Cave
   2____D CakeCarrying      Baker              Fractia
   2      Calligraphy       Elephant           Jungle
-  2      Cartography       Geographer         Taiga
+  2      Cartography       Geographer         Tundra
   2      CeilingTouching   Giant              Cave
-  1____D Cheating          Hustler            City
+  1____D Cheating          Hustler            Fractia
   1____D Chess             Sage               Labyrinth
   2____D CheeseCutting     Executioner        Fractia
   2E___D Chopping          Goat               Farm
@@ -30,22 +30,22 @@
   2____D Cobbling          Coblin             Goblins
   2      Conducting        Conductor          Desert
   2____D Counting          Vampire            Labyrinth
-  2____D CPR               Nurse              City
+  2____D CPR               Nurse              Fractia
   2      Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
   2____D Curling           IceDragon          IcePalace
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
-  2____D Dissection        Doctor             City
+  2____D Dissection        Doctor             Fractia
   2      Distancing        Wolf               Woodland
-  2      Diving            Penguin            Taiga
+  2      Diving            Penguin            Tundra
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
   2____D Erudition         Snoblin            Goblins
   2____D Exterminating     Soldier            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
   2      Fanning           Courtier           City
-  2____D Fencing           Samurai            City
+  2____D Fencing           Samurai            Fractia
   2____D FigureSkating     IceDragon          IcePalace
   2      Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
@@ -53,7 +53,7 @@
   2____D Flapjack          Cook               Fractia
  R2      Flapping          Albatross          Sea
   2      Flipping          Ostrich            Desert
-  2      FloeChart         PolarBear          Taiga
+  2      FloeChart         PolarBear          Tundra
   2      Flying            Sparrow            Farm
   2      FrogEating        Pelican            Sea
   2____D Gobbling          Goblin             Goblins
@@ -61,17 +61,17 @@
   2      Harvesting        Picker             Farm
   2____D Hiring            Joblin             Goblins
   2____D Hockey            IceDragon          IcePalace
-  2____D HomeRunDerby      Ballplayer         City
+  2____D HomeRunDerby      Ballplayer         Fractia
   2      Hopscotch         Frog               Woodland
   2      Hurdles           Herald             Battlefield
   2      Imitation         Monkey             Jungle
-  2____D Jeter             Dancer             City
+  2____D Jeter             Dancer             Fractia
   2      Jewelry           Princess           City
   2      Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle
  R2      Jumprope          Joey               Desert
  R2      KarateChop        Sensei             Battlefield
-  2____D Latin             Teacher            City
+  2____D Latin             Teacher            Fractia
   2____D Lawnmowing        Gardener           Fractia
   2____D Laziness          Sloblin            Goblins
  R2      Levitation        Monk               Desert
@@ -80,7 +80,7 @@
   2      Math              Owl                Woodland
   2____D MindControl       Nyarlathotep       Labyrinth
   2      Mixing            Drunk              City
-  2      MorseCode         Walrus             Taiga
+  2      MorseCode         Walrus             Tundra
   2      Newspaper         Boy                City
   2      Pairing           Snake              Jungle
  R2      Parachute         Chicken            Desert
@@ -90,7 +90,7 @@
   2      PianoThrowing     Gorilla            Jungle
   2      Pilfering         Rabbit             Cave
   1      Pitching          Baboon             Jungle
-  2____D Plumbing          Plumber            City
+  2____D Plumbing          Plumber            Fractia
   2      Popping           Farmer             Farm
   2      Pouring           Dowager            City
   2      Protecting        Goose              Farm
@@ -101,7 +101,7 @@
   2      Rebounding        Hoplite            Battlefield
   2____D Regex             Globlin            Goblins
   2      Remembering       Elephant           Jungle
-  2____D Rescuing          Firefighter        City
+  2____D Rescuing          Firefighter        Fractia
   2      Robohorse         Cavalier           Battlefield
   2      Rodeo             Cowpoke            Desert
  R2      Rollerskates      Rabbit             Woodland
@@ -112,29 +112,29 @@
   2____D Shaking           Bartender          Fractia
   2      Sharing           Bear               Woodland
   2      Shovelling        Miner              Cave
-  2____D Shuffling         Dealer             City
-  2      Skiing            Reindeer           Taiga
+  2____D Shuffling         Dealer             Fractia
+  2      Skiing            Reindeer           Tundra
   2____D SkiJump           IceDragon          IcePalace
   2      Skipping          Duck               Farm
-  2____D Slapping          Gambler            City
+  2____D Slapping          Gambler            Fractia
   2      Slicing           Ninja              Battlefield
-  2      Sliding           Penguin            Taiga
+  2      Sliding           Penguin            Tundra
   2____D Smashing          Ogre               Labyrinth
-  2      Snorkel           Seal               Taiga
-  2      SnowballFight     Snowman            Taiga
+  2      Snorkel           Seal               Tundra
+  2      SnowballFight     Snowman            Tundra
   2____D Snowboard         IceDragon          IcePalace
   2      Snaring           Drummer            Battlefield
   2      Sonar             Bat                Cave
-  2____D Sorting           Clerk              City
+  2____D Sorting           Clerk              Fractia
   2      Sparing           Beetle             Desert
   2____D Stacking          Waiter             Fractia
   1      Staring           Deer               Woodland
   2E___D Stealing          Roblin             Goblins
   2      Steering          Buck               Farm
-  2____D Stenography       Secretary          City
+  2____D Stenography       Secretary          Fractia
  R2      Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
-  2____D SumoHorse         Wrestler           City
+  2____D SumoHorse         Wrestler           Fractia
   2      Surrounding       Snake              Jungle
  R2      Swearing          Sailor             Sea
   2      Swinging          Kid                City
@@ -143,12 +143,12 @@
   2____D Throwing          Loblin             Goblins
   2      TicTacToe         Raccoon            Woodland
   2____D Topping           HotDogVendor       Fractia
- R2____D Traffic           Cop                City
+ R2____D Traffic           Cop                Fractia
  R2      Umbrella          Kitten             Farm
   2____D Watching          Cook               Fractia
   2      Watermelon        Aardvark           Desert
   2      Weaving           Spider             Cave
   2      Whining           Cub                Woodland
   2      Wining            Hippopotamus       Farm
-  2      Wrapping          Santa              Taiga
+  2      Wrapping          Santa              Tundra
   2      Wrecking          Vandal             Battlefield
