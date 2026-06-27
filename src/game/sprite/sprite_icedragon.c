@@ -4,6 +4,15 @@
 #define STATE_OCCUPIED 2 /* Ice cube with a dragon on top. Ready for combat. */
 #define STATE_MELTED   3 /* Just a puddle. */
 
+static const int icedragon_schedule[]={
+  NS_battle_skijump,
+  NS_battle_curling,
+  NS_battle_figureskating,
+  NS_battle_bobsleigh,
+  NS_battle_snowboard,
+  NS_battle_hockey,
+};
+
 struct sprite_icedragon {
   struct sprite hdr;
   int seq; // 1..6
@@ -30,7 +39,9 @@ static void icedragon_update_state(struct sprite *sprite,int iceseq) {
     nstate=STATE_MELTED;
   } else {
     int iceseq=store_get_fld16(NS_fld16_iceseq);
-    if (SPRITE->seq<=iceseq) { // Got me already.
+    if ((SPRITE->seq==1)&&(iceseq>=6)) { // First instance can replay after you've beaten them all.
+      nstate=STATE_OCCUPIED;
+    } else if (SPRITE->seq<=iceseq) { // Got me already.
       nstate=STATE_MELTED;
     } else if (SPRITE->seq==iceseq+1) { // I'm next.
       nstate=STATE_OCCUPIED;
@@ -99,6 +110,11 @@ static void _icedragon_update(struct sprite *sprite,double elapsed) {
  
 static void icedragon_dot_wins(struct sprite *sprite) {
 
+  int iceseq=store_get_fld16(NS_fld16_iceseq);
+  if (iceseq>=6) {
+    // Replay. Don't change any state or create the fly-away decoration.
+    return;
+  }
   store_set_fld16(NS_fld16_iceseq,SPRITE->seq);
   // Our state change will happen automatically due to that fld16 change.
   
@@ -116,19 +132,23 @@ static void icedragon_dot_wins(struct sprite *sprite) {
 static void icedragon_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
   if (outcome>0) {
-    /* I think the victory is its own reward? We can do prizes like monster if we want.
-    struct prize prizev[8];
-    int prizec=game_get_prizes(prizev,8,SPRITE->battle,sprite->arg);
-    struct battle *battle=modal_battle_get_battle(modal);
-    if (battle&&battle->type->get_prizes) {
-      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    /* If we're in replay mode, earn a coin or whatever like usual.
+     * The main-sequence victories are their own reward, nothing else.
+     */
+    int iceseq=store_get_fld16(NS_fld16_iceseq);
+    if (iceseq>=6) {
+      struct prize prizev[8];
+      int prizec=game_get_prizes(prizev,8,modal_battle_get_battle(modal)->type->id,sprite->arg);
+      struct battle *battle=modal_battle_get_battle(modal);
+      if (battle&&battle->type->get_prizes) {
+        prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+      }
+      struct prize *prize=prizev;
+      for (;prizec-->0;prize++) {
+        game_get_item(prize->itemid,prize->quantity);
+        modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+      }
     }
-    struct prize *prize=prizev;
-    for (;prizec-->0;prize++) {
-      game_get_item(prize->itemid,prize->quantity);
-      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
-    }
-    /**/
     icedragon_dot_wins(sprite);
   } else if (outcome<0) {
     game_hurt_hero();
@@ -136,23 +156,10 @@ static void icedragon_cb_battle(struct modal *modal,int outcome,void *userdata) 
   }
 }
 
-/* Collide.
+/* Begin battle.
  */
  
-static void _icedragon_collide(struct sprite *sprite,struct sprite *other) {
-  if (SPRITE->state!=STATE_OCCUPIED) return;
-  
-  /* Schedule of battles.
-   */
-  int battleid=0;
-  switch (SPRITE->seq) {
-    case 1: battleid=NS_battle_skijump; break;
-    case 2: battleid=NS_battle_curling; break;
-    case 3: battleid=NS_battle_figureskating; break;
-    case 4: battleid=NS_battle_bobsleigh; break;
-    case 5: battleid=NS_battle_snowboard; break;
-    case 6: battleid=NS_battle_hockey; break;
-  }
+static void icedragon_begin_battle(struct sprite *sprite,int battleid) {
   if (!battleid) return;
   const struct battle_type *type=battle_type_by_id(battleid);
   if (!type) return;
@@ -175,8 +182,57 @@ static void _icedragon_collide(struct sprite *sprite,struct sprite *other) {
   };
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;
-  //TODO Enter battle.
-  //icedragon_dot_wins(sprite);
+}
+
+/* Replay proposal modal.
+ */
+ 
+static int icedragon_cb_replay(int optionid,void *userdata) {
+  if (optionid==234) return 0;
+  // Otherwise, optionid should be a battleid.
+  icedragon_begin_battle(userdata,optionid);
+  return 0;
+}
+ 
+static void icedragon_propose_replay(struct sprite *sprite) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_battle,
+    .strix=233,
+    .speaker=sprite,
+    .cb=icedragon_cb_replay,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_battle,234);
+  int i=0;
+  int c=sizeof(icedragon_schedule)/sizeof(icedragon_schedule[0]);
+  for (;i<c;i++) {
+    int battleid=icedragon_schedule[i];
+    const struct battle_type *type=battle_type_by_id(battleid);
+    if (!type) continue;
+    modal_dialogue_add_option_string_id(modal,RID_strings_battle,type->strix_name,battleid);
+  }
+}
+
+/* Collide.
+ */
+ 
+static void _icedragon_collide(struct sprite *sprite,struct sprite *other) {
+  if (SPRITE->state!=STATE_OCCUPIED) return;
+  
+  /* Schedule of battles, or call out for the replay modal.
+   */
+  int battleid=0;
+  int iceseq=store_get_fld16(NS_fld16_iceseq);
+  if (iceseq>=6) {
+    icedragon_propose_replay(sprite);
+    return;
+  }
+  int optionp=SPRITE->seq-1;
+  int optionc=sizeof(icedragon_schedule)/sizeof(icedragon_schedule[0]);
+  if ((optionp<0)||(optionp>=optionc)) return;
+  icedragon_begin_battle(sprite,icedragon_schedule[optionp]);
 }
 
 /* Render.
