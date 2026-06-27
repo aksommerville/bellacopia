@@ -452,7 +452,11 @@ static void player_update_common(struct battle *battle,struct player *player,dou
         player->legp++;
         if (player->legp>=BATTLE->legc-1) {
           player->legp=BATTLE->legc-1;
-          player->finished=1;
+          if (!player->finished) {
+            player->finished=1;
+            bm_sound_pan(RID_sound_treasure,player->who?PLAYER_PAN:-PLAYER_PAN);
+            if (BATTLE->playclock>5.0) BATTLE->playclock=5.0;
+          }
         }
         leg=BATTLE->legv+player->legp;
       } else if (proj<0.0) { // Totally possible to bounce backward to a previous leg.

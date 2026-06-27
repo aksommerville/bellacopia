@@ -31,13 +31,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] Populate Ice Palace.
-- [ ] Ice Dragon. 6 battles.
+- [x] Ice Dragon. 6 battles.
 - - [x] Ski jump. Hold and release.
 - - [x] Curling.
 - - [x] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
 - - [x] Bobsleigh.
 - - [x] Figure skating. Follow dpad prompts.
-- - [ ] Snowboard. Think Slalom?
+- - [x] Snowboard. Think Slalom?
 - [ ] Re-engage with Ice Dragon after defeating. Otherwise you can't play these battles again, and they're great.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
@@ -136,18 +136,21 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - Whatever we're doing, figure it out by the end of April.
 - - - A semicircle of felt 12cm diameter rolls up into a pretty good witch hat, just the size for a fist puppet.
 - - - - The white felt sheets I already have are the perfect size for this, alas they're white and not purple.
+- - - Oooh how about sock puppets?
 - - [ ] Witch hats. Same idea as the dolls.
 - - [ ] Jigsaw puzzles? Would be on-theme, and I've ordered these before, it's a snap. Too expensive to give away probly (~$30 ea at a glance).
 - - [ ] Mini comic?
 - - - If we draw one, get in touch with Hardwired, Back Alley Games, and similar, see if they'll publish it.
 - - [ ] Thumb drives. I still have 20 leftover from Spelling Bee, if we want to make the shell ourselves.
-- - - customusb.com has some gorgeous shells and cases (they did the Plunder Squad bottles). $5-10 ea for the drives and another $5-10 for cases. A bit much.
+- - - customusb.com has some gorgeous shells and cases (they did the Plunder Squad bottles). $5-10 ea for the drives and another $5-10 for cases. A bit much for giving away.
 - - [ ] Instruction manual + strategy guide, to bundle with thumb drives.
 - - [ ] Book of sheet music.
 - - [ ] Videos.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
 - - - $130 at bannerbuzz.com.
+- - [ ] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these.
+- - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia.
 
 ## Quests and Prizes
 
