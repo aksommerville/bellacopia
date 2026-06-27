@@ -36,8 +36,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Curling.
 - - [x] Hockey. Fixed positions, choose an angle, fire at will. Goalie pushes and pulls his goal around horizontally.
 - - [x] Bobsleigh.
-- - [ ] Figure skating. Follow dpad prompts.
+- - [x] Figure skating. Follow dpad prompts.
 - - [ ] Snowboard. Think Slalom?
+- [ ] Re-engage with Ice Dragon after defeating. Otherwise you can't play these battles again, and they're great.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
