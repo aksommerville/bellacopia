@@ -94,8 +94,13 @@ static void guild_cb_battle(struct modal *modal,int outcome,void *userdata) {
     //TODO Some other prize when it's not election season.
   } else if (outcome<0) {
     sprite->tileid=SPRITE->tileid0;
-    game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
+static void guild_cb_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
   }
 }
 
@@ -127,6 +132,7 @@ static void _guild_collide(struct sprite *sprite,struct sprite *other) {
     args.args.lface=NS_face_dot;
     args.args.bias=bm_battle_bias(SPRITE->battle);
     args.cb=guild_cb_battle;
+    args.cb_final=guild_cb_final;
   } else {
     return;
   }

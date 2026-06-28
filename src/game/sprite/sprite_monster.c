@@ -499,11 +499,17 @@ static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
       modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
     }
   } else if (outcome<0) {
-    game_hurt_hero();
+    // Don't actually hurt the hero until cb_final. Report it first. If it's her last heart, game_hurt_hero would trigger the gameover modal.
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
     if (cryptmsg_check_star_door(SPRITE->battle,g.store.invstorev[0].itemid)) {
       modal_battle_add_consequence(modal,NS_itemid_text,109);
     }
+  }
+}
+
+static void monster_cb_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
   }
 }
 
@@ -560,6 +566,7 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
     args.args.lface=NS_face_dot;
     args.args.bias=bm_battle_bias(SPRITE->battle);
     args.cb=monster_cb_battle;
+    args.cb_final=monster_cb_final;
   } else if (other->type==&sprite_type_princess) {
     if (!type->support_cvc) {
       fprintf(stderr,"%s: Princess tried to enter battle '%s', which does not support cpu-vs-cpu.\n",__func__,type->name);

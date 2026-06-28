@@ -151,8 +151,13 @@ static void icedragon_cb_battle(struct modal *modal,int outcome,void *userdata) 
     }
     icedragon_dot_wins(sprite);
   } else if (outcome<0) {
-    game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
+static void icedragon_cb_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
   }
 }
 
@@ -179,6 +184,7 @@ static void icedragon_begin_battle(struct sprite *sprite,int battleid) {
     .userdata=sprite,
     .right_name=226,
     .cb=icedragon_cb_battle,
+    .cb_final=icedragon_cb_final,
   };
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;

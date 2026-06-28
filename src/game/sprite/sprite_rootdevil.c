@@ -56,8 +56,13 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
       bm_song_gently(bm_song_for_outerworld());
     }
   } else if (outcome<0) {
-    game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
+static void rootdevil_cb_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
   }
 }
 
@@ -108,6 +113,7 @@ static void _rootdevil_collide(struct sprite *sprite,struct sprite *other) {
         .rface=NS_face_monster,
       },
       .cb=rootdevil_cb_battle,
+      .cb_final=rootdevil_cb_final,
       .userdata=sprite,
       .right_name=18, // "Root Devil"
     };

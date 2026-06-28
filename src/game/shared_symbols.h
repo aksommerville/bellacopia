@@ -333,6 +333,7 @@
 #define NS_sprtype_racer           28 /* (u8:human)0 (u8:face)monster (u8)dir (u8)0 */
 #define NS_sprtype_icedragon       29 /* (u8:seq)0 (u24)0 */
 #define NS_sprtype_icedragon_inter 30 /* (u32)0 */
+#define NS_sprtype_soulballs       31 /* (u8)ballc (u24)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -364,7 +365,8 @@
   _(mnneon) \
   _(racer) \
   _(icedragon) \
-  _(icedragon_inter)
+  _(icedragon_inter) \
+  _(soulballs)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

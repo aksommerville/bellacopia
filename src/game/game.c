@@ -412,6 +412,46 @@ int game_get_prizes(struct prize *v,int a,int battle,const uint8_t *monsterarg) 
   return c;
 }
 
+/* Kill the hero sprite and replace her with soulballs.
+ */
+ 
+static uint8_t soulball_args[4]={7,0,0,0};
+ 
+static void game_pop_hero() {
+  double x=-1.0,y=-1.0;
+  struct sprite **p=GRP(hero)->sprv;
+  int i=GRP(hero)->sprc;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->type==&sprite_type_hero) {
+      x=sprite->x;
+      y=sprite->y;
+    }
+    sprite_kill_soon(sprite);
+  }
+  if (x>0.0) { // Found a good location.
+    struct sprite *soulballs=sprite_spawn(x,y,0,soulball_args,sizeof(soulball_args),&sprite_type_soulballs,0,0);
+  }
+}
+
+/* Begin gameover.
+ */
+ 
+void game_begin_gameover() {
+  struct modal *top=modal_get_topmost(0);
+  if (top&&(top->type==&modal_type_story)) {
+    // Make soulballs. modal_story will notice g.gameover, perform its cooldown, and call us again when complete.
+    // modal_story will be defunct when it makes that next call, so we'll for sure end up in the other branch.
+    game_pop_hero();
+  } else {
+    if (top=modal_get_topmost(&modal_type_story)) { // It wasn't on top, but there should be a story modal somewhere, if we fell in combat.
+      top->defunct=1;
+    }
+    struct modal *modal=modal_spawn(&modal_type_gameover,0,0);
+  }
+  g.gameover=1;
+}
+
 /* Hurt the hero.
  */
  
@@ -419,7 +459,7 @@ void game_hurt_hero() {
   int hp=store_get_fld16(NS_fld16_hp);
   if (--hp<=0) {
     store_set_fld16(NS_fld16_hp,0);
-    g.gameover=1;
+    game_begin_gameover();
   } else {
     store_set_fld16(NS_fld16_hp,hp);
     bm_sound(RID_sound_ouch);

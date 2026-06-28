@@ -817,8 +817,13 @@ int sprite_hero_unbury_treasure(struct sprite *sprite,int x,int y) {
  
 static void cb_hero_shovelthrowing(struct modal *modal,int outcome,void *userdata) {
   if (outcome<0) {
-    game_hurt_hero();
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
+static void cb_hero_shovelthrowing_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
   }
 }
  
@@ -826,6 +831,7 @@ static void hero_summon_skeleton(struct sprite *sprite) {
   struct modal_args_battle args={
     .battle=NS_battle_shovelthrowing,
     .cb=cb_hero_shovelthrowing,
+    .cb_final=cb_hero_shovelthrowing_final,
     .right_name=224, // "Skeleton"
     .args={
       .difficulty=0x80, // Not relevant.

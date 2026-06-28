@@ -36,12 +36,11 @@ static int hero_hurt(struct sprite *sprite,struct sprite *assailant) {
   int hp=store_get_fld16(NS_fld16_hp);
   if (--hp<0) hp=0;
   store_set_fld16(NS_fld16_hp,hp);
+  bm_sound(RID_sound_ouch);
   if (!hp) {
-    fprintf(stderr,"TODO End game.\n");//TODO Soulballs, sound effect, a little cooldown time.
-    g.gameover=1;
+    game_begin_gameover();
     return 1;
   }
-  bm_sound(RID_sound_ouch);
   SPRITE->hurt=HERO_HURT_TIME;
   if (assailant) {
     double dx=sprite->x-assailant->x;

@@ -35,6 +35,7 @@ int game_focus_map(struct map *map);
 int game_warp(int mapid,int transition);
 
 void game_hurt_hero();
+void game_begin_gameover(); // Called by game_hurt_hero when warranted, but also sprite_hero.c:hero_hurt calls it.
 
 uint8_t bm_battle_bias(int battleid);
 

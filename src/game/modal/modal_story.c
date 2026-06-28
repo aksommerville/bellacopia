@@ -11,6 +11,7 @@ struct modal_story {
   int map_listener;
   int cell_listener;
   int store_listener;
+  double gameover_cooldown;
   struct {
     int texid,w,h;
     int dirty;
@@ -127,8 +128,13 @@ static void _story_update(struct modal *modal,double elapsed) {
   feet_update();
   camera_update(elapsed);
   
-  if (g.gameover) {
-    modal->defunct=1;
+  if (MODAL->gameover_cooldown>0.0) {
+    if ((MODAL->gameover_cooldown-=elapsed)<=0.0) {
+      modal->defunct=1; // Important to defunct self before signalling gameover.
+      game_begin_gameover();
+    }
+  } else if (g.gameover) {
+    MODAL->gameover_cooldown=1.0;
   }
 }
 
@@ -319,6 +325,15 @@ static void _story_render(struct modal *modal) {
     story_render_race_overlay(modal);
   } else {
     story_render_overlay(modal);
+  }
+  // And above even the overlay, we fade out at gameover.
+  if (g.gameover) {
+    int alpha=(int)((MODAL->gameover_cooldown*255.0)/0.500);
+    if (alpha<0xff) {
+      alpha=0xff-alpha;
+      if (alpha>0xff) alpha=0xff;
+      if (alpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|alpha);
+    }
   }
 }
 

@@ -75,6 +75,7 @@ struct modal *modal_get_topmost(const struct modal_type *type) {
   int i=g.modalc;
   while (i-->0) {
     struct modal *modal=g.modalv[i];
+    if (modal->defunct) continue;
     if (!type||(modal->type==type)) return modal;
   }
   return 0;

@@ -89,7 +89,7 @@ struct modal *modal_get_topmost(const struct modal_type *type);
  
 extern const struct modal_type modal_type_hello; // Default. No args.
 extern const struct modal_type modal_type_story; // Entire session of Story Mode.
-extern const struct modal_type modal_type_arcade; // Entire session of Arcade Mode.
+extern const struct modal_type modal_type_arcade; // Entire session of Arcade Mode. Currently unfriendly, amenable more to development than play.
 extern const struct modal_type modal_type_pvp; // XXX Temporary arcade mode for early demos. Will probably remove eventually.
 extern const struct modal_type modal_type_battle; // Story or Arcade Mode.
 extern const struct modal_type modal_type_pause; // Story Mode.
@@ -100,6 +100,7 @@ extern const struct modal_type modal_type_linguist; // ''
 extern const struct modal_type modal_type_cutscene; // Any of several enumerated non-interactive cutscenes.
 extern const struct modal_type modal_type_crystal; // Crystal Ball. Invoke as NS_activity_crystal.
 extern const struct modal_type modal_type_fishwife; // Story Mode.
+extern const struct modal_type modal_type_gameover;
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -161,6 +162,10 @@ struct modal_args_cutscene {
 struct modal_args_fishwife {
   int rid,strix; // For the prompt.
   struct sprite *speaker;
+};
+
+struct modal_args_gameover {
+  int dummy; // Probly don't need any extra context for gameover, death is death.
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

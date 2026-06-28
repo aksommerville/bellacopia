@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
-- [ ] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
+- [x] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
@@ -58,6 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
+- [ ] Dot's house.
 
 - Battle repairs.
 - [ ] Usable IP for the erudition contest.
@@ -69,6 +70,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 
 - TODO Punted items, assess closer to release.
+- [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] Home Run Derby pleases me so good, I want to make a whole baseball minigame. Is that crazy? Can we work it in there somewhere?
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
@@ -115,7 +117,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.
-- - [ ] Pins, buttons, stickers.
+- - [x] Pins, buttons, stickers.
 - - [ ] Homemade stuffed witches, if I can work that out.
 - - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
 - - - ^ prefer bearsforhumanity.com
@@ -136,8 +138,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
 - - - $130 at bannerbuzz.com.
-- - [ ] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these.
-- - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia.
+- - [ ] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these. ...ordered (these 4 things) 2026-06-27
+- - - `title_vines_padded-5923px.png`: 3x2" sticker
+- - - `mixnmatch-master.png`: 4x6" sticker sheet
+- - - `pin-tree-256px.png`: Acrylic pin
+- - - `button_fishing-444px.png`: Button
+- - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
 
 ## Quests and Prizes
 
