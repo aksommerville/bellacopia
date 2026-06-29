@@ -30,6 +30,7 @@ void begin_templeshop(struct sprite *initiator);
 void begin_inconvenience(struct sprite *initiator);
 void begin_fish_book();
 void begin_crocodile();
+void begin_medomat();
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);

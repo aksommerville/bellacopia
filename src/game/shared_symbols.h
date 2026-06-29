@@ -301,6 +301,7 @@
 #define NS_activity_hearts_book 52
 #define NS_activity_gold_book 53
 #define NS_activity_crocodile 54
+#define NS_activity_medomat 55
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */
@@ -432,6 +433,7 @@
 #define NS_battle_bobsleigh 62
 #define NS_battle_snowboard 63
 #define NS_battle_hockey 64
+#define NS_battle_medomat 65
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -496,7 +498,8 @@
   _(figureskating) \
   _(bobsleigh) \
   _(snowboard) \
-  _(hockey)
+  _(hockey) \
+  _(medomat)
 
 /* "fld" are single bits.
  */

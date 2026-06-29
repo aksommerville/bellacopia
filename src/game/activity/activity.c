@@ -72,6 +72,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_hearts_book: begin_hearts_book(); break;
     case NS_activity_gold_book: begin_gold_book(); break;
     case NS_activity_crocodile: begin_crocodile(); break;
+    case NS_activity_medomat: begin_medomat(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

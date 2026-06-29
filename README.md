@@ -30,7 +30,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Populate Ice Palace.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -46,7 +45,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - - UPDATE: Power Glove does this now, and that's probably enough.
 - [ ] More spells. Not sure what...
-- [ ] Parasites in the sea monster.
 - [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
@@ -55,10 +53,67 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
+- - The zoos should do this instead. Once an animal is captured, you can battle it at will at the zoo, but it won't appear randomly anymore.
 - [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
-- [ ] Dot's house.
+- [ ] Game over song.
+- [ ] New song during the election, maybe?
+- [ ] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.
+- [ ] Stick, Jigpiece, Treasure sprites are not solid, but should fake it during earthquakes, so you can't quake them into walls.
+
+- Fill out maps.
+- [ ] Fractia
+- - [ ] Outer. BoE / City Hall signage, statue, litter...
+- - - Maybe eliminate the northernmost street, pad with trees for more separation from tundra.
+- - [x] Hospital
+- - [ ] Thing Store
+- - [ ] Labor Union
+- - [ ] Vacant house next to Labor Union
+- - [ ] Athletes' Guild
+- - [ ] Vacant house between Athletes' Guild and Casino
+- - [ ] Casino
+- - [ ] Underground entrance house
+- - [ ] Public Sector Employees' Union
+- - [ ] Food Service Guild
+- [ ] Forest / Cheapside / Meadow
+- - [ ] Exteriors.
+- - [ ] Dot's house
+- - [ ] Blood Bank. Are we even keeping this?
+- - [ ] Underground entrance house
+- - [ ] Fishwife
+- - [ ] Carpenter
+- [ ] Battlefield
+- - [ ] Blue Captain's tent
+- - [ ] Red Captain's tent
+- [ ] Tundra
+- - [ ] "tuns" of exterior space to fill.
+- - [ ] Magnetic North interior.
+- - [ ] Ice Palace: Puzzles and monsters.
+- [ ] Mountains
+- [ ] Goblins' Cave
+- [ ] Botire
+- - [ ] Exterior
+- - [ ] Inventory Critic
+- - [ ] Knitter
+- - [ ] Underground entrance house
+- [ ] Jungle
+- [ ] Temple
+- - [ ] Lots of unused space at the north edge. Put some bonus challenges here or eliminate it.
+- - [ ] Room for a secret or something at the southwest corner.
+- - [ ] Gift shop
+- - [ ] Roof access room
+- [ ] Sea monster
+- - [ ] Parasites etc
+- - [ ] Path to the treasure should be dark.
+- [ ] South jungle
+- [ ] East desert
+- - [ ] Castle
+- [ ] West desert
+- - [ ] Inconvenience Store
+- [ ] Underground.
+- - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
+- - [ ] Dark some regions.
 
 - Battle repairs.
 - [ ] Usable IP for the erudition contest.

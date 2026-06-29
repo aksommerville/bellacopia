@@ -553,3 +553,63 @@ void begin_crocodile() {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,89);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
+
+/* Med-O-Mat: The coin-operated healthcare machine in Fractia's hospital.
+ */
+ 
+static void cb_medomat_played(struct modal *modal,int outcome,void *userdata) {
+  if (outcome>0) {
+    struct prize prizev[8];
+    int prizec=0; // Don't call game_get_prizes(). Medomat is special; it will tell us everything won.
+    struct battle *battle=modal_battle_get_battle(modal);
+    if (battle&&battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
+  }
+}
+ 
+static int cb_medomat_choose(int optionid,void *userdata) {
+  if (optionid!=4) return 0;
+  const int price=1; // Must agree with strings:dialogue#150
+  int gold=store_get_fld16(NS_fld16_gold);
+  if (gold<price) {
+    begin_dialogue(2,0);
+    return 0;
+  }
+  gold-=price;
+  store_set_fld16(NS_fld16_gold,gold);
+  
+  struct modal_args_battle args={
+    .battle=NS_battle_medomat,
+    .args={
+      .difficulty=0x80,
+      .bias=0x80,
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_monster,
+    },
+    .right_name=-236, // "Try again!" if you lose. "Monster wins" doesn't really make sense.
+    .cb=cb_medomat_played,
+    .skip_prompt=1,
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  return 0;
+}
+ 
+void begin_medomat() {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=150,
+    .cb=cb_medomat_choose,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+}
