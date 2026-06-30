@@ -59,8 +59,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
-- [ ] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.
+- [x] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.
 - [ ] Stick, Jigpiece, Treasure sprites are not solid, but should fake it during earthquakes, so you can't quake them into walls.
+- [ ] Ton and Pound blocks should be Hookshot-grabbable, but pull you toward. Then Ounce getting pulled isn't a surprise.
 
 - Fill out maps.
 - [ ] Fractia
