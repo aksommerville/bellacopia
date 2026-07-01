@@ -510,6 +510,7 @@ static void _medomat_update(struct battle *battle,double elapsed) {
         BATTLE->pauseclock=0.200;
       } else if (medomat_check_elimination(battle)) {
         bm_sound(RID_sound_treasure);
+        medomat_update_colorv(battle);
         if ((BATTLE->pauseclock<=0.0)&&(BATTLE->reservec>0)) {
           BATTLE->reservec--;
           medomat_random_pill(battle);
@@ -671,11 +672,7 @@ static void _medomat_render(struct battle *battle) {
   dsty=fldy+fldh+10;
   for (i=0;i<PRIZE_LIMIT;i++,dstx+=12) {
     uint32_t color=0x202020ff;
-    if (i<BATTLE->prizec) color=0xffffffff;/*switch (BATTLE->prizev[i]&CELL_COLOR_MASK) {
-      case CELL_COLOR_RED: color=0xff0000ff; break;
-      case CELL_COLOR_GREEN: color=0x00c000ff; break;
-      case CELL_COLOR_BLUE: color=0x4050ffff; break;
-    }*/
+    if (i<BATTLE->prizec) color=0xffffffff;
     graf_fancy(&g.graf,dstx,dsty,0x4c,0,0,NS_sys_tilesize,0,color);
   }
 }

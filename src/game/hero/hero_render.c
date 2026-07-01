@@ -8,7 +8,7 @@ static void hero_render_errata(struct sprite *sprite,int x,int y) {
   /* Bugspray indicator.
    */
   if (g.bugspray>0.0) {
-    int frame=((int)(g.bugspray*6.0))&7;
+    int frame=7-(((int)(g.bugspray*6.0))&7);
     const double fadetime=1.000;
     if (g.bugspray<fadetime) {
       int alpha=(int)((g.bugspray*255.0)/fadetime);

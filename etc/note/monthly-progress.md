@@ -124,21 +124,33 @@ Stats as of eaf8fd1d23ab31b45690b4ca2be5a84b5a63f0f1, 2026-05-31:
 ## June 2026
 
 Goals:
-- [ ] 30 new battles. Finish Fractia first. Then start populating all the outer world regions.
-- [ ] User-friendly Arcade Mode.
-- [ ] Outer world: Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc.
-- [ ] Story cutscenes. Implement at least one fully.
+- [ ] 30 new battles. Finish Fractia first. Then start populating all the outer world regions. ...missed, but 11 isn't too bad.
+- [ ] User-friendly Arcade Mode. ...missed
+- [ ] Outer world: Blend biome edges, ensure treasures and gates are all in the right places, no dead zones, etc. ...progress, but not yet.
+- [ ] Story cutscenes. Implement at least one fully. ...missed
 
 Added cartographer, so reaching 100% is easy again (in fact it's more fun than it was before, it's a real treasure hunt!).
 In that spirit, also got the crystal ball working. Both cartographer and crystal ball will need routine touch-up as we add more things.
-ROM crossed the auspicious "1234567" size.
+ROM crossed the auspicious "1234567" size. And pretty close to 1.44 MB now; the Linux build is already over.
 Finished the Fractia battles, finally!
+Made substantial decorative progress: Potion shop, Fish processor, and Hospital interiors are now finalish. And a pretty Game Over modal.
+Ordered the first of the merch: T-shirts, sticker sheets, logo stickers, fishing buttons, and tree pins.
+
+The checklist doesn't show it but I feel like I'm making great progress.
+We won't be finished before GDEX but we'll definitely have something worth showing.
+Finishing before year end still sounds perfectly possible.
+
+Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
+ - Code: 60447 lines.
+ - `rom=1395016 code=735203 image=3697260px*61 song=10:26.895*15 sound=0:23.874*74 map=84960m*354`
+ - Non-placeholder battles: 64
+ - Casual full-clear time: 1:48:58
 
 ## July 2026
 
 Goals:
-- [ ] UI all prettied up.
-- [ ] Sensible hints. Compass, crystal ball, mark-my-map.
+- [ ] 20 new battles.
+- [ ] Cutscenes.
 
 ## August 2026
 
