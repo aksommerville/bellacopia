@@ -123,6 +123,7 @@
 #define NS_sprgrp_light        9 /* Light source in darkened rooms. */
 #define NS_sprgrp_monsterlike 10 /* Hero, princess, candy, and anything else monsters pay attention to. */
 #define NS_sprgrp_moveable    11 /* Can be moved by external forces like bomb and snowglobe. */
+#define NS_sprgrp_hookpull    12 /* If (grabbable), pull the hero to me, not me to her. */
 
 #define NS_transition_cut 0
 #define NS_transition_spotlight 1

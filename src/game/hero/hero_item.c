@@ -458,11 +458,14 @@ static void hookshot_check_grabbage(struct sprite *sprite) {
     if (hx<=other->x+other->hbl) continue;
     if (hy>=other->y+other->hbb) continue;
     if (hy<=other->y+other->hbt) continue;
-    if (hookshot_set_pumpkin(sprite,other)>=0) {
-      bm_sound(RID_sound_hookshot_grab);
+    if (sprite_group_has(GRP(hookpull),other)) { // I'm a barrel, not a pumpkin.
+      SPRITE->hookstage=HOOKSTAGE_PULL;
+      sprite->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+    } else if (hookshot_set_pumpkin(sprite,other)>=0) { // OK I'm a pumpkin.
       SPRITE->hookstage=HOOKSTAGE_RETURN;
-      return;
     }
+    bm_sound(RID_sound_hookshot_grab);
+    return;
   }
   
   // Check the single cell. If grabbable, enter PULL or if solid enter RETURN.
