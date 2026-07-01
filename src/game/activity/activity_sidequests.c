@@ -220,6 +220,40 @@ void begin_tree(struct sprite *initiator,int arg) {
   if (store_get_fld(arg)) {
     begin_dialogue(92,initiator);
   } else {
+  
+    // If at least so many stories have been told, and we don't have any untold ones, offer a hint about the ones outstanding.
+    const int told_min=8; // Must tell so many on your own before we give hints.
+    int hintv[16]; // strix in strings:stories, ready to deliver
+    int toldc=0,untoldc=0,hintc=0;
+    const struct story *story;
+    int p=0;
+    for (;;p++) {
+      if (!(story=story_by_index(p))) break;
+      if (store_get_fld(story->fld_present)) {
+        if (store_get_fld(story->fld_told)) {
+          toldc++;
+        } else {
+          untoldc++;
+          break; // No sense proceeding; any untold nixes the feature.
+        }
+      } else {
+        if ((hintc<16)&&(story->strix_title>=1)&&(story->strix_title<=16)) {
+          hintv[hintc++]=story->strix_title+33;
+        }
+      }
+    }
+    fprintf(stderr,"%s(%d) toldc=%d untoldc=%d hintc=%d\n",__func__,arg,toldc,untoldc,hintc);
+    if (!untoldc&&hintc&&(toldc>=told_min)) {
+      int hint=hintv[arg%hintc]; // arg, NS_fld_tree*, are sequential. So for a given state, each outstanding tree should give a unique hint.
+      struct modal_args_dialogue args={
+        .rid=RID_strings_stories,
+        .strix=hint,
+        .speaker=initiator,
+      };
+      modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+      return;
+    }
+  
     begin_dialogue(91,initiator);
   }
 }

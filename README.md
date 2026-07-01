@@ -49,7 +49,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
-- [ ] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
+- [x] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
@@ -127,6 +127,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
+- [ ] boomerang: Sounds for throw and catch.
 
 - TODO Punted items, assess closer to release.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.

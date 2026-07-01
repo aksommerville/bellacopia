@@ -62,8 +62,10 @@ struct battle *battle_new(
   battle->outcome=-2;
   
   // Prepare the color table automagically.
-  if (!battle->args.mapid&&g.camera.map) battle->args.mapid=g.camera.map->rid;
-  battle_get_ctab_by_id(battle->ctab,BATTLE_COLOR_COUNT,battle->args.mapid);
+  if (!battle->args.imageid&&g.camera.map) {
+    battle->args.imageid=g.camera.map->imageid;
+  }
+  battle_get_ctab_by_id(battle->ctab,BATTLE_COLOR_COUNT,battle->args.imageid);
   
   if (type->init&&(type->init(battle)<0)) {
     battle_del(battle);

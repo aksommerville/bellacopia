@@ -22,7 +22,7 @@ struct battle_args {
   uint8_t bias; // Give one player an advantage over the other. 0..128..255 = left easy .. neutral .. right easy.
   uint8_t lctl,rctl; // Input source. 0=CPU, or player id.
   uint8_t lface,rface; // Hero appearance. NS_face_*. Might be limited to (0,1,2)=(monster,dot,princess). Best effort.
-  int mapid; // For color table. Zero to consult (g.camera), or invalid eg negative to force the default, meadow.
+  int imageid; // For color table. Zero to consult (g.camera.map), or invalid eg negative to force the default, meadow.
 };
 
 struct battle {
