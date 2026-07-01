@@ -59,17 +59,18 @@
 
 #define CMD_rsprite_rsprite     0x61 /* u16:rid u8:weight u8:limit u32:arg ; Intentionally identical to map's "rsprite" command. You can read rsprite res as maps. */
 
-#define CMD_sprite_noxform      0x01 /* --- ; npc */
-#define CMD_sprite_image        0x20 /* u16:rid */
-#define CMD_sprite_tile         0x21 /* u8:tileid u8:xform */
-#define CMD_sprite_type         0x22 /* u16:sprtype */
-#define CMD_sprite_layer        0x23 /* u16:layer ; hero at 100 */
-#define CMD_sprite_weight       0x24 /* u16:weight ; NS_sprtype_pushable. 0=always, 1=glove */
-#define CMD_sprite_physics      0x40 /* b32:physics ; which are impassable */
-#define CMD_sprite_hitbox       0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
-#define CMD_sprite_groups       0x42 /* b32:sprgrp */
-#define CMD_sprite_monster      0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
-#define CMD_sprite_guild        0x61 /* u16:battle u16:name(RID_strings_battle) u16:fld u16:reserved ; NS_sprtype_guild */
+#define CMD_sprite_noxform       0x01 /* --- ; npc */
+#define CMD_sprite_passive_solid 0x02 /* --- ; Hint to put me in the solid group when moving due to earthquake or similar. */
+#define CMD_sprite_image         0x20 /* u16:rid */
+#define CMD_sprite_tile          0x21 /* u8:tileid u8:xform */
+#define CMD_sprite_type          0x22 /* u16:sprtype */
+#define CMD_sprite_layer         0x23 /* u16:layer ; hero at 100 */
+#define CMD_sprite_weight        0x24 /* u16:weight ; NS_sprtype_pushable. 0=always, 1=glove */
+#define CMD_sprite_physics       0x40 /* b32:physics ; which are impassable */
+#define CMD_sprite_hitbox        0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
+#define CMD_sprite_groups        0x42 /* b32:sprgrp */
+#define CMD_sprite_monster       0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
+#define CMD_sprite_guild         0x61 /* u16:battle u16:name(RID_strings_battle) u16:fld u16:reserved ; NS_sprtype_guild */
 
 #define CMD_race_plane     0x20 /* u16:plane */
 #define CMD_race_laps      0x21 /* u16:c */

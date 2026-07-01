@@ -32,6 +32,15 @@ void bm_update_earthquake(double elapsed) {
   for (;i-->0;spritep++) {
     struct sprite *sprite=*spritep;
     if (sprite->defunct) continue;
+    
+    int tmpsolid=0;
+    if (sprite->passive_solid&&!sprite->solid) {
+      tmpsolid=1;
+      sprite_group_add(GRP(solid),sprite);
+    }
+    
     sprite_move(sprite,g.eqdx*EQSPEED*elapsed,g.eqdy*EQSPEED*elapsed);
+    
+    if (tmpsolid) sprite_group_remove(GRP(solid),sprite);
   }
 }

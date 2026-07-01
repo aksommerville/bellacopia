@@ -60,7 +60,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
 - [x] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.
-- [ ] Stick, Jigpiece, Treasure sprites are not solid, but should fake it during earthquakes, so you can't quake them into walls.
+- [x] Stick, Jigpiece, Treasure sprites are not solid, but should fake it during earthquakes, so you can't quake them into walls.
 - [ ] Ton and Pound blocks should be Hookshot-grabbable, but pull you toward. Then Ounce getting pulled isn't a surprise.
 - [ ] Rearrange red guards so you can't get the Hookshot until the war is over, and put a one-way door from the Fractia Root Devil into the Mountains.
 - - Intent is that you can rescue the Princess after completing either one of the early quests.

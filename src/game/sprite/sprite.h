@@ -26,6 +26,7 @@ struct sprite {
   double hbl,hbr,hbt,hbb; // Hitbox relative to (x,y). (l,t) are usually negative.
   uint32_t physics; // Bits, (1<<NS_physics_*), which ones are impassable.
   int solid,floating; // Group hints. These are managed magically when adding and removing groups. For things we poll frequently.
+  int passive_solid; // Hint to add me to GRP(solid) when moving due to external forces eg earthquake.
   int ignore_other_sprites; // Solid, but only against static solids.
   int rid;
   const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
