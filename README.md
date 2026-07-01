@@ -56,7 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - The zoos should do this instead. Once an animal is captured, you can battle it at will at the zoo, but it won't appear randomly anymore.
 - [ ] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
-- [ ] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
+- [x] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
 - [x] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.

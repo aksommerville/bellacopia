@@ -55,6 +55,7 @@ struct modal {
   int opaque; // Nothing below me will render, and I promise to clear the whole framebuffer.
   int interactive; // Nothing below me will update.
   int blotter; // Draw a transparent black blotter below me, if no one above is doing it.
+  int stay_on_top; // Force this modal above all others. Use sparingly.
 };
 
 /* These should only be used by modal.c.
@@ -101,6 +102,7 @@ extern const struct modal_type modal_type_cutscene; // Any of several enumerated
 extern const struct modal_type modal_type_crystal; // Crystal Ball. Invoke as NS_activity_crystal.
 extern const struct modal_type modal_type_fishwife; // Story Mode.
 extern const struct modal_type modal_type_gameover;
+extern const struct modal_type modal_type_toast; // Quick noninteractive, self-dismissing message.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -166,6 +168,10 @@ struct modal_args_fishwife {
 
 struct modal_args_gameover {
   int dummy; // Probly don't need any extra context for gameover, death is death.
+};
+
+struct modal_args_toast {
+  int fld16; // Identifies the message.
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

@@ -7,6 +7,24 @@
  */
  
 static void game_cb_store(char type,int id,int value,void *userdata) {
+
+  /* Things we track even after completion.
+   */
+  switch (type) {
+    case '6': switch (id) {
+        // When goodluck decreases, show a toast.
+        case NS_fld16_goodluck: {
+            if (value<g.goodlucktrack) {
+              struct modal_args_toast args={
+                .fld16=NS_fld16_goodluck,
+              };
+              modal_spawn(&modal_type_toast,&args,sizeof(args));
+            }
+            g.goodlucktrack=value;
+          } break;
+      } break;
+  }
+
   if (g.completion>=2) return; // Already complete, nothing more for us to track.
   
   if (type=='6') switch (id) {
@@ -51,7 +69,8 @@ int game_reset(int use_save) {
   g.gameover=0;
   g.song_override_outerworld=0;
   g.jigstate=0;
-  g.goldtrack=0;
+  g.goldtrack=store_get_fld16(NS_fld16_gold);
+  g.goodlucktrack=store_get_fld16(NS_fld16_goodluck);
   g.completion=game_get_completion();
   g.completion_listener=store_listen(0,game_cb_store,0);
   return 0;

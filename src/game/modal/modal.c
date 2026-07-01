@@ -95,6 +95,22 @@ static struct modal *modals_get_focus() {
  */
 
 void modals_update(double elapsed) {
+
+  // Ensure that any (stay_on_top) modals are on top.
+  for (;;) {
+    int done=1,i=g.modalc;
+    while (i-->1) {
+      struct modal *a=g.modalv[i-1];
+      struct modal *b=g.modalv[i];
+      if (a->stay_on_top&&!b->stay_on_top) {
+        done=0;
+        g.modalv[i-1]=b;
+        g.modalv[i]=a;
+      }
+    }
+    if (done) break;
+  }
+
   // Check focus.
   struct modal *nfocus=modals_get_focus();
   if (nfocus!=g.modal_focus) {
@@ -106,6 +122,7 @@ void modals_update(double elapsed) {
       if (nfocus->type->focus) nfocus->type->focus(nfocus,1);
     }
   }
+  
   // Work from the top down. After updating something with (interactive) set, we're done.
   int i=g.modalc;
   while (i-->0) {
@@ -114,6 +131,7 @@ void modals_update(double elapsed) {
     if (modal->type->update) modal->type->update(modal,elapsed);
     if (modal->interactive) break;
   }
+  
   // Then continue iterating, for background updates.
   while (i-->0) {
     struct modal *modal=g.modalv[i];
