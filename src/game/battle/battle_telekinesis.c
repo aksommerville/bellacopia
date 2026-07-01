@@ -8,7 +8,6 @@
 
 struct battle_telekinesis {
   struct battle hdr;
-  int choice;
   double wobblephase; // Radians. It advances faster according to the sum of players' power.
   double wobble; // Momentary wobble, -1..1.
   double victory_distance; // One score must be so far ahead of the other to win. Decreases over time.
@@ -328,8 +327,8 @@ static void zodiac_render(struct battle *battle,struct player *player) {
  */
  
 static void _telekinesis_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x805020ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,0x402010ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_labyrinth4);
   

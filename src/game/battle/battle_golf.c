@@ -18,7 +18,6 @@
 
 struct battle_golf {
   struct battle hdr;
-  int choice;
   
   struct player {
     int who; // My index in this list.
@@ -256,12 +255,10 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _golf_render(struct battle *battle) {
 
-  const uint32_t wallcolor=0x005020ff;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80a0c0ff);
-  graf_fill_rect(&g.graf,0,0,FBW,WALL_T,wallcolor);
-  graf_fill_rect(&g.graf,0,0,WALL_L,FBH,wallcolor);
-  graf_fill_rect(&g.graf,WALL_R,0,FBW,FBH,wallcolor);
-  graf_fill_rect(&g.graf,0,WALL_B,FBW,FBH,wallcolor);
+  const uint32_t wallcolor=battle->ctab[BATTLE_COLOR_GROUND];
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(&g.graf,WALL_L-1,WALL_T-1,WALL_R-WALL_L+2,WALL_B-WALL_T+2,0x000000ff);
+  graf_fill_rect(&g.graf,WALL_L,WALL_T,WALL_R-WALL_L,WALL_B-WALL_T,battle->ctab[BATTLE_COLOR_SKY]);
   
   graf_set_image(&g.graf,RID_image_battle_labyrinth2);
   player_render(battle,BATTLE->playerv+0);

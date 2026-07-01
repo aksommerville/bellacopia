@@ -2,11 +2,12 @@
 
 #define GROUNDY 160 /* >16 off the framebuffer's bottom. */
 #define END_COOLDOWN 1.5
-#define SKY_COLOR 0x5e9fc7ff
-#define GROUND_COLOR 0x126e29ff
 #define FLIGHT_TIME 3.000 /* How long for the fish to go from bottom to top and back. */
 #define FISHDY_INITIAL -300.0
 #define FISHDY_ACCEL 250.0
+
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
 
 struct battle_greenfish {
   struct battle hdr;

@@ -5,12 +5,13 @@
 #include "game/bellacopia.h"
 
 #define GROUNDY 160 /* >16 off the framebuffer's bottom. */
-#define SKY_COLOR 0x5e9fc7ff
-#define GROUND_COLOR 0x126e29ff
 #define TENTACLE_COUNT 5
 #define MONSTER_SPEED 60.0 /* px/s. */
 #define MONSTER_Y_TOP 100 /* >=FBH-80 */
 #define MONSTER_Y_BOTTOM 250
+
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
 
 struct battle_seamonster {
   struct battle hdr;

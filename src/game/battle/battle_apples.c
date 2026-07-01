@@ -4,8 +4,6 @@
 #include "game/bellacopia.h"
 
 #define END_COOLDOWN 1.0
-#define SKY_COLOR 0x785830ff
-#define GROUND_COLOR 0x3c2011ff
 #define GROUNDY 110
 #define APPLE_LIMIT 12
 #define APPLE_SPEED_LO 20.0 /* px/s */
@@ -16,6 +14,9 @@
 #define CPU_DELAY_SHORT 1.000 /* Time from end of chewing to first possible bob. */
 #define CPU_DELAY_LONG  3.000
 #define CPU_HEADSTART 1.000 /* No bobbing this early in any match. */
+
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
 
 struct battle_apples {
   struct battle hdr;

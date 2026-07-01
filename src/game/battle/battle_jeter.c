@@ -13,7 +13,6 @@
 
 struct battle_jeter {
   struct battle hdr;
-  int choice;
   double playclock;
   
   struct player {
@@ -267,8 +266,8 @@ static void _jeter_update(struct battle *battle,double elapsed) {
 static void player_render_bg(struct battle *battle,struct player *player,int fldy) {
   const int fldh=FBH>>1;
   const int groundy=75;
-  graf_fill_rect(&g.graf,0,fldy,FBW,fldh,0x80c0f0ff);
-  graf_fill_rect(&g.graf,0,fldy+groundy,FBW,fldh-groundy,0x006020ff);
+  graf_fill_rect(&g.graf,0,fldy,FBW,fldh,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,fldy+groundy,FBW,fldh-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,fldy+groundy,FBW,1,0x000000ff);
 }
  

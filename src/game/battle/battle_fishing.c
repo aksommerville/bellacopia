@@ -2,8 +2,6 @@
 
 #define BASKET_LEVEL 120 /* Fish get caught only on the frame that they cross this. */
 #define GROUND_LEVEL 140
-#define SKY_COLOR 0x5e9fc7ff
-#define GROUND_COLOR 0x126e29ff
 #define DOT_X 100
 #define CAT_X 172
 #define COL0X 108
@@ -19,6 +17,9 @@
 #define FISH_TILE_COUNT 10
 #define DECISION_COUNT 15 /* How many sets of fish will fall. */
 #define END_COOLDOWN_TIME 1.0
+
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
 
 struct battle_fishing {
   struct battle hdr;

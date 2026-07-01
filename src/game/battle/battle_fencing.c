@@ -9,7 +9,6 @@
 
 struct battle_fencing {
   struct battle hdr;
-  int choice;
   
   struct player {
     int who; // My index in this list.
@@ -185,8 +184,8 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _fencing_render(struct battle *battle) {
   const int groundy=160;
-  graf_fill_rect(&g.graf,0,0,FBW,groundy,0x90d0f0ff);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH,0x104020ff);
+  graf_fill_rect(&g.graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,groundy,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_athletes);
   

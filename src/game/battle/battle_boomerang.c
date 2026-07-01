@@ -1,9 +1,10 @@
 #include "game/bellacopia.h"
 
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
+
 #define GROUND_LEVEL 140
-#define SKY_COLOR 0x5e9fc7ff
 #define SKY_COLOR_KAPOW 0x356380ff
-#define GROUND_COLOR 0x126e29ff
 #define END_COOLDOWN_TIME 1.000
 #define GRAB_TIME_INITIAL 2.000
 #define GRAB_TIME_LIMIT   0.250
@@ -27,6 +28,7 @@
 
 struct battle_boomerang {
   struct battle hdr;
+  uint32_t ctab[BATTLE_COLOR_COUNT];
   double end_cooldown;
   int input_blackout[3];
   double grab_time;

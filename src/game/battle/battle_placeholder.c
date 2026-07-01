@@ -117,7 +117,7 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _placeholder_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   
   // XXX Placeholder UI.
   int y=FBH/3;

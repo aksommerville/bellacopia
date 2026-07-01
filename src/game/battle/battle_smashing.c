@@ -22,7 +22,6 @@
 
 struct battle_smashing {
   struct battle hdr;
-  int choice;
   int bgtexid,bgw,bgh;
   
   struct player {
@@ -620,7 +619,7 @@ static void vegetable_render(struct battle *battle,struct vegetable *veg) {
  
 static void _smashing_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x805020ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   graf_set_input(&g.graf,BATTLE->bgtexid);
   graf_decal(&g.graf,0,FBH-BATTLE->bgh,0,0,BATTLE->bgw,BATTLE->bgh);
   graf_set_image(&g.graf,RID_image_battle_labyrinth2);

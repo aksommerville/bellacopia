@@ -13,16 +13,22 @@ struct prize;
 
 #define BATTLE_UNIVERSAL_TIMEOUT 60.0
 
+#define BATTLE_COLOR_SKY        0
+#define BATTLE_COLOR_GROUND     1
+#define BATTLE_COLOR_COUNT      2
+
 struct battle_args {
   uint8_t difficulty; // Scale the general difficulty, presumably applicable to both players. 0..128..255 = easy..default..hard.
   uint8_t bias; // Give one player an advantage over the other. 0..128..255 = left easy .. neutral .. right easy.
   uint8_t lctl,rctl; // Input source. 0=CPU, or player id.
   uint8_t lface,rface; // Hero appearance. NS_face_*. Might be limited to (0,1,2)=(monster,dot,princess). Best effort.
+  int mapid; // For color table. Zero to consult (g.camera), or invalid eg negative to force the default, meadow.
 };
 
 struct battle {
   const struct battle_type *type;
   struct battle_args args; // Copied from request; safe to write.
+  uint32_t ctab[BATTLE_COLOR_COUNT];
   int outcome; // -2 until established. Then (-1,0,1) = (right wins, tie, left wins). Play should stop immediately when set.
 };
 
@@ -79,5 +85,11 @@ void battle_normalize_bias(double *lskill,double *rskill,const struct battle *ba
  * If bias is used, our answer discusses the left player.
  */
 double battle_scalar_difficulty(const struct battle *battle);
+
+/* Hard-coded set of color tables which can account for Dot's location in the world.
+ * We'll produce sensible values for unknown maps too.
+ * You don't need to call this.
+ */
+void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid);
 
 #endif

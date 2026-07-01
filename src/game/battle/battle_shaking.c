@@ -230,8 +230,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _shaking_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0xa0d0f0ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x206030ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_fractia);
   

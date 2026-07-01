@@ -60,6 +60,11 @@ struct battle *battle_new(
   battle->type=type;
   battle->args=*args;
   battle->outcome=-2;
+  
+  // Prepare the color table automagically.
+  if (!battle->args.mapid&&g.camera.map) battle->args.mapid=g.camera.map->rid;
+  battle_get_ctab_by_id(battle->ctab,BATTLE_COLOR_COUNT,battle->args.mapid);
+  
   if (type->init&&(type->init(battle)<0)) {
     battle_del(battle);
     return 0;
@@ -170,4 +175,63 @@ void battle_normalize_bias(double *lskill,double *rskill,const struct battle *ba
 double battle_scalar_difficulty(const struct battle *battle) {
   if (battle->args.difficulty!=0x80) return (double)battle->args.difficulty/255.0;
   return (double)battle->args.bias/255.0;
+}
+
+/* Color tables.
+ * Logically these belong nearer the tilesheet resource, but that would be inconvenient.
+ */
+ 
+void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid) {
+  #define _(tag,rgba) if (dsta>BATTLE_COLOR_##tag) dst[BATTLE_COLOR_##tag]=rgba;
+  switch (imageid) {
+    // Most "_int" are unlikely to come up in real battles, but should mimic their Ext.
+    // Meadow and similar are the default. Call them out explicitly here so we don't log a reminder.
+    case RID_image_meadow:
+    case RID_image_botire:
+    case RID_image_botire_int:
+    case RID_image_cheapside:
+    case RID_image_cheapside_int:
+    case RID_image_battlefield:
+    case RID_image_battlefield_int:
+    case RID_image_fractia:
+    case RID_image_fractia_int:
+    case RID_image_mountains:
+    case 0: case -1: // These are ok as known unknowns.
+      break;
+    // Then on with the specialty ctabs...
+    case RID_image_caves: {
+        _(SKY,   0x785830ff)
+        _(GROUND,0x3c2011ff)
+      } return;
+    case RID_image_tundra:
+    case RID_image_tundra_int:
+    case RID_image_icepalace: {
+        _(SKY,   0x96ceedff)
+        _(GROUND,0xffffffff)
+      } return;
+    case RID_image_desert:
+    case RID_image_castle_ext:
+    case RID_image_castle_int: {
+        _(SKY,   0xa1d5dcff)
+        _(GROUND,0xb6963dff)
+      } return;
+    case RID_image_temple:
+    case RID_image_temple_int: {
+        _(SKY,   0x5bc3fbff)
+        _(GROUND,0x6c5d47ff)
+      } return;
+    case RID_image_labyrinth: {
+        _(SKY,   0x574949ff)
+        _(GROUND,0x776a5cff)
+      } return;
+    default: {
+        fprintf(stderr,"Unknown image %d for battle ctab. Using default.\n",imageid);
+      } break;
+  }
+  
+  // Default.
+  _(SKY,   0x5e9fc7ff)
+  _(GROUND,0x126e29ff)
+  
+  #undef _
 }

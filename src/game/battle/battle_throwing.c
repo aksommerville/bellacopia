@@ -354,8 +354,8 @@ static void player_render(struct battle *battle,struct player *player,int x,int 
  
 static void _throwing_render(struct battle *battle) {
   const int groundy=130;
-  graf_fill_rect(&g.graf,0,0,FBW,groundy,0x785830ff);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,0x3c2011ff);
+  graf_fill_rect(&g.graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
   
   int barw=(FBW*2)/3;

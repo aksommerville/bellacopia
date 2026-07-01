@@ -7,8 +7,9 @@
 
 #include "game/bellacopia.h"
 
-#define SKY_COLOR 0x785830ff
-#define GROUND_COLOR 0x3c2011ff
+#define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
+#define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
+
 #define GROUNDY 160
 #define DANGERY 140
 #define RADIUS 12

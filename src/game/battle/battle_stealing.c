@@ -679,8 +679,8 @@ static void sparkle_render(struct battle *battle,struct sparkle *sparkle) {
 static void _stealing_render(struct battle *battle) {
 
   // Background. Then everything else comes from the one image.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,0x785830ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x3c2011ff);
+  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_goblins);
   

@@ -148,7 +148,7 @@ static void _shovelthrowing_update(struct battle *battle,double elapsed) {
 static void _shovelthrowing_render(struct battle *battle) {
 
   // Sky and horizon. Don't draw the green earth yet.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x80c0f0ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   graf_set_image(&g.graf,RID_image_battle_skeleton);
   
@@ -209,7 +209,7 @@ static void _shovelthrowing_render(struct battle *battle) {
   
   // Now draw the green earth. It needs to occlude the skeleton.
   graf_set_input(&g.graf,0);
-  graf_fill_rect(&g.graf,0,GROUNDY+1,FBW,FBH-GROUNDY,0x006010ff);
+  graf_fill_rect(&g.graf,0,GROUNDY+1,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_set_image(&g.graf,RID_image_battle_skeleton);
   
   // Front of the hole.
