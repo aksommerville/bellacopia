@@ -243,7 +243,12 @@ static void fishpole_end(struct sprite *sprite) {
 static void fishpole_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
   if (SPRITE->fish==NS_itemid_seamonster) {
-    game_warp(RID_map_seamonster,NS_transition_fadeblack);
+    game_warp(RID_map_seamonster,NS_transition_fromblack);
+    /* We're in an awkward situation where the battle modal will dismiss, and story modal will render once before updating.
+     * Not a great fix, but if we send one fake update now to the camera, it will sync up immediately.
+     * The reason we don't sync like that normally is that it might happen during the sprite update cycle -- not a problem here.
+     */
+    camera_update(0.010);
   } else if (outcome>0) {
     game_get_item(SPRITE->fish,1);
     modal_battle_add_consequence(modal,SPRITE->fish,1);

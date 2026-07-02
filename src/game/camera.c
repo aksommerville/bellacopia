@@ -900,6 +900,17 @@ static void camera_render_fadevia(double t,uint32_t rgba) {
   if (alpha>0xff) alpha=0xff;
   graf_fill_rect(&g.graf,0,0,FBW,FBH,(rgba&0xffffff00)|alpha);
 }
+ 
+static void camera_render_fadefrom(double t,uint32_t rgba) {
+  // Draw the scene and rephrase (t) as 0..1 = transparent..black.
+  camera_render_pretransition(1);
+  t=1.0-t;
+  // Draw the blackout on top.
+  int alpha=(int)(t*255.0);
+  if (alpha<1) return;
+  if (alpha>0xff) alpha=0xff;
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,(rgba&0xffffff00)|alpha);
+}
 
 /* Render, main.
  */
@@ -934,6 +945,7 @@ void camera_render() {
     case NS_transition_spotlight: camera_render_spotlight(t); return;
     case NS_transition_crossfade: camera_render_crossfade(t); return;
     case NS_transition_fadeblack: camera_render_fadevia(t,0x000000ff); return;
+    case NS_transition_fromblack: camera_render_fadefrom(t,0x000000ff); return;
   }
   camera_render_pretransition(1);
 }
@@ -958,6 +970,7 @@ void camera_cut(int mapid,int subcol,int subrow,int transition) {
     // Typical transition are good to go.
     case NS_transition_crossfade:
     case NS_transition_fadeblack:
+    case NS_transition_fromblack:
       break;
     
     // Spotlight needs to sample the hero position before and after.

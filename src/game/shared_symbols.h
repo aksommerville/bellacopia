@@ -129,6 +129,7 @@
 #define NS_transition_spotlight 1
 #define NS_transition_crossfade 2
 #define NS_transition_fadeblack 3
+#define NS_transition_fromblack 4 /* Start with a hard cut to black, then fade in. */
 
 // Compass target classes. Value is strix in strings:item for the target's display name.
 #define NS_compass_home 40

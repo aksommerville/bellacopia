@@ -40,15 +40,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
 - - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
-- [ ] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up.
-- [ ] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
-- - [ ] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
+- [x] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up. ...no need. it's there if we need it
+- [x] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
+- - [x] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
 - - UPDATE: Power Glove does this now, and that's probably enough.
+- - ...between power glove and goodlucks, I think we're covered for this.
 - [ ] More spells. Not sure what...
-- [ ] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
+- [x] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
 - [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
-- - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 - [x] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
@@ -120,14 +119,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Dark some regions.
 
 - Battle repairs.
-- [ ] Usable IP for the erudition contest.
-- [ ] Crying Contest: No handicap variance in 2-player mode. Should we force some?
-- [ ] Racketeering contest badly needs more juice when you hit the ball.
-- [ ] Mind Control Contest: Make a more continuous connection state, like sometimes the connection is better than others.
-- [ ] Fishing contest: Smarter cvc decisions; right now they run exactly the same.
+- [ ] boomerang: Sounds for throw and catch.
+- [ ] crying: No handicap variance in 2-player mode. Should we force some?
+- [ ] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
-- [ ] boomerang: Sounds for throw and catch.
+- [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
+- [ ] racketeering: Badly needs more juice when you hit the ball.
+- [ ] seamonster: Butt ugly, and not in a good way.
+- [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
+- - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.
