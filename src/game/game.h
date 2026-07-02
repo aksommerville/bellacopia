@@ -62,6 +62,7 @@ struct item_detail {
   int strix_help; // strings:item, extra text to display when we get the item.
   int initial_limit; // Zero if quantity not applicable. If negative, it's a fld16 holding the limit.
   int inventoriable; // May add to inventory.
+  int intermediate; // If (inventoriable), it behaves normally but doesn't count for completion purposes. eg war letters.
   int fld16; // Zero or NS_fld16_* where to store the quantity.
 };
 const struct item_detail *item_detail_for_itemid(int itemid);

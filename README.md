@@ -38,8 +38,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Make something happen if you beat a guild outside the election.
-- [ ] Rearrange Fractia to make the log and Board of Elections more prominent.
-- - ...got the log positioned better now. But we still need more decoration on BoE and maybe move it. And a statue of the mayor.
 - [x] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up. ...no need. it's there if we need it
 - [x] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
 - - [x] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
@@ -47,7 +45,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...between power glove and goodlucks, I think we're covered for this.
 - [ ] More spells. Not sure what...
 - [x] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
-- [ ] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
+- [x] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
 - [x] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
 - - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
@@ -64,6 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Rearrange red guards so you can't get the Hookshot until the war is over, and put a one-way door from the Fractia Root Devil into the Mountains.
 - - Intent is that you can rescue the Princess after completing either one of the early quests.
 - - ...actually that won't work: You need Hookshot or Broom to get the jail key. And it's really awkward leaving the meadow without a Hookshot, don't let that be easy to do.
+- [ ] Should be able to whack the Princess with your stick.
 
 - Fill out maps.
 - [ ] Fractia
@@ -196,6 +195,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Instruction manual + strategy guide, to bundle with thumb drives.
 - - [ ] Book of sheet music.
 - - [ ] Videos.
+- - - [ ] 30 second demo reel. Gameplay only. For linking on storefronts.
+- - - [ ] 10-15 minute promo loop. High resolution with overlay messaging. For running in the background at cons.
+- - - [ ] Walkthrough: Full clear. And play every battle.
+- - - [ ] Walkthrough: Any% speed run.
+- - - [ ] Walkthrough: Minimalist.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
 - - - $130 at bannerbuzz.com.

@@ -90,8 +90,17 @@ int game_get_completion() {
   d=0; n=FLDV_COUNT(&d,fldv_zookeeper); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_bridge); if (n<d) return 1;
   d=0; n=FLDV_COUNT(&d,fldv_broomrace); if (n<d) return 1;
+  
+  // Any empty inventory slot, we're incomplete.
   const struct invstore *invstore=g.store.invstorev;
-  for (n=INVSTORE_SIZE;n-->0;invstore++) if (!invstore->itemid) return 1;
+  for (n=INVSTORE_SIZE;n-->0;invstore++) {
+    if (!invstore->itemid) return 1;
+  }
+  // With inventory full, check if any is intermediate. Separate from the first pass because this lookup has some cost.
+  for (n=INVSTORE_SIZE,invstore=g.store.invstorev;n-->0;invstore++) {
+    const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
+    if (!detail||detail->intermediate) return 1;
+  }
   
   // Reading jigstore is potentially expensive. We do cache the result, but it clears a lot.
   if (!jigstore_is_complete()) return 1;
@@ -170,7 +179,12 @@ int game_get_completables(struct completable *dst,int dsta) {
     const struct invstore *invstore=g.store.invstorev;
     int i=INVSTORE_SIZE;
     for (;i-->0;invstore++) {
-      if (invstore->itemid) comp->numer++; // We only care whether it has been got, not whether there's any quantity.
+      if (invstore->itemid) {
+        const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
+        if (detail&&detail->intermediate) continue; // Certain odd items can be in inventory but don't count toward completion.
+        // Don't bother checking quantity. We only care whether the slot is apportioned, it's ok if you've run out.
+        comp->numer++;
+      }
     }
   }
   dstc++;

@@ -202,6 +202,7 @@ static const struct item_detail item_detailv[]={
     .strix_help=51,
     .initial_limit=0,
     .inventoriable=1,
+    .intermediate=1,
     .fld16=0,
   },
   [NS_itemid_telescope]={
@@ -247,6 +248,7 @@ static const struct item_detail item_detailv[]={
     .strix_help=62,
     .initial_limit=0,
     .inventoriable=1,
+    .intermediate=1,
     .fld16=0,
   },
   [NS_itemid_letter2]={
@@ -256,6 +258,7 @@ static const struct item_detail item_detailv[]={
     .strix_help=63,
     .initial_limit=0,
     .inventoriable=1,
+    .intermediate=1,
     .fld16=0,
   },
   [NS_itemid_letter3]={
@@ -265,6 +268,7 @@ static const struct item_detail item_detailv[]={
     .strix_help=64,
     .initial_limit=0,
     .inventoriable=1,
+    .intermediate=1,
     .fld16=0,
   },
   [NS_itemid_letter4]={
@@ -274,6 +278,7 @@ static const struct item_detail item_detailv[]={
     .strix_help=65,
     .initial_limit=0,
     .inventoriable=1,
+    .intermediate=1,
     .fld16=0,
   },
   [NS_itemid_bomb]={
