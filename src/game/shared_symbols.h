@@ -437,6 +437,7 @@
 #define NS_battle_snowboard 63
 #define NS_battle_hockey 64
 #define NS_battle_medomat 65
+#define NS_battle_morsecode 66
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -502,7 +503,8 @@
   _(bobsleigh) \
   _(snowboard) \
   _(hockey) \
-  _(medomat)
+  _(medomat) \
+  _(morsecode)
 
 /* "fld" are single bits.
  */

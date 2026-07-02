@@ -80,7 +80,7 @@
   2      Math              Owl                Woodland
   2____D MindControl       Nyarlathotep       Labyrinth
   2      Mixing            Drunk              City
-  2      MorseCode         Walrus             Tundra
+  2____D MorseCode         Walrus             Tundra
   2      Newspaper         Boy                City
   2      Pairing           Snake              Jungle
  R2      Parachute         Chicken            Desert

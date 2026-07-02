@@ -95,4 +95,3 @@ Tic Tac Toe. The whole game.
 Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
 Wrecking. Mini platformer full of fragile things and you have a giant hammer.
 Calligraphy. Paint a reference figure.
-Morse Code. Tap out a short message with A. Key visible on screen, but you can only win higher diffs by remembering.

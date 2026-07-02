@@ -33,42 +33,26 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
-- [x] Some fanfare and cooldown at gameover. See `sprite_hero.c:hero_hurt()`. Also we're showing the outer world for one frame before returning to menu, don't do that.
 - [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Make something happen if you beat a guild outside the election.
-- [x] Should firepot be switchable? It wouldn't take much. But I don't have a use for it lined up. ...no need. it's there if we need it
-- [x] Some kind of lucky charm that makes the next battle minimum difficulty. Very hard to get, but also repeatable. So there's always a way to win any battle, if you work for it.
-- - [x] Make it a spell: The Spell of Taming. Must cast close to the monster to be tamed, so there's some challenge and inconvenience to it. No effect on Root Devils.
-- - UPDATE: Power Glove does this now, and that's probably enough.
-- - ...between power glove and goodlucks, I think we're covered for this.
 - [ ] More spells. Not sure what...
-- [x] I don't like how camera briefly returns to the outerworld when getting swallowed by sea monster.
-- [x] For purposes of inventory completion, maybe we should flag "intermediate" items like Barrel Hat and Letter.
-- [x] Maybe after so many tree stories are told, the trees can give hints. "I'd love to hear a story about the jungle temple" kind of thing.
-- - They're hinted by the Cartographer, and they're not exactly secret to begin with, so low priority here.
 - [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
 - - The zoos should do this instead. Once an animal is captured, you can battle it at will at the zoo, but it won't appear randomly anymore.
-- [x] Can we abstract out the default sky and ground color for battles? eg Shovel Throwing Contest can happen anywhere and maybe it should adapt to the local scenery.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
-- [x] Definitely need some toast at the moment a goodluck is spent. When you spend it by accident, you might not notice.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
-- [x] Med-O-Matic self-serve healing machine at the hospital. A minigame where you can recover one, maybe two hearts, at no risk. Or maybe costs one gold to use.
-- [x] Stick, Jigpiece, Treasure sprites are not solid, but should fake it during earthquakes, so you can't quake them into walls.
-- [x] Ton and Pound blocks should be Hookshot-grabbable, but pull you toward. Then Ounce getting pulled isn't a surprise.
-- [x] Rearrange red guards so you can't get the Hookshot until the war is over, and put a one-way door from the Fractia Root Devil into the Mountains.
-- - Intent is that you can rescue the Princess after completing either one of the early quests.
-- - ...actually that won't work: You need Hookshot or Broom to get the jail key. And it's really awkward leaving the meadow without a Hookshot, don't let that be easy to do.
 - [ ] Should be able to whack the Princess with your stick.
+
+- Battles written but not placed.
+- morsecode: Walrus, Tundra.
 
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
 - - - Maybe eliminate the northernmost street, pad with trees for more separation from tundra.
-- - [x] Hospital
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Vacant house next to Labor Union
@@ -82,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Exteriors.
 - - [ ] Dot's house
 - - [ ] Blood Bank. Are we even keeping this?
+- - - Replace with Goody's house: She tells you about the wand and teaches spells.
 - - [ ] Underground entrance house
 - - [ ] Fishwife
 - - [ ] Carpenter
@@ -302,6 +287,8 @@ Before the first release, validate and clean up this list. And if in-game credit
 - - The official position taken by the Wikimedia Foundation is that "faithful reproductions of two-dimensional public domain works of art are public domain".
 - - This photographic reproduction is therefore also considered to be in the public domain in the United States. 
 - Telekinesis Contest: Reference to the old janx spirit drinking game in Hitchhiker's Guide to the Galaxy.
+- Morse Code Contest: "Northern Union" is a reference to the telegraph company Western Union, used without permission (I assume Fair Use).
+- Morse Code Contest: "What hath God wrought" -Samuel Morse
 
 ## Morally Questionable
 
