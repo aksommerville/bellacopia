@@ -439,6 +439,7 @@
 #define NS_battle_medomat 65
 #define NS_battle_morsecode 66
 #define NS_battle_calligraphy 67
+#define NS_battle_wrecking 68
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -506,7 +507,8 @@
   _(hockey) \
   _(medomat) \
   _(morsecode) \
-  _(calligraphy)
+  _(calligraphy) \
+  _(wrecking)
 
 /* "fld" are single bits.
  */

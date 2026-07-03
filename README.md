@@ -45,10 +45,39 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
 - [ ] Should be able to whack the Princess with your stick.
+- [ ] Home Run Derby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
+- [ ] Make things you can burn with Pepper or Matches.
+- [ ] Fire needs to hurt monsters. I mean, it's fire!
+- [ ] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
+- [ ] Can we enable Marionette to push blocks?
+- [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 
 - Battles written but not placed.
 - morsecode: Walrus, Tundra.
 - calligraphy: Elephant, Jungle.
+- wrecking: Vandal, Battlefield.
+
+- Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
+- - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
+- - Do be mindful of the Minimalist path, it needs to stay item-free.
+- - [ ] Economy of Motion style keystroke tracker.
+- - [ ] Sokoban in the real world. Include Ounce blocks that you can Hookshot, and unreachable blocks that you have to Snowglobe.
+- - - Or bits where you could either Vanishing Cream into a side channel to push, or Snowglobe.
+- - [ ] Also diegetic Bomberman, same idea as Sokoban.
+- - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
+- - [ ] Constant flamethrower with a stompbox behind it, to require Marionette.
+- - [ ] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
+- - [ ] Conveyor belts.
+- - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Diving Rod too.
+- - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
+- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
+- - [ ] A cow or something, that approaches you when you ring the bell.
+- - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
+- - [ ] Ice floor, that you slide until you hit the wall.
+- - [ ] Is diegetic Minesweeper possible? You indicate a safe cell by walking on it, and you can only operate on a contiguous region. Unless you have the Broom.
+- - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
+- - [ ] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
+- - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
 - [ ] Fractia
@@ -155,6 +184,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Continuous root paths leading to each root devil.
 - [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
 - Manual validation before release.
+- [ ] Ensure I removed all AUX2-to-win from battles.
 - [ ] Minimal completion possible.
 - [ ] 100% completion possible.
 - [ ] Crystal Ball, compass, and cartographer always give sane advice.
