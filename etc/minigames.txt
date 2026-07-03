@@ -147,7 +147,7 @@
  R2      Umbrella          Kitten             Farm
   2____D Watching          Cook               Fractia
   2      Watermelon        Aardvark           Desert
-  2      Weaving           Spider             Cave
+  2____D Weaving           Spider             Cave
   2      Whining           Cub                Woodland
   2      Wining            Hippopotamus       Farm
   2      Wrapping          Santa              Tundra

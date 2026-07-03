@@ -56,6 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - morsecode: Walrus, Tundra.
 - calligraphy: Elephant, Jungle.
 - wrecking: Vandal, Battlefield.
+- weaving: Spider, Underground.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
