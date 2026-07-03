@@ -17,7 +17,7 @@
   2____D Building          Contractor         Fractia
   2      Burrowing         Mole               Cave
   2____D CakeCarrying      Baker              Fractia
-  2      Calligraphy       Elephant           Jungle
+  2____D Calligraphy       Elephant           Jungle
   2      Cartography       Geographer         Tundra
   2      CeilingTouching   Giant              Cave
   1____D Cheating          Hustler            Fractia

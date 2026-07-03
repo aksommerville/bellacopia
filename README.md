@@ -48,6 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Battles written but not placed.
 - morsecode: Walrus, Tundra.
+- calligraphy: Elephant, Jungle.
 
 - Fill out maps.
 - [ ] Fractia

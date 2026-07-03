@@ -94,4 +94,3 @@ Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward
 Tic Tac Toe. The whole game.
 Weaving. A weft thread moves horizontally on its own, U/D to alternate between warps.
 Wrecking. Mini platformer full of fragile things and you have a giant hammer.
-Calligraphy. Paint a reference figure.
