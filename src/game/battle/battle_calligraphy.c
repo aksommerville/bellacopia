@@ -68,9 +68,9 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   if (player->human=human) { // Human.
     if (player->skill>=0.400) player->use_indicator=1;
   } else { // CPU.
-    player->penspeed*=0.700; // cpu penalty
-    player->overshoot=(int)(12.0*(1.0-player->skill));
-    player->fudge=(int)(8.0*(1.0-player->skill));
+    player->penspeed*=0.500; // cpu penalty
+    player->overshoot=(int)(14.0*(1.0-player->skill));
+    player->fudge=(int)(10.0*(1.0-player->skill));
   }
   switch (face) {
     case NS_face_monster: {

@@ -47,7 +47,7 @@
   2      Fanning           Courtier           City
   2____D Fencing           Samurai            Fractia
   2____D FigureSkating     IceDragon          IcePalace
-  2      Fire              Fox                Woodland
+  2____D Fire              Fox                Woodland
   2      Fission           Fishicist          Sea
   2E___D Fishing           Leopard            Jungle
   2____D Flapjack          Cook               Fractia

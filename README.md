@@ -58,6 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - wrecking: Vandal, Battlefield.
 - weaving: Spider, Underground.
 - tictactoe: Raccoon, Forest.
+- fire: Fox, Forest.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -221,7 +222,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
 - - - $130 at bannerbuzz.com.
-- - [ ] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these. ...ordered (these 4 things) 2026-06-27
+- - [x] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these. ...ordered (these 4 things) 2026-06-27
 - - - `title_vines_padded-5923px.png`: 3x2" sticker
 - - - `mixnmatch-master.png`: 4x6" sticker sheet
 - - - `pin-tree-256px.png`: Acrylic pin
@@ -356,3 +357,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Stitching together single-screen maps was probably a mistake. I think one map per plane would have worked smoother.
 - The "activity" abstraction works great, I should do something similar in every big game.
 - Monthly goals and reports, my estimates were all way off, but this seems a healthy practice. Make a habit of it for large games.
+- Pick an orientation for sprites! I've settled on rightward as the default, but some early sprites (eg Dot) are leftward. Good to be consistent about that.
