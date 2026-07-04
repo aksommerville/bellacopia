@@ -202,29 +202,39 @@ void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid) {
       break;
     // Then on with the specialty ctabs...
     case RID_image_caves: {
-        _(SKY,   0x785830ff)
-        _(GROUND,0x3c2011ff)
+        _(SKY,        0x785830ff)
+        _(GROUND,     0x3c2011ff)
+        _(SKY_TEXT,   0xffffffff)
+        _(GROUND_TEXT,0xffffffff)
       } return;
     case RID_image_tundra:
     case RID_image_tundra_int:
     case RID_image_icepalace: {
-        _(SKY,   0x96ceedff)
-        _(GROUND,0xffffffff)
+        _(SKY,        0x96ceedff)
+        _(GROUND,     0xffffffff)
+        _(SKY_TEXT,   0x000000ff)
+        _(GROUND_TEXT,0x000000ff)
       } return;
     case RID_image_desert:
     case RID_image_castle_ext:
     case RID_image_castle_int: {
-        _(SKY,   0xa1d5dcff)
-        _(GROUND,0xb6963dff)
+        _(SKY,        0xa1d5dcff)
+        _(GROUND,     0xb6963dff)
+        _(SKY_TEXT,   0x000000ff)
+        _(GROUND_TEXT,0xffffffff)
       } return;
     case RID_image_temple:
     case RID_image_temple_int: {
-        _(SKY,   0x5bc3fbff)
-        _(GROUND,0x6c5d47ff)
+        _(SKY,        0x5bc3fbff)
+        _(GROUND,     0x6c5d47ff)
+        _(SKY_TEXT,   0x000000ff)
+        _(GROUND_TEXT,0xffffffff)
       } return;
     case RID_image_labyrinth: {
-        _(SKY,   0x574949ff)
-        _(GROUND,0x776a5cff)
+        _(SKY,        0x574949ff)
+        _(GROUND,     0x776a5cff)
+        _(SKY_TEXT,   0x000000ff)
+        _(GROUND_TEXT,0xffffffff)
       } return;
     default: {
         fprintf(stderr,"Unknown image %d for battle ctab. Using default.\n",imageid);
@@ -232,8 +242,10 @@ void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid) {
   }
   
   // Default.
-  _(SKY,   0x5e9fc7ff)
-  _(GROUND,0x126e29ff)
+  _(SKY,        0x5e9fc7ff)
+  _(GROUND,     0x126e29ff)
+  _(SKY_TEXT,   0x000000ff)
+  _(GROUND_TEXT,0xffffffff)
   
   #undef _
 }

@@ -167,7 +167,6 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void _flapping_update(struct battle *battle,double elapsed) {
-  if (battle->outcome>-2) return;
   
   struct player *player=BATTLE->playerv;
   int i=2;
@@ -177,13 +176,14 @@ static void _flapping_update(struct battle *battle,double elapsed) {
     player_update_common(battle,player,elapsed);
   }
   
-  struct player *l=BATTLE->playerv;
-  struct player *r=l+1;
-  if (l->done&&r->done) {
-    if (l->runclock<r->runclock) battle->outcome=1;
-    else if (l->runclock>r->runclock) battle->outcome=-1;
-    else battle->outcome=0;
-    return;
+  if (battle->outcome==-2) {
+    struct player *l=BATTLE->playerv;
+    struct player *r=l+1;
+    if (l->done&&r->done) {
+      if (l->runclock<r->runclock) battle->outcome=1;
+      else if (l->runclock>r->runclock) battle->outcome=-1;
+      else battle->outcome=0;
+    }
   }
 }
 
@@ -213,7 +213,6 @@ static void player_render(struct battle *battle,struct player *player) {
 }
 
 static void render_time(struct battle *battle,struct player *player) {
-  graf_set_image(&g.graf,RID_image_fonttiles);
   int ms=(int)(player->runclock*1000.0);
   if (ms<0) ms=0;
   int sec=ms/1000; ms%=1000;
@@ -253,8 +252,11 @@ static void _flapping_render(struct battle *battle) {
   player_render(battle,r);
   
   // Show times for finished players.
+  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
   if (l->done) render_time(battle,l);
   if (r->done) render_time(battle,r);
+  graf_set_tint(&g.graf,0);
 }
 
 /* Type definition.

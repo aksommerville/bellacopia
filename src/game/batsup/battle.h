@@ -13,9 +13,11 @@ struct prize;
 
 #define BATTLE_UNIVERSAL_TIMEOUT 60.0
 
-#define BATTLE_COLOR_SKY        0
-#define BATTLE_COLOR_GROUND     1
-#define BATTLE_COLOR_COUNT      2
+#define BATTLE_COLOR_SKY         0
+#define BATTLE_COLOR_GROUND      1
+#define BATTLE_COLOR_SKY_TEXT    2 /* Always good contast against sky. */
+#define BATTLE_COLOR_GROUND_TEXT 3 /* Always good contast against ground. */
+#define BATTLE_COLOR_COUNT       4
 
 struct battle_args {
   uint8_t difficulty; // Scale the general difficulty, presumably applicable to both players. 0..128..255 = easy..default..hard.

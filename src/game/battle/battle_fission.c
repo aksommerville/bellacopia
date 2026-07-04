@@ -318,7 +318,7 @@ static void _fission_update(struct battle *battle,double elapsed) {
   if (BATTLE->level==LEVEL_CRITICAL) {
     if ((BATTLE->blowclock-=elapsed)<=0.0) {
       BATTLE->doomsday=0.001;
-      egg_play_song(1,0,0,0.0,0.0);
+      bm_song_gently(0);
       BATTLE->stopped_music=1;
     } else if (BATTLE->blowclock<=BATTLE->klaxtime) {
       bm_sound(RID_sound_klaxon);
