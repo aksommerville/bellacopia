@@ -141,7 +141,7 @@
   2____D Telekinesis       Psychic            Labyrinth
   2      Tempting          Siren              Sea
   2____D Throwing          Loblin             Goblins
-  2      TicTacToe         Raccoon            Woodland
+  2____D TicTacToe         Raccoon            Woodland
   2____D Topping           HotDogVendor       Fractia
  R2____D Traffic           Cop                Fractia
  R2      Umbrella          Kitten             Farm

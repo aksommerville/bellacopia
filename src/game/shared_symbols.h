@@ -441,6 +441,7 @@
 #define NS_battle_calligraphy 67
 #define NS_battle_wrecking 68
 #define NS_battle_weaving 69
+#define NS_battle_tictactoe 70
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -510,7 +511,8 @@
   _(morsecode) \
   _(calligraphy) \
   _(wrecking) \
-  _(weaving)
+  _(weaving) \
+  _(tictactoe)
 
 /* "fld" are single bits.
  */
