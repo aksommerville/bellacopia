@@ -3,7 +3,6 @@ Minigames, sorted roughly by estimated effort to implement.
 Remove finished games as you go.
 
 ## Easy
-Fission. Tap A until the atom splits.
 Flapping. Tap A.
 Frog Eating. A to grab and eat a frog, when it hops near.
 Distancing. Dpad to get as far from everyone as possible.

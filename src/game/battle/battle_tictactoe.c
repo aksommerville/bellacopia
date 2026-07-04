@@ -29,6 +29,7 @@ struct battle_tictactoe {
     
     int nextx,nexty;
     double cpuclock;
+    double checkodds; // 0..1 = never..always, how often do we check for force plays
   } playerv[2];
 };
 
@@ -60,10 +61,11 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   } else { // CPU.
     player->cpuclock=CPU_THINK_TIME;
     player->nextx=player->nexty=-1;
+    player->checkodds=0.100*(1.0-player->skill)+0.900*player->skill;
   }
   switch (face) {
     case NS_face_monster: {
-        player->color=0x808080ff;//TODO per monster
+        player->color=0x808080ff;
         player->tileid+=0x24;
       } break;
     case NS_face_dot: {
@@ -221,8 +223,11 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
     int availablev[9]; // fld index
     int availablec=0;
     
-    // One little sop to sanity: At most skill levels, at least check whether someone is about to win.
-    if (player->skill>=0.450) {
+    /* With (checkodds) zero, we play randomly.
+     * At one, we check for two-in-a-rows every turn, like a sane player.
+     */
+    double checkn=(rand()&0xffff)/65535.0;
+    if (checkn<player->checkodds) {
       int ix;
       if ((ix=tictactoe_all_but_one(battle,0,1,2,player->cell))>=0) availablev[availablec++]=ix;
       if ((ix=tictactoe_all_but_one(battle,3,4,5,player->cell))>=0) availablev[availablec++]=ix;

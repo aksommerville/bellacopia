@@ -29,7 +29,7 @@ struct battle {
   const struct battle_type *type;
   struct battle_args args; // Copied from request; safe to write.
   uint32_t ctab[BATTLE_COLOR_COUNT];
-  int outcome; // -2 until established. Then (-1,0,1) = (right wins, tie, left wins). Play should stop immediately when set.
+  int outcome; // -2 until established. Then (-1,0,1,2) = (right wins, tie, left wins, catastrophe). Play should stop immediately when set.
 };
 
 struct battle_type {

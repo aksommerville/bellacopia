@@ -124,7 +124,9 @@ static int battle_generate_report_text(char *dst,int dsta,struct modal *modal) {
   int dstc=0;
   
   // One-line summary if a name was provided. When it's a tie, they must have supplied both, and we use neither.
-  if (MODAL->outcome>0) {
+  if (MODAL->outcome==2) { // Special case for annhilation. fission uses it.
+    dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,270,0,0);
+  } else if (MODAL->outcome>0) {
     if (MODAL->left_name<0) {
       dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,-MODAL->left_name,0,0);
     } else if (MODAL->left_name>0) {
@@ -346,14 +348,16 @@ static void battle_finish(struct modal *modal) {
   );
   MODAL->stage=STAGE_REPORT;
   MODAL->timeout=0.500;
+  int report_outcome=MODAL->outcome;
+  if (report_outcome==2) report_outcome=-1; // Report "annhiliation" as "lose", so further-up sites don't need to implement it.
   // Important: Callback to owner, then generate report. We expect to be told about the consequences during this callback.
   if (MODAL->cb) {
-    MODAL->cb(modal,MODAL->outcome,MODAL->userdata);
+    MODAL->cb(modal,report_outcome,MODAL->userdata);
     MODAL->cb=0;
   }
   if (MODAL->skip_outtro) {
     if (MODAL->cb_final) {
-      MODAL->cb_final(modal,MODAL->outcome,MODAL->userdata);
+      MODAL->cb_final(modal,report_outcome,MODAL->userdata);
       MODAL->cb_final=0;
     }
     modal->defunct=1;
@@ -362,7 +366,7 @@ static void battle_finish(struct modal *modal) {
     // If the report is empty, don't bother showing it, just terminate.
     if ((MODAL->report_w<1)||(MODAL->report_h<1)) {
       if (MODAL->cb_final) {
-        MODAL->cb_final(modal,MODAL->outcome,MODAL->userdata);
+        MODAL->cb_final(modal,report_outcome,MODAL->userdata);
         MODAL->cb_final=0;
       }
       modal->defunct=1;
@@ -409,7 +413,9 @@ static void battle_update_report(struct modal *modal,double elapsed) {
     MODAL->timeout-=elapsed;
   } else if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
     if (MODAL->cb_final) {
-      MODAL->cb_final(modal,MODAL->outcome,MODAL->userdata);
+      int report_outcome=MODAL->outcome;
+      if (report_outcome==2) report_outcome=-1;
+      MODAL->cb_final(modal,report_outcome,MODAL->userdata);
       MODAL->cb_final=0;
     }
     modal->defunct=1;

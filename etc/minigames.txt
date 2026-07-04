@@ -48,7 +48,7 @@
   2____D Fencing           Samurai            Fractia
   2____D FigureSkating     IceDragon          IcePalace
   2____D Fire              Fox                Woodland
-  2      Fission           Fishicist          Sea
+  2____D Fission           Fishicist          Sea
   2E___D Fishing           Leopard            Jungle
   2____D Flapjack          Cook               Fractia
  R2      Flapping          Albatross          Sea

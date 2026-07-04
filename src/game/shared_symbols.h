@@ -443,6 +443,7 @@
 #define NS_battle_weaving 69
 #define NS_battle_tictactoe 70
 #define NS_battle_fire 71
+#define NS_battle_fission 72
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -514,7 +515,8 @@
   _(wrecking) \
   _(weaving) \
   _(tictactoe) \
-  _(fire)
+  _(fire) \
+  _(fission)
 
 /* "fld" are single bits.
  */
