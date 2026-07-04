@@ -51,7 +51,7 @@
   2____D Fission           Fishicist          Sea
   2E___D Fishing           Leopard            Jungle
   2____D Flapjack          Cook               Fractia
- R2      Flapping          Albatross          Sea
+ R2____D Flapping          Albatross          Sea
   2      Flipping          Ostrich            Desert
   2      FloeChart         PolarBear          Tundra
   2      Flying            Sparrow            Farm
