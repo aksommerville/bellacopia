@@ -99,6 +99,7 @@ int sprite_hero_is_injured(struct sprite *sprite);
 int sprite_hero_is_escorting_princess(const struct sprite *sprite); // True only during transitions. Intended for door activities to consume.
 uint8_t sprite_hero_get_facedir(const struct sprite *sprite);
 int sprite_hero_get_item_in_play(const struct sprite *sprite); // Not the held item; only nonzero when actively in use.
+int sprite_hero_is_grounded(const struct sprite *sprite); // We'll be savvy to some other types too. Anything in GRP(hero) should be valid.
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

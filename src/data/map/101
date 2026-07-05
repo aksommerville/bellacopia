@@ -23,4 +23,4 @@ sprite @10,2 sprite:thingwalla (u16:activity)cheat_store (u16:activity_arg)3
 sprite @4,2 sprite:thingwalla (u16:activity)cheat_store (u16:activity_arg)1
 bump @1,2 (u16:activity)cheatstories (u32)0
 bump @16,2 (u16:activity)crocodile (u16)0 (u16)0
-door @18,9 map:211 @14,4 0x0000
+door @18,9 map:225 @14,10 0x0000

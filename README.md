@@ -52,6 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
 - [ ] Can we enable Marionette to push blocks?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
+- [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
 
 - Battles written but not placed.
 
@@ -66,13 +67,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Constant flamethrower with a stompbox behind it, to require Marionette.
 - - [ ] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
 - - [ ] Conveyor belts.
-- - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Diving Rod too.
+- - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
 - - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
 - - [ ] Ice floor, that you slide until you hit the wall.
-- - [ ] Is diegetic Minesweeper possible? You indicate a safe cell by walking on it, and you can only operate on a contiguous region. Unless you have the Broom.
+- - [x] Is diegetic Minesweeper possible? You indicate a safe cell by walking on it, and you can only operate on a contiguous region. Unless you have the Broom.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
@@ -133,6 +134,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Battle repairs.
 - [ ] boomerang: Sounds for throw and catch.
 - [ ] crying: No handicap variance in 2-player mode. Should we force some?
+- [ ] election: When in arcade mode, apportion endorsers per bias.
 - [ ] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
@@ -280,6 +282,22 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - `story14` The Witch With Lots Of Heart: TODO (could be anything)
 - `story15` Pocketfuls of Gold: TODO ('')
 - `story16` The Brewing of Potions: Sell directly at the potion shop.
+
+## Battles That Aren't Real Battles
+
+- Technicalities, not part of the game.
+- - placeholder
+- Cutscenes, implemented as battle for silly technical reasons.
+- - seamonster
+- Interactions you trigger with an item.
+- - greenfish
+- - bluefish
+- - redfish
+- - shovelthrowing
+- Narrative one-offs.
+- - strangling
+- - election
+- - medomat
 
 ## Acknowledgements
 

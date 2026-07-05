@@ -338,6 +338,7 @@
 #define NS_sprtype_icedragon       29 /* (u8:seq)0 (u24)0 */
 #define NS_sprtype_icedragon_inter 30 /* (u32)0 */
 #define NS_sprtype_soulballs       31 /* (u8)ballc (u24)0 */
+#define NS_sprtype_minesweeper     32 /* (u16:fld)0 (u16)0 ; Place at top-left corner. Not a real sprite; just serves to control the minigame. */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -370,7 +371,8 @@
   _(racer) \
   _(icedragon) \
   _(icedragon_inter) \
-  _(soulballs)
+  _(soulballs) \
+  _(minesweeper)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -672,6 +674,7 @@
 #define NS_fld_race5win 148 /* desert_run */
 #define NS_fld_race6win 149 /* undernorth */
 #define NS_fld_moonsong_intro 150
+#define NS_fld_minesweep1 151 /* Far north underground. */
 
 /* "fld16" are 16 unsigned bits each.
  */

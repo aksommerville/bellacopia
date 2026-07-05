@@ -148,6 +148,8 @@ Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
 
 ## July 2026
 
+To simplify a little, battle counts from here on will just be `wc -l src/game/battle`. That adds one to this month's count artificially.
+
 Goals:
 - [ ] 20 new battles.
 - [ ] Cutscenes.

@@ -1,0 +1,2 @@
+type (u16:sprtype)minesweeper
+groups (b32:sprgrp)update

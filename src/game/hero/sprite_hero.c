@@ -403,3 +403,16 @@ int sprite_hero_get_item_in_play(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
   return SPRITE->itemid_in_progress;
 }
+
+/* Do my feet touch the ground?
+ */
+
+int sprite_hero_is_grounded(const struct sprite *sprite) {
+  if (!sprite) return 0;
+  if (sprite->type==&sprite_type_hero) {
+    if (SPRITE->itemid_in_progress==NS_itemid_broom) return 0;
+    return 1;
+  }
+  if (sprite->type==&sprite_type_racer) return 0;
+  return 1;
+}
