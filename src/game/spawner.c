@@ -222,6 +222,12 @@ static int spawner_expose_cell(struct spawnmap *spawnmap,const struct map *map,d
     g.spawner.discard=0;
   }
   
+  /* If this sprite is nixed per zoo, don't spawn anything but say we did.
+   */
+  if (zoo_should_suppress_monster(rid,map->rid,map->rspriteid)) {
+    return 1;
+  }
+  
   /* Try to spawn it.
    */
   struct sprite *sprite=sprite_spawn(x,y,rid,sarg,4,0,0,0);

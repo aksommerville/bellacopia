@@ -13,12 +13,55 @@ int zoo_get_count(int fld) {
 int zoo_get_spriteid(int fld) {
   switch (fld) {
     // zoo1: Forest. XXX These are temporary.
-    case NS_fld_zoo1_0: return RID_sprite_leopard;
+    case NS_fld_zoo1_0: return RID_sprite_raccoon;
     case NS_fld_zoo1_1: return RID_sprite_koala;
     case NS_fld_zoo1_2: return RID_sprite_goat;
-    case NS_fld_zoo1_3: return RID_sprite_soldier;
+    case NS_fld_zoo1_3: return RID_sprite_fox;
   }
   return 0;
+}
+
+/* Check whether a sprite is zoo'd.
+ * Zero to proceed with spawning.
+ * My hope is that we'll have a simple correlation between rsprite rids and zoos.
+ * But we're getting (spriteid) and (mapid) because there are always exceptions.
+ */
+ 
+int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid) {
+  
+  // Sticks are never subject to zoo removal.
+  if (spriteid==RID_sprite_stick) return 0;
+  
+  switch (rspriteid) {
+    // Simple cases:
+    case RID_rsprite_meadow: return zoo_is_finished(NS_fld_zoo1_0);
+    //TODO:
+    case RID_rsprite_battlefield:
+    case RID_rsprite_isthmus:
+    case RID_rsprite_jungle:
+    case RID_rsprite_southjungle:
+    case RID_rsprite_tundra:
+    case RID_rsprite_mountains:
+    case RID_rsprite_westdesert:
+    case RID_rsprite_eastdesert:
+    // Won't have zoos, just listing for documentary purposes:
+    case RID_rsprite_goblins:
+    case RID_rsprite_labyrinth:
+    case RID_rsprite_goblinsback:
+      break;
+  }
+  return 0;
+}
+
+/* Is the zoo finished?
+ */
+ 
+int zoo_is_finished(int fld) {
+  int c=zoo_get_count(fld);
+  while (c-->0) {
+    if (!store_get_fld(fld+c)) return 0;
+  }
+  return 1;
 }
 
 /* Get text for a zoo's ticker sprite.

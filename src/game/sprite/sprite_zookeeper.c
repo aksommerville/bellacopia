@@ -174,26 +174,14 @@ static void _zookeeper_update(struct sprite *sprite,double elapsed) {
   }
 }
 
-/* Have we caught all the animals?
- */
- 
-static int zookeeper_caught_em_all(struct sprite *sprite) {
-  int fld=SPRITE->fld;
-  int c=zoo_get_count(fld);
-  for (;c-->0;fld++) {
-    if (!store_get_fld(fld)) return 0;
-  }
-  return 1;
-}
-
 /* Collide.
  */
  
 static void _zookeeper_collide(struct sprite *sprite,struct sprite *other) {
   if (SPRITE->cooldown>0.0) return;
   if (other->type==&sprite_type_hero) {
-    if (zookeeper_caught_em_all(sprite)) {
-      game_begin_activity(NS_activity_dialogue,117,sprite);
+    if (zoo_is_finished(SPRITE->fld)) {
+      game_begin_activity(NS_activity_zoo_replay,SPRITE->fld,sprite);
     } else {
       game_begin_activity(NS_activity_dialogue,116,sprite);
     }

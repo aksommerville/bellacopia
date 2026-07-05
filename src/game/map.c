@@ -158,8 +158,8 @@ static int map_decode(struct map *dst,const void *src,int srcc) {
             fprintf(stderr,"map:%d: Multiple rspriteres\n",dst->rid);
             return -1;
           }
-          int rid=(cmd.arg[0]<<8)|cmd.arg[1];
-          dst->rspritec=res_get(&dst->rspritev,EGG_TID_rsprite,rid);
+          dst->rspriteid=(cmd.arg[0]<<8)|cmd.arg[1];
+          dst->rspritec=res_get(&dst->rspritev,EGG_TID_rsprite,dst->rspriteid);
         } break;
       case CMD_map_position: dst->lng=cmd.arg[0]; dst->lat=cmd.arg[1]; dst->z=cmd.arg[2]; break;
       case CMD_map_fishodds: if ((cmd.arg[0]>=NS_sys_mapw)||(cmd.arg[1]>=NS_sys_maph)) {

@@ -338,8 +338,18 @@ void bm_update_earthquake(double elapsed);
 // Return the count of animals in this zoo, given the first fld eg NS_fld_zoo1_0.
 int zoo_get_count(int fld);
 
+/* Convenience to scan all the fields associated with this zoo. Call with NS_fld_zooN_0 only.
+ * If you supply (fld) that isn't a zoo zero field, the answer will be YES.
+ */
+int zoo_is_finished(int fld);
+
 int zoo_get_spriteid(int fld);
 
 int zoo_get_ticker_text(char *dst,int dsta,int fld);
+
+/* Returns nonzero if this sprite for this map has been zoo'd already and should not spawn.
+ * spawner calls it immediately before spawning. I don't imagine anyone else would be interested.
+ */
+int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid);
 
 #endif

@@ -43,6 +43,7 @@ void begin_moonsong(struct sprite *initiator,int arg);
 void begin_endrace(int arg);
 void begin_hearts_book();
 void begin_gold_book();
+void begin_zoo_replay(struct sprite *sprite,int fld);
 
 // activity_advice.c
 void begin_crystal();

@@ -39,7 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
-- [ ] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
+- [x] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
 - - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
 - - The zoos should do this instead. Once an animal is captured, you can battle it at will at the zoo, but it won't appear randomly anymore.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.

@@ -25,6 +25,7 @@ struct map {
   int fishodds,fishitemid,fishfld;
   const uint8_t *rspritev; // rsprite resource, captured at load.
   int rspritec;
+  int rspriteid; // Plus the id of that rsprite resource; zoos use it.
   int cmd_has_rsprite; // Nonzero if (cmd) also has loose rsprite commands.
 };
 

@@ -305,6 +305,7 @@
 #define NS_activity_gold_book 53
 #define NS_activity_crocodile 54
 #define NS_activity_medomat 55
+#define NS_activity_zoo_replay 56
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */

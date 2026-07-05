@@ -576,3 +576,116 @@ void begin_hearts_book() {
 void begin_gold_book() {
   fprintf(stderr,"TODO %s\n",__func__);
 }
+
+/* Outcome of zookeeper battles.
+ */
+ 
+static void cb_zoo_replay_battle(struct modal *modal,int outcome,void *userdata) {
+  struct battle *battle=modal_battle_get_battle(modal);
+  if (!battle) return;
+  if (outcome>0) {
+    struct prize prizev[8];
+    int prizec=game_get_prizes(prizev,8,battle->type->id,(const uint8_t*)"\0\0\0\0");
+    if (battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
+  } else if (outcome<0) {
+    // Don't actually hurt the hero until cb_final. Report it first. If it's her last heart, game_hurt_hero would trigger the gameover modal.
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+
+static void cb_zoo_replay_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
+  }
+}
+
+/* Zookeeper offers a contest against one of his captured animals.
+ */
+ 
+static int cb_zoo_replay(int optionid,void *userdata) {
+  if (optionid<=1) return 0; // Cancelled, or 1 for "No". (sprite:1 is the hero, can't be an animal).
+  
+  /* Read the sprite resource to get its name and battleid.
+   */
+  int name_strix=0;
+  int battleid=0;
+  const void *spriteres;
+  int spriteresc=res_get(&spriteres,EGG_TID_sprite,optionid);
+  struct cmdlist_reader reader;
+  if (sprite_reader_init(&reader,spriteres,spriteresc)<0) return 0;
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_sprite_monster) {
+      battleid=(cmd.arg[0]<<8)|cmd.arg[1];
+      name_strix=(cmd.arg[4]<<8)|cmd.arg[5];
+      break;
+    }
+  }
+  if (!battleid) return 0;
+  
+  /* Enter battle.
+   * Do the same things sprite_monster would do.
+   */
+  const struct battle_type *type=battle_type_by_id(battleid);
+  if (!type) return 0;
+  struct modal_args_battle args={
+    .battle=battleid,
+    .args={
+      .difficulty=0x80,
+      .bias=0x80,
+      .rctl=0,
+      .rface=NS_face_monster,
+      .lctl=1,
+      .lface=NS_face_dot,
+    },
+    .right_name=name_strix,
+    .cb=cb_zoo_replay_battle,
+    .cb_final=cb_zoo_replay_final,
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return 0;
+  
+  return 0;
+}
+ 
+void begin_zoo_replay(struct sprite *sprite,int fldid) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=117,
+    .speaker=sprite,
+    .cb=cb_zoo_replay,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string_id(modal,RID_strings_dialogue,5,1);
+  int c=zoo_get_count(fldid);
+  int i=0;
+  for (;i<c;i++) {
+    int spriteid=zoo_get_spriteid(fldid+i);
+    if (spriteid<1) continue;
+    
+    // Get the monster's name. Kind of painful...
+    int strix=0;
+    const void *spriteres;
+    int spriteresc=res_get(&spriteres,EGG_TID_sprite,spriteid);
+    struct cmdlist_reader reader;
+    if (sprite_reader_init(&reader,spriteres,spriteresc)<0) continue;
+    struct cmdlist_entry cmd;
+    while (cmdlist_reader_next(&cmd,&reader)>0) {
+      if (cmd.opcode==CMD_sprite_monster) {
+        strix=(cmd.arg[4]<<8)|cmd.arg[5];
+        break;
+      }
+    }
+    if (!strix) continue;
+    
+    modal_dialogue_add_option_string_id(modal,RID_strings_battle,strix,spriteid);
+  }
+}
