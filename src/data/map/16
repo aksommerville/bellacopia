@@ -14,4 +14,4 @@ c4c4c4c503000606c3c4c4c5030602b1c3c4c4c4
 image image:tundra
 position 2 0 1 *
 sprite @17,7 sprite:jigpiece (u32)0
-rspriteres rsprite:tundra
+rspriteres rsprite:westtundra

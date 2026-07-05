@@ -26,4 +26,3 @@ root @9,7 (u16:fld)root2
 root @9,8 (u16:fld)root2
 root @9,9 (u16:fld)root2
 root @9,10 (u16:fld)root2
-rspriteres rsprite:tundra

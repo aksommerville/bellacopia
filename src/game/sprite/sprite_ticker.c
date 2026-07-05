@@ -11,6 +11,7 @@
 
 struct sprite_ticker {
   struct sprite hdr;
+  int fld;
   char *text;
   int textc;
   int textw; // Full message width in led cells.
@@ -29,15 +30,14 @@ static void _ticker_del(struct sprite *sprite) {
 }
 
 static int _ticker_init(struct sprite *sprite) {
-  int fld=(sprite->arg[0]<<8)|sprite->arg[1];
-  switch (fld) {
-    case NS_fld_zoo1_0:
-      {
-        char tmp[1024];
-        int tmpc=zoo_get_ticker_text(tmp,sizeof(tmp),fld);
-        if ((tmpc<0)||(tmpc>sizeof(tmp))) tmpc=0;
-        sprite_ticker_set_text(sprite,tmp,tmpc);
-      } break;
+  SPRITE->fld=(sprite->arg[0]<<8)|sprite->arg[1];
+  if (zoo_get_count(SPRITE->fld)) { // Don't call out all the zoo flags, there's a bunch. This is neater.
+    char tmp[1024];
+    int tmpc=zoo_get_ticker_text(tmp,sizeof(tmp),SPRITE->fld);
+    if ((tmpc<0)||(tmpc>sizeof(tmp))) tmpc=0;
+    sprite_ticker_set_text(sprite,tmp,tmpc);
+  } else switch (SPRITE->fld) {
+    // Opportunity to use ticker for non-zoo things.
     default: {
         sprite_ticker_set_text(sprite,"sprite_ticker misconfigured",-1);
       }
@@ -181,4 +181,9 @@ int sprite_ticker_set_text(struct sprite *sprite,const char *src,int srcc) {
   SPRITE->textp=-LED_COLC;
   memset(SPRITE->ledv,0,sizeof(SPRITE->ledv));
   return 0;
+}
+
+int sprite_ticker_get_fld(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_ticker)) return 0;
+  return SPRITE->fld;
 }

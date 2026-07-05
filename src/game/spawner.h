@@ -33,4 +33,8 @@ void spawner_reset();
 
 void spawner_expose(int x,int y,int w,int h);
 
+/* Kill all spawned sprites except those we know are not subject to zoo removal (eg stick).
+ */
+void spawner_drop_monsters();
+
 #endif

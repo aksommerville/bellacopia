@@ -16,7 +16,7 @@ position 6 0 1 *
 sprite @8,10 sprite:jigpiece (u32)0
 bump @11,6 (u16:activity)tree (u16:fld)tree14 (u16)0
 switchable @11,6 (u16:fld)tree14
-rspriteres rsprite:tundra
 race @1,8 3 2
 track @5,8 3 4
 track @13,8 3 7
+rspriteres rsprite:easttundra

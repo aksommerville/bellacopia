@@ -107,6 +107,7 @@ struct sprite *sprite_toast_get_any();
 void sprite_marionette_set_input(struct sprite *sprite,int dx,int dy);
 
 int sprite_ticker_set_text(struct sprite *sprite,const char *src,int srcc);
+int sprite_ticker_get_fld(const struct sprite *sprite);
 
 void sprite_monster_shock(struct sprite *sprite,double x,double y); // For whacking with a stick.
 int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is a monster, and has already triggered its battle.

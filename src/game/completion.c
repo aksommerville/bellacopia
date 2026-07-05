@@ -31,6 +31,22 @@ static const int fldv_story_tree[]={
 };
 static const int fldv_zookeeper[]={ // Zookeeper bits count individually, tho we could aggregate if we feel like it.
   NS_fld_zoo1_0,NS_fld_zoo1_1,NS_fld_zoo1_2,NS_fld_zoo1_3,
+  NS_fld_zoo2_0,NS_fld_zoo2_1,NS_fld_zoo2_2,NS_fld_zoo2_3,
+  NS_fld_zoo3_0,NS_fld_zoo3_1,NS_fld_zoo3_2,NS_fld_zoo3_3,
+  NS_fld_zoo4_0,NS_fld_zoo4_1,NS_fld_zoo4_2,NS_fld_zoo4_3,
+  NS_fld_zoo5_0,NS_fld_zoo5_1,NS_fld_zoo5_2,NS_fld_zoo5_3,
+  NS_fld_zoo6_0,NS_fld_zoo6_1,NS_fld_zoo6_2,NS_fld_zoo6_3,
+  NS_fld_zoo7_0,NS_fld_zoo7_1,NS_fld_zoo7_2,NS_fld_zoo7_3,
+  NS_fld_zoo8_0,NS_fld_zoo8_1,NS_fld_zoo8_2,NS_fld_zoo8_3,
+  NS_fld_zoo9_0,NS_fld_zoo9_1,NS_fld_zoo9_2,NS_fld_zoo9_3,
+  NS_fld_zoo10_0,NS_fld_zoo10_1,NS_fld_zoo10_2,NS_fld_zoo10_3,
+  NS_fld_zoo11_0,NS_fld_zoo11_1,NS_fld_zoo11_2,NS_fld_zoo11_3,
+  NS_fld_zoo12_0,NS_fld_zoo12_1,NS_fld_zoo12_2,NS_fld_zoo12_3,
+  NS_fld_zoo13_0,NS_fld_zoo13_1,NS_fld_zoo13_2,NS_fld_zoo13_3,
+  NS_fld_zoo14_0,NS_fld_zoo14_1,NS_fld_zoo14_2,NS_fld_zoo14_3,
+  NS_fld_zoo15_0,NS_fld_zoo15_1,NS_fld_zoo15_2,NS_fld_zoo15_3,
+  NS_fld_zoo16_0,NS_fld_zoo16_1,NS_fld_zoo16_2,NS_fld_zoo16_3,
+  NS_fld_zoo17_0,NS_fld_zoo17_1,NS_fld_zoo17_2,NS_fld_zoo17_3,
 };
 static const int fldv_bridge[]={
   NS_fld_bridge1done,NS_fld_bridge2done,NS_fld_bridge3done,NS_fld_bridge4done,NS_fld_bridge5done,NS_fld_bridge6done,NS_fld_bridge7done,

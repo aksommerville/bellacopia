@@ -676,6 +676,70 @@
 #define NS_fld_race6win 149 /* undernorth */
 #define NS_fld_moonsong_intro 150
 #define NS_fld_minesweep1 151 /* Far north underground. */
+#define NS_fld_zoo2_0 152 /* east desert */
+#define NS_fld_zoo2_1 153
+#define NS_fld_zoo2_2 154
+#define NS_fld_zoo2_3 155
+#define NS_fld_zoo3_0 156 /* west desert */
+#define NS_fld_zoo3_1 157
+#define NS_fld_zoo3_2 158
+#define NS_fld_zoo3_3 159
+#define NS_fld_zoo4_0 160 /* south jungle */
+#define NS_fld_zoo4_1 161
+#define NS_fld_zoo4_2 162
+#define NS_fld_zoo4_3 163
+#define NS_fld_zoo5_0 164 /* jungle */
+#define NS_fld_zoo5_1 165
+#define NS_fld_zoo5_2 166
+#define NS_fld_zoo5_3 167
+#define NS_fld_zoo6_0 168 /* mountains */
+#define NS_fld_zoo6_1 169
+#define NS_fld_zoo6_2 170
+#define NS_fld_zoo6_3 171
+#define NS_fld_zoo7_0 172 /* west tundra (magnetic north) */
+#define NS_fld_zoo7_1 173
+#define NS_fld_zoo7_2 174
+#define NS_fld_zoo7_3 175
+#define NS_fld_zoo8_0 176 /* east tundra */
+#define NS_fld_zoo8_1 177
+#define NS_fld_zoo8_2 178
+#define NS_fld_zoo8_3 179
+#define NS_fld_zoo9_0 180 /* under fractia */
+#define NS_fld_zoo9_1 181
+#define NS_fld_zoo9_2 182
+#define NS_fld_zoo9_3 183
+#define NS_fld_zoo10_0 184 /* under north */
+#define NS_fld_zoo10_1 185
+#define NS_fld_zoo10_2 186
+#define NS_fld_zoo10_3 187
+#define NS_fld_zoo11_0 188 /* under west */
+#define NS_fld_zoo11_1 189
+#define NS_fld_zoo11_2 190
+#define NS_fld_zoo11_3 191
+#define NS_fld_zoo12_0 192 /* under botire */
+#define NS_fld_zoo12_1 193
+#define NS_fld_zoo12_2 194
+#define NS_fld_zoo12_3 195
+#define NS_fld_zoo13_0 196 /* under home */
+#define NS_fld_zoo13_1 197
+#define NS_fld_zoo13_2 198
+#define NS_fld_zoo13_3 199
+#define NS_fld_zoo14_0 200 /* under horizon */
+#define NS_fld_zoo14_1 201
+#define NS_fld_zoo14_2 202
+#define NS_fld_zoo14_3 203
+#define NS_fld_zoo15_0 204 /* under east */
+#define NS_fld_zoo15_1 205
+#define NS_fld_zoo15_2 206
+#define NS_fld_zoo15_3 207
+#define NS_fld_zoo16_0 208 /* under southwest */
+#define NS_fld_zoo16_1 209
+#define NS_fld_zoo16_2 210
+#define NS_fld_zoo16_3 211
+#define NS_fld_zoo17_0 212 /* under southeast (cheapside) */
+#define NS_fld_zoo17_1 213
+#define NS_fld_zoo17_2 214
+#define NS_fld_zoo17_3 215
 
 /* "fld16" are 16 unsigned bits each.
  */

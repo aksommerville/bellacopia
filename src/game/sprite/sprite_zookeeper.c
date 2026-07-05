@@ -131,7 +131,7 @@ static void zookeeper_acknowledge_capture(struct sprite *sprite,int rid,struct s
   for (;i-->0;otherp++) {
     struct sprite *other=*otherp;
     if (other->defunct) continue;
-    if (other->type==&sprite_type_ticker) {
+    if ((other->type==&sprite_type_ticker)&&(sprite_ticker_get_fld(other)==SPRITE->fld)) {
       char tmp[1024];
       int tmpc=zoo_get_ticker_text(tmp,sizeof(tmp),SPRITE->fld);
       if ((tmpc<0)||(tmpc>sizeof(tmp))) tmpc=0;
@@ -170,6 +170,11 @@ static void _zookeeper_update(struct sprite *sprite,double elapsed) {
     sprite_kill_soon(other);
     SPRITE->wantc--;
     memmove(SPRITE->wantv+wantp,SPRITE->wantv+wantp+1,sizeof(int)*(SPRITE->wantc-wantp));
+    
+    // If it's the last of them, tell spawner to drop monsters.
+    // This might drop some associated with other zoos. Shouldn't be a big deal.
+    if (!SPRITE->wantc) spawner_drop_monsters();
+    
     break;
   }
 }

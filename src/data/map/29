@@ -14,6 +14,6 @@
 image image:tundra
 position 7 0 1 *
 sprite @9,6 sprite:jigpiece (u32)0
-rspriteres rsprite:tundra
 race @9,10 3 3
 track @9,9 3 8
+rspriteres rsprite:easttundra

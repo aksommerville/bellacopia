@@ -14,3 +14,4 @@
 image image:caves
 position 9 3 2 *
 sprite @12,5 sprite:jigpiece (u32)0
+rspriteres rsprite:ueast

@@ -17,3 +17,4 @@ sprite @12,6 sprite:jigpiece (u32)0
 switchable @5,4 (u16:fld)mountains_underdoor
 stompbox @5,7 (u16:fld)mountains_underdoor
 door @7,9 map:73 @11,7 0x0000
+rspriteres rsprite:ueast

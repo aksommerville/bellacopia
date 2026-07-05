@@ -16,7 +16,7 @@ position 2 1 1 *
 sprite @6,4 sprite:jigpiece (u32)0
 door @9,2 map:324 @10,8 0x0000
 door @10,2 map:324 @10,8 0x0000
-rspriteres rsprite:tundra
 race @10,5 4 5
 track @10,5 4 10
 track @10,10 4 11
+rspriteres rsprite:westtundra

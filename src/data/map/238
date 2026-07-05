@@ -15,3 +15,4 @@ image image:caves
 position 0 9 2 *
 sprite @12,5 sprite:jigpiece (u32)0
 sprite @14,2 sprite:treasure (u8:itemid)shovel (u8:quantity)0 (u16:fld)0
+rspriteres rsprite:usouthwest

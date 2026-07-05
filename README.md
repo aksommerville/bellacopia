@@ -53,6 +53,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Can we enable Marionette to push blocks?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
+- [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
+- [ ] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
 
 - Battles written but not placed.
 
@@ -145,6 +147,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] Review economy, balance prices etc.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
 - [ ] Home Run Derby pleases me so good, I want to make a whole baseball minigame. Is that crazy? Can we work it in there somewhere?
@@ -183,6 +186,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Map edges on plane zero must be solid.
 - [ ] Continuous root paths leading to each root devil.
 - [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
+- [ ] Zoo assignments agree with rsprite.
+- [ ] All tiles in jigsaw maps have jigctab assigned.
 - Manual validation before release.
 - [ ] Ensure I removed all AUX2-to-win from battles.
 - [ ] Minimal completion possible.

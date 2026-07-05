@@ -17,3 +17,4 @@ sprite @11,6 sprite:jigpiece (u32)0
 track @12,5 6 10
 track @10,5 6 11
 track @7,5 6 12
+rspriteres rsprite:unorth

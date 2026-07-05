@@ -340,3 +340,18 @@ void spawner_expose(int x,int y,int w,int h) {
     }
   }
 }
+
+/* Destroy all monsters.
+ */
+ 
+void spawner_drop_monsters() {
+  int i=g.spawner.group.sprc;
+  while (i-->0) {
+    struct sprite *sprite=g.spawner.group.sprv[i];
+    
+    // Is it exempt?
+    if (sprite->type==&sprite_type_stick) continue;
+    
+    sprite_kill_soon(sprite);
+  }
+}
