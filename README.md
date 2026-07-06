@@ -30,6 +30,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Undernorth zoo, move it far to the east. Combine the desert zoos, put on the west side, and ensure there are monsters unique to the east side.
+- - Completing a zoo should never be the most obvious thing in a region, except mayyyybe the first.
+- - ...actually, instead I'm adding a second minesweeper, and a whole bunch of no-rsprite maps. Same idea, raises the cost of completing the zoo.
+- [x] Consider making the map containing each zoo no-rsprite, so you have to travel at least a little.
+- [ ] Racoon is too orange.
 - [ ] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
@@ -53,6 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Can we enable Marionette to push blocks?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
+- - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
 
@@ -135,6 +141,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Battle repairs.
 - [ ] boomerang: Sounds for throw and catch.
+- [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] crying: No handicap variance in 2-player mode. Should we force some?
 - [ ] election: When in arcade mode, apportion endorsers per bias.
 - [ ] fishing: Smarter cvc decisions; right now they run exactly the same.

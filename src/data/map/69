@@ -14,7 +14,6 @@
 image image:mountains
 position 9 3 1 *
 sprite @4,5 sprite:jigpiece (u32)0
-rspriteres rsprite:mountains
 sprite @7,3 sprite:zookeeper (u16:fld)zoo6_0 (u16)0
 sprite @8,3 sprite:ticker (u16:fld)zoo6_0 (u16)0
 zookeeper @8,4,4,3

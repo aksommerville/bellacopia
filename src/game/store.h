@@ -79,6 +79,7 @@ void store_save_if_dirty(const char *k,int kc,int now);
  * | '6'  | fld16           | 0..0xffff |
  * | 'j'  | mapid(jigstore) | unused |
  * | 'i'  | itemid          | unused |
+ * | 's'  | Signal: Not part of the store. For arbitrary signalling.
  */
 int store_listen(char type,void (*cb)(char type,int id,int value,void *userdata),void *userdata);
 void store_unlisten(int listenerid);

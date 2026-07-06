@@ -23,6 +23,7 @@ static void game_cb_store(char type,int id,int value,void *userdata) {
             g.goodlucktrack=value;
           } break;
       } break;
+    case 's': return; // Signals will never be interesting to us.
   }
 
   if (g.completion>=2) return; // Already complete, nothing more for us to track.

@@ -14,7 +14,6 @@ c6b4b4b502060400020603050402000401060005
 image image:tundra
 position 3 0 1 *
 sprite @14,6 sprite:jigpiece (u32)0
-rspriteres rsprite:tundra
 sprite @9,3 sprite:ticker (u16:fld)zoo7_0 (u16)0
 zookeeper @9,4,4,3
 sprite @8,7 sprite:zookeeper (u16:fld)zoo7_0 (u16)0

@@ -14,7 +14,6 @@
 image image:temple
 position 0 2 1 *
 sprite @10,5 sprite:jigpiece (u32)0
-rspriteres rsprite:jungle
 sprite @6,1 sprite:ticker (u16:fld)zoo5_0 (u16)0
 zookeeper @6,2,5,3
 sprite @5,4 sprite:zookeeper (u16:fld)zoo5_0 (u16)0

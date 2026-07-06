@@ -14,7 +14,6 @@
 image image:caves
 position 4 4 2 *
 sprite @12,9 sprite:jigpiece (u32)0
-rspriteres rsprite:ubotire
 sprite @6,2 sprite:ticker (u16:fld)zoo12_0 (u16)0
 sprite @4,4 sprite:zookeeper (u16:fld)zoo12_0 (u16)0
 zookeeper @6,3,4,3

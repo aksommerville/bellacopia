@@ -74,6 +74,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_crocodile: begin_crocodile(); break;
     case NS_activity_medomat: begin_medomat(); break;
     case NS_activity_zoo_replay: begin_zoo_replay(initiator,arg); break;
+    case NS_activity_reset_puzzle: begin_reset_puzzle(initiator,arg); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

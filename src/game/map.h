@@ -21,7 +21,8 @@ struct map {
   const uint8_t *jigctab; // ''
   int imageid,songid;
   int parent; // Zero or map rid.
-  uint8_t dark,wind,cameralock;
+  uint8_t dark,wind;
+  int cameralock; // fldid. Unlock if fld set. -1 for always lock (ie fld zero).
   int fishodds,fishitemid,fishfld;
   const uint8_t *rspritev; // rsprite resource, captured at load.
   int rspritec;

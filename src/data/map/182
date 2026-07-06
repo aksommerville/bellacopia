@@ -15,5 +15,5 @@ image image:temple_int
 position 1 2 5 *
 parent map:43
 sprite @2,6 sprite:statuemaze (u32)0
-cameralock
+cameralock (u16:fld)0
 statuemaze @5,4

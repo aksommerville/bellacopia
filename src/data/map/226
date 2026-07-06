@@ -1,8 +1,8 @@
-2113313131313131313131313131313131311421
-2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-1332a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
-2202a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00020
+13b0313131313131313131313131313131311421
+22c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+2203a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+2202a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
+2205a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00020
 3203a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00030
 0503a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00507
 0104a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00604
@@ -13,8 +13,9 @@
 
 image image:caves
 position 3 0 2 *
-sprite @1,4 sprite:jigpiece (u32)0
+sprite @1,9 sprite:jigpiece (u32)0
 sprite @2,1 sprite:minesweeper (u16:fld)minesweep1 (u16)0
-cameralock
+cameralock (u16:fld)minesweep1
 switchable @8,11 (u16:fld)minesweep1
 switchable @7,11 (u16:fld)minesweep1
+bump @1,0 (u16:activity)reset_puzzle (u16:fld)minesweep1 (u16)0

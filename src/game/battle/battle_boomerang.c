@@ -4,7 +4,6 @@
 #define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
 
 #define GROUND_LEVEL 140
-#define SKY_COLOR_KAPOW 0x356380ff
 #define END_COOLDOWN_TIME 1.000
 #define GRAB_TIME_INITIAL 2.000
 #define GRAB_TIME_LIMIT   0.250
@@ -480,7 +479,7 @@ static void player_render(struct player *player) {
  
 static void _boomerang_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,(battle->outcome>-2)?SKY_COLOR_KAPOW:SKY_COLOR);
+  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
   if (battle->outcome>-2) { // Draw a big "Kapow" starburst where the rang struck. Behind the ground.
     struct rang *rang=BATTLE->rangv;
     if (!rang->dead) rang++; // If it's not the first, must be the second.

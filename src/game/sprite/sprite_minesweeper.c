@@ -23,7 +23,9 @@ struct sprite_minesweeper {
   int fldid;
   int started; // Flips nonzero permanently when the hero first crosses our fence. When we expose the near edge.
   int invalid; // If the player exposes a mine, she's not allowed to win. Mines exposed by the initial exposure don't count.
+  int solved; // Stop doing things once she solves us.
   int qx,qy; // Quantized position of hero in map meters.
+  int store_listener;
   
   /* Bounds of the play field in map meters.
    * NB not plane meters.
@@ -46,21 +48,40 @@ struct sprite_minesweeper {
 
 #define SPRITE ((struct sprite_minesweeper*)sprite)
 
+static int _minesweeper_init(struct sprite *sprite);
+
 /* Cleanup.
  */
  
 static void _minesweeper_del(struct sprite *sprite) {
+  store_unlisten(SPRITE->store_listener);
   sprite_group_kill_all(&SPRITE->dependent_fires);
   if (SPRITE->dependent_fires.sprv) free(SPRITE->dependent_fires.sprv);
 }
 
+/* Signal via store.
+ */
+ 
+static void minesweeper_cb_signal(char s,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (id==NS_signal_reset_puzzle) {
+    sprite_group_kill_all(&SPRITE->dependent_fires);
+    sprite_group_add(GRP(update),sprite); // We remove ourselves at init if the puzzle is complete -- must restore here.
+    _minesweeper_init(sprite);
+  }
+}
+
 /* Init.
+ * We can get retriggered, on manual resets.
  */
  
 static int _minesweeper_init(struct sprite *sprite) {
   SPRITE->fldid=(sprite->arg[0]<<8)|sprite->arg[1];
   SPRITE->qx=-1;
   SPRITE->qy=-1;
+  SPRITE->started=0;
+  SPRITE->invalid=0;
+  SPRITE->solved=0;
 
   /* First find my bearings.
    */
@@ -101,6 +122,11 @@ static int _minesweeper_init(struct sprite *sprite) {
     if (!match) break;
     SPRITE->fld.h++;
     rowp+=NS_sys_mapw;
+  }
+  
+  // On the real init, start listening for the reset signal.
+  if (!SPRITE->store_listener) {
+    SPRITE->store_listener=store_listen('s',minesweeper_cb_signal,sprite);
   }
   
   /* Being a static sprite, we are instantiated the moment our map comes into view.
@@ -186,7 +212,6 @@ static int minesweeper_expose(struct sprite *sprite,int x,int y) {
   if ((x<SPRITE->fld.x)||(y<SPRITE->fld.y)||(x>=SPRITE->fld.x+SPRITE->fld.w)||(y>=SPRITE->fld.y+SPRITE->fld.h)) return -2;
   uint8_t *v=SPRITE->map->v+y*NS_sys_mapw+x;
   if (*v==sprite->tileid+10) { // Mine.
-    g.camera.mapsdirty=1;
     minesweeper_spawn_fire(sprite,x,y);
     SPRITE->invalid=1;
     return -1;
@@ -204,11 +229,17 @@ static int minesweeper_expose(struct sprite *sprite,int x,int y) {
 /* For a hero at (x,y) in plane meters, decide which of my edges is nearest and expose that whole edge.
  */
  
-static void minesweeper_expose_near_edge(struct sprite *sprite,double x,double y) {
-  double dl=x-SPRITE->fence.l;
-  double dr=x-SPRITE->fence.r;
-  double dt=y-SPRITE->fence.t;
-  double db=y-SPRITE->fence.b;
+static void minesweeper_expose_near_edge(struct sprite *sprite,double herox,double heroy) {
+
+  /* Use the field rather than the fence.
+   * Fence would suffice if we only ran on the hero entering our room, but we do also trigger on manual resets.
+   */
+  int x=(int)herox-SPRITE->map->lng*NS_sys_mapw;
+  int y=(int)heroy-SPRITE->map->lat*NS_sys_maph;
+  int dl=x-SPRITE->fld.x;
+  int dr=x-(SPRITE->fld.x+SPRITE->fld.w-1);
+  int dt=y-SPRITE->fld.y;
+  int db=y-(SPRITE->fld.y+SPRITE->fld.h-1);
   
   #define EXPOSE(_x,_y,dx,dy) { \
     int x=_x,y=_y; \
@@ -227,22 +258,22 @@ static void minesweeper_expose_near_edge(struct sprite *sprite,double x,double y
   /* First, if we're on the far side of just one edge, that's the answer.
    * This is by far the likeliest case.
    */
-  if ((dt>=0.0)&&(db<0.0)) {
-    if (dl<0.0) EXPOSE(0,0,0,1)
-    if (dr>=0.0) EXPOSE(1,0,0,1)
+  if ((dt>=0)&&(db<0)) {
+    if (dl<0) EXPOSE(0,0,0,1)
+    if (dr>=0) EXPOSE(1,0,0,1)
   }
-  if ((dl>=0.0)&&(dr<0.0)) {
-    if (dt<0.0) EXPOSE(0,0,1,0)
-    if (db>=0.0) EXPOSE(0,1,1,0)
+  if ((dl>=0)&&(dr<0)) {
+    if (dt<0) EXPOSE(0,0,1,0)
+    if (db>=0) EXPOSE(0,1,1,0)
   }
   
   /* We're inside or diagonal.
    * Use whichever edge is closest.
    */
-  double adl=(dl<0.0)?-dl:dl;
-  double adr=(dr<0.0)?-dr:dr;
-  double adt=(dt<0.0)?-dt:dt;
-  double adb=(db<0.0)?-db:db;
+  int adl=(dl<0)?-dl:dl;
+  int adr=(dr<0)?-dr:dr;
+  int adt=(dt<0)?-dt:dt;
+  int adb=(db<0)?-db:db;
   if ((adl<=adr)&&(adl<=adt)&&(adl<=adb)) EXPOSE(0,0,0,1)
   if ((adr<=adt)&&(adr<=adb)) EXPOSE(1,0,0,1)
   if (adt<=adb) EXPOSE(0,0,1,0)
@@ -262,10 +293,11 @@ static void minesweeper_toast_exposure(struct sprite *sprite,struct sprite *hero
   sprite_toast_set_text(toast,&ch,1);
 }
 
-/* Nonzero if every non-mine cell is exposed.
+/* Nonzero if every non-mine cell is exposed, and we aren't explicitly invalid.
  */
  
 static int minesweeper_check_completion(struct sprite *sprite) {
+  if (SPRITE->invalid) return 0;
   const uint8_t *rowp=SPRITE->map->v+SPRITE->fld.y*NS_sys_mapw+SPRITE->fld.x;
   int yi=SPRITE->fld.h;
   for (;yi-->0;rowp+=NS_sys_mapw) {
@@ -282,6 +314,7 @@ static int minesweeper_check_completion(struct sprite *sprite) {
  */
  
 static void _minesweeper_update(struct sprite *sprite,double elapsed) {
+  if (SPRITE->solved) return;
 
   /* Find the hero.
    * No hero, no worries, just get out.
@@ -323,6 +356,7 @@ static void _minesweeper_update(struct sprite *sprite,double elapsed) {
   } else if ((result>=0)&&(result<=8)) {
     // Handle zero separate if we want cascading, but our fields being so small, I think it's better without cascade.
     if (minesweeper_check_completion(sprite)) {
+      SPRITE->solved=1;
       bm_sound(RID_sound_secret);
       if (SPRITE->fldid) {
         store_set_fld(SPRITE->fldid,1);

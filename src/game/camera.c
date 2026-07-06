@@ -415,7 +415,7 @@ void camera_update(double elapsed) {
     }
   }
   struct map *heromap=map_by_sprite_position(idealx,idealy,g.camera.z);
-  if (heromap&&heromap->cameralock) {
+  if (heromap&&heromap->cameralock&&((heromap->cameralock<0)||!store_get_fld(heromap->cameralock))) {
     idealx=heromap->lng*NS_sys_mapw+NS_sys_mapw*0.5;
     idealy=heromap->lat*NS_sys_maph+NS_sys_maph*0.5;
   } else {

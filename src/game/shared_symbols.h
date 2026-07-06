@@ -23,7 +23,6 @@
 #define NS_dir_se  0x01
 
 #define CMD_map_dark            0x01 /* --- */
-#define CMD_map_cameralock      0x02 /* --- */
 #define CMD_map_image           0x20 /* u16:rid */
 #define CMD_map_song            0x21 /* u16:rid */
 #define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */
@@ -32,6 +31,7 @@
 #define CMD_map_pylon           0x25 /* u16:pos ; Used only by labyrinth, marks the top-left pylon so we can infer the rest. */
 #define CMD_map_statuemaze      0x26 /* u16:pos ; Used only by statuemaze, marks the position of the first statue. */
 #define CMD_map_rspriteres      0x27 /* u16:rid ; Limit one per map. May combine with a la carte 'rsprite' commands. */
+#define CMD_map_cameralock      0x28 /* u16:fld ; No lock if (fld) set. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -306,6 +306,7 @@
 #define NS_activity_crocodile 54
 #define NS_activity_medomat 55
 #define NS_activity_zoo_replay 56
+#define NS_activity_reset_puzzle 57
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */
@@ -675,7 +676,7 @@
 #define NS_fld_race5win 148 /* desert_run */
 #define NS_fld_race6win 149 /* undernorth */
 #define NS_fld_moonsong_intro 150
-#define NS_fld_minesweep1 151 /* Far north underground. */
+#define NS_fld_minesweep1 151 /* Far north underground, east of the ladder. */
 #define NS_fld_zoo2_0 152 /* east desert */
 #define NS_fld_zoo2_1 153
 #define NS_fld_zoo2_2 154
@@ -740,6 +741,7 @@
 #define NS_fld_zoo17_1 213
 #define NS_fld_zoo17_2 214
 #define NS_fld_zoo17_3 215
+#define NS_fld_minesweep2 216 /* west of the ladder; gates zoo */
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -782,5 +784,9 @@
 #define NS_clock_battletime 2
 #define NS_clock_mainclear 3 /* Timestamp when you strangle the last Root Devil. */
 #define NS_clock_fullclear 4 /* Timestamp when you reach 100% completion. */
+
+/* Signal ID for using store listeners as generic broadcasters.
+ */
+#define NS_signal_reset_puzzle 1 /* fldid */
   
 #endif

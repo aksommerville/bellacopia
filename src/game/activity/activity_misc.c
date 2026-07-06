@@ -102,3 +102,27 @@ void begin_pauserace() {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,140);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,141);
 }
+
+/* "Reset puzzle". Creating for diegetic minesweeper, but intending to be usable generically.
+ */
+ 
+static int reset_puzzle_cb(int optionid,void *userdata) {
+  if (optionid!=4) return 0;
+  int fldid=(int)(uintptr_t)userdata;
+  store_set_fld(fldid,0);
+  store_broadcast('s',NS_signal_reset_puzzle,fldid);
+  return 0;
+}
+ 
+void begin_reset_puzzle(struct sprite *initiator,int fldid) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=151,
+    .cb=reset_puzzle_cb,
+    .userdata=(void*)(uintptr_t)fldid,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+}
