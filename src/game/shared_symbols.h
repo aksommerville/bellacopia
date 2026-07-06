@@ -292,7 +292,7 @@
 #define NS_activity_main_quest_wrap_up 40
 #define NS_activity_statuemaze_clue 41 /* (u16:msgid)0..3 */
 #define NS_activity_bridget 42 /* (u16:fld)bridgeNstart */
-#define NS_activity_brewer_single 43
+#define NS_activity_brewer_single 43 /* (u16:exorbitance)0 */
 #define NS_activity_potion_book 44
 #define NS_activity_cheatstories 45
 #define NS_activity_cartographer 46

@@ -60,7 +60,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_main_quest_wrap_up: fprintf(stderr,"%s:%d:TODO: NS_activity_main_quest_wrap_up\n",__FILE__,__LINE__); break;
     case NS_activity_statuemaze_clue: begin_statuemaze_clue(initiator,arg); break;
     case NS_activity_bridget: begin_bridget(initiator,arg); break;
-    case NS_activity_brewer_single: begin_brewer_single(initiator); break;
+    case NS_activity_brewer_single: begin_brewer_single(initiator,arg); break;
     case NS_activity_potion_book: begin_potion_book(initiator); break;
     case NS_activity_cheatstories: begin_cheatstories(); break;
     case NS_activity_cartographer: begin_cartographer(initiator); break;

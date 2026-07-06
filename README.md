@@ -60,7 +60,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
 - - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [ ] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
+- [x] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
+- [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 
 - Battles written but not placed.
 

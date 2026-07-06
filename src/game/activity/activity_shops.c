@@ -133,20 +133,45 @@ void begin_brewer(struct sprite *sprite) {
  * The actual healing is performed by inventory.c:game_get_item.
  */
  
-void begin_brewer_single(struct sprite *sprite) {
+void begin_brewer_single(struct sprite *sprite,int exorbitance) {
   int hp=store_get_fld16(NS_fld16_hp);
   int hpmax=store_get_fld16(NS_fld16_hpmax);
+  int strix;
+  if (exorbitance==3) strix=152; // "Potions and matches!"
+  else if (hp>=hpmax) strix=126; // "You don't need it, but that's cool."
+  else strix=125; // "Buy potion, will ya!"
   struct modal_args_shop args={
     .rid=RID_strings_dialogue,
-    .strix=(hp>=hpmax)?126:125,
+    .strix=strix,
     .speaker=sprite,
   };
   struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
   if (!modal) return;
-  modal_shop_add_item(modal,NS_itemid_cuppa1,1,1);
-  modal_shop_add_item(modal,NS_itemid_cuppa2,2,1);
-  modal_shop_add_item(modal,NS_itemid_cuppa3,3,1);
-  modal_shop_add_item(modal,NS_itemid_cuppatutti,5,1);
+  switch (exorbitance) {
+    case 3: { // Underground potion shops also sell matches at outrageous prices.
+        modal_shop_add_item(modal,NS_itemid_match,5,0);
+        modal_shop_add_item(modal,NS_itemid_cuppa1,10,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa2,20,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa3,30,1);
+      } break;
+    case 2: { // For shops right in the thick of it. Our deadliest prices.
+        modal_shop_add_item(modal,NS_itemid_cuppa1,10,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa2,20,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa3,30,1);
+      } break;
+    case 1: { // Remote but not super dangerous shops. A bad deal but you'll be ok.
+        modal_shop_add_item(modal,NS_itemid_cuppa1,3,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa2,5,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa3,7,1);
+        modal_shop_add_item(modal,NS_itemid_cuppatutti,10,1);
+      } break;
+    case 0: default: { // The potion shop. Our most reasonable price schedule.
+        modal_shop_add_item(modal,NS_itemid_cuppa1,1,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa2,2,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa3,3,1);
+        modal_shop_add_item(modal,NS_itemid_cuppatutti,5,1);
+      } break;
+  }
 }
 
 /* Brewer's book.
