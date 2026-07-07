@@ -27,6 +27,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-06-07: Public showing at CORGS Con. Pleasantly surprised by how little guidance anyone needed.
 - 2026-06-14: Finally finished the placeholder battles, and I'm devoting June and July to Bellacopia. No jams or conventions.
 - 2026-06-17: Played thru, letting the Crystal Ball drive. 2h20 to full clear. It made some very bad choices, like, I'd have bought the broom way earlier.
+- 2026-07-07: Playtest at work. Xiangsi, Nick, Shawn, Katy, mostly Katy. Good reception, and got some actionable advice.
+- - Zoos were a hit. Players understood fast and kind of gravitated toward the zooage.
+- - Players were not at all drawn toward Root Devils. Maybe that will change when there's more narrative setup?
 
 ## TODO
 
@@ -34,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Completing a zoo should never be the most obvious thing in a region, except mayyyybe the first.
 - - ...actually, instead I'm adding a second minesweeper, and a whole bunch of no-rsprite maps. Same idea, raises the cost of completing the zoo.
 - [x] Consider making the map containing each zoo no-rsprite, so you have to travel at least a little.
-- [ ] Racoon is too orange.
+- [x] Raccoon is too orange.
 - [ ] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
@@ -62,6 +65,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [x] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
 - [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
+- [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 
 - Battles written but not placed.
 
@@ -142,15 +146,21 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Battle repairs.
 - [ ] boomerang: Sounds for throw and catch.
+- [ ] calligraphy: No fun, eliminate.
+- [ ] chopping: Don't give prizes unless you already have it. Coins and fish are fine whenever but otherwise it must have an inventory slot already.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] crying: No handicap variance in 2-player mode. Should we force some?
 - [ ] election: When in arcade mode, apportion endorsers per bias.
+- [ ] exterminating: Nerf.
 - [ ] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] racketeering: Badly needs more juice when you hit the ball.
 - [ ] seamonster: Butt ugly, and not in a good way.
+- [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
+- [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
+- [ ] weaving: Nerf a little. Players struggled.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
@@ -349,6 +359,7 @@ Before the first release, validate and clean up this list. And if in-game credit
 - Telekinesis Contest: Reference to the old janx spirit drinking game in Hitchhiker's Guide to the Galaxy.
 - Morse Code Contest: "Northern Union" is a reference to the telegraph company Western Union, used without permission (I assume Fair Use).
 - Morse Code Contest: "What hath God wrought" -Samuel Morse
+- Play testers: Alex, Xiangsi, Nick, Shawn, Katy
 
 ## Morally Questionable
 

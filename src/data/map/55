@@ -35,7 +35,6 @@ root @3,9 (u16:fld)root4
 root @2,9 (u16:fld)root4
 root @1,9 (u16:fld)root4
 busstop @15,8 (u16:busstop)botire
-sprite @2,8 sprite:bridget (u16:activity)bridget (u16:fld)bridge7start
 switchable @1,9 (u16:fld)bridge7done
 switchable @0,9 (u16:fld)bridge7done
 race @4,3 4 4
