@@ -743,6 +743,8 @@
 #define NS_fld_zoo17_2 214
 #define NS_fld_zoo17_3 215
 #define NS_fld_minesweep2 216 /* west of the ladder; gates zoo */
+#define NS_fld_jigpiece_underlake 217
+#define NS_fld_jigpiece_ne 218
 
 /* "fld16" are 16 unsigned bits each.
  */

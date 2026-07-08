@@ -114,6 +114,8 @@ int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is 
 
 int sprite_npc_get_activity(const struct sprite *sprite);
 
+int sprite_princess_whack(struct sprite *sprite,double x,double y); // Equivalent to sprite_monster_shock().
+
 int sprite_racer_get_checkpointp(const struct sprite *sprite);
 int sprite_racer_is_finished(const struct sprite *sprite);
 int sprite_racer_is_human(const struct sprite *sprite);

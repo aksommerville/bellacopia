@@ -291,7 +291,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  
 static int hazard_update(struct battle *battle,struct hazard *hazard,double elapsed) {
   hazard->y+=hazard->dy*elapsed;
-  if (hazard->y>GROUNDY) return 0;
+  if (hazard->y>GROUNDY+8.0) return 0;
   return 1;
 }
 
@@ -397,9 +397,8 @@ static void render_meter(struct battle *battle,int x,int y,int w,int h,double v,
  */
  
 static void _laziness_render(struct battle *battle) {
+  // Sky first but no ground.
   graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   
   render_player(battle,BATTLE->playerv+0);
   render_player(battle,BATTLE->playerv+1);
@@ -412,7 +411,12 @@ static void _laziness_render(struct battle *battle) {
     graf_tile(&g.graf,hazard->x,y,hazard->tileid,0);
   }
   
+  // Ground after the hazards, so they can fall below the horizon neatly.
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,GROUND_COLOR);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  
   if (BATTLE->collx) {
+    graf_set_image(&g.graf,RID_image_battle_goblins);
     graf_tile(&g.graf,BATTLE->collx,BATTLE->colly,0x60,0);
   }
   

@@ -39,11 +39,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Consider making the map containing each zoo no-rsprite, so you have to travel at least a little.
 - [x] Raccoon is too orange.
 - [x] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
-- [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
+- [x] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
-- [ ] Might be cool to re-engage with the Princess after her quest. Could do further side quests like "will you show me the jungle temple?". Or one-on-one practice battles.
-- [ ] Is it possible to reach inconsistent states by pausing while item in progress?
+- [ ] Might be cool to re-engage with the Princess after her quest.
+- - Definitely. Have three options: Take a walk, Play a game, or Gossip.
+- - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
@@ -53,8 +54,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
-- [ ] Should be able to whack the Princess with your stick.
-- [ ] Home Run Derby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
+- [x] Should be able to whack the Princess with your stick.
 - [ ] Make things you can burn with Pepper or Matches.
 - [ ] Fire needs to hurt monsters. I mean, it's fire!
 - [ ] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
@@ -155,6 +155,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] exterminating: Nerf.
 - [ ] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
+- [ ] homerunderby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] plumbing: Removal should be much easier.
@@ -168,6 +169,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Review economy, balance prices etc.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
@@ -187,6 +189,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 - - Punt this until the entire set of dialogue is more or less finished.
+
+- GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
+- - [ ] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server.
+- - [ ] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
+- - [ ] Accept saved game from query param and prompt if there's conflict.
+- - [ ] Option to log to a file. (in Egg or Romassist)
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

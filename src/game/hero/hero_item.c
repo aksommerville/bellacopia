@@ -1232,14 +1232,24 @@ static int stick_begin(struct sprite *sprite) {
   for (;i-->0;otherp++) {
     struct sprite *other=*otherp;
     if (other->defunct) continue;
-    if (other->type!=&sprite_type_monster) continue; // Actually it's not all moveables: Only "monster" are eligible.
     double dx=other->x-wx;
     double dy=other->y-wy;
     if ((dx<-thresh)||(dx>thresh)) continue;
     if ((dy<-thresh)||(dy>thresh)) continue;
-    if (sprite_monster_is_spent(other)) continue; // Not unusual for us to trigger on the same frame as the monster collision. Call it a miss.
-    whackc++;
-    sprite_monster_shock(other,sprite->x,sprite->y); // From my position, not the stick's. Otherwise they go foul a lot.
+    // But it's not all moveables. Check specific other types.
+    
+    if (other->type==&sprite_type_monster) {
+      if (sprite_monster_is_spent(other)) continue; // Not unusual for us to trigger on the same frame as the monster collision. Call it a miss.
+      whackc++;
+      sprite_monster_shock(other,sprite->x,sprite->y); // From my position, not the stick's. Otherwise they go foul a lot.
+      continue;
+    }
+    
+    if (other->type==&sprite_type_princess) {
+      if (sprite_princess_whack(other,sprite->x,sprite->y)<1) continue;
+      whackc++;
+      continue;
+    }
   }
   
   if (whackc) {

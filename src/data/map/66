@@ -13,5 +13,5 @@
 
 image image:tundra
 position 9 0 1 *
-sprite @9,8 sprite:jigpiece (u32)0
 rspriteres rsprite:easttundra
+buriedtreasure @5,6 (u16:fld)jigpiece_ne (u16:itemid)jigpiece (u16)0

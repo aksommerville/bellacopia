@@ -1,5 +1,9 @@
 #include "game/bellacopia.h"
 
+#define WHACK_TIME       0.500
+#define WHACK_SPEED_MAX 10.000
+#define WHACK_SPEED_MIN  1.000
+
 struct sprite_princess {
   struct sprite hdr;
   double cooldown;
@@ -9,6 +13,10 @@ struct sprite_princess {
   int recheck_solid;
   double armt;
   int targetx,targety,targetz;
+  
+  // Forced motion, tapers down over time. For getting whacked by the stick.
+  double whackdx,whackdy;
+  double whackttl;
 };
 
 #define SPRITE ((struct sprite_princess*)sprite)
@@ -148,6 +156,20 @@ static void princess_check_missed_triggers(struct sprite *sprite) {
  */
  
 static void _princess_update(struct sprite *sprite,double elapsed) {
+  
+  // If we're whacked, tick it down and move.
+  if (SPRITE->whackttl>0.0) {
+    double t=SPRITE->whackttl/WHACK_TIME;
+    if (t>0.0) {
+      if (t>1.0) t=1.0;
+      double speed=WHACK_SPEED_MIN*(1.0-t)+WHACK_SPEED_MAX*t;
+      speed*=elapsed;
+      sprite_move(sprite,SPRITE->whackdx*speed,0.0);
+      sprite_move(sprite,0.0,SPRITE->whackdy*speed);
+    }
+    SPRITE->whackttl-=elapsed;
+    return;
+  }
 
   // If the jail is still locked, we're just an NPC.
   if (SPRITE->cooldown>0.0) {
@@ -280,3 +302,25 @@ const struct sprite_type sprite_type_princess={
   .collide=_princess_collide,
   .render=_princess_render,
 };
+
+/* Get whacked.
+ */
+ 
+int sprite_princess_whack(struct sprite *sprite,double x,double y) {
+  if (!sprite||(sprite->type!=&sprite_type_princess)) return 0;
+  if (SPRITE->whackttl>0.0) return 0;
+  SPRITE->whackttl=WHACK_TIME;
+  SPRITE->whackdx=sprite->x-x;
+  SPRITE->whackdy=sprite->y-y;
+  double dx2=SPRITE->whackdx*SPRITE->whackdx;
+  double dy2=SPRITE->whackdy*SPRITE->whackdy;
+  double d2=dx2+dy2;
+  if (d2<0.001) { // Should usually be about 1; (x,y) is Dot's position. If it comes in crazy low, abort.
+    SPRITE->whackttl=0.0;
+    return 0;
+  }
+  double distance=sqrt(d2);
+  SPRITE->whackdx/=distance;
+  SPRITE->whackdy/=distance;
+  return 1;
+}
