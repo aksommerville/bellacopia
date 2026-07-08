@@ -94,4 +94,10 @@ double battle_scalar_difficulty(const struct battle *battle);
  */
 void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid);
 
+/* If nonzero, the current map expects its jigpiece to be awarded in battle, and it hasn't been got yet.
+ * The chopping contest uses this, and maybe we'll find other cases.
+ * This is a little expensive. Try not to call more than once per battle.
+ */
+int battle_can_award_jigpiece();
+
 #endif

@@ -148,20 +148,17 @@ static int battle_generate_report_text(char *dst,int dsta,struct modal *modal) {
     if (dstc<dsta) dst[dstc++]=0x0a;
   }
   
-  // If both names were provided start with the one-line summary, then a blank line.
-  if (0&&MODAL->left_name&&MODAL->right_name) {
-    struct text_insertion ins={.mode='r',.r={.rid=RID_strings_battle,.strix=(MODAL->outcome<0)?MODAL->right_name:MODAL->left_name}};
-    dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_battle,MODAL->outcome?7:8,&ins,1);
-    if (dstc<dsta) dst[dstc++]=0x0a;
-    if (dstc<dsta) dst[dstc++]=0x0a;
-  }
-  
   // One line per consequence.
   const struct consequence *consequence=MODAL->consequencev;
   int i=MODAL->consequencec;
   for (;i-->0;consequence++) {
     const struct item_detail *detail=item_detail_for_itemid(consequence->itemid);
     if (!detail) continue;
+    int absd=consequence->d;
+    if (absd<0) absd=-absd;
+    char itemname[32];
+    int itemnamec=item_name_contextualize(itemname,sizeof(itemname),consequence->itemid,absd,0);
+    if ((itemnamec<0)||(itemnamec>sizeof(itemname))) itemnamec=0;
     struct text_insertion insv[2];
     int insc=0,strix_template;
     if (consequence->itemid==NS_itemid_text) {
@@ -171,14 +168,14 @@ static int battle_generate_report_text(char *dst,int dsta,struct modal *modal) {
     } else if (consequence->d<0) {
       strix_template=46;
       insv[insc++]=(struct text_insertion){.mode='i',.i=-consequence->d};
-      insv[insc++]=(struct text_insertion){.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+      insv[insc++]=(struct text_insertion){.mode='s',.s={.v=itemname,.c=itemnamec}};
     } else if (consequence->d>0) {
       strix_template=45;
       insv[insc++]=(struct text_insertion){.mode='i',.i=consequence->d};
-      insv[insc++]=(struct text_insertion){.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+      insv[insc++]=(struct text_insertion){.mode='s',.s={.v=itemname,.c=itemnamec}};
     } else {
       strix_template=44;
-      insv[insc++]=(struct text_insertion){.mode='r',.r={.rid=RID_strings_item,.strix=detail->strix_name}};
+      insv[insc++]=(struct text_insertion){.mode='s',.s={.v=itemname,.c=itemnamec}};
     }
     dstc+=text_format_res(dst+dstc,dsta-dstc,RID_strings_item,strix_template,insv,insc);
     if (dstc<dsta) dst[dstc++]=0x0a;
@@ -506,8 +503,23 @@ const struct modal_type modal_type_battle={
  
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d) {
   if (!modal||(modal->type!=&modal_type_battle)) return;
+  
+  // jigpiece uses quantity as mapid. We don't care about that; our only job is to tell the user about it. So change the quantity to +1.
+  if (itemid==NS_itemid_jigpiece) d=1;
+  
+  // If we already have one, add to it.
+  struct consequence *consequence=MODAL->consequencev;
+  int i=MODAL->consequencec;
+  for (;i-->0;consequence++) {
+    if (consequence->itemid==itemid) {
+      consequence->d+=d;
+      return;
+    }
+  }
+  
+  // Append.
   if (MODAL->consequencec>=CONSEQUENCE_LIMIT) return;
-  struct consequence *consequence=MODAL->consequencev+MODAL->consequencec++;
+  consequence=MODAL->consequencev+MODAL->consequencec++;
   consequence->itemid=itemid;
   consequence->d=d;
 }

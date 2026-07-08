@@ -25,6 +25,7 @@ struct battle_chopping {
   int check_veg;
   double vegclock;
   int remaining;
+  int jigpiece_in_play;
   
   struct player {
     int who; // My index: 0,1
@@ -146,6 +147,7 @@ static int chopping_preupdate(struct battle *battle,double elapsed) {
 
 static int _chopping_init(struct battle *battle) {
   BATTLE->remaining=VEG_COUNT;
+  BATTLE->jigpiece_in_play=battle_can_award_jigpiece();
   
   BATTLE->playerv[0].who=0;
   BATTLE->playerv[1].who=1;
@@ -175,23 +177,66 @@ static void veg_init(struct battle *battle,struct veg *veg,struct player *player
   veg->who=player->who;
   veg->defunct=0;
   veg->itemid=0;
-  int choice=rand()%100;
-  switch (choice) { // The first 7/100 choices are real prizes you can win, if you decline to chop them. To a CPU player, they're just fancy vegetables.
-    case 0: veg->srcx=192; veg->srcy= 96; veg->itemid=NS_itemid_match; break;
-    case 1: veg->srcx=192; veg->srcy=112; veg->itemid=NS_itemid_bugspray; break;
-    case 2: veg->srcx=192; veg->srcy=128; veg->itemid=NS_itemid_candy; break;
-    case 3: veg->srcx=192; veg->srcy=144; veg->itemid=NS_itemid_vanishing; break;
-    case 4: veg->srcx=192; veg->srcy=160; veg->itemid=NS_itemid_gold; break;
-    case 5: veg->srcx=192; veg->srcy=176; veg->itemid=NS_itemid_bluefish; break;
-    case 6: veg->srcx=192; veg->srcy=192; veg->itemid=NS_itemid_bomb; break;
-    default: switch (choice%6) { // Everything else is just a vegetable. Choose among 6 decorative faces.
-        case 0: veg->srcx=128; veg->srcy=112; break;
-        case 1: veg->srcx=128; veg->srcy=128; break;
-        case 2: veg->srcx=128; veg->srcy=144; break;
-        case 3: veg->srcx=144; veg->srcy=112; break;
-        case 4: veg->srcx=144; veg->srcy=128; break;
-        case 5: veg->srcx=144; veg->srcy=144; break;
-      } break;
+  
+  /* Ten vegetables per session, so let's put the odds of a prize at 1/15.
+   * So there should be a prize more often than not, but prizeless will be common too.
+   */
+  if (!(rand()%15)) {
+    int candidatev[16];
+    int candidatec=0;
+    // If we're on top and jigpiece is available, always do that first. Don't make the player repeat until it comes up randomly.
+    // It's not a sure thing because there might not be a prize at all, and we might have given it to the goat first.
+    if (!player->who&&BATTLE->jigpiece_in_play) {
+      candidatev[candidatec++]=NS_itemid_jigpiece;
+    } else {
+      // Coins and fish are always available.
+      candidatev[candidatec++]=NS_itemid_gold;
+      candidatev[candidatec++]=NS_itemid_greenfish;
+      candidatev[candidatec++]=NS_itemid_bluefish;
+      candidatev[candidatec++]=NS_itemid_redfish;
+      // Jigpiece if the map says so. It can be given to the goat too, just to annoy people.
+      if (BATTLE->jigpiece_in_play) candidatev[candidatec++]=NS_itemid_jigpiece;
+      // Everything else are depletable items that we only can use if you have them in inventory.
+      // We don't care if the quantity is zero, just we don't want to be the first time you get that item.
+      // Pepper would make sense here, but it's a vegetable so it would be a little weird.
+      const struct invstore *invstore=g.store.invstorev;
+      int i=INVSTORE_SIZE;
+      for (;i-->0;invstore++) switch (invstore->itemid) {
+        case NS_itemid_bomb:
+        case NS_itemid_match:
+        case NS_itemid_candy:
+        case NS_itemid_vanishing:
+        case NS_itemid_bugspray:
+          if (candidatec<16) candidatev[candidatec++]=invstore->itemid;
+          break;
+      }
+    }
+    switch (veg->itemid=candidatev[rand()%candidatec]) {
+      case NS_itemid_match:       veg->srcx=192; veg->srcy=96; break;
+      case NS_itemid_bugspray:    veg->srcx=192; veg->srcy=112; break;
+      case NS_itemid_candy:       veg->srcx=192; veg->srcy=128; break;
+      case NS_itemid_vanishing:   veg->srcx=192; veg->srcy=144; break;
+      case NS_itemid_gold:        veg->srcx=192; veg->srcy=160; break;
+      case NS_itemid_greenfish:   veg->srcx=192; veg->srcy=208; break;
+      case NS_itemid_bluefish:    veg->srcx=192; veg->srcy=176; break;
+      case NS_itemid_redfish:     veg->srcx=192; veg->srcy=224; break;
+      case NS_itemid_bomb:        veg->srcx=192; veg->srcy=192; break;
+      case NS_itemid_jigpiece:    veg->srcx=192; veg->srcy=240; BATTLE->jigpiece_in_play=0; break; // Limit 1.
+      default: veg->itemid=0; veg->srcx=128; veg->srcy=112; // oops
+    }
+  
+  /* Plain veg.
+   * They're all the same, just different appearances to keep it interesting.
+   */
+  } else {
+    switch (rand()%6) {
+      case 0: veg->srcx=128; veg->srcy=112; break;
+      case 1: veg->srcx=128; veg->srcy=128; break;
+      case 2: veg->srcx=128; veg->srcy=144; break;
+      case 3: veg->srcx=144; veg->srcy=112; break;
+      case 4: veg->srcx=144; veg->srcy=128; break;
+      case 5: veg->srcx=144; veg->srcy=144; break;
+    }
   }
 }
 
@@ -428,10 +473,14 @@ static void _chopping_render(struct battle *battle) {
  */
  
 static int quantity_for_item(int itemid) {
-  // Match what we've drawn. Most are 1.
+  // Match what we've drawn. Most are 1. And jigpiece is weird.
   switch (itemid) {
     case NS_itemid_match: return 5;
     case NS_itemid_gold: return 3;
+    case NS_itemid_jigpiece: {
+        if (!g.camera.map) return 0; // oops
+        return g.camera.map->rid;
+      }
   }
   return 1;
 }

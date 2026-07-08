@@ -23,6 +23,7 @@
 #define NS_dir_se  0x01
 
 #define CMD_map_dark            0x01 /* --- */
+#define CMD_map_battle_jigpiece 0x02 /* --- ; No placed jigpiece. Participating battles may award it as a prize. Ensure such a battle exists here. */
 #define CMD_map_image           0x20 /* u16:rid */
 #define CMD_map_song            0x21 /* u16:rid */
 #define CMD_map_wind            0x22 /* u8:edges u8:reserved ; edges:0x40,0x10,0x08,0x02 */

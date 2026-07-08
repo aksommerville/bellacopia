@@ -179,6 +179,25 @@ double battle_scalar_difficulty(const struct battle *battle) {
   return (double)battle->args.bias/255.0;
 }
 
+/* Test whether jigpiece can be awarded in battle.
+ */
+ 
+int battle_can_award_jigpiece() {
+  // jigstore is a linear search of potentially 300-ish records.
+  // map cmd is also linear, but typically like a dozen records. We don't cache the command.
+  // So check the map first.
+  if (!g.camera.map) return 0;
+  struct cmdlist_reader reader={.v=g.camera.map->cmd,.c=g.camera.map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_battle_jigpiece) {
+      if (!store_get_jigstore(g.camera.map->rid)) return 1;
+      return 0;
+    }
+  }
+  return 0;
+}
+
 /* Color tables.
  * Logically these belong nearer the tilesheet resource, but that would be inconvenient.
  */

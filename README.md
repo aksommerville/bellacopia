@@ -38,7 +38,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - ...actually, instead I'm adding a second minesweeper, and a whole bunch of no-rsprite maps. Same idea, raises the cost of completing the zoo.
 - [x] Consider making the map containing each zoo no-rsprite, so you have to travel at least a little.
 - [x] Raccoon is too orange.
-- [ ] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
+- [x] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
 - [ ] Hide more jigpieces. It's easy to bury them or hide underwater.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
@@ -58,7 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make things you can burn with Pepper or Matches.
 - [ ] Fire needs to hurt monsters. I mean, it's fire!
 - [ ] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
-- [ ] Can we enable Marionette to push blocks?
+- [ ] Can we enable Marionette to push blocks? Maybe only ounce?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
 - - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.
@@ -147,7 +147,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Battle repairs.
 - [ ] boomerang: Sounds for throw and catch.
 - [ ] calligraphy: No fun, eliminate.
-- [ ] chopping: Don't give prizes unless you already have it. Coins and fish are fine whenever but otherwise it must have an inventory slot already.
+- [ ] cheating: No time limit. Allow selecting the hustler as if he was a cup.
+- [x] chopping: Don't give prizes unless you already have it. Coins and fish are fine whenever but otherwise it must have an inventory slot already.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] crying: No handicap variance in 2-player mode. Should we force some?
 - [ ] election: When in arcade mode, apportion endorsers per bias.
@@ -156,9 +157,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
+- [ ] plumbing: Removal should be much easier.
 - [ ] racketeering: Badly needs more juice when you hit the ball.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
+- [ ] slapping: There is no tie. If we think it is, Left is rendered on the bottom so call it a left win. (also, confirm Right renders on the bottom when it wins).
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] weaving: Nerf a little. Players struggled.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
