@@ -17,6 +17,7 @@ struct sprite_pushable {
   int movedx,movedy;
   double targetx,targety;
   double moveclock; // Terminate move if it expires, and stay wherever we are.
+  double pressdx,pressdy; // Must be a cardinal normal, if (pressure) nonzero.
 };
 
 #define SPRITE ((struct sprite_pushable*)sprite)
@@ -41,18 +42,8 @@ static int _pushable_init(struct sprite *sprite) {
 }
 
 static void pushable_begin_move(struct sprite *sprite) {
-  if (GRP(hero)->sprc<1) return;
-  struct sprite *hero=GRP(hero)->sprv[0];
-  double dx=sprite->x-hero->x;
-  double dy=sprite->y-hero->y;
-  double adx=(dx<0.0)?-dx:dx;
-  double ady=(dy<0.0)?-dy:dy;
-  if ((adx>=2.0)||(ady>=2.0)) return; // Hero far away, something is wrong. Abort.
-  if (adx>ady) { // Move horizontally.
-    SPRITE->movedx=(dx<0.0)?-1:1;
-  } else { // Move vertically.
-    SPRITE->movedy=(dy<0.0)?-1:1;
-  }
+  SPRITE->movedx=SPRITE->pressdx;
+  SPRITE->movedy=SPRITE->pressdy;
   int qx=(int)sprite->x;
   int qy=(int)sprite->y;
   int tx=qx+SPRITE->movedx;
@@ -149,15 +140,41 @@ static void _pushable_update(struct sprite *sprite,double elapsed) {
   }
 }
 
-static void _pushable_collide(struct sprite *sprite,struct sprite *bumper) {
-  //fprintf(stderr,"%s from %s at %f,%f (me=%f,%f) weight=%d\n",__func__,bumper->type->name,bumper->x,bumper->y,sprite->x,sprite->y,SPRITE->weight);
-  if (!bumper||(bumper->type!=&sprite_type_hero)) return;
-  if (SPRITE->movedx||SPRITE->movedy) return; // Already moving, lemme finish this first.
-  if (SPRITE->weight>=2) { // Power Gloves only.
-    if (g.store.invstorev[0].itemid!=NS_itemid_glove) return;
+static int is_bumper(struct sprite *sprite,struct sprite *bumper) {
+  if (!bumper) return 0;
+  
+  // Very heavy blocks can only be pushed by a hero wearing the power glove.
+  if (SPRITE->weight>=2) {
+    if (bumper->type!=&sprite_type_hero) return 0;
+    if (g.store.invstorev[0].itemid!=NS_itemid_glove) return 0;
+    return 1;
   }
+  
+  // Other blocks (pound and ounce) can always be pushed by the hero.
+  if (bumper->type==&sprite_type_hero) return 1;
+  
+  // The ounce block can also be pushed by marionettes.
+  if (SPRITE->weight<=0) {
+    if (bumper->type==&sprite_type_marionette) return 1;
+  }
+  
+  return 0;
+}
+
+static void _pushable_collide(struct sprite *sprite,struct sprite *bumper) {
+  if (!is_bumper(sprite,bumper)) return;
   SPRITE->pressure=1;
-  //TODO
+  double dx=sprite->x-bumper->x;
+  double dy=sprite->y-bumper->y;
+  double adx=dx; if (adx<0.0) adx=-adx;
+  double ady=dy; if (ady<0.0) ady=-ady;
+  if (adx>ady) {
+    SPRITE->pressdx=(dx<0.0)?-1.0:1.0;
+    SPRITE->pressdy=0.0;
+  } else {
+    SPRITE->pressdx=0.0;
+    SPRITE->pressdy=(dy<0.0)?-1.0:1.0;
+  }
 }
 
 const struct sprite_type sprite_type_pushable={

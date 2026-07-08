@@ -56,9 +56,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] New song during the election, maybe?
 - [x] Should be able to whack the Princess with your stick.
 - [ ] Make things you can burn with Pepper or Matches.
-- [ ] Fire needs to hurt monsters. I mean, it's fire!
-- [ ] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
-- [ ] Can we enable Marionette to push blocks? Maybe only ounce?
+- [x] Fire needs to hurt monsters. I mean, it's fire!
+- [x] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
+- [x] Can we enable Marionette to push blocks? Maybe only ounce?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
 - - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.

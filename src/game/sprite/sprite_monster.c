@@ -34,6 +34,7 @@ struct sprite_monster {
   double neuterclock; // Counts down initially. We move and all, but won't chase.
   int spent;
   int name_strix; // RID_strings_battle
+  int hurt;
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
@@ -348,6 +349,13 @@ static void monster_tempt_begin(struct sprite *sprite,struct sprite *hero) {
  * Return a sprite only if it is in range, etc.
  */
  
+static int sprite_type_is_appetizing(const struct sprite_type *type) {
+  if (type==&sprite_type_hero) return 1;
+  if (type==&sprite_type_princess) return 1;
+  if (type==&sprite_type_marionette) return 1;
+  return 0;
+}
+ 
 static struct sprite *monster_find_target(struct sprite *sprite) {
   if (SPRITE->neuterclock>0.0) return 0;
   struct sprite *best=0;
@@ -363,7 +371,7 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
      * I'm not sure that makes sense from the standpoint of the monsters' motivation,
      * but as a game mechanic, Candy is expensive so it should have a simple and pronounced effect.
      */
-    if ((other->type==&sprite_type_hero)||(other->type==&sprite_type_princess)) {
+    if (sprite_type_is_appetizing(other->type)) {
       if (best&&(best->type==&sprite_type_candy)) continue; // Prefer Candy.
       if (other->type==&sprite_type_hero) {
         if (g.bugspray>0.0) continue;
@@ -406,6 +414,25 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
   return best;
 }
 
+/* If we're touching a bonfire, react by setting (daze*) and returning nonzero.
+ */
+ 
+static int monster_struck_hazard(struct sprite *sprite) {
+  struct sprite **otherp=GRP(hazard)->sprv;
+  int i=GRP(hazard)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->x+other->hbr<=sprite->x+sprite->hbl) continue;
+    if (other->x+other->hbl>=sprite->x+sprite->hbr) continue;
+    if (other->y+other->hbb<=sprite->y+sprite->hbt) continue;
+    if (other->y+other->hbt>=sprite->y+sprite->hbb) continue;
+    sprite_monster_shock(sprite,other->x,other->y);
+    bm_sound(RID_sound_ouch);
+    return 1;
+  }
+  return 0;
+}
+
 /* Update.
  */
  
@@ -416,10 +443,13 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
   // If dazed, nothing else happens, even animation.
   if (g.flash>0.0) { SPRITE->dazeclock=DAZE_TIME; return; }
   else if (SPRITE->dazeclock>0.0) {
-    SPRITE->dazeclock-=elapsed;
-    SPRITE->dazedx+=SPRITE->dazeddx*elapsed;
-    SPRITE->dazedy+=SPRITE->dazeddy*elapsed;
-    sprite_move(sprite,SPRITE->dazedx*elapsed,SPRITE->dazedy*elapsed);
+    if ((SPRITE->dazeclock-=elapsed)<=0.0) {
+      SPRITE->hurt=0;
+    } else {
+      SPRITE->dazedx+=SPRITE->dazeddx*elapsed;
+      SPRITE->dazedy+=SPRITE->dazeddy*elapsed;
+      sprite_move(sprite,SPRITE->dazedx*elapsed,SPRITE->dazedy*elapsed);
+    }
     return;
   }
 
@@ -429,6 +459,9 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
     if (sprite->tileid==SPRITE->tileid0) sprite->tileid++;
     else sprite->tileid=SPRITE->tileid0;
   }
+  
+  // Check for hazards.
+  if (monster_struck_hazard(sprite)) return;
   
   // If we've just returned from any battle, stand still for a little bit.
   if (g.monsterpause>0.0) return;
@@ -444,7 +477,7 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
       monster_forbid_safe(sprite);
       monster_idle_begin(sprite);
     }
-  } else if ((target->type==&sprite_type_hero)||(target->type==&sprite_type_princess)) { // Hero and Princess get a full vigorous attack.
+  } else if (sprite_type_is_appetizing(target->type)) { // Hero and Princess get a full vigorous attack.
     if (SPRITE->stage!=STAGE_ATTACK) {
       monster_permit_safe(sprite);
       monster_attack_begin(sprite,target);
@@ -586,6 +619,19 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
   g.monsterpause=0.500;
 }
 
+/* Render. Mostly we do the generic thing.
+ * But if shocked, we tint.
+ */
+ 
+static void _monster_render(struct sprite *sprite,int x,int y) {
+  graf_set_image(&g.graf,sprite->imageid);
+  if (SPRITE->hurt) {
+    graf_fancy(&g.graf,x,y,sprite->tileid,sprite->xform,0,NS_sys_tilesize,0xff000080,0x808080ff);
+  } else {
+    graf_tile(&g.graf,x,y,sprite->tileid,sprite->xform);
+  }
+}
+
 /* Type definition.
  */
  
@@ -595,6 +641,7 @@ const struct sprite_type sprite_type_monster={
   .init=_monster_init,
   .update=_monster_update,
   .collide=_monster_collide,
+  .render=_monster_render,
 };
 
 /* Get whacked.
@@ -603,6 +650,7 @@ const struct sprite_type sprite_type_monster={
 void sprite_monster_shock(struct sprite *sprite,double x,double y) {
   if (!sprite||(sprite->type!=&sprite_type_monster)) return;
   SPRITE->dazeclock=SHOCK_TIME;
+  SPRITE->hurt=1;
   double dx=sprite->x-x;
   double dy=sprite->y-y;
   double d2=dx*dx+dy*dy;
