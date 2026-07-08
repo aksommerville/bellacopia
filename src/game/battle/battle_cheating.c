@@ -28,7 +28,7 @@ struct battle_cheating {
     double targetx; // -1,0,1
   } cupv[3];
   int acornp; // 0..2
-  int cursorp; // 0..2
+  int cursorp; // 0..3; 3 is the hustler
 };
 
 #define BATTLE ((struct battle_cheating*)battle)
@@ -255,11 +255,16 @@ static void cheating_update_QUERY_man(struct battle *battle,double elapsed) {
   if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)&&(BATTLE->cursorp>0)) {
     bm_sound(RID_sound_uimotion);
     BATTLE->cursorp--;
-  } else if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)&&(BATTLE->cursorp<2)) {
+  } else if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)&&(BATTLE->cursorp<3)) {
     bm_sound(RID_sound_uimotion);
     BATTLE->cursorp++;
   } else if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    cheating_begin_reveal(battle);
+    if (BATTLE->cursorp==3) {
+      BATTLE->stage=STAGE_SLAP;
+      BATTLE->stageclock=0.0;
+    } else {
+      cheating_begin_reveal(battle);
+    }
   }
 }
 
@@ -456,6 +461,7 @@ static void _cheating_render(struct battle *battle) {
     int n=BATTLE->cursorp-1;
     int x=tbx+(int)(n*cupxmax);
     int y=tby-NS_sys_tilesize;
+    if (BATTLE->cursorp==3) y-=12;
     graf_tile(&g.graf,x,y,BATTLE->ptileid-1,0);
   }
 }

@@ -118,7 +118,6 @@ struct modal_args_battle {
   int skip_prompt; // We normally do a generic "Battle draws near!" hopefully with some helpful instructions.
   int nameless_prompt; // Do the generic prompt but don't try to say the participant's names. Just "Rollerskates Contest!".
   int skip_outtro; // We normally wait for a keystroke after completion, while reporting the winner and consequences.
-  int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.
 };
 
 struct modal_args_dialogue {

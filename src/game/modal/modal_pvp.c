@@ -175,11 +175,11 @@ static void pvp_begin_game(struct modal *modal) {
       .bias=0x80,
       .lface=NS_face_dot,
       .lctl=1,
+      .no_store=1, // Important!
     },
     .cb=pvp_cb_battle,
     .userdata=modal,
     .nameless_prompt=1,
-    .no_store=1, // Important!
   };
   switch (MODAL->playerc) {
     case 1: {

@@ -3,9 +3,9 @@
 #define FLDW 5
 #define FLDH 5
 #define END_COOLDOWN_TIME 1.0
-#define THINKYTIME_MIN 0.128
-#define THINKYTIME_MAX 0.450
-#define THINKYTIME_FUZZ 0.050 /* Add up to so much to each cycle, randomly. */
+#define THINKYTIME_MIN 0.150
+#define THINKYTIME_MAX 0.800
+#define THINKYTIME_FUZZ 0.100 /* Add up to so much to each cycle, randomly. */
 #define THINKYTIME_POSTMOVE 0.100 /* Extra delay after each play, makes it feel more human. */
 
 struct battle_exterminating {

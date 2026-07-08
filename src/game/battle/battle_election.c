@@ -159,7 +159,7 @@ static int _election_init(struct battle *battle) {
   
   /* In the usual man-vs-cpu battle, endorsements come from global flags.
    */
-  if ((battle->args.lctl==1)&&(battle->args.rctl==0)) {
+  if ((battle->args.lctl==1)&&(battle->args.rctl==0)&&!battle->args.no_store) {
     player_add(battle,-1,NS_fld_endorse_food    ,store_get_fld(NS_fld_endorse_food    )?0:1);
     player_add(battle,-1,NS_fld_endorse_public  ,store_get_fld(NS_fld_endorse_public  )?0:1);
     player_add(battle,-1,NS_fld_endorse_athlete ,store_get_fld(NS_fld_endorse_athlete )?0:1);
@@ -258,10 +258,8 @@ static void player_update_man(struct battle *battle,struct player *player,double
  
 static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
   if ((player->throwclock-=elapsed)<=0.0) {
-    //if ((player->spinnert>player->spinnerrange*-0.5)&&(player->spinnert<player->spinnerrange*0.5)) {
-      player->throwclock=player->periodlo+((rand()&0xffff)*(player->periodhi-player->periodlo))/65535.0;
-      player_throw(battle,player);
-    //}
+    player->throwclock=player->periodlo+((rand()&0xffff)*(player->periodhi-player->periodlo))/65535.0;
+    player_throw(battle,player);
   }
 }
 

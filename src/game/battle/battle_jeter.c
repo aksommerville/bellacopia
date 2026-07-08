@@ -18,6 +18,7 @@ struct battle_jeter {
   struct player {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
+    int face;
     double skill; // 0..1, reverse of each other.
     uint8_t tileid_body; // NW corner of a 2x3. Static.
     uint8_t tileid_arm; // NW corner of a 2x2. Rotates.
@@ -63,7 +64,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     player->heavelo=target+miss-0.080;
     player->heavehi=target+miss+0.080;
   }
-  switch (face) {
+  switch (player->face=face) {
     case NS_face_monster: {
         player->tileid_body=0xdb;
         player->tileid_arm=0xed;
@@ -281,10 +282,21 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
   graf_decal(&g.graf,scrollx+40,fldy+groundy-47,srcx,srcy,32,48);
   
   // Once heft, the arms are static, upwardish, and the ballerina flies on her own.
-  int armlx=scrollx+56;
-  int armly=fldy+groundy-18;
-  int armrx=scrollx+64;
-  int armry=fldy+groundy-18;
+  int armlx=scrollx;
+  int armly=fldy+groundy;
+  int armrx=scrollx;
+  int armry=fldy+groundy;
+  if (player->face==NS_face_monster) {
+    armlx+=54;
+    armrx+=63;
+    armly-=18;
+    armry-=19;
+  } else {
+    armlx+=56;
+    armrx+=64;
+    armly-=18;
+    armry-=18;
+  }
   int armsrcx=(player->tileid_arm&0x0f)*NS_sys_tilesize;
   int armsrcy=(player->tileid_arm>>4)*NS_sys_tilesize;
   if (player->heft) {

@@ -24,7 +24,6 @@ struct modal_battle {
   const struct battle_type *type;
   int outcome; // -2 until STAGE_REPORT, then (-1,0,1).
   int stage;
-  int no_store;
   int skip_outtro;
   int nameless_prompt;
   
@@ -276,7 +275,6 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
   MODAL->cb=args->cb;
   MODAL->cb_final=args->cb_final;
   MODAL->userdata=args->userdata;
-  MODAL->no_store=args->no_store;
   MODAL->skip_outtro=args->skip_outtro;
   MODAL->nameless_prompt=args->nameless_prompt;
   
@@ -426,7 +424,7 @@ static void battle_update_report(struct modal *modal,double elapsed) {
 static void _battle_update(struct modal *modal,double elapsed) {
 
   // Tick (battletime).
-  if (!MODAL->no_store) {
+  if (!MODAL->args.no_store) {
     double *battletime=store_require_clock(NS_clock_battletime);
     if (battletime) (*battletime)+=elapsed;
   }

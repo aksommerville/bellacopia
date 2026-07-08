@@ -1,3 +1,9 @@
+/* battle_fishing.c
+ * This was the first battle I wrote (boomerang, chopping, and exterminating in that same batch).
+ * So the conventions hadn't really formed yet, and looking back, this is pretty stilted.
+ * Looking for an example for battle design, look somewhere else.
+ */
+
 #include "game/bellacopia.h"
 
 #define BASKET_LEVEL 120 /* Fish get caught only on the frame that they cross this. */
@@ -35,14 +41,15 @@ struct battle_fishing {
     uint8_t xform; // Random, decorative.
     int mass;
     int col; // 0..3 = Dot L, Dot R, Cat L, Cat R
-    int cat_prefer; // Cat should catch this one, whether heavier or not.
+    int cat_prefer; // CPU players prefer this one.
     uint32_t color; // Zero for plain fish.
     int haulp; // 0..2, only relevant if color nonzero.
   } fishv[FISH_LIMIT];
   int fishc;
   double spawnclock;
-  int decisionv[DECISION_COUNT]; // Nonzero if the cat will choose correctly on that round. The actual masses etc are chosen jit.
-  int decisionp;
+  int ldecisionv[DECISION_COUNT]; // Nonzero if the cat will choose correctly on that round. The actual masses etc are chosen jit.
+  int rdecisionv[DECISION_COUNT];
+  int ldecisionp,rdecisionp;
   int colorv[DECISION_COUNT]; // Parallel to (decisionv). Zero or NS_itemid_*fish. If nonzero, put a colored fish somewhere in this row.
   int haulv[3]; // How many caught of (green,blue,red) respectively.
   double end_cooldown;
@@ -59,13 +66,13 @@ static void _fishing_del(struct battle *battle) {
 /* 0..DECISION_COUNT-1, a random index where value is currently zero.
  */
  
-static int fishing_random_zero_decision(struct battle *battle) {
-  int panic=200;
-  while (panic-->0) {
-    int p=rand()%DECISION_COUNT;
-    if (!BATTLE->decisionv[p]) return p;
-  }
-  return 0;
+static int fishing_random_zero_decision(struct battle *battle,int *v) {
+  int candidatev[DECISION_COUNT];
+  int candidatec=0;
+  int i=DECISION_COUNT;
+  while (i-->0) if (!v[i]) candidatev[candidatec++]=i;
+  if (!candidatec) return 0;
+  return candidatev[rand()%candidatec];
 }
 
 static void fishing_place_color(struct battle *battle,int itemid) {
@@ -121,13 +128,20 @@ static int _fishing_init(struct battle *battle) {
    * We decide in advance how many mistakes the cat will make, directly proportionate to the handicap.
    * There will always be at least one correct decision and at least one incorrect.
    */
-  if (!battle->args.lctl||!battle->args.rctl) {
-    //TODO Need separate decision lists, if both players are cpu
+  if (!battle->args.lctl) {
+    int correctc=1+(((0xff-battle->args.bias)*(DECISION_COUNT-2))>>8);
+    if (correctc<1) correctc=1; else if (correctc>=DECISION_COUNT) correctc=DECISION_COUNT-1;
+    while (correctc-->0) {
+      int p=fishing_random_zero_decision(battle,BATTLE->ldecisionv);
+      BATTLE->ldecisionv[p]=1;
+    }
+  }
+  if (!battle->args.rctl) {
     int correctc=1+((battle->args.bias*(DECISION_COUNT-2))>>8);
     if (correctc<1) correctc=1; else if (correctc>=DECISION_COUNT) correctc=DECISION_COUNT-1;
     while (correctc-->0) {
-      int p=fishing_random_zero_decision(battle);
-      BATTLE->decisionv[p]=1;
+      int p=fishing_random_zero_decision(battle,BATTLE->rdecisionv);
+      BATTLE->rdecisionv[p]=1;
     }
   }
   
@@ -151,7 +165,7 @@ static int _fishing_init(struct battle *battle) {
 static void fishing_spawn(struct battle *battle) {
 
   // If we're already over the limit, get out. Shouldn't have called us.
-  if (BATTLE->decisionp>=DECISION_COUNT) return;
+  if ((BATTLE->ldecisionp>=DECISION_COUNT)||(BATTLE->rdecisionp>=DECISION_COUNT)) return;
 
   // First drop any defunct.
   int i=BATTLE->fishc;
@@ -240,14 +254,14 @@ static void fishing_spawn(struct battle *battle) {
   }
   
   // If this is a color row, apply it to one of the four at random.
-  if (BATTLE->colorv[BATTLE->decisionp]) {
+  if (BATTLE->colorv[BATTLE->ldecisionp]) {
     switch (rand()&3) {
       case 0: fish=manl; break;
       case 1: fish=manr; break;
       case 2: fish=catl; break;
       default: fish=catr; break;
     }
-    switch (BATTLE->colorv[BATTLE->decisionp]) {
+    switch (BATTLE->colorv[BATTLE->ldecisionp]) {
       case NS_itemid_greenfish: fish->color=0x05c205ff; fish->haulp=0; break;
       case NS_itemid_bluefish:  fish->color=0x0e71b2ff; fish->haulp=1; break;
       case NS_itemid_redfish:   fish->color=0xd70941ff; fish->haulp=2; break;
@@ -255,8 +269,15 @@ static void fishing_spawn(struct battle *battle) {
   }
   
   // Whether the cat will choose correctly was determined in advance at init.
-  catl->cat_prefer=catr->cat_prefer=0;
-  if (BATTLE->decisionv[BATTLE->decisionp++]) {
+  manl->cat_prefer=manr->cat_prefer=catl->cat_prefer=catr->cat_prefer=0;
+  if (BATTLE->ldecisionv[BATTLE->ldecisionp++]) {
+    if (manl->mass>manr->mass) manl->cat_prefer=1;
+    else manr->cat_prefer=1;
+  } else {
+    if (manl->mass>manr->mass) manr->cat_prefer=1;
+    else manl->cat_prefer=1;
+  }
+  if (BATTLE->rdecisionv[BATTLE->rdecisionp++]) {
     if (catl->mass>catr->mass) catl->cat_prefer=1;
     else catr->cat_prefer=1;
   } else {
@@ -331,7 +352,6 @@ static void fishing_update_auto(struct battle *battle,uint8_t *xform,int coll,in
   // If either one is missing, stay put. This shouldn't happen. But maybe briefly. Who cares.
   if (!fishl||!fishr) return;
   // Exactly one of them should have (cat_prefer) set. Prefer that one.
-  //TODO cpu-vs-cpu, they make the same decisions. This was written before consideration of the cpu-vs-cpu case. Revisit that.
   if (fishl->cat_prefer) *xform=EGG_XFORM_XREV;
   else if (fishr->cat_prefer) *xform=0;
 }
@@ -369,7 +389,7 @@ static void _fishing_update(struct battle *battle,double elapsed) {
     fish_update(battle,fish,elapsed);
   }
   
-  if (BATTLE->decisionp<DECISION_COUNT) {
+  if (BATTLE->ldecisionp<DECISION_COUNT) {
     if ((BATTLE->spawnclock-=elapsed)<=0.0) {
       BATTLE->spawnclock+=SPAWN_INTERVAL;
       fishing_spawn(battle);

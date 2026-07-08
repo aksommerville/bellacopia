@@ -25,6 +25,7 @@ struct battle_args {
   uint8_t lctl,rctl; // Input source. 0=CPU, or player id.
   uint8_t lface,rface; // Hero appearance. NS_face_*. Might be limited to (0,1,2)=(monster,dot,princess). Best effort.
   int imageid; // For color table. Zero to consult (g.camera.map), or invalid eg negative to force the default, meadow.
+  int no_store; // Set nonzero to forbid store access. Otherwise we might dirty a fresh store and wipe the saved game.
 };
 
 struct battle {
@@ -99,5 +100,12 @@ void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid);
  * This is a little expensive. Try not to call more than once per battle.
  */
 int battle_can_award_jigpiece();
+
+/* Just a convenience, to make sure it's done the same way everywhere.
+ * battle_song() to capture what's playing now and replace.
+ * battle_unsong() at cleanup to restore the previous one.
+ */
+void battle_song(int rid);
+void battle_unsong();
 
 #endif

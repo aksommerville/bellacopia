@@ -59,10 +59,7 @@ struct battle_fission {
  */
  
 static void _fission_del(struct battle *battle) {
-  if (BATTLE->stopped_music) {
-    if (modal_get_topmost(&modal_type_pvp)) bm_song_gently(RID_song_death_rattle);
-    else bm_song_gently(bm_song_for_outerworld());
-  }
+  if (BATTLE->stopped_music) battle_unsong();
 }
 
 /* Init player.
@@ -318,7 +315,7 @@ static void _fission_update(struct battle *battle,double elapsed) {
   if (BATTLE->level==LEVEL_CRITICAL) {
     if ((BATTLE->blowclock-=elapsed)<=0.0) {
       BATTLE->doomsday=0.001;
-      bm_song_gently(0);
+      battle_song(0);
       BATTLE->stopped_music=1;
     } else if (BATTLE->blowclock<=BATTLE->klaxtime) {
       bm_sound(RID_sound_klaxon);

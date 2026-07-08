@@ -308,10 +308,8 @@ static void _slapping_update(struct battle *battle,double elapsed) {
   }
   
   if (l->slap) {
-    if (r->slap) {
-      // Both wrong or both right, either way it's a tie.
-      battle->outcome=0;
-    } else if (slapping_get_top_card(battle)==BATTLE->target) {
+    //if (r->slap) { // When they both slap, (l) is drawn first and appears to win. Make her actually win too.
+    if (slapping_get_top_card(battle)==BATTLE->target) {
       battle->outcome=1;
     } else {
       battle->outcome=-1;

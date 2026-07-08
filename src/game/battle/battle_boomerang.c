@@ -371,6 +371,7 @@ static void rang_update(struct battle *battle,struct rang *rang,double elapsed) 
     if (battle->outcome>-2) return;
     if ((rang->grabclock-=elapsed)<=0.0) {
       rang->grabbed=0;
+      bm_sound_pan(RID_sound_throw,PLAYER_PAN*rang->side);
     }
   } else if (rang->dead){
     if ((rang->deady+=30.0*elapsed)>=GROUND_LEVEL) rang->deady=GROUND_LEVEL;
@@ -387,6 +388,7 @@ static void rang_update(struct battle *battle,struct rang *rang,double elapsed) 
       } else if ((rang->x<=0.0)&&(rang->dx<0.0)) {
         boomerang_harden(battle);
         rang_reset(battle,rang);
+        bm_sound_pan(RID_sound_catch,PLAYER_PAN*rang->side);
       }
     }
   }

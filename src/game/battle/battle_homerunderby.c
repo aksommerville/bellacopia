@@ -266,7 +266,7 @@ static void _homerunderby_update(struct battle *battle,double elapsed) {
       BATTLE->balldz=-BATTLE->balldz*BOUNCE_PENALTY;
       if (BATTLE->balldz<2.0) BATTLE->balldz=0.0;
     }
-    if (BATTLE->balldy<0.0) { // Moving outfieldward, apply gravity. And if we leave the framebuffer, it's foul or homerun.
+    if (BATTLE->balldy<=0.0) { // Moving outfieldward, apply gravity. And if we leave the framebuffer, it's foul or homerun.
       BATTLE->balldz-=GRAVITY*elapsed;
       if (BATTLE->balldz<-GRAVITY_LIMIT) BATTLE->balldz=-GRAVITY_LIMIT;
       if (BATTLE->bally<-MARGIN) {
@@ -274,9 +274,11 @@ static void _homerunderby_update(struct battle *battle,double elapsed) {
       } else if ((BATTLE->ballx<-XMARGIN)||(BATTLE->ballx>FBW+XMARGIN)) {
         homerunderby_foul(battle);
       }
-    } else { // Moving homeward, strike if we leave the screen.
+    } else { // Moving homeward, strike if we leave the screen. Foul if horizontal. Beware that (balldy) might be extremely small.
       if (BATTLE->bally>FBH+MARGIN) {
         homerunderby_strike(battle);
+      } else if ((BATTLE->ballx<-XMARGIN)||(BATTLE->ballx>FBW+XMARGIN)) {
+        homerunderby_foul(battle);
       }
     }
   }

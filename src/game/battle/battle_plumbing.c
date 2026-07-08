@@ -96,8 +96,8 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     player->y=ROWC>>1;
     player->animframe=2; // Put them a half-turn out of phase, in case they overlap.
   }
-  player->delete_decay=2.000*(1.0-player->skill)+1.000*player->skill;
-  player->delete_step=0.250; // ''
+  player->delete_decay=1.500*(1.0-player->skill)+0.500*player->skill;
+  player->delete_step=0.300; // ''
   if (player->human=human) { // Human.
     player->delete_cooldown=DELETE_COOLDOWN; // To nix initial input.
   } else { // CPU.
@@ -555,9 +555,6 @@ static void _plumbing_update(struct battle *battle,double elapsed) {
     player_update_common(battle,player,elapsed);
     if (battle->outcome>-2) break; // If we establish completion, don't let the next guy try.
   }
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Tile and xform for a pipe cell.

@@ -62,8 +62,7 @@ struct battle_sumohorse {
  */
  
 static void _sumohorse_del(struct battle *battle) {
-  if (modal_get_topmost(&modal_type_pvp)) bm_song_gently(RID_song_death_rattle);
-  else bm_song_gently(bm_song_for_outerworld());
+  battle_unsong();
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
@@ -222,7 +221,7 @@ static int _sumohorse_init(struct battle *battle) {
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
-  bm_song_force(0);
+  battle_song(0);
   sumohorse_begin_stage(battle,STAGE_RDANCE);
   return 0;
 }

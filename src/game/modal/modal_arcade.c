@@ -8,7 +8,7 @@
 
 #include "game/bellacopia.h"
 
-#define PRESELECT_BATTLE NS_battle_flapping
+#define PRESELECT_BATTLE NS_battle_weaving
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250
@@ -249,11 +249,11 @@ static void arcade_begin_game(struct modal *modal) {
     .args={
       .difficulty=MODAL->difficulty,
       .bias=MODAL->bias,
+      .no_store=1, // Store might not be initialized yet. Ticking its battleclock is first off wrong, and second, would cause the existing save to get clobbered.
     },
     .cb=arcade_cb_battle,
     .userdata=modal,
     .skip_prompt=1,
-    .no_store=1, // Store might not be initialized yet. Ticking its battleclock is first off wrong, and second, would cause the existing save to get clobbered.
   };
   switch (MODAL->players) {
     case 0: { // Princess vs Monster

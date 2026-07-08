@@ -30,6 +30,7 @@ struct battle_weaving {
     int warpc; // Determined at init, per skill.
     int warpxv[WARPCHI];
     int ratev[WARPCHI]; // Populated progressively after term.
+    int throwv[WARPCHI]; // For CPU, nonzero to deliberately crash at this warp.
     double speed; // ''
     double dt; // ''
     double needlex; // Framebuffer pixels.
@@ -126,6 +127,28 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     player->overshootlo=player->overshoothi*0.5;
     if (player->who) player->dstx=FBW;
     player->nextdir=(rand()&1);
+    player->speed*=0.900; // CPU penalty.
+    player_recalc_delta(player);
+    
+    // Hit so many warps, depending on skill.
+    int throwc;
+         if (player->skill>=0.750) throwc=0;
+    else if (player->skill>=0.480) throwc=1; // The usual case, and also against Princess.
+    else if (player->skill>=0.220) throwc=2; // Princess and goodluck.
+    else throwc=3;
+    if (throwc>player->warpc) throwc=player->warpc; // Not possible but maybe I change constants in the future.
+    fprintf(stderr,"%s:%d: skill=%.03f throwc=%d/%d\n",__FILE__,__LINE__,player->skill,throwc,player->warpc);
+    int candidatev[WARPCHI];
+    int i=player->warpc;
+    while (i-->0) candidatev[i]=i;
+    int candidatec=player->warpc;
+    while (throwc-->0) {
+      int candidatep=rand()%candidatec;
+      player->throwv[candidatev[candidatep]]=1;
+      candidatec--;
+      memmove(candidatev+candidatep,candidatev+candidatep+1,sizeof(int)*(candidatec-candidatep));
+    }
+  
   }
   switch (face) {
     case NS_face_monster: {
@@ -202,6 +225,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       }
       player->dsty=FBH*0.250;
     } else { // To the next warp.
+      int throw=player->throwv[player->warpp];
       player->dstx=player->warpxv[player->warpp++];
       double offy=(rand()&0xffff)/65535.0;
       offy=player->overshootlo*(1.0-offy)+player->overshoothi*offy;
@@ -212,6 +236,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
         player->dsty=FBH*0.250-offy;
         player->nextdir=1;
       }
+      if (throw) player->dsty=FBH*0.250+((rand()&0xffff)*8.0/65535.0)-4.0;
     }
   }
   
@@ -292,11 +317,21 @@ static int player_score_warp(struct battle *battle,struct player *player,int war
   double wx0=player->warpxv[0];
   const struct sample *sample=player->samplev;
   int i=player->samplec;
-  for (;i-->0;sample++) {
-    if (sample->x>=wx0) {
-      if (sample->y<wy) sunnyside=-1;
-      else sunnyside=1;
-      break;
+  if (player->who) {
+    for (;i-->0;sample++) {
+      if (sample->x<=wx0) {
+        if (sample->y<wy) sunnyside=-1;
+        else sunnyside=1;
+        break;
+      }
+    }
+  } else {
+    for (;i-->0;sample++) {
+      if (sample->x>=wx0) {
+        if (sample->y<wy) sunnyside=-1;
+        else sunnyside=1;
+        break;
+      }
     }
   }
   if (warpp&1) sunnyside=-sunnyside;
@@ -308,8 +343,13 @@ static int player_score_warp(struct battle *battle,struct player *player,int war
   double xa=wx-radius;
   double xz=wx+radius;
   for (sample=player->samplev,i=player->samplec;i-->0;sample++) {
-    if (sample->x<xa) continue;
-    if (sample->x>xz) break;
+    if (player->who) {
+      if (sample->x<xa) break;
+      if (sample->x>xz) continue;
+    } else {
+      if (sample->x<xa) continue;
+      if (sample->x>xz) break;
+    }
     if (sunnyside<0) {
       if (sample->y>=wy) {
         good=0;

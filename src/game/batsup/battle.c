@@ -268,3 +268,17 @@ void battle_get_ctab_by_id(uint32_t *dst,int dsta,int imageid) {
   
   #undef _
 }
+
+/* Song override for battles.
+ */
+ 
+static int battle_previous_song=0;
+
+void battle_song(int rid) {
+  battle_previous_song=g.song_playing;
+  bm_song_force(rid);
+}
+
+void battle_unsong() {
+  bm_song_force(battle_previous_song);
+}

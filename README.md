@@ -148,27 +148,28 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Dark some regions.
 
 - Battle repairs.
-- [ ] boomerang: Sounds for throw and catch.
+- [x] boomerang: Sounds for throw and catch.
 - [ ] calligraphy: No fun, eliminate.
-- [ ] cheating: No time limit. Allow selecting the hustler as if he was a cup.
+- [x] cheating: No time limit. Allow selecting the hustler as if he was a cup.
 - [x] chopping: Don't give prizes unless you already have it. Coins and fish are fine whenever but otherwise it must have an inventory slot already.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
-- [ ] crying: No handicap variance in 2-player mode. Should we force some?
-- [ ] election: When in arcade mode, apportion endorsers per bias.
-- [ ] exterminating: Nerf.
-- [ ] fishing: Smarter cvc decisions; right now they run exactly the same.
+- [x] crying: No handicap variance in 2-player mode. Should we force some? ...this statement was incorrect, it does vary
+- [x] election: When in arcade mode, apportion endorsers per bias.
+- [x] exterminating: Nerf.
+- [x] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
-- [ ] homerunderby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
-- [ ] jeter: Dancer's arms could connect better to her shoulders.
+- [x] homerunderby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
+- - This is a real thing and could happen if balldy is positive and extremely small. Hard to repro. Mitigated and I think it's not possible anymore.
+- [x] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
-- [ ] plumbing: Removal should be much easier.
+- [x] plumbing: Removal should be much easier.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
-- [ ] slapping: There is no tie. If we think it is, Left is rendered on the bottom so call it a left win. (also, confirm Right renders on the bottom when it wins).
+- [x] slapping: There is no tie. If we think it is, Left is rendered on the bottom so call it a left win. (also, confirm Right renders on the bottom when it wins).
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
-- [ ] weaving: Nerf a little. Players struggled. Have the spider always hit one warp at normal difficulty.
+- [x] weaving: Nerf a little. Players struggled. Have the spider always hit one warp at normal difficulty.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 

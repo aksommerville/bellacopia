@@ -60,8 +60,7 @@ struct battle_cpr {
  */
  
 static void _cpr_del(struct battle *battle) {
-  if (modal_get_topmost(&modal_type_pvp)) bm_song_gently(RID_song_death_rattle);
-  else bm_song_gently(bm_song_for_outerworld());
+  battle_unsong();
 }
 
 /* Init player.
@@ -116,7 +115,7 @@ static int _cpr_init(struct battle *battle) {
     BATTLE->playerv[0].increase*=CPU_PENALTY;
   }
   
-  bm_song_force(RID_song_heart_thumpin);
+  battle_song(RID_song_heart_thumpin);
   
   // Read tempo off the song resource.
   const uint8_t *src=0;
