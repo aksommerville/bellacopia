@@ -123,6 +123,8 @@ double sprite_racer_get_lap_time(const struct sprite *sprite);
 double sprite_racer_get_race_time(const struct sprite *sprite);
 int sprite_racer_get_lapp(const struct sprite *sprite);
 
+void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl);
+
 /* Sprite group.
  *******************************************************************/
  

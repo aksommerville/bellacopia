@@ -47,6 +47,7 @@
 #define CMD_map_endorsement     0x4c /* u16:pos u16:fld ; Fractia endorsement banners. 3 states. */
 #define CMD_map_race            0x4d /* u16:pos u8:raceid u8:seq */
 #define CMD_map_track           0x4e /* u16:pos u8:raceid u8:seq ; Just like (race) but for CPU only, and finer-grained. */
+#define CMD_map_flammable       0x4f /* u16:pos u16:fld */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg ; Must remain identical to the "rsprite" command in rsprite resources. */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
@@ -308,6 +309,7 @@
 #define NS_activity_medomat 55
 #define NS_activity_zoo_replay 56
 #define NS_activity_reset_puzzle 57
+#define NS_activity_forest_secret_entrance 58
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */
@@ -745,6 +747,13 @@
 #define NS_fld_minesweep2 216 /* west of the ladder; gates zoo */
 #define NS_fld_jigpiece_underlake 217
 #define NS_fld_jigpiece_ne 218
+#define NS_fld_burn1 219
+#define NS_fld_burn2 220
+#define NS_fld_burn3 221
+#define NS_fld_burn4 222
+#define NS_fld_burn5 223
+#define NS_fld_burn6 224
+#define NS_fld_forest_secret_entrance 225
 
 /* "fld16" are 16 unsigned bits each.
  */

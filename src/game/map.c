@@ -14,6 +14,7 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
       case CMD_map_switchable:
       case CMD_map_stompbox:
       case CMD_map_treadle:
+      case CMD_map_flammable:
       case CMD_map_switchable2: {
           int d=(cmd.opcode==CMD_map_switchable2)?2:1;
           int x=cmd.arg[0],y=cmd.arg[1];

@@ -5,6 +5,7 @@ struct sprite_bonfire {
   uint8_t tileid0;
   double animclock;
   int animframe;
+  double ttl;
 };
 
 #define SPRITE ((struct sprite_bonfire*)sprite)
@@ -21,6 +22,10 @@ static void _bonfire_update(struct sprite *sprite,double elapsed) {
     sprite->tileid=SPRITE->tileid0+(SPRITE->animframe&1);
     sprite->xform=(SPRITE->animframe&2)?0:EGG_XFORM_XREV;
   }
+  if (SPRITE->ttl>0.0) {
+    SPRITE->ttl-=elapsed;
+    if (SPRITE->ttl<=0.0) sprite_kill_soon(sprite);
+  }
 }
 
 const struct sprite_type sprite_type_bonfire={
@@ -29,3 +34,11 @@ const struct sprite_type sprite_type_bonfire={
   .init=_bonfire_init,
   .update=_bonfire_update,
 };
+
+/* Public accessors.
+ */
+ 
+void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl) {
+  if (!sprite||(sprite->type!=&sprite_type_bonfire)) return;
+  SPRITE->ttl=ttl;
+}

@@ -55,7 +55,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
 - [x] Should be able to whack the Princess with your stick.
-- [ ] Make things you can burn with Pepper or Matches.
+- [x] Make things you can burn with Pepper or Matches.
 - [x] Fire needs to hurt monsters. I mean, it's fire!
 - [x] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
 - [x] Can we enable Marionette to push blocks? Maybe only ounce?
@@ -66,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
 - [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
+- [ ] A little explanation when you pick up your first jigpiece.
 
 - Battles written but not placed.
 
@@ -107,9 +108,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Forest / Cheapside / Meadow
 - - [ ] Exteriors.
 - - [ ] Dot's house
+- - - Ensure the underground entrance is not obvious but doesn't need items to enter.
 - - [ ] Blood Bank. Are we even keeping this?
 - - - Replace with Goody's house: She tells you about the wand and teaches spells.
 - - [ ] Underground entrance house
+- - - Same concerns as Dot's ladder, make it a little secret.
 - - [ ] Fishwife
 - - [ ] Carpenter
 - [ ] Battlefield
@@ -158,13 +161,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] homerunderby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
 - [ ] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
+- [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
 - [ ] plumbing: Removal should be much easier.
-- [ ] racketeering: Badly needs more juice when you hit the ball.
+- [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
 - [ ] slapping: There is no tie. If we think it is, Left is rendered on the bottom so call it a left win. (also, confirm Right renders on the bottom when it wins).
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
-- [ ] weaving: Nerf a little. Players struggled.
+- [ ] weaving: Nerf a little. Players struggled. Have the spider always hit one warp at normal difficulty.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 

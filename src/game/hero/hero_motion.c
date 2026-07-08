@@ -195,6 +195,15 @@ static void hero_check_bumps(struct sprite *sprite) {
           SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
           _hero_tread_poi(sprite,cmd.opcode,cmd.arg,cmd.argc);
         } break;
+      case CMD_map_flammable: { // Bump into a flammable with a match burning, it burns and your match goes out.
+          if (SPRITE->matchclock<=0.0) break;
+          if (cmd.arg[0]!=x) break;
+          if (cmd.arg[1]!=y) break;
+          int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          store_set_fld(fldid,1);
+          g.camera.mapsdirty=1;
+          SPRITE->matchclock=0.0;
+        } break;
     }
   }
 }

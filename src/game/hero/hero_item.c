@@ -1013,6 +1013,34 @@ static int pepper_begin(struct sprite *sprite) {
   g.store.invstorev[0].quantity--;
   store_broadcast('i',NS_itemid_pepper,0);
   bm_sound(RID_sound_pepper);
+  
+  /* If the cell in question is flammable, trigger it.
+   */
+  struct map *map=map_by_sprite_position(x,y,bonfire->z);
+  if (map) {
+    int col=(int)x-map->lng*NS_sys_mapw;
+    int row=(int)y-map->lat*NS_sys_maph;
+    if ((col>=0)&&(row>=0)&&(col<NS_sys_mapw)&&(row<NS_sys_maph)) {
+      int p=row*NS_sys_mapw+col;
+      if (map->v[p]==map->rov[p]) { // Check only if effective tile matches the constant tile.
+        struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+        struct cmdlist_entry cmd;
+        while (cmdlist_reader_next(&cmd,&reader)>0) {
+          if (cmd.opcode==CMD_map_flammable) {
+            if (cmd.arg[0]!=col) continue;
+            if (cmd.arg[1]!=row) continue;
+            int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+            map->v[p]=map->rov[p]+1;
+            store_set_fld(fldid,1);
+            sprite_bonfire_set_ttl(bonfire,0.500);
+            g.camera.mapsdirty=1;
+            break;
+          }
+        }
+      }
+    }
+  }
+  
   return 1;
 }
 
