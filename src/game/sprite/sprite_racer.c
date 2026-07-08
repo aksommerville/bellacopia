@@ -2,6 +2,7 @@
 #include "game/race/race.h"
 
 #define CHECKPOINT_RADIUS2 4.0
+#define SAMPLE_PERIOD 0.250
 
 struct sprite_racer {
   struct sprite hdr;
@@ -18,6 +19,8 @@ struct sprite_racer {
   int trackp,trackc;
   double trackax,trackay,trackbx,trackby; // From (a) to (b), current leg of the track. (trackp) refers to (b).
   double samplex,sampley,sampleclock;
+  int stuck; // Counts consecutive sample periods with suspiciously low travel.
+  double panicclock,panicdx,panicdy; // If stuck, this engages to move us laterally to hopefully a better position.
   
   double facet;
   int frame; // (0,1,2,3)=(normal,rush,turnleft,turnright)
@@ -110,6 +113,7 @@ static int _racer_init(struct sprite *sprite) {
     if (race_get_track(&SPRITE->trackbx,&SPRITE->trackby,SPRITE->trackp)<0) return -1;
     SPRITE->samplex=sprite->x;
     SPRITE->sampley=sprite->y;
+    SPRITE->sampleclock=SAMPLE_PERIOD;
     
     /* If Dot has a goodluck, spend it and reduce Moon's speed dramatically.
      */
@@ -142,10 +146,90 @@ static void racer_update_man(struct sprite *sprite,double elapsed,int input,int 
   }
 }
 
+/* Stuck! Set a CPU panic to move us sideways, whichever direction looks freer.
+ */
+ 
+static int racer_good_panic_cell(const struct map *map,int x,int y) {
+  if ((x<0)||(y<0)||(x>=NS_sys_mapw)||(y>=NS_sys_maph)) return 0;
+  uint8_t tileid=map->v[y*NS_sys_mapw+x];
+  uint8_t physics=map->physics[tileid];
+  if (physics==NS_physics_vacant) return 1;
+  if (physics==NS_physics_safe) return 1;
+  if (physics==NS_physics_water) return 1;
+  if (physics==NS_physics_hole) return 1;
+  return 0;
+}
+ 
+static void racer_cpu_panic(struct sprite *sprite) {
+  const double panic_speed=5.0;
+  SPRITE->panicclock=0.300;
+  double dx=sin(SPRITE->facet);
+  double dy=cos(SPRITE->facet);
+  /* (dx,dy) is now pointing forward -- the one direction we know we don't want.
+   * Check the map at both quarter-turns and arrange to slide toward whichever looks more agreeable.
+   * If they're both good, pick randomly.
+   */
+  struct candidate { double dx,dy; } candidatev[2];
+  int candidatec=0;
+  const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (map) {
+    {
+      int x=(int)(sprite->x+dy*1.200)-map->lng*NS_sys_mapw;
+      int y=(int)(sprite->y-dx*1.200)-map->lat*NS_sys_maph;
+      if (racer_good_panic_cell(map,x,y)) candidatev[candidatec++]=(struct candidate){.dx=dy,.dy=-dx};
+    }
+    {
+      int x=(int)(sprite->x-dy*1.200)-map->lng*NS_sys_mapw;
+      int y=(int)(sprite->y+dx*1.200)-map->lat*NS_sys_maph;
+      if (racer_good_panic_cell(map,x,y)) candidatev[candidatec++]=(struct candidate){.dx=-dy,.dy=dx};
+    }
+  }
+  // If neither lateral move looks good, move backward and hope for the best.
+  if (!candidatec) candidatev[candidatec++]=(struct candidate){.dx=-dx,.dy=-dy};
+  struct candidate *choice=candidatev+(rand()&1);
+  SPRITE->panicdx=choice->dx*panic_speed;
+  SPRITE->panicdy=choice->dy*panic_speed;
+  SPRITE->steer=0;
+  SPRITE->accel=0;
+}
+
 /* Update, CPU control.
  */
  
 static void racer_update_cpu(struct sprite *sprite,double elapsed) {
+
+  /* If panic was called, run it down.
+   */
+  if (SPRITE->panicclock>0.0) {
+    SPRITE->panicclock-=elapsed;
+    sprite_move(sprite,SPRITE->panicdx*elapsed,SPRITE->panicdy*elapsed);
+    SPRITE->samplex=sprite->x;
+    SPRITE->sampley=sprite->y;
+    SPRITE->steer=0;
+    SPRITE->accel=0;
+    return;
+  }
+
+  /* Sample position periodically and panic if we're not moving.
+   */
+  if ((SPRITE->sampleclock-=elapsed)<0.0) {
+    SPRITE->sampleclock+=SAMPLE_PERIOD;
+    double offx=sprite->x-SPRITE->samplex;
+    double offy=sprite->y-SPRITE->sampley;
+    double d2=offx*offx+offy*offy;
+    //fprintf(stderr,"sampled travel: %.03f m**2\n",d2);
+    SPRITE->samplex=sprite->x;
+    SPRITE->sampley=sprite->y;
+    if (d2<0.100) {
+      SPRITE->stuck++;
+      if (SPRITE->stuck>=2) { // Two low-travel periods in a row, panic.
+        racer_cpu_panic(sprite);
+        return;
+      }
+    } else {
+      SPRITE->stuck=0;
+    }
+  }
 
   /* If within a meter of point B, advance to the next.
    */

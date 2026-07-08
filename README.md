@@ -60,7 +60,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
 - [x] Can we enable Marionette to push blocks? Maybe only ounce?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
-- [ ] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
+- [x] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
 - - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [x] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
