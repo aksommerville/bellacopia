@@ -416,3 +416,14 @@ int sprite_hero_is_grounded(const struct sprite *sprite) {
   if (sprite->type==&sprite_type_racer) return 0;
   return 1;
 }
+
+/* Is a door transition pending?
+ */
+
+int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  if (!SPRITE->door_listener) return 0;
+  *dstx=SPRITE->doorx;
+  *dsty=SPRITE->doory;
+  return 1;
+}

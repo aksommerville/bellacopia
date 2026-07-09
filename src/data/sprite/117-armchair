@@ -1,0 +1,4 @@
+image image:meadow_sprites
+tile 12 0
+type (u16:sprtype)pushable
+groups (b32:sprgrp)update,visible,moveable,grabbable,solid

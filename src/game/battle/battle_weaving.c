@@ -11,8 +11,8 @@
 #define DTHI 5.000
 #define OVERSHOOTLO 15.0 /* CPU aims for a triangle wave. Its points will be so far from the foci. */
 #define OVERSHOOTHI 30.0
-#define TMIN 0.025 /* Smallest allowable angle in 0..1/2. We must keep them off the vertical. */
-#define SAMPLE_LIMIT 256
+#define TMIN 0.100 /* Smallest allowable angle in 0..1/2. We must keep them off the vertical. */
+#define SAMPLE_LIMIT 256 /* 249 at the limit where you ride an edge all the way. 100-ish in a typical run. */
 #define SAMPLE_PERIOD 0.100
 
 struct battle_weaving {
@@ -484,6 +484,7 @@ static void player_render(struct battle *battle,struct player *player,int top) {
   if (player->term) {
     x=(int)player->needlex;
     y=top+(int)player->needley-6;
+    if (y<5) y=5; // Left player saturated high, text would go offscreen.
     if (!player->who) x-=8*6;
     int ms=(int)(player->runclock*1000.0);
     if (ms<0) ms=0;

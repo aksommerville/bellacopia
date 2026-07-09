@@ -100,6 +100,7 @@ int sprite_hero_is_escorting_princess(const struct sprite *sprite); // True only
 uint8_t sprite_hero_get_facedir(const struct sprite *sprite);
 int sprite_hero_get_item_in_play(const struct sprite *sprite); // Not the held item; only nonzero when actively in use.
 int sprite_hero_is_grounded(const struct sprite *sprite); // We'll be savvy to some other types too. Anything in GRP(hero) should be valid.
+int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *sprite); // She has the old position during the new map's instantiation. This tells you the new.
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

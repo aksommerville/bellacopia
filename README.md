@@ -33,6 +33,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] !!! Segfault as weaving contest score tallied. Related to yesterday's?
+- - Failed to trivially repro.
+- - [x] Can I repro with a thumb on the RNG? ...no
+- - Dozens of plays and no repro. What gives?
+- - Anywho, got core dumps enabled in case it happens again. For future reference: `ulimit -c unlimited` in bashrc, and `gdb out/bellacopia-linux /var/lib/apport/coredump/...`, then `bt` in gdb.
+- - But of course, we're building with full optimization and no debug symbols. So we'll probably only see exportable symbols, eg the Egg Platform API.
+- - ...i got nothing. I guess we just wait until it happens again by chance, maybe then we'll have a hint at the cause.
 - [x] !!! Segfault entering battle against a spider, underground by the fork west of Botire. Game paused briefly and did not show any battle ui. Had been playing about an hour.
 - - No detail in the console, just `Segmentation fault (core dumped)`.
 - - Possibly just a dirty build thing? I might not have cleaned since adding `no_store` to `struct battle_args`.
@@ -58,6 +65,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] A little explanation when you pick up your first jigpiece.
+- [ ] Gate connecting the two southern bits of the underground, where you measure the distance to three randomly-chosen points. So you need to open the other connections first.
+- - Put Mr and Mrs Rabbit on opposite sides of the gate; either can explain the challenge.
+- [x] Would it work to hide the ladders in Dot's House and Cheapside under a pushblock?
+- - Yes. Only we need some mitigation when coming up the ladder, move the block aside or kill it.
+- [x] Confirm that the crypto puzzle can be brute-forced. (ie does it generate, when you haven't interacted with any monoliths?)
+- - Confirmed. And for the Bone and Leaf seals, it's actually not a crazy plan. I can't see brute-forcing the Star seal tho.
 
 - Battles written but not placed.
 
@@ -151,6 +164,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Review economy, balance prices etc.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.

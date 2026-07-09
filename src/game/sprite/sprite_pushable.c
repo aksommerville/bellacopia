@@ -22,6 +22,52 @@ struct sprite_pushable {
 
 #define SPRITE ((struct sprite_pushable*)sprite)
 
+/* If this hero is on top of us, warp to one side to let her thru, and return nonzero.
+ */
+ 
+static int pushable_avoid_hero(struct sprite *sprite,double x,double y,int z) {
+  if (sprite->z!=z) return 0;
+  const double thresh=0.750;
+  double dx=x-sprite->x;
+  if ((dx<-thresh)||(dx>thresh)) return 0;
+  double dy=y-sprite->y;
+  if ((dy<-thresh)||(dy>thresh)) return 0;
+  
+  /* Move to any vacant or safe cell cardinally adjacent to me.
+   * Select among them at random.
+   * Designing maps, be careful not to put any solid sprites next to a door-cap. (or account for them here if needed)
+   */
+  const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (!map) return 0;
+  int col=(int)sprite->x-map->lng*NS_sys_mapw;
+  int row=(int)sprite->y-map->lat*NS_sys_maph;
+  if ((col<0)||(row<0)||(col>=NS_sys_mapw)||(row>=NS_sys_maph)) return 0;
+  struct candidate { int x,y; } candidatev[4];
+  int candidatec=0;
+  #define CHECKCELL(_x,_y) { \
+    int cx=(_x),cy=(_y); \
+    if ((cx>=0)&&(cy>=0)&&(cx<NS_sys_mapw)&&(cy<NS_sys_maph)) { \
+      uint8_t physics=map->physics[map->v[cy*NS_sys_mapw+cx]]; \
+      if ((physics==NS_physics_vacant)||(physics==NS_physics_safe)) { \
+        candidatev[candidatec++]=(struct candidate){cx,cy}; \
+      } \
+    } \
+  }
+  CHECKCELL(col-1,row)
+  CHECKCELL(col+1,row)
+  CHECKCELL(col,row-1)
+  CHECKCELL(col,row+1)
+  #undef CHECKCELL
+  if (!candidatec) return 0; // Oh this is going to suck.
+  int candidatep=rand()%candidatec;
+  sprite->x=map->lng*NS_sys_mapw+candidatev[candidatep].x+0.5;
+  sprite->y=map->lat*NS_sys_maph+candidatev[candidatep].y+0.5;
+  return 1;
+}
+
+/* Init.
+ */
+
 static int _pushable_init(struct sprite *sprite) {
   struct cmdlist_reader reader;
   if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
@@ -38,10 +84,57 @@ static int _pushable_init(struct sprite *sprite) {
     case 2: SPRITE->resrate=2.000; break;
     default: fprintf(stderr,"%s: Invalid weight %d\n",__func__,SPRITE->weight); return -1;
   }
+  
+  /* We need special handling for the blocks that cover a ladder.
+   * They need to move aside when you've entered this map from below.
+   * And it's tricky because we get instantiated before hero assumes the new position.
+   */
+  if (GRP(hero)->sprc>=1) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    double dstx,dsty;
+    if (pushable_avoid_hero(sprite,hero->x,hero->y,hero->z)) {
+      // This will never be the case, because hero doesn't take her new position until after the map is loaded. But we check to be on the safe side.
+    } else if (sprite_hero_is_using_door(&dstx,&dsty,hero)) {
+      pushable_avoid_hero(sprite,dstx,dsty,sprite->z); // Assume that hero's new (z) is wherever we are. It's not recorded in hero.
+    }
+  }
+  
   return 0;
 }
 
+/* Motion.
+ */
+
 static void pushable_begin_move(struct sprite *sprite) {
+
+  // If it's obvious that we're being pushed into a wall, don't make the swish sound.
+  // (we'll behave correctly without this check, just we make that inappropriate sound effect).
+  int cx=(int)sprite->x,cy=(int)sprite->y,ignorewall=0;
+  double subx=sprite->x-cx,suby=sprite->y-cy;
+       if ((SPRITE->pressdx<0.0)&&(subx>0.490)&&(subx<0.510)) cx--;
+  else if ((SPRITE->pressdx>0.0)&&(subx>0.490)&&(subx<0.510)) cx++;
+  else if ((SPRITE->pressdy<0.0)&&(suby>0.490)&&(suby<0.510)) cy--;
+  else if ((SPRITE->pressdy>0.0)&&(suby>0.490)&&(suby<0.510)) cy++;
+  else ignorewall=1;
+  if (!ignorewall) {
+    struct map *map=map_by_sprite_position(cx,cy,sprite->z);
+    if (map) {
+      cx-=map->lng*NS_sys_mapw;
+      cy-=map->lat*NS_sys_maph;
+      if ((cx>=0)&&(cy>=0)&&(cx<NS_sys_mapw)&&(cy<NS_sys_maph)) {
+        uint8_t physics=map->physics[map->v[cy*NS_sys_mapw+cx]];
+        switch (physics) {
+          case NS_physics_solid:
+          case NS_physics_grabbable:
+          case NS_physics_vanishable:
+          case NS_physics_hole:
+          case NS_physics_water:
+            return;
+        }
+      }
+    }
+  }
+
   SPRITE->movedx=SPRITE->pressdx;
   SPRITE->movedy=SPRITE->pressdy;
   int qx=(int)sprite->x;
@@ -76,6 +169,9 @@ static void pushable_end_move(struct sprite *sprite) {
     }
   }
 }
+
+/* Update.
+ */
 
 static void _pushable_update(struct sprite *sprite,double elapsed) {
 
@@ -140,6 +236,9 @@ static void _pushable_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Collide.
+ */
+
 static int is_bumper(struct sprite *sprite,struct sprite *bumper) {
   if (!bumper) return 0;
   
@@ -176,6 +275,9 @@ static void _pushable_collide(struct sprite *sprite,struct sprite *bumper) {
     SPRITE->pressdy=(dy<0.0)?-1.0:1.0;
   }
 }
+
+/* Type definition.
+ */
 
 const struct sprite_type sprite_type_pushable={
   .name="pushable",
