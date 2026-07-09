@@ -33,13 +33,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Undernorth zoo, move it far to the east. Combine the desert zoos, put on the west side, and ensure there are monsters unique to the east side.
-- - Completing a zoo should never be the most obvious thing in a region, except mayyyybe the first.
-- - ...actually, instead I'm adding a second minesweeper, and a whole bunch of no-rsprite maps. Same idea, raises the cost of completing the zoo.
-- [x] Consider making the map containing each zoo no-rsprite, so you have to travel at least a little.
-- [x] Raccoon is too orange.
-- [x] When there's multiple instances of one prize in a battle (eg coins in chopping), combine them for reporting.
-- [x] Hide more jigpieces. It's easy to bury them or hide underwater.
+- [x] !!! Segfault entering battle against a spider, underground by the fork west of Botire. Game paused briefly and did not show any battle ui. Had been playing about an hour.
+- - No detail in the console, just `Segmentation fault (core dumped)`.
+- - Possibly just a dirty build thing? I might not have cleaned since adding `no_store` to `struct battle_args`.
+- - Confirmed via console history, I did not clean after adding that. But there was a build that hit what looks like very relevant c file.
+- - [x] Attempt repro. ...ugh. This was maybe 60 or 70 battles deep in the session. Not the first spider.
+- - - Repro. Another spider, just about the same place. Was on my broom. 50 battles or so.
+- - - Again. Much shorter session. Launching spider at the underhorizon zoo. I suspect it's the first-slot change, selecting throws.
+- - - Twice more, going straight to that zoo. Third try and second try.
+- - - Fixed. And also set a record: 7.956 (won, and missed one warp deliberately)
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
@@ -48,22 +50,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
-- [x] Maybe an exterminator in the outer world? He's heading to one region to clear out the monsters, but he stopped for lunch. Bring something expensive like four red fish. One exterminator at a time.
-- - The intent is a high-cost option to eliminate battles for players that really just can't. So at the limit, they can fish their way out of most battles.
-- - The zoos should do this instead. Once an animal is captured, you can battle it at will at the zoo, but it won't appear randomly anymore.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
 - [ ] New song during the election, maybe?
-- [x] Should be able to whack the Princess with your stick.
-- [x] Make things you can burn with Pepper or Matches.
-- [x] Fire needs to hurt monsters. I mean, it's fire!
-- [x] Monsters should be drawn to the Marionette. We can build challenges around leading them like that.
-- [x] Can we enable Marionette to push blocks? Maybe only ounce?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
-- [x] Moon Song needs extra mitigation against getting stuck. I've seen it happen at the turnabout in the northern underground race.
-- - Also, happens reliably in the desert now after adding zoo. Didn't fix her path, keeping it as a test case for new mitigations.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [x] Add lemonade stands near the dangerous places. Sell only single servings, and at exorbitant prices.
 - [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] A little explanation when you pick up your first jigpiece.
@@ -87,7 +78,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] A cow or something, that approaches you when you ring the bell.
 - - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
 - - [ ] Ice floor, that you slide until you hit the wall.
-- - [x] Is diegetic Minesweeper possible? You indicate a safe cell by walking on it, and you can only operate on a contiguous region. Unless you have the Broom.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
@@ -148,28 +138,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Dark some regions.
 
 - Battle repairs.
-- [x] boomerang: Sounds for throw and catch.
 - [ ] calligraphy: No fun, eliminate.
-- [x] cheating: No time limit. Allow selecting the hustler as if he was a cup.
-- [x] chopping: Don't give prizes unless you already have it. Coins and fish are fine whenever but otherwise it must have an inventory slot already.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
-- [x] crying: No handicap variance in 2-player mode. Should we force some? ...this statement was incorrect, it does vary
-- [x] election: When in arcade mode, apportion endorsers per bias.
-- [x] exterminating: Nerf.
-- [x] fishing: Smarter cvc decisions; right now they run exactly the same.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
-- [x] homerunderby on web: I fouled to the right and it didn't notice or something. Delay a few seconds and eventually got called as a strike. (ie it noticed the ball crossing the bottom, not the right).
-- - This is a real thing and could happen if balldy is positive and extremely small. Hard to repro. Mitigated and I think it's not possible anymore.
-- [x] jeter: Dancer's arms could connect better to her shoulders.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
-- [x] plumbing: Removal should be much easier.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
-- [x] slapping: There is no tie. If we think it is, Left is rendered on the bottom so call it a left win. (also, confirm Right renders on the bottom when it wins).
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
-- [x] weaving: Nerf a little. Players struggled. Have the spider always hit one warp at normal difficulty.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 

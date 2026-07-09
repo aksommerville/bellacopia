@@ -136,12 +136,11 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     else if (player->skill>=0.480) throwc=1; // The usual case, and also against Princess.
     else if (player->skill>=0.220) throwc=2; // Princess and goodluck.
     else throwc=3;
-    if (throwc>player->warpc) throwc=player->warpc; // Not possible but maybe I change constants in the future.
-    fprintf(stderr,"%s:%d: skill=%.03f throwc=%d/%d\n",__FILE__,__LINE__,player->skill,throwc,player->warpc);
+    if (throwc>=player->warpc) throwc=player->warpc-1; // Not possible but maybe I change constants in the future.
     int candidatev[WARPCHI];
     int i=player->warpc;
-    while (i-->0) candidatev[i]=i;
-    int candidatec=player->warpc;
+    while (i-->1) candidatev[i-1]=i; // sic 1 not zero: Never throw the first warp.
+    int candidatec=player->warpc-1;
     while (throwc-->0) {
       int candidatep=rand()%candidatec;
       player->throwv[candidatev[candidatep]]=1;
