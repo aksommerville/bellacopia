@@ -157,6 +157,7 @@ static int racer_good_panic_cell(const struct map *map,int x,int y) {
   if (physics==NS_physics_safe) return 1;
   if (physics==NS_physics_water) return 1;
   if (physics==NS_physics_hole) return 1;
+  if (physics==NS_physics_ice) return 1;
   return 0;
 }
  

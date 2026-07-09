@@ -94,6 +94,7 @@
 #define NS_physics_safe 4 /* vacant, but monsters won't go unless chasing */
 #define NS_physics_hole 5 /* water, but no splash */
 #define NS_physics_vanishable 6 /* solid, unless you're using vanishing cream */
+#define NS_physics_ice 7 /* vacant, but the hero will slide to the wall */
 
 /* Map planes.
  * Include "NOJIGSAW" in the comment, for the saved game editor.

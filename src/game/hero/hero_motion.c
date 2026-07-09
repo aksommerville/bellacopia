@@ -212,9 +212,32 @@ static void hero_check_bumps(struct sprite *sprite) {
  */
  
 void hero_motion_update(struct sprite *sprite,double elapsed) {
+
+  /* Sliding?
+   * Do update input, do let the face direction change. But then immediately nix (walking).
+   */
+  if (SPRITE->sliding) {
+    hero_motion_update_input(sprite);
+    SPRITE->walking=0;
+    double speed=8.0*elapsed;
+    if (!sprite_move(sprite,SPRITE->slidedx*speed,SPRITE->slidedy*speed)) {
+      bm_sound(RID_sound_bump);
+      SPRITE->sliding=0;
+    }
+    return;
+  }
+
   hero_motion_update_input(sprite);
   if (!SPRITE->walking) {
     SPRITE->blocked=0;
+    return;
+  }
+  
+  if (SPRITE->onice&&(SPRITE->itemid_in_progress!=NS_itemid_broom)) {
+    SPRITE->sliding=1;
+    SPRITE->slidedx=SPRITE->facedx;
+    SPRITE->slidedy=SPRITE->facedy;
+    SPRITE->walking=0;
     return;
   }
   

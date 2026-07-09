@@ -1382,8 +1382,9 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
   if ((g.input[0]&EGG_BTN_L1)&&!(g.pvinput[0]&EGG_BTN_L1)) hero_change_item(sprite,-1);
   else if ((g.input[0]&EGG_BTN_R1)&&!(g.pvinput[0]&EGG_BTN_R1)) hero_change_item(sprite,1);
   
-  // No starting items if injured.
+  // No starting items if injured or sliding.
   if (SPRITE->hurt>0.0) return;
+  if (SPRITE->sliding) return;
   
   /* Poll input.
    * Call out when SOUTH is pressed. Handler may set itemid_in_progress.

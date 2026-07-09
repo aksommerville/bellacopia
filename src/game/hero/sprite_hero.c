@@ -147,6 +147,25 @@ static void hero_check_triggers(struct sprite *sprite) {
         } break;
     }
   }
+  
+  // Also look at the physics underfoot.
+  uint8_t physics=map->physics[map->v[y*NS_sys_mapw+x]];
+  if (physics==NS_physics_ice) {
+    SPRITE->onice=1;
+    if (
+      (SPRITE->itemid_in_progress!=NS_itemid_broom)&&
+      SPRITE->walking
+    ) {
+      // Use (faced) instead of (ind) -- We don't want diagonals.
+      SPRITE->sliding=1;
+      SPRITE->slidedx=SPRITE->facedx;
+      SPRITE->slidedy=SPRITE->facedy;
+      SPRITE->walking=0;
+    }
+  } else if (SPRITE->sliding) {
+    SPRITE->onice=0;
+    SPRITE->sliding=0;
+  }
 }
 
 /* Update.

@@ -48,7 +48,7 @@ static int pushable_avoid_hero(struct sprite *sprite,double x,double y,int z) {
     int cx=(_x),cy=(_y); \
     if ((cx>=0)&&(cy>=0)&&(cx<NS_sys_mapw)&&(cy<NS_sys_maph)) { \
       uint8_t physics=map->physics[map->v[cy*NS_sys_mapw+cx]]; \
-      if ((physics==NS_physics_vacant)||(physics==NS_physics_safe)) { \
+      if ((physics==NS_physics_vacant)||(physics==NS_physics_safe)||(physics==NS_physics_ice)) { \
         candidatev[candidatec++]=(struct candidate){cx,cy}; \
       } \
     } \

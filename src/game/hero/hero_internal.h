@@ -67,6 +67,10 @@ struct sprite_hero {
   int store_listener;
   double busstop_clock;
   int busstop_mapid,busstop_col,busstop_row;
+  
+  int sliding; // ice
+  double slidedx,slidedy;
+  int onice;
 };
 
 #define SPRITE ((struct sprite_hero*)sprite)
