@@ -60,6 +60,7 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
   if (map->z==NS_plane_labyrinth1) {
     labyrinth_freshen_map(map);
   }
+  if (map->surveyor) surveyor_apply_map(map);
 }
 
 /* Test outerworld.
@@ -162,6 +163,7 @@ static int map_decode(struct map *dst,const void *src,int srcc) {
           dst->rspriteid=(cmd.arg[0]<<8)|cmd.arg[1];
           dst->rspritec=res_get(&dst->rspritev,EGG_TID_rsprite,dst->rspriteid);
         } break;
+      case CMD_map_surveyor: dst->surveyor=(cmd.arg[0]<<8)|cmd.arg[1]; break;
       case CMD_map_position: dst->lng=cmd.arg[0]; dst->lat=cmd.arg[1]; dst->z=cmd.arg[2]; break;
       case CMD_map_fishodds: if ((cmd.arg[0]>=NS_sys_mapw)||(cmd.arg[1]>=NS_sys_maph)) {
           dst->fishodds=(cmd.arg[2]<<8)|cmd.arg[3];

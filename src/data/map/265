@@ -17,3 +17,4 @@ sprite @13,6 sprite:jigpiece (u32)0
 sprite @10,3 sprite:ticker (u16:fld)zoo15_0 (u16)0
 zookeeper @9,4,5,3
 sprite @13,4 sprite:zookeeper (u16:fld)zoo15_0 (u16)0
+surveyor (u16:fld16)surveyor_c

@@ -15,3 +15,4 @@ image image:caves
 position 7 4 2 *
 sprite @9,5 sprite:jigpiece (u32)0
 rspriteres rsprite:ufractia
+surveyor (u16:fld16)surveyor_b

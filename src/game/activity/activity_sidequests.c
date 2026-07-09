@@ -689,3 +689,26 @@ void begin_zoo_replay(struct sprite *sprite,int fldid) {
     modal_dialogue_add_option_string_id(modal,RID_strings_battle,strix,spriteid);
   }
 }
+
+/* Distance entry for the surveyor contest.
+ */
+ 
+static void cb_surveyor_entry(int value,void *userdata) {
+  int fld16=(int)(uintptr_t)userdata;
+  fprintf(stderr,"%s fld16=%d value=%d\n",__func__,fld16,value);//TODO
+  if (value<0) value=0; else if (value>999) value=999;
+  store_set_fld16(fld16+3,value);
+  surveyor_check();
+}
+ 
+void begin_surveyor_entry(struct sprite *sprite,int fld16) {
+  fprintf(stderr,"%s fld16=%d\n",__func__,fld16);
+  surveyor_require();
+  struct modal_args_tenkey args={
+    .value=store_get_fld16(fld16+3),
+    .cb=cb_surveyor_entry,
+    .userdata=(void*)(uintptr_t)fld16,
+  };
+  struct modal *modal=modal_spawn(&modal_type_tenkey,&args,sizeof(args));
+  if (!modal) return;
+}

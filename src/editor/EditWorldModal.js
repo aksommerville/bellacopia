@@ -108,6 +108,7 @@ export class EditWorldModal {
       this.dom.spawn(null, "OPTION", { value: "song" }, "song"),
       this.dom.spawn(null, "OPTION", { value: "parent" }, "parent"),
       this.dom.spawn(null, "OPTION", { value: "dark" }, "dark"),
+      this.dom.spawn(null, "OPTION", { value: "surveyor" }, "surveyor"),
     );
     
     this.dom.spawn(topRow, "INPUT", { type: "button", value: "Printable...", "on-click": () => this.onPrintable() });
@@ -161,6 +162,7 @@ export class EditWorldModal {
         case "song": addl = this.tattleMap.cmd.getFirstArg("song") || ""; break;
         case "parent": addl = this.tattleMap.cmd.getFirstArg("parent") || ""; break;
         case "dark": addl = this.tattleMap.cmd.getFirstArgArray("dark") ? "dark" : ""; break;
+        case "surveyor": addl = this.tattleMap.cmd.getFirstArg("surveyor") || ""; break;
       }
       this.element.querySelector(".tattle").innerText = `${addl} map:${this.tattleMap.rid}`;
     } else {
@@ -252,6 +254,7 @@ export class EditWorldModal {
       case "song": highlightValue = map.cmd.getFirstArg("song"); break;
       case "parent": highlightValue = map.cmd.getFirstArg("parent"); break;
       case "dark": highlightValue = map.cmd.getFirstArgArray("dark") ? "dark" : ""; break;
+      case "surveyor": highlightValue = map.cmd.getFirstArg("surveyor"); break;
     }
     if (highlightValue) {
       if (printable) {
@@ -323,6 +326,10 @@ export class EditWorldModal {
         
       case "dark": {
           return ["dark", "NONE"];
+        }
+        
+      case "surveyor": {
+          return ["NONE", "(u16:fld16)surveyor_a", "(u16:fld16)surveyor_b", "(u16:fld16)surveyor_c"];
         }
     }
     return [];
@@ -437,6 +444,14 @@ export class EditWorldModal {
             }
           }
         } return false;
+        
+      case "surveyor": {
+          const cmdp = map.cmd.commands.findIndex(c => c[0] === "surveyor");
+          if (cmdp >= 0) map.cmd.commands.splice(cmdp, 1);
+          if (option !== "NONE") {
+            map.cmd.commands.push(["surveyor", option]);
+          }
+        } return true;
     }
     return false;
   }

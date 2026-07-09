@@ -33,6 +33,7 @@
 #define CMD_map_statuemaze      0x26 /* u16:pos ; Used only by statuemaze, marks the position of the first statue. */
 #define CMD_map_rspriteres      0x27 /* u16:rid ; Limit one per map. May combine with a la carte 'rsprite' commands. */
 #define CMD_map_cameralock      0x28 /* u16:fld ; No lock if (fld) set. */
+#define CMD_map_surveyor        0x29 /* u16:fld16 ; This map is a candidate for remote surveyor-contest tiles. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -310,6 +311,7 @@
 #define NS_activity_zoo_replay 56
 #define NS_activity_reset_puzzle 57
 #define NS_activity_forest_secret_entrance 58
+#define NS_activity_surveyor_entry 59 /* (u16:fld16)surveyor_N */
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */
@@ -344,6 +346,7 @@
 #define NS_sprtype_icedragon_inter 30 /* (u32)0 */
 #define NS_sprtype_soulballs       31 /* (u8)ballc (u24)0 */
 #define NS_sprtype_minesweeper     32 /* (u16:fld)0 (u16)0 ; Place at top-left corner. Not a real sprite; just serves to control the minigame. */
+#define NS_sprtype_tenkey          33 /* (u16:fld16)0 (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -377,7 +380,8 @@
   _(icedragon) \
   _(icedragon_inter) \
   _(soulballs) \
-  _(minesweeper)
+  _(minesweeper) \
+  _(tenkey)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -754,6 +758,7 @@
 #define NS_fld_burn5 223
 #define NS_fld_burn6 224
 #define NS_fld_forest_secret_entrance 225
+#define NS_fld_surveyor_complete 226
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -788,6 +793,12 @@
 #define NS_fld16_race6time 28 /* 8ms ; undernorth */
 #define NS_fld16_goodluck 29
 #define NS_fld16_iceseq 30 /* 0..6, how many times we've beaten the Ice Dragon. */
+#define NS_fld16_surveyor_a 31
+#define NS_fld16_surveyor_b 32
+#define NS_fld16_surveyor_c 33
+#define NS_fld16_surveyor_a_guess 34
+#define NS_fld16_surveyor_b_guess 35
+#define NS_fld16_surveyor_c_guess 36
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

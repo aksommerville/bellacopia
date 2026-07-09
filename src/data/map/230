@@ -16,3 +16,4 @@ position 7 0 2 *
 sprite @6,6 sprite:jigpiece (u32)0
 track @7,8 6 6
 rspriteres rsprite:unorth
+surveyor (u16:fld16)surveyor_a

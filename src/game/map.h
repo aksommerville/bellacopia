@@ -24,6 +24,7 @@ struct map {
   uint8_t dark,wind;
   int cameralock; // fldid. Unlock if fld set. -1 for always lock (ie fld zero).
   int fishodds,fishitemid,fishfld;
+  int surveyor; // fld16. If set, we must ensure the surveyor puzzle is generated before using this map.
   const uint8_t *rspritev; // rsprite resource, captured at load.
   int rspritec;
   int rspriteid; // Plus the id of that rsprite resource; zoos use it.

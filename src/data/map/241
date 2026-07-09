@@ -18,3 +18,4 @@ race @12,5 6 4
 track @12,5 6 16
 track @9,1 6 17
 rspriteres rsprite:unorth
+surveyor (u16:fld16)surveyor_a

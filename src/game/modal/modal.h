@@ -103,6 +103,7 @@ extern const struct modal_type modal_type_crystal; // Crystal Ball. Invoke as NS
 extern const struct modal_type modal_type_fishwife; // Story Mode.
 extern const struct modal_type modal_type_gameover;
 extern const struct modal_type modal_type_toast; // Quick noninteractive, self-dismissing message.
+extern const struct modal_type modal_type_tenkey;
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -171,6 +172,12 @@ struct modal_args_gameover {
 
 struct modal_args_toast {
   int fld16; // Identifies the message.
+};
+
+struct modal_args_tenkey {
+  int value;
+  void (*cb)(int value,void *userdata);
+  void *userdata;
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

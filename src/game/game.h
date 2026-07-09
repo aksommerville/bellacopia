@@ -352,4 +352,23 @@ int zoo_get_ticker_text(char *dst,int dsta,int fld);
  */
 int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid);
 
+/* Surveyor contest: surveyor.c
+ ************************************************************************/
+ 
+void surveyor_require();
+
+/* Returns one of:
+ *  -1: Was solved but now invalid.
+ *   0: Still unsolved.
+ *   1: Was solved and no change.
+ *   2: Newly solved.
+ * We also set NS_fld_surveyor_complete accordingly.
+ */
+int surveyor_check();
+
+/* map_freshen_tiles() calls this when (map->surveyor) set.
+ * If this map has a surveyor remote tile, update (v).
+ */
+void surveyor_apply_map(struct map *map);
+
 #endif

@@ -16,3 +16,4 @@ position 7 3 2 *
 sprite @9,5 sprite:jigpiece (u32)0
 sprite @11,7 sprite:treasure (u8:itemid)stopwatch (u8:quantity)0 (u16:fld)0
 rspriteres rsprite:ufractia
+surveyor (u16:fld16)surveyor_b

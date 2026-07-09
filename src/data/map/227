@@ -18,3 +18,4 @@ sprite @9,5 sprite:moonsong (u16:activity)moonsong race:undernorth
 race @12,6 6 0
 track @13,7 6 0
 rspriteres rsprite:unorth
+surveyor (u16:fld16)surveyor_a

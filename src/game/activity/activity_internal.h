@@ -44,6 +44,7 @@ void begin_endrace(int arg);
 void begin_hearts_book();
 void begin_gold_book();
 void begin_zoo_replay(struct sprite *sprite,int fld);
+void begin_surveyor_entry(struct sprite *sprite,int fld16);
 
 // activity_advice.c
 void begin_crystal();

@@ -65,12 +65,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] A little explanation when you pick up your first jigpiece.
-- [ ] Gate connecting the two southern bits of the underground, where you measure the distance to three randomly-chosen points. So you need to open the other connections first.
+- [x] Gate connecting the two southern bits of the underground, where you measure the distance to three randomly-chosen points. So you need to open the other connections first.
 - - Put Mr and Mrs Rabbit on opposite sides of the gate; either can explain the challenge.
 - [x] Would it work to hide the ladders in Dot's House and Cheapside under a pushblock?
 - - Yes. Only we need some mitigation when coming up the ladder, move the block aside or kill it.
 - [x] Confirm that the crypto puzzle can be brute-forced. (ie does it generate, when you haven't interacted with any monoliths?)
 - - Confirmed. And for the Bone and Leaf seals, it's actually not a crazy plan. I can't see brute-forcing the Star seal tho.
+- [ ] Need diegetic challenges to connect Dot's Cave to Fractia and Cheapside. Busted open right now.
 
 - Battles written but not placed.
 
@@ -92,8 +93,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
 - - [ ] Ice floor, that you slide until you hit the wall.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
-- - [ ] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
+- - [x] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
+- - [ ] Six treadles that you press in order. Use Divining Rod to see the order.
 
 - Fill out maps.
 - [ ] Fractia
@@ -185,6 +187,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Delay this, because I'm doubting now. We don't want the compass (or any hints) to be perfect. Maybe it's ok to leave just as it is?
 - [ ] Some dialogue ends up with two lines and a single word on the second line. Can we break text more balancedly?
 - - Punt this until the entire set of dialogue is more or less finished.
+- [ ] "Are you sure?" at New Game if there's a save with anything done. But *do not* implement this yet! I want an unencumbered New Game during development.
+- - Or we could sidestep the issue by allowing multiple save files. Consider it.
 
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
 - - [ ] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server.
@@ -213,6 +217,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] No conflicting `NS_fld_*`. I typo'd a few numbers and it's not obvious until weird things break.
 - [ ] Zoo assignments agree with rsprite.
 - [ ] All tiles in jigsaw maps have jigctab assigned.
+- [ ] All possible surveyor remote locations are sensible.
 - Manual validation before release.
 - [ ] Ensure I removed all AUX2-to-win from battles.
 - [ ] Minimal completion possible.
@@ -392,6 +397,7 @@ Maybe point out that buried treasure, bridges, and races *are* constant.
 - Choice of items and battle for the goblin seals.
 - Rules and layout of the statue maze.
 - Layout of the labyrinth. (actually not constant even within one campaign).
+- Position of the remote surveyor points (and therefore distances).
 
 ## Lessons Learned
 
