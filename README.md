@@ -62,9 +62,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] New song during the election, maybe?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [ ] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
+- [x] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
-- [ ] A little explanation when you pick up your first jigpiece.
+- [x] A little explanation when you pick up your first jigpiece.
 - [x] Gate connecting the two southern bits of the underground, where you measure the distance to three randomly-chosen points. So you need to open the other connections first.
 - - Put Mr and Mrs Rabbit on opposite sides of the gate; either can explain the challenge.
 - [x] Would it work to hide the ladders in Dot's House and Cheapside under a pushblock?

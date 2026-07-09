@@ -205,6 +205,7 @@
 #define NS_itemid_cuppa2 42
 #define NS_itemid_cuppa3 43
 #define NS_itemid_cuppatutti 44
+#define NS_itemid_wishing_well 45 /* Placeholder meaning "whatever's in the well". */
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -249,7 +250,8 @@
   _(cuppa1) \
   _(cuppa2) \
   _(cuppa3) \
-  _(cuppatutti)
+  _(cuppatutti) \
+  _(wishing_well)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -312,6 +314,8 @@
 #define NS_activity_reset_puzzle 57
 #define NS_activity_forest_secret_entrance 58
 #define NS_activity_surveyor_entry 59 /* (u16:fld16)surveyor_N */
+#define NS_activity_wishing_well 60
+#define NS_activity_wishing_sewer 61
 
 #define NS_sprtype_dummy            0 /* (u32)0 */
 #define NS_sprtype_hero             1 /* (u32)0 */
@@ -347,6 +351,7 @@
 #define NS_sprtype_soulballs       31 /* (u8)ballc (u24)0 */
 #define NS_sprtype_minesweeper     32 /* (u16:fld)0 (u16)0 ; Place at top-left corner. Not a real sprite; just serves to control the minigame. */
 #define NS_sprtype_tenkey          33 /* (u16:fld16)0 (u16)0 */
+#define NS_sprtype_wishing_well    45 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -381,7 +386,8 @@
   _(icedragon_inter) \
   _(soulballs) \
   _(minesweeper) \
-  _(tenkey)
+  _(tenkey) \
+  _(wishing_well)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -799,6 +805,7 @@
 #define NS_fld16_surveyor_a_guess 34
 #define NS_fld16_surveyor_b_guess 35
 #define NS_fld16_surveyor_c_guess 36
+#define NS_fld16_wishing_well 37 /* itemid */
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */

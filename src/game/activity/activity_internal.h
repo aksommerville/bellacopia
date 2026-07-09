@@ -31,6 +31,8 @@ void begin_inconvenience(struct sprite *initiator);
 void begin_fish_book();
 void begin_crocodile();
 void begin_medomat();
+void begin_wishing_well();
+void begin_wishing_sewer();
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);

@@ -43,6 +43,7 @@ struct sprite_hero {
   int pumpkin_update;
   int broomdx; // Like (facedx) but never zero.
   int fish; // Nonzero if fishing and the fish has popped out. Can be any itemid, typically greenfish, bluefish, or redfish.
+  int fishquantity;
   double fishclock;
   double hurt; // Counts down.
   double hurtdx,hurtdy; // Normal or 0,0.

@@ -359,6 +359,31 @@ static int game_apply_fishodds(int fishodds) {
  */
  
 int game_choose_fish(int x,int y,int z) {
+  fprintf(stderr,"%s %d,%d,%d\n",__func__,x,y,z);
+  
+  /* Fishing in the wishing sewer is a special case.
+   * But if the well is empty, it behaves just like water (ie we fall thru here).
+   */
+  if (store_get_fld16(NS_fld16_wishing_well)) {
+    struct map *map=map_by_sprite_position(x,y,z);
+    if (map) {
+      int col=x-map->lng*NS_sys_mapw;
+      int row=y-map->lat*NS_sys_maph;
+      struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+      struct cmdlist_entry cmd;
+      while (cmdlist_reader_next(&cmd,&reader)>0) {
+        if (cmd.opcode==CMD_map_bump) {
+          if (cmd.arg[0]!=col) continue;
+          if (cmd.arg[1]!=row) continue;
+          int activity=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (activity==NS_activity_wishing_sewer) {
+            return NS_itemid_wishing_well;
+          }
+        }
+      }
+    }
+  }
+  
   game_touch_fish_position(x,y,z);
   struct map *map=map_by_sprite_position(x,y,z);
   if (!map) return game_apply_fishodds(NS_fishodds_default);

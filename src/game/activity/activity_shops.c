@@ -638,3 +638,130 @@ void begin_medomat() {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
+
+/* Wishing well.
+ */
+ 
+static uint8_t wishing_well_arg[4];
+
+static int wishing_well_get_sprite_position(double *x,double *y) {
+  // There should be multiple bump commands with arg NS_activity_wishing_well. Find their midpoint.
+  int xsum=0,ysum=0,cmdc=0;
+  const struct map *map=g.camera.map;
+  if (!map) return 0;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_bump) {
+      int activity=(cmd.arg[2]<<8)|cmd.arg[3];
+      if (activity==NS_activity_wishing_well) {
+        cmdc++;
+        xsum+=cmd.arg[0];
+        ysum+=cmd.arg[1];
+      }
+    }
+  }
+  if (cmdc<1) return 0;
+  *x=map->lng*NS_sys_mapw+(double)xsum/(double)cmdc+0.5;
+  *y=map->lat*NS_sys_maph+(double)ysum/(double)cmdc-0.5;
+  return 1;
+}
+ 
+static int cb_wishing_well(int optionid,void *userdata) {
+  if (optionid>0) {
+    int ok=0;
+    struct invstore *invstore=store_get_itemid(optionid);
+    if (invstore&&(invstore->quantity>0)) {
+      invstore->quantity--;
+      store_broadcast('i',optionid,0);
+      ok=1;
+    } else {
+      const struct item_detail *details=item_detail_for_itemid(optionid);
+      if (details&&details->fld16) {
+        int q=store_get_fld16(details->fld16);
+        if (q>0) {
+          q--;
+          store_set_fld16(details->fld16,q);
+          ok=1;
+        }
+      }
+    }
+    if (ok) {
+      store_set_fld16(NS_fld16_wishing_well,optionid);
+      bm_sound(RID_sound_glug);
+      double x,y;
+      if (wishing_well_get_sprite_position(&x,&y)) {
+        wishing_well_arg[0]=optionid>>8;
+        wishing_well_arg[1]=optionid;
+        struct sprite *sprite=sprite_spawn(x,y,0,wishing_well_arg,4,&sprite_type_wishing_well,0,0);
+      }
+    }
+  }
+  return 0;
+}
+ 
+void begin_wishing_well() {
+  
+  /* Is something already welled?
+   */
+  if (store_get_fld16(NS_fld16_wishing_well)) {
+    begin_dialogue(154,0);
+    return;
+  }
+  
+  /* Scan inventory for things we can toss.
+   */
+  int itemidv[INVSTORE_SIZE];
+  int itemidc=0;
+  const struct invstore *invstore=g.store.invstorev;
+  int i=INVSTORE_SIZE;
+  for (;i-->0;invstore++) {
+    if (!invstore->quantity) continue; // We only want depletables, and only if there's positive quantity.
+    switch (invstore->itemid) {
+      case NS_itemid_match:
+      case NS_itemid_bugspray:
+      case NS_itemid_candy:
+      case NS_itemid_vanishing:
+      case NS_itemid_pepper:
+      case NS_itemid_bomb:
+          itemidv[itemidc++]=invstore->itemid;
+          break;
+    }
+  }
+  
+  /* Gold and fish are tossable too.
+   */
+  if (store_get_fld16(NS_fld16_gold)) itemidv[itemidc++]=NS_itemid_gold;
+  if (store_get_fld16(NS_fld16_greenfish)) itemidv[itemidc++]=NS_itemid_greenfish;
+  if (store_get_fld16(NS_fld16_bluefish)) itemidv[itemidc++]=NS_itemid_bluefish;
+  if (store_get_fld16(NS_fld16_redfish)) itemidv[itemidc++]=NS_itemid_redfish;
+  
+  /* It's a little weird to not have anything tossable, but we do have verbiage for that case.
+   */
+  if (!itemidc) {
+    begin_dialogue(155,0);
+    return;
+  }
+  
+  /* OK summon a menu.
+   */
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=156,
+    .cb=cb_wishing_well,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  for (i=0;i<itemidc;i++) {
+    const struct item_detail *detail=item_detail_for_itemid(itemidv[i]);
+    if (!detail) continue;
+    modal_dialogue_add_option_string_id(modal,RID_strings_item,detail->strix_name,itemidv[i]);
+  }
+}
+
+/* Wishing sewer.
+ */
+ 
+void begin_wishing_sewer() {
+  begin_dialogue(153,0);
+}

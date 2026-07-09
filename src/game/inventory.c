@@ -407,6 +407,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0,
   },
+  [NS_itemid_wishing_well]={ // Placeholder meaning "whatever's in the well". game_choose_fish() can return it.
+    .tileid=0,
+    .hand_tileid=0,
+    .strix_name=0,
+    .strix_help=0,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0, // There is an associated fld16, but that's not what this means.
+  },
 };
 
 /* Get item reporting.
@@ -621,8 +630,16 @@ int game_get_item(int itemid,int quantity) {
       game_report_item_quantity_add(NS_itemid_jigpiece,1);
     }
     if (store_get_jigstore(quantity)) return 0; // Already have it.
+    int c0=g.store.jigstorec;
     if (!store_add_jigstore(quantity)) return 0; // Shouldn't fail.
     bm_sound(RID_sound_collect);
+    if (!c0) { // First time picking up a jigpiece, tell the user what the deal is.
+      struct modal_args_dialogue args={
+        .rid=RID_strings_item,
+        .strix=109,
+      };
+      modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    }
     return 1;
   }
   

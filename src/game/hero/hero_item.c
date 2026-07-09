@@ -275,15 +275,16 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
   
   if ((SPRITE->fishclock-=elapsed)<=0.0) {
     int battle=0;
+    if (SPRITE->fish&&SPRITE->fishquantity!=1) goto _item_only_;
     switch (SPRITE->fish) {
       case 0: break;
       case NS_itemid_greenfish: battle=NS_battle_greenfish; break;
       case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
       case NS_itemid_redfish: battle=NS_battle_redfish; break;
       case NS_itemid_seamonster: battle=NS_battle_seamonster; break;
-      default: {
+      default: _item_only_: {
           // If it's a thing that can be got, get it.
-          int quantity=1;
+          int quantity=SPRITE->fishquantity;
           if (SPRITE->fish==NS_itemid_jigpiece) { // For jigpiece, quantity is the mapid. It's always this map, where we are right now.
             struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
             if (map) quantity=map->rid;
@@ -319,9 +320,15 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
     } else {
       int x=(int)sprite->x+SPRITE->facedx;
       int y=(int)sprite->y+SPRITE->facedy;
+      SPRITE->fishquantity=1;
       if (SPRITE->fish=game_choose_fish(x,y,sprite->z)) {
         bm_sound(RID_sound_fishpole_catch);
         SPRITE->fishclock=FISH_FLY_TIME;
+        if (SPRITE->fish==NS_itemid_wishing_well) {
+          SPRITE->fish=store_get_fld16(NS_fld16_wishing_well);
+          store_set_fld16(NS_fld16_wishing_well,0);
+          SPRITE->fishquantity=5;
+        }
       } else {
         bm_sound(RID_sound_fishpole_wompwomp);
         SPRITE->itemid_in_progress=0;
