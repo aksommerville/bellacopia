@@ -37,6 +37,13 @@ struct modal_battle {
     int itemid,d;
   } consequencev[CONSEQUENCE_LIMIT];
   int consequencec;
+  
+  // Prompt's input description.
+  const struct battle_input *inputv;
+  int inputc;
+  int inputp;
+  int input_tick; // Counts up to (inputv[inputp].dur).
+  double input_clock; // Counts down to the next tick.
 };
 
 #define MODAL ((struct modal_battle*)modal)
@@ -253,6 +260,23 @@ static int battle_generate_report(struct modal *modal) {
   return 0;
 }
 
+/* Initialize (inputv,inputc,inputp,input_tick,input_clock) per battle.
+ * It's always safe to leave (inputc) zero, and no description will display.
+ */
+ 
+static void battle_prepare_input(struct modal *modal) {
+
+  // It's legal for battles to not declare an input mode, but I'll try to declare everywhere.
+  if (!(MODAL->inputv=MODAL->type->input)) return;
+  
+  // The first (dur==0) terminates the list. If that's the only record, it behaves like unset.
+  while (MODAL->inputv[MODAL->inputc].dur) MODAL->inputc++;
+  if (!MODAL->inputc) return;
+  
+  // Hey what do you know, that's actually all of it. Plus set the clock positive so we show frame zero.
+  MODAL->input_clock=0.200;
+}
+
 /* Begin STAGE_PLAY.
  */
  
@@ -308,6 +332,7 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
   } else {
     MODAL->stage=STAGE_PROMPT;
     battle_generate_prompt(modal);
+    battle_prepare_input(modal);
   }
   
   return 0;
@@ -374,6 +399,21 @@ static void battle_finish(struct modal *modal) {
  */
  
 static void battle_update_prompt(struct modal *modal,double elapsed) {
+
+  // Update input description if we're doing that.
+  if (MODAL->inputc) {
+    if ((MODAL->input_clock-=elapsed)<=0.0) {
+      MODAL->input_clock+=0.200;
+      MODAL->input_tick++;
+      if (MODAL->input_tick>=MODAL->inputv[MODAL->inputp].dur) {
+        MODAL->input_tick=0;
+        MODAL->inputp++;
+        if (MODAL->inputp>=MODAL->inputc) MODAL->inputp=0;
+      }
+    }
+  }
+
+  // Wait for SOUTH.
   if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
     battle_begin_play(modal);
   }
@@ -445,7 +485,31 @@ static void battle_render_prompt(struct modal *modal) {
   int dsty=(FBH>>1)-(MODAL->prompt_h>>1);
   graf_set_input(&g.graf,MODAL->prompt_texid);
   graf_decal(&g.graf,dstx,dsty,0,0,MODAL->prompt_w,MODAL->prompt_h);
-  //TODO Generic input description. Maybe a picture of a gamepad with buttons blinking?
+  
+  /* Generic input description.
+   * It's 7x4 tiles, with overlays per button that cover only the left or right 3 columns.
+   * AUX1 is pictured in the background but is not highlightable.
+   */
+  if (MODAL->inputc) {
+    const int inputw=NS_sys_tilesize*7;
+    const int inputh=NS_sys_tilesize*4;
+    int inputdstx=(FBW>>1)-(inputw>>1);
+    int inputdsty=FBH-inputh-10;
+    graf_set_image(&g.graf,RID_image_input);
+    graf_decal(&g.graf,inputdstx,inputdsty,0,0,inputw,inputh);
+    uint16_t state=MODAL->inputv[MODAL->inputp].state;
+    const int left_buttons[]={EGG_BTN_LEFT,EGG_BTN_RIGHT,EGG_BTN_UP,EGG_BTN_DOWN,EGG_BTN_L1};
+    const int right_buttons[]={EGG_BTN_SOUTH,EGG_BTN_WEST,EGG_BTN_EAST,EGG_BTN_NORTH,EGG_BTN_R1};
+    int inputsrcy=NS_sys_tilesize*4;
+    int inputsrcx,btnc,i;
+    for (inputsrcx=0,btnc=sizeof(left_buttons)/sizeof(int),i=0;i<btnc;i++,inputsrcx+=NS_sys_tilesize*3) {
+      if (state&left_buttons[i]) graf_decal(&g.graf,inputdstx,inputdsty,inputsrcx,inputsrcy,NS_sys_tilesize*3,NS_sys_tilesize*4);
+    }
+    inputsrcy+=NS_sys_tilesize*4;
+    for (inputsrcx=0,btnc=sizeof(right_buttons)/sizeof(int),i=0;i<btnc;i++,inputsrcx+=NS_sys_tilesize*3) {
+      if (state&right_buttons[i]) graf_decal(&g.graf,inputdstx+NS_sys_tilesize*4,inputdsty,inputsrcx,inputsrcy,NS_sys_tilesize*3,NS_sys_tilesize*4);
+    }
+  }
 }
 
 /* Render play.

@@ -352,6 +352,7 @@ const struct battle_type battle_type_figureskating={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz,
   .del=_figureskating_del,
   .init=_figureskating_init,
   .update=_figureskating_update,

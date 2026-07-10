@@ -294,6 +294,7 @@ const struct battle_type battle_type_redfish={
   .support_pvp=0,
   .support_cvc=0,
   .update_during_report=1,
+  .input=battle_input_horz,
   .del=_redfish_del,
   .init=_redfish_init,
   .update=_redfish_update,

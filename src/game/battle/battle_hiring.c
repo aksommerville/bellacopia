@@ -589,6 +589,7 @@ const struct battle_type battle_type_hiring={
   .no_contest=0,
   .support_pvp=0, // We're one of the rare exceptions, no 2-player.
   .support_cvc=1,
+  .input=battle_input_horz_a,
   .del=_hiring_del,
   .init=_hiring_init,
   .update=_hiring_update,

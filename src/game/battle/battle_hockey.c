@@ -312,6 +312,7 @@ const struct battle_type battle_type_hockey={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz_a,
   .del=_hockey_del,
   .init=_hockey_init,
   .update=_hockey_update,

@@ -447,6 +447,7 @@ const struct battle_type battle_type_erudition={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a_mash,
   .del=_erudition_del,
   .init=_erudition_init,
   .update=_erudition_update,

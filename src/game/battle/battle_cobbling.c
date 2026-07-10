@@ -232,6 +232,13 @@ static void _cobbling_render(struct battle *battle) {
 /* Type definition.
  */
  
+const struct battle_input cobbling_input[]={
+  {2,EGG_BTN_UP},
+  {2,EGG_BTN_DOWN},
+  {2,EGG_BTN_SOUTH},
+  {0},
+};
+ 
 const struct battle_type battle_type_cobbling={
   .name="cobbling",
   .objlen=sizeof(struct battle_cobbling),
@@ -241,6 +248,7 @@ const struct battle_type battle_type_cobbling={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=cobbling_input,
   .del=_cobbling_del,
   .init=_cobbling_init,
   .update=_cobbling_update,

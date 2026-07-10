@@ -413,6 +413,7 @@ const struct battle_type battle_type_flapjack={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz_a,
   .del=_flapjack_del,
   .init=_flapjack_init,
   .update=_flapjack_update,

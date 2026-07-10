@@ -700,6 +700,7 @@ const struct battle_type battle_type_medomat={
   .no_contest=0,
   .support_pvp=0,
   .support_cvc=0,
+  .input=battle_input_dpad_ab,
   .del=_medomat_del,
   .init=_medomat_init,
   .update=_medomat_update,

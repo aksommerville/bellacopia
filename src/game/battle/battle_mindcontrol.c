@@ -669,6 +669,12 @@ static void _mindcontrol_render(struct battle *battle) {
 /* Type definition.
  */
  
+static const struct battle_input mindcontrol_input[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH},
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_WEST},
+  {0},
+};
+ 
 const struct battle_type battle_type_mindcontrol={
   .name="mindcontrol",
   .objlen=sizeof(struct battle_mindcontrol),
@@ -678,6 +684,7 @@ const struct battle_type battle_type_mindcontrol={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=mindcontrol_input,
   .del=_mindcontrol_del,
   .init=_mindcontrol_init,
   .update=_mindcontrol_update,

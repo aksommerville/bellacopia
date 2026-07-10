@@ -463,6 +463,7 @@ const struct battle_type battle_type_stacking={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz,
   .del=_stacking_del,
   .init=_stacking_init,
   .update=_stacking_update,

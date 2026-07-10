@@ -417,6 +417,7 @@ const struct battle_type battle_type_lawnmowing={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_dpad,
   .del=_lawnmowing_del,
   .init=_lawnmowing_init,
   .update=_lawnmowing_update,

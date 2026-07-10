@@ -285,6 +285,7 @@ const struct battle_type battle_type_bluefish={
   .support_pvp=0,
   .support_cvc=0,
   .update_during_report=1,
+  .input=battle_input_horz,
   .del=_bluefish_del,
   .init=_bluefish_init,
   .update=_bluefish_update,

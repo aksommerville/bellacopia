@@ -209,6 +209,7 @@ const struct battle_type battle_type_greenfish={
   .support_pvp=0,
   .support_cvc=0,
   .update_during_report=1,
+  .input=battle_input_horz,
   .del=_greenfish_del,
   .init=_greenfish_init,
   .update=_greenfish_update,

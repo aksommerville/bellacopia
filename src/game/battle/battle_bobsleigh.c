@@ -682,6 +682,7 @@ const struct battle_type battle_type_bobsleigh={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz,
   .del=_bobsleigh_del,
   .init=_bobsleigh_init,
   .update=_bobsleigh_update,

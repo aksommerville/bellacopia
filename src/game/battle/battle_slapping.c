@@ -435,6 +435,7 @@ const struct battle_type battle_type_slapping={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_slapping_del,
   .init=_slapping_init,
   .update=_slapping_update,

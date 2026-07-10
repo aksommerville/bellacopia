@@ -610,6 +610,7 @@ const struct battle_type battle_type_racketeering={
   .no_timeout=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad_a,
   .del=_racketeering_del,
   .init=_racketeering_init,
   .update=_racketeering_update,

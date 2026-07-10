@@ -223,6 +223,7 @@ const struct battle_type battle_type_fencing={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_fencing_del,
   .init=_fencing_init,
   .update=_fencing_update,

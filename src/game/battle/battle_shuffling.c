@@ -364,6 +364,7 @@ const struct battle_type battle_type_shuffling={
   .support_pvp=1,
   .support_cvc=1,
   .no_timeout=1,
+  .input=battle_input_a,
   .del=_shuffling_del,
   .init=_shuffling_init,
   .update=_shuffling_update,

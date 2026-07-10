@@ -657,6 +657,7 @@ const struct battle_type battle_type_smashing={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_a,
   .del=_smashing_del,
   .init=_smashing_init,
   .update=_smashing_update,

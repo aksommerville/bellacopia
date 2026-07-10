@@ -543,6 +543,7 @@ const struct battle_type battle_type_traffic={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad,
   .del=_traffic_del,
   .init=_traffic_init,
   .update=_traffic_update,

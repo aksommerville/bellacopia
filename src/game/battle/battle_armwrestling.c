@@ -238,6 +238,7 @@ const struct battle_type battle_type_armwrestling={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a_mash,
   .del=_armwrestling_del,
   .init=_armwrestling_init,
   .update=_armwrestling_update,

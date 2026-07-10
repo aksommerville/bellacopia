@@ -449,6 +449,7 @@ const struct battle_type battle_type_curling={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_curling_del,
   .init=_curling_init,
   .update=_curling_update,

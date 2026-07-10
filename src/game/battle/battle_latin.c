@@ -680,6 +680,7 @@ const struct battle_type battle_type_latin={
   .no_timeout=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_vert_a,
   .del=_latin_del,
   .init=_latin_init,
   .update=_latin_update,

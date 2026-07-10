@@ -478,6 +478,7 @@ const struct battle_type battle_type_cheating={
   .no_contest=0,
   .support_pvp=0,
   .support_cvc=1,
+  .input=battle_input_horz_a,
   .del=_cheating_del,
   .init=_cheating_init,
   .update=_cheating_update,

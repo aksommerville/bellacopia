@@ -417,6 +417,7 @@ const struct battle_type battle_type_throwing={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a_hold,
   .del=_throwing_del,
   .init=_throwing_init,
   .update=_throwing_update,

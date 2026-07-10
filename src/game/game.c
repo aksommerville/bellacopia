@@ -68,10 +68,16 @@ int game_reset(int use_save) {
   g.flash=0.0;
   g.warp_listener=0;
   g.gameover=0;
+  g.telescoping=0;
+  g.stopwatch=0;
+  g.eqclock=0.0;
+  g.fishclock=0.0;
+  g.monsterpause=0.0;
   g.song_override_outerworld=0;
   g.jigstate=0;
   g.goldtrack=store_get_fld16(NS_fld16_gold);
   g.goodlucktrack=store_get_fld16(NS_fld16_goodluck);
+  g.raceid=0;
   g.completion=game_get_completion();
   g.completion_listener=store_listen(0,game_cb_store,0);
   return 0;

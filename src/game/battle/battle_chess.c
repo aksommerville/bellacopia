@@ -774,6 +774,7 @@ const struct battle_type battle_type_chess={
   .support_pvp=1,
   .support_cvc=1,
   .no_timeout=1, // For 2-player mode. Don't expect them to finish in 60 seconds :D
+  .input=battle_input_dpad_ab,
   .del=_chess_del,
   .init=_chess_init,
   .update=_chess_update,

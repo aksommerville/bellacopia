@@ -809,6 +809,7 @@ const struct battle_type battle_type_wrecking={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz_ab,
   .del=_wrecking_del,
   .init=_wrecking_init,
   .update=_wrecking_update,

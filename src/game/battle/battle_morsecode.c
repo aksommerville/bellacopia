@@ -822,6 +822,28 @@ static void _morsecode_render(struct battle *battle) {
 /* Type definition.
  */
  
+static const struct battle_input morsecode_input[]={
+  {1,EGG_BTN_SOUTH},
+  {1,0},
+  {1,EGG_BTN_SOUTH},
+  {1,0},
+  {1,EGG_BTN_SOUTH},
+  {3,0},
+  {3,EGG_BTN_SOUTH},
+  {1,0},
+  {3,EGG_BTN_SOUTH},
+  {1,0},
+  {3,EGG_BTN_SOUTH},
+  {3,0},
+  {1,EGG_BTN_SOUTH},
+  {1,0},
+  {1,EGG_BTN_SOUTH},
+  {1,0},
+  {1,EGG_BTN_SOUTH},
+  {3,0},
+  {0},
+};
+ 
 const struct battle_type battle_type_morsecode={
   .name="morsecode",
   .objlen=sizeof(struct battle_morsecode),
@@ -833,6 +855,7 @@ const struct battle_type battle_type_morsecode={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=morsecode_input,
   .del=_morsecode_del,
   .init=_morsecode_init,
   .update=_morsecode_update,

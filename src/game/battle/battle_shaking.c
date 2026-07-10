@@ -266,6 +266,7 @@ const struct battle_type battle_type_shaking={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_vert,
   .del=_shaking_del,
   .init=_shaking_init,
   .update=_shaking_update,

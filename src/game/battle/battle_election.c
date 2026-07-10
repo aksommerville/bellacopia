@@ -468,6 +468,7 @@ const struct battle_type battle_type_election={
   .no_contest=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_election_del,
   .init=_election_init,
   .update=_election_update,

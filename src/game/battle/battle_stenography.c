@@ -258,6 +258,7 @@ const struct battle_type battle_type_stenography={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad,
   .del=_stenography_del,
   .init=_stenography_init,
   .update=_stenography_update,

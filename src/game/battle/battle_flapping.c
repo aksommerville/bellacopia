@@ -272,6 +272,7 @@ const struct battle_type battle_type_flapping={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_a,
   .del=_flapping_del,
   .init=_flapping_init,
   .update=_flapping_update,

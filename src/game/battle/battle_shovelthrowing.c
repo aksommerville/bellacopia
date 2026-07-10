@@ -236,6 +236,7 @@ const struct battle_type battle_type_shovelthrowing={
   .support_pvp=0,
   .support_cvc=0,
   .update_during_report=1,
+  .input=battle_input_horz,
   .del=_shovelthrowing_del,
   .init=_shovelthrowing_init,
   .update=_shovelthrowing_update,

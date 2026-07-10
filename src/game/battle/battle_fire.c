@@ -329,6 +329,7 @@ const struct battle_type battle_type_fire={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_horz_alternate,
   .del=_fire_del,
   .init=_fire_init,
   .update=_fire_update,

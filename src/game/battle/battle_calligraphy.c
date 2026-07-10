@@ -710,6 +710,7 @@ const struct battle_type battle_type_calligraphy={
   .no_timeout=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad_a,
   .del=_calligraphy_del,
   .init=_calligraphy_init,
   .update=_calligraphy_update,

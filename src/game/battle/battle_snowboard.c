@@ -592,6 +592,7 @@ const struct battle_type battle_type_snowboard={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_horz,
   .del=_snowboard_del,
   .init=_snowboard_init,
   .update=_snowboard_update,

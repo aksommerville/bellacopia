@@ -560,6 +560,7 @@ const struct battle_type battle_type_sumohorse={
   .no_contest=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz,
   .del=_sumohorse_del,
   .init=_sumohorse_init,
   .update=_sumohorse_update,

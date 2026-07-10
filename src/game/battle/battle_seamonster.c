@@ -164,6 +164,7 @@ const struct battle_type battle_type_seamonster={
   .support_pvp=0,
   .support_cvc=0,
   .update_during_report=1,
+  .input=battle_input_none,
   .del=_seamonster_del,
   .init=_seamonster_init,
   .update=_seamonster_update,

@@ -198,6 +198,88 @@ int battle_can_award_jigpiece() {
   return 0;
 }
 
+/* Shared input definitions.
+ */
+ 
+const struct battle_input battle_input_none[]={
+  {0},
+};
+
+const struct battle_input battle_input_dpad[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN},
+  {0},
+};
+
+const struct battle_input battle_input_dpad_a[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH},
+  {0},
+};
+
+const struct battle_input battle_input_dpad_ab[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH|EGG_BTN_WEST},
+  {0},
+};
+  
+const struct battle_input battle_input_horz[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT},
+  {0},
+};
+
+const struct battle_input battle_input_vert[]={
+  {1,EGG_BTN_UP|EGG_BTN_DOWN},
+  {0},
+};
+
+const struct battle_input battle_input_horz_a[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_SOUTH},
+  {0},
+};
+
+const struct battle_input battle_input_horz_ab[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_SOUTH|EGG_BTN_WEST},
+  {0},
+};
+
+const struct battle_input battle_input_vert_a[]={
+  {1,EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH},
+  {0},
+};
+
+const struct battle_input battle_input_a_mash[]={
+  {1,EGG_BTN_SOUTH},
+  {1,0},
+  {0},
+};
+
+const struct battle_input battle_input_a_hold[]={
+  {3,EGG_BTN_SOUTH},
+  {6,0},
+  {0},
+};
+
+const struct battle_input battle_input_ab_alternate[]={
+  {2,EGG_BTN_SOUTH},
+  {2,EGG_BTN_WEST},
+  {0},
+};
+
+const struct battle_input battle_input_dpad_ab_alternate[]={
+  {2,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH},
+  {2,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_WEST},
+  {0},
+};
+
+const struct battle_input battle_input_horz_alternate[]={
+  {2,EGG_BTN_LEFT},
+  {2,EGG_BTN_RIGHT},
+  {0},
+};
+
+const struct battle_input battle_input_a[]={
+  {1,EGG_BTN_SOUTH},
+  {0},
+};
+
 /* Color tables.
  * Logically these belong nearer the tilesheet resource, but that would be inconvenient.
  */

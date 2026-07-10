@@ -410,6 +410,7 @@ const struct battle_type battle_type_homerunderby={
   .no_contest=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_homerunderby_del,
   .init=_homerunderby_init,
   .update=_homerunderby_update,

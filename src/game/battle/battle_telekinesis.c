@@ -385,6 +385,7 @@ const struct battle_type battle_type_telekinesis={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad,
   .del=_telekinesis_del,
   .init=_telekinesis_init,
   .update=_telekinesis_update,

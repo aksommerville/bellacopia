@@ -747,6 +747,7 @@ const struct battle_type battle_type_plumbing={
   .support_pvp=1,
   .support_cvc=1,
   .no_timeout=1, // CPU players will always eventually finish. Allow infinite time in 2-player mode in case they want to just mess around.
+  .input=battle_input_dpad_a,
   .del=_plumbing_del,
   .init=_plumbing_init,
   .update=_plumbing_update,

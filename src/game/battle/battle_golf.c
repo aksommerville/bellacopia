@@ -278,6 +278,7 @@ const struct battle_type battle_type_golf={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_a,
   .del=_golf_del,
   .init=_golf_init,
   .update=_golf_update,

@@ -556,6 +556,7 @@ const struct battle_type battle_type_cakecarrying={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_horz_a,
   .del=_cakecarrying_del,
   .init=_cakecarrying_init,
   .update=_cakecarrying_update,

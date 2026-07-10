@@ -73,7 +73,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Confirmed. And for the Bone and Leaf seals, it's actually not a crazy plan. I can't see brute-forcing the Star seal tho.
 - [ ] Need diegetic challenges to connect Dot's Cave to Fractia and Cheapside. Busted open right now.
 - [ ] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
-- [ ] Stopwatch sticks on if you die holding it, then restart. I bet other things do too.
+- [x] Stopwatch sticks on if you die holding it, then restart. I bet other things do too.
 
 - Battles written but not placed.
 

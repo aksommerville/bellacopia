@@ -429,6 +429,11 @@ static void _sorting_render(struct battle *battle) {
 /* Type definition.
  */
  
+static const struct battle_input sorting_input[]={
+  {1,EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_DOWN},
+  {0},
+};
+ 
 const struct battle_type battle_type_sorting={
   .name="sorting",
   .objlen=sizeof(struct battle_sorting),
@@ -438,6 +443,7 @@ const struct battle_type battle_type_sorting={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=sorting_input,
   .del=_sorting_del,
   .init=_sorting_init,
   .update=_sorting_update,

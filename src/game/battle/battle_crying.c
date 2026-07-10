@@ -235,6 +235,12 @@ static void _crying_render(struct battle *battle) {
 /* Type definition.
  */
  
+static const struct battle_input crying_input[]={
+  {1,EGG_BTN_DOWN},
+  {1,EGG_BTN_SOUTH},
+  {0},
+};
+ 
 const struct battle_type battle_type_crying={
   .name="crying",
   .objlen=sizeof(struct battle_crying),
@@ -244,6 +250,7 @@ const struct battle_type battle_type_crying={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=crying_input,
   .del=_crying_del,
   .init=_crying_init,
   .update=_crying_update,

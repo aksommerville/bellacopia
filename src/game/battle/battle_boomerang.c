@@ -506,6 +506,11 @@ static void _boomerang_render(struct battle *battle) {
 /* Type definition.
  */
  
+const struct battle_input boomerang_input[]={
+  {1,EGG_BTN_DOWN|EGG_BTN_SOUTH},
+  {0},
+};
+ 
 const struct battle_type battle_type_boomerang={
   .name="boomerang",
   .objlen=sizeof(struct battle_boomerang),
@@ -515,6 +520,7 @@ const struct battle_type battle_type_boomerang={
   .no_contest=0,
   .support_pvp=1,
   .support_cvc=1,
+  .input=boomerang_input,
   .del=_boomerang_del,
   .init=_boomerang_init,
   .update=_boomerang_update,

@@ -423,6 +423,7 @@ const struct battle_type battle_type_jeter={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=battle_input_horz_a,
   .del=_jeter_del,
   .init=_jeter_init,
   .update=_jeter_update,

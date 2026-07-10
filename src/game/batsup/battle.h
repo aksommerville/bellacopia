@@ -35,6 +35,11 @@ struct battle {
   int outcome; // -2 until established. Then (-1,0,1,2) = (right wins, tie, left wins, catastrophe). Play should stop immediately when set.
 };
 
+struct battle_input {
+  int dur; // Arbitrary time units. Button-mashers should use dur 1.
+  uint16_t state;
+};
+
 struct battle_type {
   const char *name; // For logging and such; do not display to user.
   int objlen;
@@ -46,6 +51,7 @@ struct battle_type {
   int support_pvp; // Player-vs-player supported. Only ones that shouldn't are the very asymmetric ones where a second player would have nothing to do.
   int support_cvc; // CPU-vs-CPU supported. All battles should do this, I'm not sure what kind of game couldn't be played automatically.
   int update_during_report;
+  const struct battle_input *input; // Best to use one of shared input descriptions below. Terminate with a (dur==0) record.
   
   void (*del)(struct battle *battle);
   int (*init)(struct battle *battle);
@@ -62,6 +68,24 @@ struct battle_type {
    */
   int (*get_prizes)(struct prize *v,int a,struct battle *battle);
 };
+
+/* Shared options for (input), or you can define your own.
+ */
+extern const struct battle_input battle_input_none[];
+extern const struct battle_input battle_input_dpad[];
+extern const struct battle_input battle_input_dpad_a[];
+extern const struct battle_input battle_input_dpad_ab[];
+extern const struct battle_input battle_input_horz[];
+extern const struct battle_input battle_input_vert[];
+extern const struct battle_input battle_input_horz_a[];
+extern const struct battle_input battle_input_horz_ab[];
+extern const struct battle_input battle_input_vert_a[];
+extern const struct battle_input battle_input_a_mash[];
+extern const struct battle_input battle_input_a_hold[];
+extern const struct battle_input battle_input_ab_alternate[];
+extern const struct battle_input battle_input_dpad_ab_alternate[];
+extern const struct battle_input battle_input_horz_alternate[];
+extern const struct battle_input battle_input_a[];
 
 const struct battle_type *battle_type_by_id(int battle); // NS_battle_*
 

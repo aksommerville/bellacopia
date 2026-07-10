@@ -376,6 +376,7 @@ const struct battle_type battle_type_tictactoe={
   .no_contest=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad_a,
   .del=_tictactoe_del,
   .init=_tictactoe_init,
   .update=_tictactoe_update,

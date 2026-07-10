@@ -395,6 +395,12 @@ static void _cpr_render(struct battle *battle) {
 /* Type definition.
  */
  
+static const struct battle_input cpr_input[]={
+  {1,EGG_BTN_DOWN},
+  {3,0},
+  {0},
+};
+ 
 const struct battle_type battle_type_cpr={
   .name="cpr",
   .objlen=sizeof(struct battle_cpr),
@@ -405,6 +411,7 @@ const struct battle_type battle_type_cpr={
   .support_pvp=1,
   .support_cvc=1,
   .update_during_report=1,
+  .input=cpr_input,
   .del=_cpr_del,
   .init=_cpr_init,
   .update=_cpr_update,

@@ -386,6 +386,7 @@ const struct battle_type battle_type_strangling={
   // We do support both pvp and cvc. But the appearance is always Dot vs Root Devil.
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_dpad_ab,
   .del=_strangling_del,
   .init=_strangling_init,
   .update=_strangling_update,

@@ -398,6 +398,7 @@ const struct battle_type battle_type_broomrace={
   .no_contest=1,
   .support_pvp=1,
   .support_cvc=1,
+  .input=battle_input_horz_a,
   .del=_broomrace_del,
   .init=_broomrace_init,
   .update=_broomrace_update,
