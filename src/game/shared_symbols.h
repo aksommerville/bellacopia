@@ -341,7 +341,7 @@
 #define NS_sprtype_statuemaze       20 /* (u32)0 */
 #define NS_sprtype_bomb             21 /* (u32)0 */
 #define NS_sprtype_marionette       22 /* (u32)0 */
-#define NS_sprtype_pushable         23 /* (u32)0 */
+#define NS_sprtype_pushable         23 /* (u16:fld)0 (u16)0 ; Spawn fails if (fld) set. */
 #define NS_sprtype_bus              24 /* (u32)0 */
 #define NS_sprtype_ticker           25 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_zookeeper        26 /* (u16:fld)0 (u16)0 */
@@ -354,6 +354,7 @@
 #define NS_sprtype_tenkey           33 /* (u16:fld16)0 (u16)0 */
 #define NS_sprtype_wishing_well     45 /* (u32)0 */
 #define NS_sprtype_motion_economist 46 /* (u16:fld)0 (u16:threshold)13 */
+#define NS_sprtype_sokoban          47 /* (u8:width)1 (u8:height)1 (u16:fld)sokoban0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -390,7 +391,8 @@
   _(minesweeper) \
   _(tenkey) \
   _(wishing_well) \
-  _(motion_economist)
+  _(motion_economist) \
+  _(sokoban)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -769,6 +771,7 @@
 #define NS_fld_forest_secret_entrance 225
 #define NS_fld_surveyor_complete 226
 #define NS_fld_motion_economist 227
+#define NS_fld_sokoban1 228
 
 /* "fld16" are 16 unsigned bits each.
  */

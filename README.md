@@ -55,7 +55,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
 - - Do be mindful of the Minimalist path, it needs to stay item-free.
 - - [x] Economy of Motion style keystroke tracker.
-- - [ ] Sokoban in the real world. Include Ounce blocks that you can Hookshot, and unreachable blocks that you have to Snowglobe.
+- - [x] Sokoban in the real world. Include Ounce blocks that you can Hookshot, and unreachable blocks that you have to Snowglobe.
 - - - Or bits where you could either Vanishing Cream into a side channel to push, or Snowglobe.
 - - [ ] Also diegetic Bomberman, same idea as Sokoban.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
@@ -127,7 +127,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
 - - [ ] Dark some regions.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
-- - [ ] Dots<->Fractia door.
+- - [x] Dots<->Fractia door.
 - - [ ] Dots<->Cheapside door.
 
 - Battle repairs.

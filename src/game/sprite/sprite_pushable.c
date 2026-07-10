@@ -1,5 +1,6 @@
 /* sprite_pushable.c
  * Moves by discrete intervals when bumped, optionally only when wearing the Power Glove.
+ * We do not touch our tileid -- sprite_sokoban depends on that, and modifies tileid behind our back.
  */
  
 #include "game/bellacopia.h"
@@ -69,6 +70,11 @@ static int pushable_avoid_hero(struct sprite *sprite,double x,double y,int z) {
  */
 
 static int _pushable_init(struct sprite *sprite) {
+
+  // Optional "don't spawn" flag.
+  int fldid=(sprite->arg[0]<<8)|sprite->arg[1];
+  if (store_get_fld(fldid)) return -1;
+
   struct cmdlist_reader reader;
   if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
     struct cmdlist_entry cmd;

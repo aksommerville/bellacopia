@@ -1,0 +1,2 @@
+type (u16:sprtype)sokoban
+groups (b32:sprgrp)update
