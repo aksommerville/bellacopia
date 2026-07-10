@@ -131,6 +131,7 @@ int game_list_targets(int *dstv,int dsta,int mode);
  * >=0 on success. Failure is possible if (strix) is unknown or if the map set is defective and we can't find a path.
  * Expensive, please don't spam.
  * (px,py) are the position on plane (z) that you're searching from. Only relevant for plane zero.
+ * This does not account for maps' hints_override; if you allow overrides, you must check those separately.
  */
 int game_get_target_position(int *lng,int *lat,int px,int py,int z,int strix);
 
@@ -144,6 +145,13 @@ int game_init_targets();
  */
 void game_disable_all_targets();
 void game_enable_target(int strix);
+
+/* Position in plane meters of the current hints_override.
+ * eg for treadlepass, or other challenges that interfere with compass, divining rod, and magnifier.
+ * (fld) should be (g.camera.map->hints_override), it's really just for validation.
+ * Fails if nothing found.
+ */
+int game_get_hints_override_position(int *x,int *y,int fld);
 
 /* Generate a list of select POI within a given radius of a point on one plane.
  * Never returns more than (dsta). Stops searching when full, so it doesn't necessarily return the closest.

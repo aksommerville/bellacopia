@@ -34,6 +34,7 @@
 #define CMD_map_rspriteres      0x27 /* u16:rid ; Limit one per map. May combine with a la carte 'rsprite' commands. */
 #define CMD_map_cameralock      0x28 /* u16:fld ; No lock if (fld) set. */
 #define CMD_map_surveyor        0x29 /* u16:fld16 ; This map is a candidate for remote surveyor-contest tiles. */
+#define CMD_map_hints_override  0x2a /* u16:fld ; If field unset, the hinting items behave different here. Compass, Divining Rod, Magnifier, Crystal Ball. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -355,6 +356,7 @@
 #define NS_sprtype_wishing_well     45 /* (u32)0 */
 #define NS_sprtype_motion_economist 46 /* (u16:fld)0 (u16:threshold)13 */
 #define NS_sprtype_sokoban          47 /* (u8:width)1 (u8:height)1 (u16:fld)sokoban0 */
+#define NS_sprtype_treadlepass      48 /* (u16:fld)0 (u16:treadlec)6 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -392,7 +394,8 @@
   _(tenkey) \
   _(wishing_well) \
   _(motion_economist) \
-  _(sokoban)
+  _(sokoban) \
+  _(treadlepass)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -772,6 +775,13 @@
 #define NS_fld_surveyor_complete 226
 #define NS_fld_motion_economist 227
 #define NS_fld_sokoban1 228
+#define NS_fld_dots_underdoor 229
+#define NS_fld_dud1 230
+#define NS_fld_dud2 231
+#define NS_fld_dud3 232
+#define NS_fld_dud4 233
+#define NS_fld_dud5 234
+#define NS_fld_dud6 235
 
 /* "fld16" are 16 unsigned bits each.
  */

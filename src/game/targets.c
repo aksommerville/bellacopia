@@ -499,6 +499,30 @@ int game_get_target_position(int *lng,int *lat,int px,int py,int z,int strix) {
   return targets_find_plane_position(lng,lat,px,py,z,target->x,target->y,target->z,target->p1x,target->p1y,0);
 }
 
+/* Hints override.
+ * Similar to target and secret but totally different authority.
+ */
+ 
+int game_get_hints_override_position(int *x,int *y,int fld) {
+  const struct map *map=g.camera.map;
+  if (!map||(map->hints_override!=fld)) return -1;
+  if (store_get_fld(fld)) return -1; // Once the key field is set, the override is no longer in play.
+  
+  /* Search sprites for ones that serve as hint authorities.
+   */
+  struct sprite **spritep=GRP(update)->sprv;
+  int i=GRP(update)->sprc;
+  for (;i-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    
+    if (sprite->type==&sprite_type_treadlepass) {
+      if (sprite_treadlepass_hint(x,y,sprite,fld)>=0) return 0;
+    }
+    
+  }
+  return -1;
+}
+
 /* List nearby secrets, within one map.
  */
  

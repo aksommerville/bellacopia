@@ -126,6 +126,9 @@ int sprite_racer_get_lapp(const struct sprite *sprite);
 
 void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl);
 
+// If this (fld) belongs to me, populate (x,y) with the next treadle's position in plane meters. Otherwise fail.
+int sprite_treadlepass_hint(int *x,int *y,const struct sprite *sprite,int fld);
+
 /* Sprite group.
  *******************************************************************/
  

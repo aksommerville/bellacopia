@@ -67,10 +67,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
 - - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
-- - [ ] Ice floor, that you slide until you hit the wall.
+- - [x] Ice floor, that you slide until you hit the wall.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
-- - [ ] Six treadles that you press in order. Use Divining Rod to see the order.
+- - [x] Six treadles that you press in order. Use Divining Rod to see the order.
 
 - Fill out maps.
 - [ ] Fractia
@@ -101,6 +101,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Tundra
 - - [ ] "tuns" of exterior space to fill.
 - - [ ] Magnetic North interior.
+- - - [ ] Morse Code practice.
 - - [ ] Ice Palace: Puzzles and monsters.
 - [ ] Mountains
 - [ ] Goblins' Cave

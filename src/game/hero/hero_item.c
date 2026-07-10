@@ -64,40 +64,66 @@ static int divining_begin(struct sprite *sprite) {
     }
   }
   
+  /* If an override is in play, we indicate that instead.
+   */
+  int overx,overy;
+  if (SPRITE->hints_override&&(game_get_hints_override_position(&overx,&overy,SPRITE->hints_override)>=0)) {
+    int fillx=overx-1,filly=overy-1,fillw=3,fillh=3;
+    int viewy=SPRITE->qy-1;
+    int yi=3;
+    for (alert=SPRITE->divining_alertv;yi-->0;viewy++) {
+      int viewx=SPRITE->qx-1;
+      int xi=3;
+      for (;xi-->0;viewx++,alert++) {
+        if (viewx<fillx) continue;
+        if (viewx>=fillx+fillw) continue;
+        if (viewy<filly) continue;
+        if (viewy>=filly+fillh) continue;
+        alert->tileid=0x69;
+        soundid=RID_sound_affirmative;
+      }
+    }
+    goto _done_;
+  }
+  
   /* Check for roots in cells adjacent to the quantized cell and flip positive where we find one.
    * It's a pain in the butt because we need neighbor cells, which might be on neighbor *maps*.
    */
-  int mxa=(SPRITE->qx-1)/NS_sys_mapw;
-  int mxz=(SPRITE->qx+1)/NS_sys_mapw;
-  int mya=(SPRITE->qy-1)/NS_sys_maph;
-  int myz=(SPRITE->qy+1)/NS_sys_maph;
-  int my=mya; for (;my<=myz;my++) {
-    int mx=mxa; for (;mx<=mxz;mx++) {
-      const struct map *map=map_by_position(mx,my,sprite->z);
-      if (!map) continue;
-      int x0=map->lng*NS_sys_mapw;
-      int y0=map->lat*NS_sys_maph;
-      struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
-      struct cmdlist_entry cmd;
-      while (cmdlist_reader_next(&cmd,&reader)) {
-        if (cmd.opcode==CMD_map_root) {
-          int rx=cmd.arg[0]+x0;
-          int ry=cmd.arg[1]+y0;
-          if (rx<SPRITE->qx-1) continue;
-          if (rx>SPRITE->qx+1) continue;
-          if (ry<SPRITE->qy-1) continue;
-          if (ry>SPRITE->qy+1) continue;
-          int fld=(cmd.arg[2]<<8)|cmd.arg[3];
-          if (!store_get_fld(fld)) {
-            SPRITE->divining_alertv[
-              (ry-SPRITE->qy+1)*3+(rx-SPRITE->qx+1)
-            ].tileid=0x69;
-            soundid=RID_sound_affirmative;
+  {
+    int mxa=(SPRITE->qx-1)/NS_sys_mapw;
+    int mxz=(SPRITE->qx+1)/NS_sys_mapw;
+    int mya=(SPRITE->qy-1)/NS_sys_maph;
+    int myz=(SPRITE->qy+1)/NS_sys_maph;
+    int my=mya; for (;my<=myz;my++) {
+      int mx=mxa; for (;mx<=mxz;mx++) {
+        const struct map *map=map_by_position(mx,my,sprite->z);
+        if (!map) continue;
+        int x0=map->lng*NS_sys_mapw;
+        int y0=map->lat*NS_sys_maph;
+        struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+        struct cmdlist_entry cmd;
+        while (cmdlist_reader_next(&cmd,&reader)) {
+          if (cmd.opcode==CMD_map_root) {
+            int rx=cmd.arg[0]+x0;
+            int ry=cmd.arg[1]+y0;
+            if (rx<SPRITE->qx-1) continue;
+            if (rx>SPRITE->qx+1) continue;
+            if (ry<SPRITE->qy-1) continue;
+            if (ry>SPRITE->qy+1) continue;
+            int fld=(cmd.arg[2]<<8)|cmd.arg[3];
+            if (!store_get_fld(fld)) {
+              SPRITE->divining_alertv[
+                (ry-SPRITE->qy+1)*3+(rx-SPRITE->qx+1)
+              ].tileid=0x69;
+              soundid=RID_sound_affirmative;
+            }
           }
         }
       }
     }
   }
+  
+ _done_:;
   bm_sound(soundid);
   return 1;
 }
@@ -686,15 +712,19 @@ static void compass_update(struct sprite *sprite,double elapsed) {
   
   /* Do we need to refresh?
    */
-  if ((SPRITE->compassz!=sprite->z)||SPRITE->compass_dirty) {
+  if ((SPRITE->compassz!=sprite->z)||SPRITE->compass_dirty||(SPRITE->hints_override!=SPRITE->pv_hints_override)) {
     SPRITE->compass_dirty=0;
     SPRITE->compassz=sprite->z;
     int srcx=(int)sprite->x,srcy=(int)sprite->y,dstx=-1,dsty=-1;
-    int compass=store_get_fld16(NS_fld16_compassoption);
-    if (!compass) compass=NS_compass_auto;
-    if (game_get_target_position(&dstx,&dsty,srcx,srcy,sprite->z,compass)<0) {
-      SPRITE->compassx=SPRITE->compassy=-1.0;
-      return;
+    if (SPRITE->hints_override&&(game_get_hints_override_position(&dstx,&dsty,SPRITE->hints_override)>=0)) {
+      // ok use the override. If that fails, try the regular way:
+    } else {
+      int compass=store_get_fld16(NS_fld16_compassoption);
+      if (!compass) compass=NS_compass_auto;
+      if (game_get_target_position(&dstx,&dsty,srcx,srcy,sprite->z,compass)<0) {
+        SPRITE->compassx=SPRITE->compassy=-1.0;
+        return;
+      }
     }
     SPRITE->compassx=dstx+0.5;
     SPRITE->compassy=dsty+0.5;
@@ -979,7 +1009,16 @@ static int magnifier_begin(struct sprite *sprite) {
    */
   #define SECRETS_LIMIT 8
   struct secret secretv[SECRETS_LIMIT];
-  int secretc=game_find_secrets(secretv,SECRETS_LIMIT,sprite->x,sprite->y,sprite->z,8.0);
+  int secretc=0;
+  if (SPRITE->hints_override) {
+    int secx,secy;
+    if (game_get_hints_override_position(&secx,&secy,SPRITE->hints_override)>=0) {
+      secretv[0].x=secx+0.5;
+      secretv[0].y=secy+0.5;
+      secretc=1;
+    }
+  }
+  if (!secretc) secretc=game_find_secrets(secretv,SECRETS_LIMIT,sprite->x,sprite->y,sprite->z,8.0);
   #undef SECRETS_LIMIT
   if (secretc<1) {
     bm_sound(RID_sound_negatory);

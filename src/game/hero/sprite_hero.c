@@ -166,6 +166,9 @@ static void hero_check_triggers(struct sprite *sprite) {
     SPRITE->onice=0;
     SPRITE->sliding=0;
   }
+  
+  // And freshen (hints_override) while we're here.
+  SPRITE->hints_override=map->hints_override;
 }
 
 /* Update.
@@ -226,6 +229,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
   }
   
   // Check quantized position.
+  SPRITE->pv_hints_override=SPRITE->hints_override;
   SPRITE->qnew=0;
   int qx=(int)sprite->x;
   int qy=(int)sprite->y;
