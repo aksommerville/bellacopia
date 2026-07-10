@@ -1,0 +1,4 @@
+image image:cave_sprites
+tile 80 0
+type (u16:sprtype)motion_economist
+groups (b32:sprgrp)visible,update

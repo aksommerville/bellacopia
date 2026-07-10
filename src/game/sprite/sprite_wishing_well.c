@@ -22,7 +22,6 @@ static int _wishing_well_init(struct sprite *sprite) {
   SPRITE->vish=NS_sys_tilesize;
   sprite_group_add(GRP(visible),sprite);
   sprite_group_add(GRP(update),sprite);
-  fprintf(stderr,"%s itemid=%d @%f,%f tileid=0x%02x\n",__func__,SPRITE->itemid,sprite->x,sprite->y,sprite->tileid);
   return 0;
 }
 

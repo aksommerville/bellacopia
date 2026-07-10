@@ -318,41 +318,42 @@
 #define NS_activity_wishing_well 60
 #define NS_activity_wishing_sewer 61
 
-#define NS_sprtype_dummy            0 /* (u32)0 */
-#define NS_sprtype_hero             1 /* (u32)0 */
-#define NS_sprtype_monster          2 /* (u32)0 */
-#define NS_sprtype_treasure         3 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
-#define NS_sprtype_stick            4 /* (u32)0 */
-#define NS_sprtype_npc              5 /* (u16:activity)0 (u16:activity_arg)0 */
-#define NS_sprtype_jigpiece         6 /* (u32)0 */
-#define NS_sprtype_candy            7 /* (u32)0 */
-#define NS_sprtype_firepot          8 /* (u8:radius_m)3 (u24)0 */
-#define NS_sprtype_rootdevil        9 /* (u16:fld)root0 (u16)0 */
-#define NS_sprtype_bonfire         10 /* (u32)0 */
-#define NS_sprtype_tolltroll       11 /* (u16:cost)0 (u16:fld)0 ; Zeroes for the three-part fetch quest */
-#define NS_sprtype_toast           12 /* (u32)0 */
-#define NS_sprtype_princess        13 /* (u8)seq (u24)0 ; seq is (0,1,2)=(any,jail,frontdoor) */
-#define NS_sprtype_setfld          14 /* (u16:fld) (u16)0 */
-#define NS_sprtype_ornament2x2     15 /* (u32)0 */
-#define NS_sprtype_tvnews          16 /* (u32)0 */
-#define NS_sprtype_guild           17 /* (u32)0 */
-#define NS_sprtype_escalator       18 /* (u8)h (u24)0 */
-#define NS_sprtype_statue          19 /* (u32)0 */
-#define NS_sprtype_statuemaze      20 /* (u32)0 */
-#define NS_sprtype_bomb            21 /* (u32)0 */
-#define NS_sprtype_marionette      22 /* (u32)0 */
-#define NS_sprtype_pushable        23 /* (u32)0 */
-#define NS_sprtype_bus             24 /* (u32)0 */
-#define NS_sprtype_ticker          25 /* (u16:fld)0 (u16)0 */
-#define NS_sprtype_zookeeper       26 /* (u16:fld)0 (u16)0 */
-#define NS_sprtype_mnneon          27 /* (u32)0 */
-#define NS_sprtype_racer           28 /* (u8:human)0 (u8:face)monster (u8)dir (u8)0 */
-#define NS_sprtype_icedragon       29 /* (u8:seq)0 (u24)0 */
-#define NS_sprtype_icedragon_inter 30 /* (u32)0 */
-#define NS_sprtype_soulballs       31 /* (u8)ballc (u24)0 */
-#define NS_sprtype_minesweeper     32 /* (u16:fld)0 (u16)0 ; Place at top-left corner. Not a real sprite; just serves to control the minigame. */
-#define NS_sprtype_tenkey          33 /* (u16:fld16)0 (u16)0 */
-#define NS_sprtype_wishing_well    45 /* (u32)0 */
+#define NS_sprtype_dummy             0 /* (u32)0 */
+#define NS_sprtype_hero              1 /* (u32)0 */
+#define NS_sprtype_monster           2 /* (u32)0 */
+#define NS_sprtype_treasure          3 /* (u8:itemid)0 (u8:quantity)0 (u16:fld)0 */
+#define NS_sprtype_stick             4 /* (u32)0 */
+#define NS_sprtype_npc               5 /* (u16:activity)0 (u16:activity_arg)0 */
+#define NS_sprtype_jigpiece          6 /* (u32)0 */
+#define NS_sprtype_candy             7 /* (u32)0 */
+#define NS_sprtype_firepot           8 /* (u8:radius_m)3 (u24)0 */
+#define NS_sprtype_rootdevil         9 /* (u16:fld)root0 (u16)0 */
+#define NS_sprtype_bonfire          10 /* (u32)0 */
+#define NS_sprtype_tolltroll        11 /* (u16:cost)0 (u16:fld)0 ; Zeroes for the three-part fetch quest */
+#define NS_sprtype_toast            12 /* (u32)0 */
+#define NS_sprtype_princess         13 /* (u8)seq (u24)0 ; seq is (0,1,2)=(any,jail,frontdoor) */
+#define NS_sprtype_setfld           14 /* (u16:fld) (u16)0 */
+#define NS_sprtype_ornament2x2      15 /* (u32)0 */
+#define NS_sprtype_tvnews           16 /* (u32)0 */
+#define NS_sprtype_guild            17 /* (u32)0 */
+#define NS_sprtype_escalator        18 /* (u8)h (u24)0 */
+#define NS_sprtype_statue           19 /* (u32)0 */
+#define NS_sprtype_statuemaze       20 /* (u32)0 */
+#define NS_sprtype_bomb             21 /* (u32)0 */
+#define NS_sprtype_marionette       22 /* (u32)0 */
+#define NS_sprtype_pushable         23 /* (u32)0 */
+#define NS_sprtype_bus              24 /* (u32)0 */
+#define NS_sprtype_ticker           25 /* (u16:fld)0 (u16)0 */
+#define NS_sprtype_zookeeper        26 /* (u16:fld)0 (u16)0 */
+#define NS_sprtype_mnneon           27 /* (u32)0 */
+#define NS_sprtype_racer            28 /* (u8:human)0 (u8:face)monster (u8)dir (u8)0 */
+#define NS_sprtype_icedragon        29 /* (u8:seq)0 (u24)0 */
+#define NS_sprtype_icedragon_inter  30 /* (u32)0 */
+#define NS_sprtype_soulballs        31 /* (u8)ballc (u24)0 */
+#define NS_sprtype_minesweeper      32 /* (u16:fld)0 (u16)0 ; Place at top-left corner. Not a real sprite; just serves to control the minigame. */
+#define NS_sprtype_tenkey           33 /* (u16:fld16)0 (u16)0 */
+#define NS_sprtype_wishing_well     45 /* (u32)0 */
+#define NS_sprtype_motion_economist 46 /* (u16:fld)0 (u16:threshold)13 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -388,7 +389,8 @@
   _(soulballs) \
   _(minesweeper) \
   _(tenkey) \
-  _(wishing_well)
+  _(wishing_well) \
+  _(motion_economist)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -766,6 +768,7 @@
 #define NS_fld_burn6 224
 #define NS_fld_forest_secret_entrance 225
 #define NS_fld_surveyor_complete 226
+#define NS_fld_motion_economist 227
 
 /* "fld16" are 16 unsigned bits each.
  */
