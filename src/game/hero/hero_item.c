@@ -327,7 +327,7 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
         if (SPRITE->fish==NS_itemid_wishing_well) {
           SPRITE->fish=store_get_fld16(NS_fld16_wishing_well);
           store_set_fld16(NS_fld16_wishing_well,0);
-          SPRITE->fishquantity=5;
+          SPRITE->fishquantity=10;
         }
       } else {
         bm_sound(RID_sound_fishpole_wompwomp);

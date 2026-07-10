@@ -19,8 +19,10 @@ static int _wishing_well_init(struct sprite *sprite) {
   if (!detail) return -1;
   sprite->imageid=RID_image_pause;
   sprite->tileid=detail->tileid;
+  SPRITE->vish=NS_sys_tilesize;
   sprite_group_add(GRP(visible),sprite);
   sprite_group_add(GRP(update),sprite);
+  fprintf(stderr,"%s itemid=%d @%f,%f tileid=0x%02x\n",__func__,SPRITE->itemid,sprite->x,sprite->y,sprite->tileid);
   return 0;
 }
 
@@ -34,11 +36,11 @@ static void _wishing_well_update(struct sprite *sprite,double elapsed) {
 static void _wishing_well_render(struct sprite *sprite,int x,int y) {
   if (SPRITE->vish<1) return;
   graf_set_image(&g.graf,sprite->imageid);
-  int w=NS_sys_tilesize,h=NS_sys_tilesize-SPRITE->vish;
+  int w=NS_sys_tilesize,h=SPRITE->vish;
   int srcx=(sprite->tileid&0x0f)*NS_sys_tilesize;
   int srcy=(sprite->tileid>>4)*NS_sys_tilesize;
   int dstx=x-(NS_sys_tilesize>>1);
-  int dsty=y-(NS_sys_tilesize>>1)+(NS_sys_tilesize-SPRITE->vish);
+  int dsty=y-(NS_sys_tilesize>>1)+(NS_sys_tilesize-h);
   graf_decal(&g.graf,dstx,dsty,srcx,srcy,w,h);
   if (SPRITE->vish&1) {
     graf_fill_rect(&g.graf,dstx-1,dsty+h,NS_sys_tilesize+2,1,0x0000ffff);

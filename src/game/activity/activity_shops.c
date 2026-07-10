@@ -691,6 +691,7 @@ static int cb_wishing_well(int optionid,void *userdata) {
       bm_sound(RID_sound_glug);
       double x,y;
       if (wishing_well_get_sprite_position(&x,&y)) {
+        fprintf(stderr,"wishing well sprite at %f,%f. itemid %d\n",x,y,optionid);
         wishing_well_arg[0]=optionid>>8;
         wishing_well_arg[1]=optionid;
         struct sprite *sprite=sprite_spawn(x,y,0,wishing_well_arg,4,&sprite_type_wishing_well,0,0);
@@ -763,5 +764,9 @@ void begin_wishing_well() {
  */
  
 void begin_wishing_sewer() {
-  begin_dialogue(153,0);
+  if (store_get_fld16(NS_fld16_wishing_well)) {
+    begin_dialogue(157,0);
+  } else {
+    begin_dialogue(153,0);
+  }
 }

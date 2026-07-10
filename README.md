@@ -33,22 +33,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] !!! Segfault as weaving contest score tallied. Related to yesterday's?
-- - Failed to trivially repro.
-- - [x] Can I repro with a thumb on the RNG? ...no
-- - Dozens of plays and no repro. What gives?
-- - Anywho, got core dumps enabled in case it happens again. For future reference: `ulimit -c unlimited` in bashrc, and `gdb out/bellacopia-linux /var/lib/apport/coredump/...`, then `bt` in gdb.
-- - But of course, we're building with full optimization and no debug symbols. So we'll probably only see exportable symbols, eg the Egg Platform API.
-- - ...i got nothing. I guess we just wait until it happens again by chance, maybe then we'll have a hint at the cause.
-- [x] !!! Segfault entering battle against a spider, underground by the fork west of Botire. Game paused briefly and did not show any battle ui. Had been playing about an hour.
-- - No detail in the console, just `Segmentation fault (core dumped)`.
-- - Possibly just a dirty build thing? I might not have cleaned since adding `no_store` to `struct battle_args`.
-- - Confirmed via console history, I did not clean after adding that. But there was a build that hit what looks like very relevant c file.
-- - [x] Attempt repro. ...ugh. This was maybe 60 or 70 battles deep in the session. Not the first spider.
-- - - Repro. Another spider, just about the same place. Was on my broom. 50 battles or so.
-- - - Again. Much shorter session. Launching spider at the underhorizon zoo. I suspect it's the first-slot change, selecting throws.
-- - - Twice more, going straight to that zoo. Third try and second try.
-- - - Fixed. And also set a record: 7.956 (won, and missed one warp deliberately)
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
@@ -62,18 +46,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] New song during the election, maybe?
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [x] Wishing well: Throw depletable items in the well and you can fish out 5 of them at the Wishing Sewer, both hard to reach and far apart.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
-- [x] A little explanation when you pick up your first jigpiece.
-- [x] Gate connecting the two southern bits of the underground, where you measure the distance to three randomly-chosen points. So you need to open the other connections first.
-- - Put Mr and Mrs Rabbit on opposite sides of the gate; either can explain the challenge.
-- [x] Would it work to hide the ladders in Dot's House and Cheapside under a pushblock?
-- - Yes. Only we need some mitigation when coming up the ladder, move the block aside or kill it.
-- [x] Confirm that the crypto puzzle can be brute-forced. (ie does it generate, when you haven't interacted with any monoliths?)
-- - Confirmed. And for the Bone and Leaf seals, it's actually not a crazy plan. I can't see brute-forcing the Star seal tho.
-- [ ] Need diegetic challenges to connect Dot's Cave to Fractia and Cheapside. Busted open right now.
 - [ ] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
-- [x] Stopwatch sticks on if you die holding it, then restart. I bet other things do too.
 
 - Battles written but not placed.
 
@@ -95,7 +69,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
 - - [ ] Ice floor, that you slide until you hit the wall.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
-- - [x] Measurement side quests: Giver asks "how far away is the yaddayadda, to our northeast?" and you enter a free number. Reason for the Tape Measure to exist.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 - - [ ] Six treadles that you press in order. Use Divining Rod to see the order.
 
@@ -153,6 +126,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
 - - [ ] Dark some regions.
+- - [ ] Mr and Mrs Rabbit at the surveyor challenge.
+- - [ ] Dots<->Fractia door.
+- - [ ] Dots<->Cheapside door.
 
 - Battle repairs.
 - [ ] calligraphy: No fun, eliminate.
