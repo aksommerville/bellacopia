@@ -695,14 +695,12 @@ void begin_zoo_replay(struct sprite *sprite,int fldid) {
  
 static void cb_surveyor_entry(int value,void *userdata) {
   int fld16=(int)(uintptr_t)userdata;
-  fprintf(stderr,"%s fld16=%d value=%d\n",__func__,fld16,value);//TODO
   if (value<0) value=0; else if (value>999) value=999;
   store_set_fld16(fld16+3,value);
   surveyor_check();
 }
  
 void begin_surveyor_entry(struct sprite *sprite,int fld16) {
-  fprintf(stderr,"%s fld16=%d\n",__func__,fld16);
   surveyor_require();
   struct modal_args_tenkey args={
     .value=store_get_fld16(fld16+3),

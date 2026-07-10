@@ -1,7 +1,7 @@
-13b0313131313131313131313131313131311421
-22c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-3206a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-0402a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
+2113313131313131313131313131313131311421
+13b0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+32c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+0707a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
 0004a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00430
 1205a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00404
 2202a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00500
@@ -16,4 +16,4 @@ position 1 0 2 *
 sprite @9,6 sprite:jigpiece (u32)0
 sprite @2,1 sprite:minesweeper (u16:fld)minesweep2 (u16)0
 cameralock (u16:fld)minesweep2
-bump @1,0 (u16:activity)reset_puzzle (u16:fld)minesweep2 (u16)0
+bump @1,1 (u16:activity)reset_puzzle (u16:fld)minesweep2 (u16)0

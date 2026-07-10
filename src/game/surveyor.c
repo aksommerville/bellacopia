@@ -149,7 +149,6 @@ int surveyor_check() {
     double dy=(letter##y-letter##ry); \
     double distance=sqrt(dx*dx+dy*dy); \
     letter##d=lround(distance); \
-    fprintf(stderr,#letter" ref=%d,%d remote=%d,%d distance=%d guess=%d\n",letter##rx,letter##ry,letter##x,letter##y,letter##d,store_get_fld16(NS_fld16_surveyor_##letter##_guess)); \
   }
   SURVEY(a)
   SURVEY(b)

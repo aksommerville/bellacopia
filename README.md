@@ -48,6 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
+- [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 
 - Battles written but not placed.
 
@@ -66,7 +67,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
-- - [ ] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
+- - [x] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
 - - [x] Ice floor, that you slide until you hit the wall.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
@@ -106,14 +107,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Mountains
 - [ ] Goblins' Cave
 - [ ] Botire
-- - [ ] Exterior
+- - [ ] Exterior. Make houses slightly less ugly.
 - - [ ] Inventory Critic
 - - [ ] Knitter
 - - [ ] Underground entrance house
 - [ ] Jungle
 - [ ] Temple
 - - [ ] Lots of unused space at the north edge. Put some bonus challenges here or eliminate it.
-- - [ ] Room for a secret or something at the southwest corner.
+- - [x] Some kind of hint in the southwest detached room, or change it to "Hidden Message" a la Sergio.
 - - [ ] Gift shop
 - - [ ] Roof access room
 - [ ] Sea monster

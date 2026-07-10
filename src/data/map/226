@@ -1,7 +1,7 @@
-13b0313131313131313131313131313131311421
-22c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-2203a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-2202a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
+2113313131313131313131313131313131311421
+2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+13b0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
+22c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
 2205a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00020
 3203a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00030
 0503a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00507
@@ -18,4 +18,4 @@ sprite @2,1 sprite:minesweeper (u16:fld)minesweep1 (u16)0
 cameralock (u16:fld)minesweep1
 switchable @8,11 (u16:fld)minesweep1
 switchable @7,11 (u16:fld)minesweep1
-bump @1,0 (u16:activity)reset_puzzle (u16:fld)minesweep1 (u16)0
+bump @1,2 (u16:activity)reset_puzzle (u16:fld)minesweep1 (u16)0
