@@ -1,5 +1,5 @@
 rsprite sprite:raccoon (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
 rsprite sprite:heron (u8:weight)5 (u8:limit)1 (u32)0
-rsprite sprite:goat (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:wolf (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:fox (u8:weight)5 (u8:limit)1 (u32)0

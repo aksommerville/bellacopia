@@ -38,7 +38,7 @@
   2      Cutting           Seamstress         Farm
  R2      DanceOff          Rooster            Farm
   2____D Dissection        Doctor             Fractia
-  2      Distancing        Wolf               Woodland
+  2____D Distancing        Wolf               Woodland
   2      Diving            Penguin            Tundra
  R2      Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert

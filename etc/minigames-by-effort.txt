@@ -3,7 +3,6 @@ Minigames, sorted roughly by estimated effort to implement.
 Remove finished games as you go.
 
 ## Easy
-Distancing. Dpad to get as far from everyone as possible.
 Dodging. Bullet hell.
 Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
 Balancing. Walk to the goal with a tomato on your head.

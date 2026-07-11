@@ -473,6 +473,7 @@
 #define NS_battle_fission 72
 #define NS_battle_flapping 73
 #define NS_battle_frogeating 74
+#define NS_battle_distancing 75
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -547,7 +548,8 @@
   _(fire) \
   _(fission) \
   _(flapping) \
-  _(frogeating)
+  _(frogeating) \
+  _(distancing)
 
 /* "fld" are single bits.
  */
