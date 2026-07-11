@@ -32,31 +32,36 @@ static int _hero_init(struct sprite *sprite) {
  * Return nonzero to acknowledge or zero to ignore.
  */
  
-static int hero_hurt(struct sprite *sprite,struct sprite *assailant) {
-  int hp=store_get_fld16(NS_fld16_hp);
-  if (--hp<0) hp=0;
-  store_set_fld16(NS_fld16_hp,hp);
-  bm_sound(RID_sound_ouch);
-  if (!hp) {
-    game_begin_gameover();
-    return 1;
-  }
-  SPRITE->hurt=HERO_HURT_TIME;
-  if (assailant) {
-    double dx=sprite->x-assailant->x;
-    double dy=sprite->y-assailant->y;
-    double d2=dx*dx+dy*dy;
-    if (d2<0.001) { // Impossibly close.
-      SPRITE->hurtdx=0.0;
-      SPRITE->hurtdy=0.0;
-    } else {
-      double distance=sqrt(d2);
-      SPRITE->hurtdx=dx/distance;
-      SPRITE->hurtdy=dy/distance;
+void hero_injure_at(struct sprite *sprite,struct sprite *assailant,double x,double y) {
+  if (SPRITE->hurt<=0.0) {
+    int hp=store_get_fld16(NS_fld16_hp);
+    if (--hp<0) hp=0;
+    store_set_fld16(NS_fld16_hp,hp);
+    bm_sound(RID_sound_ouch);
+    if (!hp) {
+      game_begin_gameover();
+      return;
     }
-  } else {
+    SPRITE->hurt=HERO_HURT_TIME;
+  }
+  double dx=sprite->x-x;
+  double dy=sprite->y-y;
+  double d2=dx*dx+dy*dy;
+  if (d2<0.001) { // Impossibly close.
     SPRITE->hurtdx=0.0;
     SPRITE->hurtdy=0.0;
+  } else {
+    double distance=sqrt(d2);
+    SPRITE->hurtdx=dx/distance;
+    SPRITE->hurtdy=dy/distance;
+  }
+}
+ 
+static int hero_hurt(struct sprite *sprite,struct sprite *assailant) {
+  if (assailant) {
+    hero_injure_at(sprite,assailant,assailant->x,assailant->y);
+  } else {
+    hero_injure_at(sprite,0,sprite->x,sprite->y);
   }
   return 1;
 }

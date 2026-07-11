@@ -52,11 +52,42 @@ static void bomb_blow(struct sprite *sprite) {
   sprite->layer=150;
   sprite_group_remove(GRP(solid),sprite);
   
+  /* Buried treasure and doors get exposed.
+   */
   if (GRP(hero)->sprc>=0) {
     sprite_hero_unbury_treasure(GRP(hero)->sprv[0],(int)sprite->x,(int)sprite->y);
   }
   
-  /* Anything in my blast radius gets recorded for further velocity adjustment.
+  /* Flammables in my threesquare get burned.
+   * Keep flammables off the edges. We're not going to check across maps.
+   */
+  struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (map) {
+    int qx=(int)sprite->x-1-map->lng*NS_sys_mapw;
+    int qy=(int)sprite->y-1-map->lat*NS_sys_maph;
+    int qw=3,qh=3;
+    if (qx<0) { qw+=qx; qx=0; }
+    if (qy<0) { qh+=qy; qy=0; }
+    if (qx+qw>NS_sys_mapw) qw=NS_sys_mapw-qx;
+    if (qy+qh>NS_sys_maph) qh=NS_sys_maph-qy;
+    if ((qw>0)&&(qh>0)) {
+      struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+      struct cmdlist_entry cmd;
+      while (cmdlist_reader_next(&cmd,&reader)>0) {
+        if (cmd.opcode==CMD_map_flammable) {
+          if (cmd.arg[0]<qx) continue;
+          if (cmd.arg[1]<qy) continue;
+          if (cmd.arg[0]>=qx+qw) continue;
+          if (cmd.arg[1]>=qy+qh) continue;
+          int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          store_set_fld(fldid,1);
+          g.camera.mapsdirty=1;
+        }
+      }
+    }
+  }
+  
+  /* Any moveable sprite in my blast radius gets recorded for further velocity adjustment.
    */
   struct sprite **otherp=GRP(moveable)->sprv;
   int otheri=GRP(moveable)->sprc;

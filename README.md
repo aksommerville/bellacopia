@@ -58,9 +58,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Economy of Motion style keystroke tracker.
 - - [x] Sokoban in the real world. Include Ounce blocks that you can Hookshot, and unreachable blocks that you have to Snowglobe.
 - - - Or bits where you could either Vanishing Cream into a side channel to push, or Snowglobe.
-- - [ ] Also diegetic Bomberman, same idea as Sokoban.
+- - [x] Also diegetic Bomberman, same idea as Sokoban. ...already doable, use `CMD_map_flammable`.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
-- - [ ] Constant flamethrower with a stompbox behind it, to require Marionette.
+- - [x] Constant flamethrower with a stompbox behind it, to require Marionette.
 - - [ ] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
 - - [ ] Conveyor belts.
 - - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.

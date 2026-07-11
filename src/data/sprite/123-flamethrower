@@ -1,0 +1,4 @@
+image image:meadow_sprites
+tile 13 0
+type (u16:sprtype)flamethrower
+groups (b32:sprgrp)visible,update,solid,moveable

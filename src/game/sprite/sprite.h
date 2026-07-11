@@ -90,6 +90,7 @@ FOR_EACH_sprtype
 const struct sprite_type *sprite_type_by_id(int sprtype);
 
 void hero_injure(struct sprite *sprite,struct sprite *assailant);
+void hero_injure_at(struct sprite *sprite,struct sprite *assailant,double x,double y); // If (assailant->x,y) isn't a reasonable reference point.
 void sprite_hero_unanimate(struct sprite *sprite); // eg when launching a modal, force Dot to a neutral face.
 void sprite_hero_unvanish(struct sprite *sprite);
 double sprite_hero_get_match_time(struct sprite *sprite);

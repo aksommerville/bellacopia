@@ -357,6 +357,7 @@
 #define NS_sprtype_motion_economist 46 /* (u16:fld)0 (u16:threshold)13 */
 #define NS_sprtype_sokoban          47 /* (u8:width)1 (u8:height)1 (u16:fld)sokoban0 */
 #define NS_sprtype_treadlepass      48 /* (u16:fld)0 (u16:treadlec)6 */
+#define NS_sprtype_flamethrower     49 /* (u16:fld)0 (u8:offvalue_or_period_phase)0 (u8:length_and_orientation)0 ; low 2: 0..3=left,right,up,down. high 4: length-1 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -395,7 +396,8 @@
   _(wishing_well) \
   _(motion_economist) \
   _(sokoban) \
-  _(treadlepass)
+  _(treadlepass) \
+  _(flamethrower)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
