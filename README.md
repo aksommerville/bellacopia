@@ -240,6 +240,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - `pin-tree-256px.png`: Acrylic pin
 - - - `button_fishing-444px.png`: Button
 - - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
+- - [ ] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
 
 ## Quests and Prizes
 

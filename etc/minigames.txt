@@ -57,7 +57,7 @@
   2      Flipping          Ostrich            Desert
   2      FloeChart         PolarBear          Tundra
   2      Flying            Sparrow            Farm
-  2      FrogEating        Pelican            Sea
+  2____D FrogEating        Heron              Woodland
   2____D Gobbling          Goblin             Goblins
   2____D Golf              Unicorn            Labyrinth
   1____D Greenfish         GreenFish          All

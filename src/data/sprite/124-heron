@@ -1,0 +1,7 @@
+image image:meadow_sprites
+tile 0x4a 0
+type (u16:sprtype)monster
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+monster (u16:battle)frogeating (u8:radius)0x40 (u8:speed)0x40 (u16)273 (u16)0
+hitbox -6 6 -7 7

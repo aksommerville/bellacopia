@@ -3,7 +3,6 @@ Minigames, sorted roughly by estimated effort to implement.
 Remove finished games as you go.
 
 ## Easy
-Frog Eating. A to grab and eat a frog, when it hops near.
 Distancing. Dpad to get as far from everyone as possible.
 Dodging. Bullet hell.
 Ceiling Touching. U to touch the ceiling, and that bit changes color. Standing on stilts, decoratively.
