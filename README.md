@@ -62,7 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Also diegetic Bomberman, same idea as Sokoban. ...already doable, use `CMD_map_flammable`.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
 - - [x] Constant flamethrower with a stompbox behind it, to require Marionette.
-- - [ ] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
+- - [x] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
 - - [ ] Conveyor belts.
 - - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.

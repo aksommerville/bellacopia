@@ -769,3 +769,19 @@ void begin_wishing_sewer() {
     begin_dialogue(153,0);
   }
 }
+
+/* Ice Palace Souvenir Shop.
+ */
+ 
+void begin_iceshop() {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=158,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_candy,3,0);
+  modal_shop_add_item(modal,NS_itemid_bomb,8,0);
+  modal_shop_add_item(modal,NS_itemid_match,5,0);
+  modal_shop_add_item(modal,NS_itemid_pepper,7,0);
+}

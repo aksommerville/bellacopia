@@ -33,6 +33,7 @@ void begin_crocodile();
 void begin_medomat();
 void begin_wishing_well();
 void begin_wishing_sewer();
+void begin_iceshop();
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);

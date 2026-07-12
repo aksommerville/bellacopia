@@ -57,6 +57,7 @@ struct sprite_hero {
   double shovelclock;
   double shovel_fault_time; // Sample of (alwaysclock) the last time we dug false, or something very negative.
   double alwaysclock; // Counts up from initialization, never resets.
+  double maptrap_clock; // Just to spread out this medium-expense check.
   
   // For door transitions.
   int door_listener; // Nonzero if transition in progress. It's a map listenerid from the camera.

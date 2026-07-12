@@ -176,11 +176,59 @@ static void hero_check_triggers(struct sprite *sprite) {
   SPRITE->hints_override=map->hints_override;
 }
 
+/* Check if we're trapped inside a solid.
+ * It can happen with treadle-activated doors, if your bomb explodes early or a monster steps on the switch.
+ * Was thinking it would only require the quantized center, but actually you can get trapped by the toes too. D'oh.
+ */
+ 
+static void hero_mitigate_map_traps(struct sprite *sprite,double elapsed) {
+
+  /* Since this is an emergency mitigation, it doesn't need to be pretty or responsive.
+   * Also, its cost is cheap but not super cheap.
+   * Check only at 2 hz, not every frame.
+   */
+  if (SPRITE->maptrap_clock>0.0) {
+    SPRITE->maptrap_clock-=elapsed;
+    return;
+  }
+  SPRITE->maptrap_clock+=0.500;
+  
+  // No collision here? Great, we're done.
+  if (sprite_test_position(sprite)) return;
+  
+  /* Move her unceremoniously to the first cardinal or diagonal neighbor where no collision reports.
+   * Quantized first, then cardinals, then diagonals.
+   */
+  double pvx=sprite->x,pvy=sprite->y;
+  int x0=(int)sprite->x;
+  int y0=(int)sprite->y;
+  struct neighbor { int dx,dy; } neighborv[]={
+    {0,0},
+    {0,-1},{0,1},{-1,0},{1,0},
+    {-1,-1},{1,-1},{-1,1},{1,1},
+  };
+  const struct neighbor *n=neighborv;
+  int i=sizeof(neighborv)/sizeof(neighborv[0]);
+  for (;i-->0;n++) {
+    int ckx=x0+n->dx;
+    int cky=y0+n->dy;
+    sprite->x=ckx+0.5;
+    sprite->y=cky+0.5;
+    if (sprite_test_position(sprite)) {
+      return;
+    }
+  }
+  sprite->x=pvx;
+  sprite->y=pvy;
+}
+
 /* Update.
  */
  
 static void _hero_update(struct sprite *sprite,double elapsed) {
   SPRITE->alwaysclock+=elapsed;
+  
+  hero_mitigate_map_traps(sprite,elapsed);
 
   if (SPRITE->busstop_clock>0.0) {
     if ((SPRITE->busstop_clock-=elapsed)<=0.0) {
