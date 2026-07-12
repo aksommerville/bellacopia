@@ -126,3 +126,81 @@ void begin_reset_puzzle(struct sprite *initiator,int fldid) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
 }
+
+/* Generic battle-as-activity.
+ * Works basically the same as sprite_monster.
+ */
+ 
+static void cb_activity_battle(struct modal *modal,int outcome,void *userdata) {
+  struct battle *battle=modal_battle_get_battle(modal);
+  if (!battle) return;
+  if (outcome>0) {
+    struct prize prizev[8];
+    int prizec=game_get_prizes(prizev,8,battle->type->id,0);
+    if (battle&&battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
+  } else if (outcome<0) {
+    // Don't actually hurt the hero until cb_final. Report it first. If it's her last heart, game_hurt_hero would trigger the gameover modal.
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+  }
+}
+ 
+static void cb_activity_battle_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
+  }
+}
+ 
+void begin_battle(struct sprite *sprite,int battleid) {
+  struct modal_args_battle args={
+    .battle=battleid,
+    .args={
+      .difficulty=0x80,
+      .bias=0x80,
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_monster,
+      .imageid=0, // Ask the camera.
+      .no_store=0,
+    },
+    .cb=cb_activity_battle,
+    .cb_final=cb_activity_battle_final,
+    .userdata=sprite,
+    .left_name=0, // See lctl.
+    .right_name=0, // Will fill in below if available.
+    .skip_prompt=0,
+    .nameless_prompt=0,
+    .skip_outtro=0,
+  };
+  
+  /* If a sprite was provided, scan it for a "monster" command, to get the proper name and fallback battleid.
+   */
+  if (sprite) {
+    struct cmdlist_reader reader;
+    if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
+      struct cmdlist_entry cmd;
+      while (cmdlist_reader_next(&cmd,&reader)>0) {
+        switch (cmd.opcode) {
+          case CMD_sprite_monster: {
+              if (!args.battle) { // Our caller overrides (battleid), but if zero we can take it from the sprite.
+                args.battle=(cmd.arg[0]<<8)|cmd.arg[1];
+              }
+              args.right_name=(cmd.arg[4]<<8)|cmd.arg[5];
+            } break;
+        }
+      }
+    }
+  }
+  // If we still don't have a battleid, abort.
+  if (!args.battle) return;
+  
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return;
+}

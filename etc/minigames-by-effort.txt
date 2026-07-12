@@ -85,4 +85,3 @@ Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
 Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
 Sparing. Bowling, second throw only.
 Steering. Drag race with only L/R, dodging critters etc.
-Tempting. L/R to keep an indicator balance and note on tune, sailor moves toward the more enchanting song.

@@ -81,6 +81,7 @@ void begin_phonograph();
 void begin_busstop(int arg);
 void begin_pauserace();
 void begin_reset_puzzle(struct sprite *initiator,int fldid);
+void begin_battle(struct sprite *sprite,int battleid);
 
 // activity_dialogue.c
 void begin_statuemaze_clue(struct sprite *initiator,int arg);

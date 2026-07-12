@@ -127,7 +127,7 @@ void bm_poll_completion() {
     double *cl=store_require_clock(NS_clock_fullclear);
     if (cl) {
       if (*cl>0.0) {
-        fprintf(stderr,"%s:%d:!!!!! Was about to set NS_clock_fullclear when it's already set. (just confirming: yep this is possible.)\n",__FILE__,__LINE__);
+        // This does happen; it's very possible to reach 100%, backtrack on something, and reach it again. No effect the second time, and no worries.
       } else {
         *cl=store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_pausetime)+store_get_clock(NS_clock_battletime);
       }

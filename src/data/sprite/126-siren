@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 0x5a 0
+type (u16:sprtype)npc
+groups (b32:sprgrp)visible,solid,update
+monster (u16:battle)tempting (u8:radius)0 (u8:speed)0 (u16:name)277 (u16)0

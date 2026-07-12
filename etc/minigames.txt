@@ -145,7 +145,7 @@
  R2      Swearing          Sailor             Sea
   2      Swinging          Kid                City
   2____D Telekinesis       Psychic            Labyrinth
-  2      Tempting          Siren              Sea
+  2____D Tempting          Siren              Sea
   2____D Throwing          Loblin             Goblins
   2____D TicTacToe         Raccoon            Woodland
   2____D Topping           HotDogVendor       Fractia

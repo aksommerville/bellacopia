@@ -318,6 +318,7 @@
 #define NS_activity_surveyor_entry 59 /* (u16:fld16)surveyor_N */
 #define NS_activity_wishing_well 60
 #define NS_activity_wishing_sewer 61
+#define NS_activity_battle 62 /* (u16:battle)0 */
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -474,6 +475,7 @@
 #define NS_battle_flapping 73
 #define NS_battle_frogeating 74
 #define NS_battle_distancing 75
+#define NS_battle_tempting 76
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -549,7 +551,8 @@
   _(fission) \
   _(flapping) \
   _(frogeating) \
-  _(distancing)
+  _(distancing) \
+  _(tempting)
 
 /* "fld" are single bits.
  */

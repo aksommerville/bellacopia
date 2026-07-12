@@ -15,3 +15,5 @@ image image:meadow
 position 2 2 1 *
 sprite @10,6 sprite:jigpiece (u32)0
 rspriteres rsprite:isthmus
+sprite @12,2 sprite:siren (u16:activity)battle (u16:battle)tempting
+sprite @16,2 sprite:siren (u16:activity)battle (u16:battle)tempting
