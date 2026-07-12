@@ -49,6 +49,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
+- [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 
 - Battles written but not placed.
 
@@ -133,7 +134,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Dots<->Cheapside door.
 
 - Battle repairs.
-- [ ] calligraphy: No fun, eliminate.
+- [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
@@ -241,6 +242,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - `button_fishing-444px.png`: Button
 - - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
 - - [ ] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
+- - - [ ] Made the fishpoles, they're hilarious, and I have a blue posterboard, just need to figure out how to stand it up.
 
 ## Quests and Prizes
 

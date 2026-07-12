@@ -661,6 +661,15 @@ static void _calligraphy_render(struct battle *battle) {
   graf_decal(&g.graf,l->refx,l->refy,l->srcx,l->srcy,l->refw,l->refh);
   graf_decal(&g.graf,r->refx,r->refy,r->srcx,r->srcy,r->refw,r->refh);
   
+  // Faint reference on canvases.
+  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_tint(&g.graf,0x00c000ff);
+  graf_set_alpha(&g.graf,0x80);
+  graf_decal_rotate(&g.graf,l->boxx+(l->boxw>>1),l->boxy+(l->boxh>>1),l->srcx,l->srcy,l->refw,0.0,1.0,4.0);
+  graf_decal_rotate(&g.graf,r->boxx+(r->boxw>>1),r->boxy+(r->boxh>>1),r->srcx,r->srcy,r->refh,0.0,1.0,4.0);
+  graf_set_tint(&g.graf,0);
+  graf_set_alpha(&g.graf,0xff);
+  
   // Canvas images.
   graf_set_input(&g.graf,l->texid);
   graf_decal(&g.graf,l->boxx,l->boxy,0,0,l->boxw,l->boxh);
@@ -681,16 +690,8 @@ static void _calligraphy_render(struct battle *battle) {
     graf_tile(&g.graf,(FBW>>1)-4,16,'0'+sec/10,0);
     graf_tile(&g.graf,(FBW>>1)+4,16,'0'+sec%10,0);
     
-  // Overlay reference on canvases.
+  // Scores.
   } else {
-    graf_set_image(&g.graf,RID_image_battle_tundra);
-    graf_set_tint(&g.graf,0x00c000ff);
-    graf_set_alpha(&g.graf,0x80);
-    graf_decal_rotate(&g.graf,l->boxx+(l->boxw>>1),l->boxy+(l->boxh>>1),l->srcx,l->srcy,l->refw,0.0,1.0,4.0);
-    graf_decal_rotate(&g.graf,r->boxx+(r->boxw>>1),r->boxy+(r->boxh>>1),r->srcx,r->srcy,r->refh,0.0,1.0,4.0);
-    graf_set_tint(&g.graf,0);
-    graf_set_alpha(&g.graf,0xff);
-    
     graf_set_image(&g.graf,RID_image_fonttiles);
     calligraphy_render_int999(FBW/3,16,l->score);
     calligraphy_render_int999((FBW*2)/3,16,r->score);
