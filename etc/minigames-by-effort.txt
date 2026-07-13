@@ -70,7 +70,6 @@ Cartography. Pick a color for all the regions of a map, 4 choices, no going back
 Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
 Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
 Dance Off. Tiny rhythm game on the dpad.
-Floe Chart. Dizzying grid of ice floes with arrows to a neighbor. Pick an entry point.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
