@@ -509,6 +509,8 @@ int game_get_hints_override_position(int *x,int *y,int fld) {
   if (store_get_fld(fld)) return -1; // Once the key field is set, the override is no longer in play.
   
   /* Search sprites for ones that serve as hint authorities.
+   * It's OK to use more than one per map, kind of, if they're distinguished by fldid and somehow know how to not interfere with each other.
+   * I don't expect that to happen.
    */
   struct sprite **spritep=GRP(update)->sprv;
   int i=GRP(update)->sprc;
@@ -517,6 +519,12 @@ int game_get_hints_override_position(int *x,int *y,int fld) {
     
     if (sprite->type==&sprite_type_treadlepass) {
       if (sprite_treadlepass_hint(x,y,sprite,fld)>=0) return 0;
+      continue;
+    }
+    
+    if (sprite->type==&sprite_type_trickfloor) {
+      if (sprite_trickfloor_hint(x,y,sprite,fld)>=0) return 0;
+      continue;
     }
     
   }

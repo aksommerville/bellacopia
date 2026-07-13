@@ -360,6 +360,7 @@
 #define NS_sprtype_sokoban          47 /* (u8:width)1 (u8:height)1 (u16:fld)sokoban0 */
 #define NS_sprtype_treadlepass      48 /* (u16:fld)0 (u16:treadlec)6 */
 #define NS_sprtype_flamethrower     49 /* (u16:fld)0 (u8:offvalue_or_period_phase)0 (u8:length_and_orientation)0 ; low 2: 0..3=left,right,up,down. high 4: length-1 */
+#define NS_sprtype_trickfloor       50 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -399,7 +400,8 @@
   _(motion_economist) \
   _(sokoban) \
   _(treadlepass) \
-  _(flamethrower)
+  _(flamethrower) \
+  _(trickfloor)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2

@@ -55,8 +55,7 @@ static int _minesweeper_init(struct sprite *sprite);
  
 static void _minesweeper_del(struct sprite *sprite) {
   store_unlisten(SPRITE->store_listener);
-  sprite_group_kill_all(&SPRITE->dependent_fires);
-  if (SPRITE->dependent_fires.sprv) free(SPRITE->dependent_fires.sprv);
+  sprite_group_cleanup(&SPRITE->dependent_fires,1);
 }
 
 /* Signal via store.
@@ -65,7 +64,7 @@ static void _minesweeper_del(struct sprite *sprite) {
 static void minesweeper_cb_signal(char s,int id,int value,void *userdata) {
   struct sprite *sprite=userdata;
   if (id==NS_signal_reset_puzzle) {
-    sprite_group_kill_all(&SPRITE->dependent_fires);
+    sprite_group_cleanup(&SPRITE->dependent_fires,1);
     sprite_group_add(GRP(update),sprite); // We remove ourselves at init if the puzzle is complete -- must restore here.
     _minesweeper_init(sprite);
   }

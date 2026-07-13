@@ -102,6 +102,7 @@ uint8_t sprite_hero_get_facedir(const struct sprite *sprite);
 int sprite_hero_get_item_in_play(const struct sprite *sprite); // Not the held item; only nonzero when actively in use.
 int sprite_hero_is_grounded(const struct sprite *sprite); // We'll be savvy to some other types too. Anything in GRP(hero) should be valid.
 int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *sprite); // She has the old position during the new map's instantiation. This tells you the new.
+void sprite_hero_drop_compass(struct sprite *sprite);
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();
@@ -129,6 +130,7 @@ void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl);
 
 // If this (fld) belongs to me, populate (x,y) with the next treadle's position in plane meters. Otherwise fail.
 int sprite_treadlepass_hint(int *x,int *y,const struct sprite *sprite,int fld);
+int sprite_trickfloor_hint(int *x,int *y,const struct sprite *sprite,int fld);
 
 /* Sprite group.
  *******************************************************************/
@@ -149,13 +151,18 @@ void sprite_group_del(struct sprite_group *group);
 struct sprite_group *sprite_group_new();
 int sprite_group_ref(struct sprite_group *group);
 
+/* Clean up a presumably immortal group. If (kill), also schedule full deletion of my contents.
+ * It's fine to cleanup an immortal group and then keep using it, just we have to make a new buffer at the next add.
+ */
+void sprite_group_cleanup(struct sprite_group *group,int kill);
+
 int sprite_group_has(const struct sprite_group *group,const struct sprite *sprite);
 int sprite_group_add(struct sprite_group *group,struct sprite *sprite);
 int sprite_group_remove(struct sprite_group *group,struct sprite *sprite);
 
 void sprite_group_clear(struct sprite_group *group);
 void sprite_kill(struct sprite *sprite); // Remove all groups, even deathrow and keepalive. Typically deletes the sprite.
-void sprite_group_kill_all(struct sprite_group *group);
+void sprite_group_kill_all(struct sprite_group *group); // Very bad idea for sprites to use this. Only modal_story should.
 
 void sprite_group_sort_partial(struct sprite_group *group);
 

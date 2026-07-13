@@ -360,6 +360,26 @@ static void group_sprv_remove(struct sprite_group *group,int p) {
   sprite_del(sprite);
 }
 
+/* Clean up immortal group.
+ */
+
+void sprite_group_cleanup(struct sprite_group *group,int kill) {
+  if (!group) return;
+  
+  while (group->sprc>0) {
+    group->sprc--;
+    struct sprite *sprite=group->sprv[group->sprc];
+    if (kill&&(sprite->grpc>1)) sprite_kill_soon(sprite);
+    int grpp=sprite_grpv_search(sprite,group);
+    if (grpp>=0) sprite_grpv_remove(sprite,grpp);
+    sprite_del(sprite);
+  }
+  
+  if (group->sprv) free(group->sprv);
+  group->sprv=0;
+  group->spra=0;
+}
+
 /* Test membership.
  */
 

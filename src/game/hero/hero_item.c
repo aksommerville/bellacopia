@@ -741,6 +741,12 @@ static void compass_update(struct sprite *sprite,double elapsed) {
   // Anyhoo, we can change minds at any time in the future. (compasst) should be the after-animation position, where it should render.
 }
 
+// trickfloor needs to manually poke us often. Other hints overriders might too.
+void sprite_hero_drop_compass(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  SPRITE->compass_dirty=1;
+}
+
 void hero_cb_store(char type,int id,int value,void *userdata) {
   struct sprite *sprite=userdata;
   SPRITE->compass_dirty=1;

@@ -1,0 +1,5 @@
+image image:hero
+tile 0x00 0
+layer (u16)10
+type (u16:sprtype)trickfloor
+groups (b32:sprgrp)visible,update

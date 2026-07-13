@@ -64,7 +64,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Constant flamethrower with a stompbox behind it, to require Marionette.
 - - [x] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
 - - [ ] Conveyor belts.
-- - [ ] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.
+- - [x] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
