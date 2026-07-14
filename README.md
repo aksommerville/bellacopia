@@ -148,7 +148,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Cutscenes, first pass: Text, placement, and placeholder images.
 - - [x] mayor
-- - [ ] war
+- - [x] war
 - - [x] kidnap
 - - [ ] rescue
 - - [ ] labyrinth

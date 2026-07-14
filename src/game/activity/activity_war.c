@@ -47,6 +47,17 @@ void begin_capnred(struct sprite *sprite) {
 
 /* Blue Captain.
  */
+
+// After the final dialogue box, launch the cutscene. All the store stuff happens below in cb_capnblue_rcv.
+static int cb_capnblue_wrapped_up(int optionid,void *userdata) {
+  struct modal_args_cutscene args={
+    .strix_title=2,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  };
+  struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  if (!cutscene) return 1;
+  return 1;
+}
  
 static int cb_capnblue_rcv(int optionid,void *userdata) {
   struct invstore *letter=userdata;
@@ -58,10 +69,15 @@ static int cb_capnblue_rcv(int optionid,void *userdata) {
   }
   if (letter->itemid==NS_itemid_letter4) { // Improved.
     letter->itemid=0;
-    begin_dialogue(77,0);
     store_set_fld(NS_fld_war_over,1);
     bm_sound(RID_sound_secret);
     store_broadcast('i',NS_itemid_letter4,0);
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=77,
+      .cb=cb_capnblue_wrapped_up,
+    };
+    struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
     return 1;
   }
   return 0;
