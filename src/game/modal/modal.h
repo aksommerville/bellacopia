@@ -155,8 +155,14 @@ struct modal_args_linguist {
   struct sprite *speaker;
 };
 
+#define CUTSCENE_CONTEXT_STORY       1 /* Telling a story to myself from the pause modal. */
+#define CUTSCENE_CONTEXT_TREE        2 /* Same as STORY but there's a tree listening. */
+#define CUTSCENE_CONTEXT_INTERRUPT   3 /* Gameplay interrupted suddenly. */
+#define CUTSCENE_CONTEXT_EXPECTEDISH 4 /* Comes up at an unsurprising breaking point in play, like end of a battle. */
+#define CUTSCENE_DIVIDE_Y 120 /* If cutscenes render below this line, it will get cut off. */
 struct modal_args_cutscene {
   int strix_title; // Identifier, from the story.
+  int context;
   void (*cb)(void *userdata);
   void *userdata;
 };

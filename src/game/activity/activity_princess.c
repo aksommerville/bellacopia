@@ -71,9 +71,9 @@ void begin_jaildoor() {
 /* Kidnap: The big cutscene where Dot gets kidnapped by goblins.
  */
  
-static int kidnap_cb(int optionid,void *userdata) {
-  game_warp(RID_map_jail,NS_transition_fadeblack);
-  return 0;
+static void kidnap_cb(void *userdata) {
+  game_warp(RID_map_jail,NS_transition_fromblack);
+  camera_update(0.010);
 }
  
 void begin_kidnap(struct sprite *sprite) {
@@ -84,14 +84,13 @@ void begin_kidnap(struct sprite *sprite) {
     // Also comes up if you fly over the kidnap trigger, but that's a bug and I'm going to fix it eventually.
     return;
   }
-  fprintf(stderr,"TODO %s:%d:%s\n",__FILE__,__LINE__,__func__);
-  struct modal_args_dialogue args={
-    .text="TODO: Cutscene of Dot falling into a trap, then the goblins drag her off.",
-    .textc=-1,
+  struct modal_args_cutscene args={
+    .strix_title=3,
+    .context=CUTSCENE_CONTEXT_INTERRUPT,
     .cb=kidnap_cb,
-    .userdata=sprite,
   };
-  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  if (!modal) return;
   store_set_fld(NS_fld_kidnapped,1);
 }
 

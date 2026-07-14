@@ -1,9 +1,33 @@
 #include "game/bellacopia.h"
 
+/* Step lists.
+ * These are each implemented in their own file adjacent to this.
+ * Oh shoot....
+ * ./src/game/stories/stories.c:35:12: error: initializer element is not a compile-time constant
+ * I guess we need to patch these in dynamically instead of letting the linker do it.
+ */
+
+extern const struct story_step story_stepv_mayor[];
+extern const struct story_step story_stepv_war[];
+extern const struct story_step story_stepv_kidnap[];
+extern const struct story_step story_stepv_rescue[];
+extern const struct story_step story_stepv_labyrinth[];
+extern const struct story_step story_stepv_toad[];
+extern const struct story_step story_stepv_barrel[];
+extern const struct story_step story_stepv_things[];
+extern const struct story_step story_stepv_broom[];
+extern const struct story_step story_stepv_map[];
+extern const struct story_step story_stepv_carpenter[];
+extern const struct story_step story_stepv_fish[];
+extern const struct story_step story_stepv_flowers[];
+extern const struct story_step story_stepv_hearts[];
+extern const struct story_step story_stepv_gold[];
+extern const struct story_step story_stepv_potion[];
+
 /* Stories metadata.
  */
  
-static const struct story storyv[16]={
+static struct story storyv[16]={
   {
     .tileid_small=0x10,
     .tileid_large=0x20,
@@ -134,16 +158,41 @@ static const struct story storyv[16]={
   },
 };
 
+/* Pain in the butt filling in (stepv) for all stories because they're external so can't be assigned in the declaration.
+ */
+ 
+static void stories_require() {
+  if (storyv[0].stepv) return;
+  storyv[ 0].stepv=story_stepv_mayor;
+  storyv[ 1].stepv=story_stepv_war;
+  storyv[ 2].stepv=story_stepv_kidnap;
+  storyv[ 3].stepv=story_stepv_rescue;
+  storyv[ 4].stepv=story_stepv_labyrinth;
+  storyv[ 5].stepv=story_stepv_toad;
+  storyv[ 6].stepv=story_stepv_barrel;
+  storyv[ 7].stepv=story_stepv_things;
+  storyv[ 8].stepv=story_stepv_broom;
+  storyv[ 9].stepv=story_stepv_map;
+  storyv[10].stepv=story_stepv_carpenter;
+  storyv[11].stepv=story_stepv_fish;
+  storyv[12].stepv=story_stepv_flowers;
+  storyv[13].stepv=story_stepv_hearts;
+  storyv[14].stepv=story_stepv_gold;
+  storyv[15].stepv=story_stepv_potion;
+}
+
 /* Public metadata accessors.
  */
  
 const struct story *story_by_index(int p) {
+  stories_require();
   if (p<0) return 0;
   if (p>=16) return 0;
   return storyv+p;
 }
 
 const struct story *story_by_index_present(int p) {
+  stories_require();
   if (p<0) return 0;
   const struct story *story=storyv;
   int i=16;
@@ -155,10 +204,21 @@ const struct story *story_by_index_present(int p) {
 }
 
 const struct story *story_by_fld_present(int fld_present) {
+  stories_require();
   const struct story *story=storyv;
   int i=16;
   for (;i-->0;story++) {
     if (story->fld_present==fld_present) return story;
+  }
+  return 0;
+}
+
+const struct story_step *story_stepv_by_strix(int strix_title) {
+  stories_require();
+  const struct story *story=storyv;
+  int i=16;
+  for (;i-->0;story++) {
+    if (story->strix_title==strix_title) return story->stepv;
   }
   return 0;
 }

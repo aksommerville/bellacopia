@@ -321,11 +321,16 @@ struct story {
   int strix_desc; // strings:stories
   int fld_present; // Typically some other business-level field, what makes the story available.
   int fld_told; // Specific to this story, whether we've told it to a tree.
+  const struct story_step  { // (stepv) must terminate with {0,0}.
+    void (*render)(double t,int strix,int framec); // (t) in seconds, counting up from zero each step. (strix) in case you reuse functions with some private dispatching. (framec) from zero.
+    int strix; // RID_strings_stories
+  } *stepv;
 };
 
 const struct story *story_by_index(int p);
 const struct story *story_by_index_present(int p); // Contiguous (p) but only returns present stories.
 const struct story *story_by_fld_present(int fld_present);
+const struct story_step *story_stepv_by_strix(int strix_title);
 
 /* Run the cutscene or whatever, and if there's an unsatisfied tree nearby, mark both tree and story satisfied.
  */

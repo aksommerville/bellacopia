@@ -51,14 +51,18 @@ void game_tell_story(const struct story *story) {
   if (treefld&&store_get_fld(treefld)) treefld=0;
   
   // If there's no tree (or satisfied), we're just playing the cutscene. All good.
+  int context=0;
   if (!treefld) {
+    context=CUTSCENE_CONTEXT_STORY;
   
   // If the story has been told already, we'll do a gentle rejection after.
   } else if (store_get_fld(story->fld_told)) {
+    context=CUTSCENE_CONTEXT_TREE;
     postaction=-1;
     
   // Complete both tree and story, and remember to give some feedback after the cutscene.
   } else {
+    context=CUTSCENE_CONTEXT_TREE;
     postaction=1;
     store_set_fld(treefld,1);
     store_set_fld(story->fld_told,1);
@@ -68,6 +72,7 @@ void game_tell_story(const struct story *story) {
   // Prepare the cutscene's postaction, then kick it off.
   struct modal_args_cutscene args={
     .strix_title=story->strix_title,
+    .context=context,
     .cb=0,
     .userdata=0,
   };

@@ -542,6 +542,7 @@ void begin_endrace(int arg) {
         if (story) {
           struct modal_args_cutscene args={
             .strix_title=story->strix_title,
+            .context=CUTSCENE_CONTEXT_EXPECTEDISH,
           };
           struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
           return;
