@@ -35,6 +35,8 @@ static void _cutscene_del(struct modal *modal) {
 }
 
 /* Prepare step, for the currently focussed one.
+ * Advances (step) if conditions fail, and may leave us on a null step.
+ * But we do not trigger completion in that case.
  */
  
 static void cutscene_prepare_step(struct modal *modal) {
@@ -43,6 +45,13 @@ static void cutscene_prepare_step(struct modal *modal) {
   MODAL->stepclock=0.0;
   MODAL->stepframec=0;
   MODAL->pressa=0;
+  
+  while (MODAL->step->render) {
+    if (!MODAL->step->condition) break; // No condition means YES.
+    if (MODAL->step->condition()) break; // Explicit YES.
+    MODAL->step++;
+  }
+  if (!MODAL->step->render) return; // Done.
   
   const char *src=0;
   int srcc=text_get_string(&src,RID_strings_stories,MODAL->step->strix);
@@ -113,6 +122,10 @@ static int _cutscene_init(struct modal *modal,const void *arg,int argc) {
   
   MODAL->blackout=1;
   cutscene_prepare_step(modal);
+  if (!MODAL->step->render) {
+    fprintf(stderr,"Story %d has steps but no condition passed.\n",MODAL->strix_title);
+    return -1;
+  }
   
   return 0;
 }
@@ -128,6 +141,8 @@ static void _cutscene_focus(struct modal *modal,int focus) {
  
 static void _cutscene_notify(struct modal *modal,int k,int v) {
   if (k==EGG_PREF_LANG) {
+    // Language changed. Start this step over. Ha ha, it's just that simple!
+    cutscene_prepare_step(modal);
   }
 }
 
@@ -159,10 +174,10 @@ static void _cutscene_update(struct modal *modal,double elapsed) {
       bm_sound(RID_sound_uimotion);
       MODAL->vtxp=MODAL->vtxc;
     } else {
-      bm_sound(RID_sound_uiactivate);
-      if (MODAL->step[1].render) { // Next step exists.
-        MODAL->step++;
-        cutscene_prepare_step(modal);
+      if (MODAL->step->render) MODAL->step++;
+      cutscene_prepare_step(modal);
+      if (MODAL->step->render) { // Next step exists.
+        bm_sound(RID_sound_uiactivate);
       } else { // Dismiss.
         modal->defunct=1;
         if (MODAL->cb) {

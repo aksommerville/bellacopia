@@ -324,6 +324,7 @@ struct story {
   const struct story_step  { // (stepv) must terminate with {0,0}.
     void (*render)(double t,int strix,int framec); // (t) in seconds, counting up from zero each step. (strix) in case you reuse functions with some private dispatching. (framec) from zero.
     int strix; // RID_strings_stories
+    int (*condition)(); // Return nonzero or leave null to run this step. Return zero to skip.
   } *stepv;
 };
 

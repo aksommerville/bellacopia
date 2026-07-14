@@ -146,8 +146,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
-- Cutscenes.
-- - [ ] mayor
+- Cutscenes, first pass: Text, placement, and placeholder images.
+- - [x] mayor
 - - [ ] war
 - - [x] kidnap
 - - [ ] rescue
@@ -163,6 +163,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] hearts
 - - [ ] gold
 - - [ ] potion
+- [ ] Cutscenes, second pass: Proper images.
 
 - TODO Punted items, assess closer to release.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?
