@@ -158,8 +158,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] labyrinth
 - - [ ] toad
 - - [x] barrel
-- - [ ] things
-- - [ ] broom
+- - [x] things
+- - [x] broom
 - - [ ] map
 - - [ ] carpenter
 - - [ ] fish

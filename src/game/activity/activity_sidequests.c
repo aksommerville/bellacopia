@@ -279,6 +279,11 @@ void begin_tree(struct sprite *initiator,int arg) {
 static int cb_invcritic(int optionid,void *userdata) {
   game_get_item(NS_itemid_heartcontainer,1);
   store_set_fld(NS_fld_hc3,1);
+  struct modal_args_cutscene args={
+    .strix_title=8,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
   return 1;
 }
 
