@@ -65,7 +65,7 @@ static struct story storyv[16]={
     .tileid_large=0x28,
     .strix_title=5,
     .strix_desc=21,
-    .fld_present=NS_fld_root4,
+    .fld_present=NS_fld_escaped_labyrinth,
     .fld_told=NS_fld_story5,
   },
   {

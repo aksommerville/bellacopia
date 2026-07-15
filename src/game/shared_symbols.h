@@ -320,6 +320,7 @@
 #define NS_activity_wishing_sewer 61
 #define NS_activity_battle 62 /* (u16:battle)0 */
 #define NS_activity_iceshop 63
+#define NS_activity_escape_labyrinth 64
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -797,6 +798,7 @@
 #define NS_fld_dud5 234
 #define NS_fld_dud6 235
 #define NS_fld_icedoor1 236
+#define NS_fld_escaped_labyrinth 237
 
 /* "fld16" are 16 unsigned bits each.
  */

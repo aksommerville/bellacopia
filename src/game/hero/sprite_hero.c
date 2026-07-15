@@ -374,10 +374,19 @@ void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int
         }
         
         int transition=NS_transition_spotlight;
-        camera_cut(rid,dstx,dsty,transition);
         
-        // If there's an activity, trigger it now, with me as initiator.
-        if (activity) game_begin_activity(activity,0,sprite);
+        /* If there's an activity, trigger it now, with me as initiator.
+         * And if that activity puts a cutscene on the modal stack, change the transition to 'fromblack' instead.
+         * If we leave it 'spotlight', there will be a brief display of this map when the cutscene ends, not ideal.
+         */
+        if (activity) {
+          game_begin_activity(activity,0,sprite);
+          if (modal_get_topmost(&modal_type_cutscene)) {
+            transition=NS_transition_fromblack;
+          }
+        }
+        
+        camera_cut(rid,dstx,dsty,transition);
       } break;
   }
 }

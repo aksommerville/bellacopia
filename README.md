@@ -152,7 +152,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] war
 - - [x] kidnap
 - - [x] rescue
-- - [ ] labyrinth
+- - [x] labyrinth
 - - [ ] toad
 - - [ ] barrel
 - - [ ] things
@@ -309,7 +309,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - `story2` `NS_fld_war_over`
 - `story3` `NS_fld_kidnapped`
 - `story4` `NS_fld_recued_princess`
-- `story5` `NS_fld_root4`: Labyrinth story. Completes when you strangle the root devil, not a perfect trigger.
+- `story5` `NS_fld_escaped_labyrinth`
 - `story6` `NS_fld_root7`: Desert root devil.
 - `story7` `NS_fld_barrelhat_all`
 - `story8` `NS_fld_hc3`: Too Many Things = Pass inventory critic. Not perfect.

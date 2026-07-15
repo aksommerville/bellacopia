@@ -724,3 +724,17 @@ void begin_surveyor_entry(struct sprite *sprite,int fld16) {
   struct modal *modal=modal_spawn(&modal_type_tenkey,&args,sizeof(args));
   if (!modal) return;
 }
+
+/* Exit door from the labyrinth.
+ */
+
+void begin_escape_labyrinth() {
+  if (store_get_fld(NS_fld_escaped_labyrinth)) return; // Already done it, all good.
+  store_set_fld(NS_fld_escaped_labyrinth,1);
+  struct modal_args_cutscene args={
+    .strix_title=5,
+    .context=CUTSCENE_CONTEXT_INTERRUPT,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  if (!modal) return;
+}
