@@ -50,6 +50,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
+- [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 
 - Battles written but not placed.
 
@@ -150,7 +151,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] mayor
 - - [x] war
 - - [x] kidnap
-- - [ ] rescue
+- - [x] rescue
 - - [ ] labyrinth
 - - [ ] toad
 - - [ ] barrel
@@ -218,6 +219,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Zoo assignments agree with rsprite.
 - [ ] All tiles in jigsaw maps have jigctab assigned.
 - [ ] All possible surveyor remote locations are sensible.
+- [ ] Getting the last heart container and purse upgrade trigger their cutscene sensibly, no matter which one comes last. (and anything else triggering cutscenes like this?)
 - Manual validation before release.
 - [ ] Ensure I removed all AUX2-to-win from battles.
 - [ ] Minimal completion possible.

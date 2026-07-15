@@ -9,12 +9,30 @@
  
 static int king_cb_win(int optionid,void *userdata) {
   store_set_fld(NS_fld_rescued_princess,1);
+  
+  /* Kick off the rescued-the-princess cutscene before growing the purse.
+   * Purse upgrades also have a cutscene, when you get the last one. (see activity_sidequests.c:begin_gold_book)
+   * If this is the last one, we only want to play one cutscene, and the Princess takes precedence.
+   * So get ours on the stack before touching the store.
+   */
+  struct modal_args_cutscene args={
+    .strix_title=4,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  
   int goldmax=store_get_fld16(NS_fld16_goldmax);
   goldmax+=100;
   store_set_fld16(NS_fld16_goldmax,goldmax);
   store_set_fld16(NS_fld16_gold,goldmax); // Also fill er up, as long as we're in there.
   bm_sound(RID_sound_treasure);
   return 1;
+}
+
+static void king_return_princess(struct sprite *king) {
+  struct modal *modal=begin_dialogue(20,king); // "Hey thanks!"
+  if (!modal) return;
+  modal_dialogue_set_callback(modal,king_cb_win,king);
 }
 
 // null and (*near) nonzero if the princess exists but out of range.
@@ -45,9 +63,7 @@ void begin_king(struct sprite *sprite) {
     struct sprite *princess=find_princess(sprite,&near);
     if (princess) {
       sprite_kill_soon(princess);
-      struct modal *modal=begin_dialogue(20,sprite); // "Hey thanks!"
-      if (!modal) return;
-      modal_dialogue_set_callback(modal,king_cb_win,sprite);
+      king_return_princess(sprite);
     } else if (near) {
       begin_dialogue(42,sprite); // "Where is she?"
     } else {

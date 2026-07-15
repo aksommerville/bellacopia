@@ -571,11 +571,24 @@ void begin_endrace(int arg) {
  */
  
 void begin_hearts_book() {
-  fprintf(stderr,"TODO %s\n",__func__);
+  struct modal_args_cutscene args={
+    .strix_title=14,
+    .context=CUTSCENE_CONTEXT_INTERRUPT,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
 }
  
 void begin_gold_book() {
-  fprintf(stderr,"TODO %s\n",__func__);
+  /* Runs when the last purse upgrade is collected.
+   * At least one purse upgrade, rescuing the princess, also has its own cutscene, which should take precedence.
+   * So check the modal stack for other cutscenes and do nothing if there's already one running.
+   */
+  if (modal_get_topmost(&modal_type_cutscene)) return;
+  struct modal_args_cutscene args={
+    .strix_title=15,
+    .context=CUTSCENE_CONTEXT_INTERRUPT,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
 }
 
 /* Outcome of zookeeper battles.
