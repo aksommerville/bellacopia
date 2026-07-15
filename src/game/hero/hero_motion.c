@@ -203,6 +203,7 @@ static void hero_check_bumps(struct sprite *sprite) {
           store_set_fld(fldid,1);
           g.camera.mapsdirty=1;
           SPRITE->matchclock=0.0;
+          sprite_group_remove(GRP(light),sprite);
         } break;
     }
   }

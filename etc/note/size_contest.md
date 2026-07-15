@@ -101,7 +101,7 @@ SUMMARY: Already first, by a ridiculous margin, and will get bigger. Our full cl
 
 For games that distinguish Full Clear from Any%.
 
-- 2:14:00 <<< Bellacopia Maleficia.
+- 2:04:51 <<< Bellacopia Maleficia.
 - 0:21:23 Spelling Bee.
 - 0:03:59 Full Moon. Kind of ridiculous.
 

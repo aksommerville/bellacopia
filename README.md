@@ -33,6 +33,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Goblin cave isn't fully darkening anymore. ...I forgot to remove hero from `GRP(light)` when burning a flammable.
+- - That happened during a full run. Quit and retry, it darkens as expected.
+- - Use a match to burn something. It seems to stick on.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
