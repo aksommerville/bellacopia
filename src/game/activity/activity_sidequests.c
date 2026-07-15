@@ -188,8 +188,23 @@ static int knitter_cb(int optionid,void *userdata) {
   return 1;
 }
 
+static int knitter_cb_finaller(int optionid,void *userdata) {
+  struct modal_args_cutscene args={
+    .strix_title=7,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  return 1;
+}
+
 static int knitter_cb_final(int optionid,void *userdata) {
   game_get_item(NS_itemid_bell,0);
+  struct modal *dialogue=modal_get_topmost(&modal_type_dialogue);
+  if (dialogue) {
+    modal_dialogue_set_callback(dialogue,knitter_cb_finaller,0);
+  } else {
+    knitter_cb_finaller(0,0);
+  }
   return 1;
 }
  

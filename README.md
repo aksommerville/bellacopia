@@ -132,7 +132,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Dark some regions.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
 - - [x] Dots<->Fractia door.
-- - [ ] Dots<->Cheapside door.
+- - [x] Dots<->Cheapside door.
 
 - Battle repairs.
 - [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
@@ -154,7 +154,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] rescue
 - - [x] labyrinth
 - - [ ] toad
-- - [ ] barrel
+- - [x] barrel
 - - [ ] things
 - - [ ] broom
 - - [ ] map
