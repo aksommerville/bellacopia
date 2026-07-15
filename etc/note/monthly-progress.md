@@ -151,6 +151,8 @@ Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
 To simplify a little, battle counts from here on will just be `wc -l src/game/battle`. That adds one to this month's count artificially.
 
 On 5 July, the ROM crossed floppy disk size. Web zip is still under a meg.
+We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're the 3rd-largest project I've ever written. Will be first by the end, no doubt at all.
+I also checked the graphics size (pixel count) of all my older games -- we're the largest, and it's not even close.
 
 Goals:
 - [ ] 20 new battles.
