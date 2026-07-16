@@ -54,6 +54,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
+- [ ] Make vanishing cream last a little longer.
+- [ ] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
+- [ ] Some little fanfare on reaching 100%.
 
 - Battles written but not placed.
 
@@ -138,8 +141,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Dots<->Cheapside door.
 
 - Battle repairs.
+- [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
+- [ ] gobbling: Nerf a little. Should be easy.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
@@ -150,23 +155,23 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
-- Cutscenes, first pass: Text, placement, and placeholder images.
+- [x] Cutscenes, first pass: Text, placement, and placeholder images.
 - - [x] mayor
 - - [x] war
 - - [x] kidnap
 - - [x] rescue
 - - [x] labyrinth
-- - [ ] toad
+- - [x] toad: No diegetic trigger. We'll probably want it on strangling the root devil but I'm not sure.
 - - [x] barrel
 - - [x] things
 - - [x] broom
-- - [ ] map
-- - [ ] carpenter
-- - [ ] fish
-- - [ ] flowers
-- - [ ] hearts
-- - [ ] gold
-- - [ ] potion
+- - [x] map: Didn't trigger.
+- - [x] carpenter
+- - [x] fish
+- - [x] flowers: Trigger missing.
+- - [x] hearts
+- - [x] gold: Don't play via the king, we'd just have played rescue. This logic was in place already but it didn't work, they both played. ...fixed
+- - [x] potion
 - [ ] Cutscenes, second pass: Proper images.
 
 - TODO Punted items, assess closer to release.
@@ -379,6 +384,7 @@ Before the first release, validate and clean up this list. And if in-game credit
 - Morse Code Contest: "Northern Union" is a reference to the telegraph company Western Union, used without permission (I assume Fair Use).
 - Morse Code Contest: "What hath God wrought" -Samuel Morse
 - Play testers: Alex, Xiangsi, Nick, Shawn, Katy
+- One of the Regex Contest clues is "Grumble, grumble", a reference to Zelda.
 
 ## Morally Questionable
 

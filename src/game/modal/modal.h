@@ -85,6 +85,8 @@ int modal_is_resident(const struct modal *modal);
  */
 struct modal *modal_get_topmost(const struct modal_type *type);
 
+void modal_debug_stack();//XXX Don't call in production code, and remove before the release.
+
 /* Specific types.
  *********************************************************************/
  

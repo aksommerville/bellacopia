@@ -81,6 +81,18 @@ struct modal *modal_get_topmost(const struct modal_type *type) {
   return 0;
 }
 
+/* Dump modal stack, for troubleshooting.
+ */
+ 
+void modal_debug_stack() {
+  fprintf(stderr,"--- %s ---\n",__func__);
+  int i=g.modalc;
+  while (i-->0) {
+    struct modal *modal=g.modalv[i];
+    fprintf(stderr,"  %p %s %s\n",modal,modal->type->name,modal->defunct?"[DEFUNCT]":"");
+  }
+}
+
 /* Find the focus widget from scratch.
  */
  

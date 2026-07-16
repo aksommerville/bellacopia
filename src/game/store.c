@@ -673,7 +673,11 @@ struct jigstore *store_add_jigstore(int mapid) {
   if ((g.store.jigstorec>=g.store.jigstore_limit)&&!store_get_fld(NS_fld_maps_complete)) {
     fprintf(stderr,"%.0f Collected the last puzzle piece.\n",egg_time_real());
     store_set_fld(NS_fld_maps_complete,1);
-    //TODO Some kind of alert. They just acquired a new story.
+    struct modal_args_cutscene args={
+      .strix_title=10,
+      .context=CUTSCENE_CONTEXT_INTERRUPT,
+    };
+    struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
   }
   
   return jigstore;

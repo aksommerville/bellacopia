@@ -365,7 +365,7 @@ static int game_apply_fishodds(int fishodds) {
  */
  
 int game_choose_fish(int x,int y,int z) {
-  fprintf(stderr,"%s %d,%d,%d\n",__func__,x,y,z);
+  //fprintf(stderr,"%s %d,%d,%d\n",__func__,x,y,z);
   
   /* Fishing in the wishing sewer is a special case.
    * But if the well is empty, it behaves just like water (ie we fall thru here).

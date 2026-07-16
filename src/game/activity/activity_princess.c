@@ -26,6 +26,13 @@ static int king_cb_win(int optionid,void *userdata) {
   store_set_fld16(NS_fld16_goldmax,goldmax);
   store_set_fld16(NS_fld16_gold,goldmax); // Also fill er up, as long as we're in there.
   bm_sound(RID_sound_treasure);
+  
+  /* Setting (goldmax) to its highest won't immediately trigger the gold book.
+   * We need that to trigger so that the gold book's cutscene sees ours and knows to abort -- we're royalty, we take precedence.
+   * A manual bm_poll_completion() does that nicely.
+   */
+  bm_poll_completion();
+  
   return 1;
 }
 

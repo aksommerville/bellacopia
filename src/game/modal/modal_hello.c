@@ -110,12 +110,10 @@ static void _hello_notify(struct modal *modal,int k,int v) {
   }
 }
 
-/* Begin Story Mode.
+/* Start the game.
  */
  
-static void hello_begin_story(struct modal *modal,int from_save) {
-  fprintf(stderr,"%d %s %s\n",(int)egg_time_real(),__func__,from_save?"CONTINUE":"NEW");
-  
+static void hello_spawn_story_modal(struct modal *modal,int from_save) {
   struct modal_args_story args={
     .use_save=from_save,
   };
@@ -124,7 +122,39 @@ static void hello_begin_story(struct modal *modal,int from_save) {
     bm_sound(RID_sound_reject);
     return;
   }
+}
+
+static void hello_cb_intro(void *userdata) {
+  hello_spawn_story_modal(userdata,0);
+}
+
+static void hello_spawn_intro_cutscene(struct modal *modal) {
   
+  /* modal_story is going to reset all the globals, including store.
+   * But we need the store cleared before that, so the intro cutscene sees a clean state.
+   * (story_flowers consults NS_fld_root_all to know whether "and they lived happily ever after" or "ok get to it!").
+   */
+  store_clear();
+  
+  struct modal_args_cutscene args={
+    .strix_title=13,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+    .cb=hello_cb_intro,
+    .userdata=modal,
+  };
+  struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+};
+
+/* Begin Story Mode.
+ */
+ 
+static void hello_begin_story(struct modal *modal,int from_save) {
+  fprintf(stderr,"%d %s %s\n",(int)egg_time_real(),__func__,from_save?"CONTINUE":"NEW");
+  if (from_save) {
+    hello_spawn_story_modal(modal,from_save);
+  } else {
+    hello_spawn_intro_cutscene(modal);
+  }
   bm_sound(RID_sound_uiactivate);
   modal->defunct=1;
 }

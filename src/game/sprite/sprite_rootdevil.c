@@ -39,6 +39,7 @@ static void rootdevil_check_all_done() {
   if (!store_get_fld(NS_fld_root7)) return;
   fprintf(stderr,"%d Strangled the last root devil.\n",(int)egg_time_real());
   store_set_fld(NS_fld_root_all,1);
+  // We set the flag here, but don't launch the cutscene until final.
 }
 
 static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) {
@@ -63,6 +64,12 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
 static void rootdevil_cb_final(struct modal *modal,int outcome,void *userdata) {
   if (outcome<0) {
     game_hurt_hero();
+  } else if (store_get_fld(NS_fld_root_all)) {
+    struct modal_args_cutscene args={
+      .strix_title=13,
+      .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+    };
+    struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
   }
 }
 
