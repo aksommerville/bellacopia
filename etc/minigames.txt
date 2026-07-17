@@ -130,7 +130,7 @@
   2      SnowballFight     Snowman            Tundra
   2____D Snowboard         IceDragon          IcePalace
   2      Snaring           Drummer            Battlefield
-  2      Sonar             Bat                Cave
+  2____D Sonar             Bat                Cave
   2____D Sorting           Clerk              Fractia
   2      Sparing           Beetle             Desert
   2____D Stacking          Waiter             Fractia

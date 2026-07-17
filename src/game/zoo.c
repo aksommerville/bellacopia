@@ -72,46 +72,46 @@ int zoo_get_spriteid(int fld) {
     // zoo9: under fractia
     case NS_fld_zoo9_0: return RID_sprite_spider;
     case NS_fld_zoo9_1: return RID_sprite_leopard;
-    case NS_fld_zoo9_2: return RID_sprite_fishycist;
+    case NS_fld_zoo9_2: return RID_sprite_bat;
     case NS_fld_zoo9_3: return RID_sprite_walrus;
     // zoo10: under north
     case NS_fld_zoo10_0: return RID_sprite_spider;
     case NS_fld_zoo10_1: return RID_sprite_leopard;
-    case NS_fld_zoo10_2: return RID_sprite_fishycist;
+    case NS_fld_zoo10_2: return RID_sprite_bat;
     case NS_fld_zoo10_3: return RID_sprite_walrus;
     // zoo11: under west
     case NS_fld_zoo11_0: return RID_sprite_spider;
-    case NS_fld_zoo11_1: return RID_sprite_sage;
+    case NS_fld_zoo11_1: return RID_sprite_bat;
     case NS_fld_zoo11_2: return RID_sprite_ogre;
     case NS_fld_zoo11_3: return RID_sprite_witch;
     // zoo12: under botire
     case NS_fld_zoo12_0: return RID_sprite_spider;
-    case NS_fld_zoo12_1: return RID_sprite_nyarlathotep;
+    case NS_fld_zoo12_1: return RID_sprite_bat;
     case NS_fld_zoo12_2: return RID_sprite_medusa;
     case NS_fld_zoo12_3: return RID_sprite_vandal;
     // zoo13: under home
     case NS_fld_zoo13_0: return RID_sprite_spider;
-    case NS_fld_zoo13_1: return RID_sprite_leopard;
+    case NS_fld_zoo13_1: return RID_sprite_bat;
     case NS_fld_zoo13_2: return RID_sprite_koala;
     case NS_fld_zoo13_3: return RID_sprite_goat;
     // zoo14: under horizon
     case NS_fld_zoo14_0: return RID_sprite_spider;
-    case NS_fld_zoo14_1: return RID_sprite_leopard;
+    case NS_fld_zoo14_1: return RID_sprite_bat;
     case NS_fld_zoo14_2: return RID_sprite_fishycist;
     case NS_fld_zoo14_3: return RID_sprite_walrus;
     // zoo15: under east
     case NS_fld_zoo15_0: return RID_sprite_spider;
-    case NS_fld_zoo15_1: return RID_sprite_raccoon;
+    case NS_fld_zoo15_1: return RID_sprite_bat;
     case NS_fld_zoo15_2: return RID_sprite_vandal;
     case NS_fld_zoo15_3: return RID_sprite_walrus;
     // zoo16: under southwest
     case NS_fld_zoo16_0: return RID_sprite_spider;
-    case NS_fld_zoo16_1: return RID_sprite_goat;
+    case NS_fld_zoo16_1: return RID_sprite_bat;
     case NS_fld_zoo16_2: return RID_sprite_koala;
     case NS_fld_zoo16_3: return RID_sprite_witch;
     // zoo17: under southeast (cheapside)
     case NS_fld_zoo17_0: return RID_sprite_spider;
-    case NS_fld_zoo17_1: return RID_sprite_unicorn;
+    case NS_fld_zoo17_1: return RID_sprite_bat;
     case NS_fld_zoo17_2: return RID_sprite_elephant;
     case NS_fld_zoo17_3: return RID_sprite_walrus;
   }

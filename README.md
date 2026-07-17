@@ -155,24 +155,23 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
-- [x] Cutscenes, first pass: Text, placement, and placeholder images.
-- - [x] mayor
-- - [x] war
-- - [x] kidnap
-- - [x] rescue
-- - [x] labyrinth
-- - [x] toad: No diegetic trigger. We'll probably want it on strangling the root devil but I'm not sure.
-- - [x] barrel
-- - [x] things
-- - [x] broom
-- - [x] map: Didn't trigger.
-- - [x] carpenter
-- - [x] fish
-- - [x] flowers: Trigger missing.
-- - [x] hearts
-- - [x] gold: Don't play via the king, we'd just have played rescue. This logic was in place already but it didn't work, they both played. ...fixed
-- - [x] potion
 - [ ] Cutscenes, second pass: Proper images.
+- - [ ] mayor
+- - [ ] war
+- - [ ] kidnap
+- - [ ] rescue
+- - [ ] labyrinth
+- - [ ] toad
+- - [ ] barrel
+- - [ ] things
+- - [ ] broom
+- - [ ] map
+- - [ ] carpenter
+- - [ ] fish
+- - [ ] flowers
+- - [ ] hearts
+- - [ ] gold
+- - [ ] potion
 
 - TODO Punted items, assess closer to release.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?

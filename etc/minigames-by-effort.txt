@@ -81,6 +81,5 @@ Robohorse. L/R control the horse's two legs. QWOP-ish.
 Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
 Skiing. L/R and brake, get between the flags.
 Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
-Sonar. 1st-person. See nothing but a compass. L/R to rotate, A to screech and it shows you the distance. U to advance.
 Sparing. Bowling, second throw only.
 Steering. Drag race with only L/R, dodging critters etc.

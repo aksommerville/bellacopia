@@ -1,4 +1,4 @@
 rsprite sprite:spider (u8:weight)5 (u8:limit)2 (u32)0
-rsprite sprite:goat (u8:weight)4 (u8:limit)1 (u32)0
+rsprite sprite:bat (u8:weight)4 (u8:limit)1 (u32)0
 rsprite sprite:koala (u8:weight)4 (u8:limit)1 (u32)0
 rsprite sprite:witch (u8:weight)4 (u8:limit)1 (u32)0

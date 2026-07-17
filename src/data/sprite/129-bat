@@ -1,0 +1,7 @@
+image image:battle_underground
+tile 0x51 0
+type (u16:sprtype)monster
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+monster (u16:battle)sonar (u8:radius)0x30 (u8:speed)0x40 (u16)281 (u16)0
+hitbox -6 6 -7 7
