@@ -9,7 +9,7 @@ const srcpath = "minigames.txt";
 /* Acquire the database.
  */
 const src = fs.readFileSync(srcpath);
-const minigames = []; // { ref:boolean, count:int, name, opponent, zone, lineno }
+const minigames = []; // { ref:boolean, count:int, name, opponent, zone, lineno, done }
 for (let srcp=0, lineno=1; srcp<src.length; lineno++) {
   try {
     const linep = srcp;
@@ -23,7 +23,9 @@ for (let srcp=0, lineno=1; srcp<src.length; lineno++) {
     let count = 0;
     if (flags.indexOf("1") >= 0) count = 1;
     else if (flags.indexOf("2") >= 0) count = 2;
-    minigames.push({ ref, count, name, opponent, zone, lineno });
+    let done = false;
+    if (flags.indexOf("D") >= 0) done = true;
+    minigames.push({ ref, count, name, opponent, zone, lineno, done });
   } catch (e) {
     console.log(`${srcpath}:${lineno}: ${e.message}`);
     throw e;
@@ -38,8 +40,11 @@ const byOpponent = {};
 const byZone = {};
 let singlec = 0;
 let doublec = 0;
+let donec = 0;
 for (let ai=minigames.length; ai-->0; ) {
   const a = minigames[ai];
+  
+  if (a.done) donec++;
   
   // Player count must be 1 or 2 and is required for all.
   switch (a.count) {
@@ -55,7 +60,7 @@ for (let ai=minigames.length; ai-->0; ) {
   if (!(bucket = byOpponent[a.opponent])) bucket = byOpponent[a.opponent] = []; bucket.push(a);
   if (!(bucket = byZone[a.zone])) bucket = byZone[a.zone] = []; bucket.push(a);
 }
-console.log(`${singlec} for one player only; ${doublec} for two.`);
+console.log(`${singlec} for one player only; ${doublec} for two. ${donec}/${minigames.length} done.`);
 
 /* If any opponent is used more than once, log that on its own line.
  * That's not an error necessarily, just we ought to know it.

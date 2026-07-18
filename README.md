@@ -268,7 +268,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - `mixnmatch-master.png`: 4x6" sticker sheet
 - - - `pin-tree-256px.png`: Acrylic pin
 - - - `button_fishing-444px.png`: Button
-- - [ ] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
+- - [x] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
 - - [ ] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
 - - - [ ] Made the fishpoles, they're hilarious, and I have a blue posterboard, just need to figure out how to stand it up.
 

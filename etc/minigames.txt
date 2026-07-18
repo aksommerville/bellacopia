@@ -132,7 +132,7 @@
   2      Snaring           Drummer            Battlefield
   2____D Sonar             Bat                Cave
   2____D Sorting           Clerk              Fractia
-  2      Sparing           Beetle             Desert
+  2____D Sparing           Beetle             Desert
   2____D Stacking          Waiter             Fractia
   1      Staring           Deer               Woodland
   2E___D Stealing          Roblin             Goblins
