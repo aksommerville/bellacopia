@@ -128,14 +128,11 @@ int game_get_completion() {
 /* Test for minimalist completion.
  */
  
-int game_is_minimalist_complete() {
+int game_is_minimalist_pending() {
   int n,d;
   
   // There's a special flag to disqualify the minimalist prize. In normal play, this should get set pretty fast.
   if (store_get_fld(NS_fld_minimalist_disqualify)) return 0;
-  
-  // Any flowers unset, the main quest is incomplete so our answer is 0.
-  n=FLDV_COUNT(&d,fldv_flowers); if (n<d) return 0;
   
   // Check all the other completable things. Anything at all* present, our answer is 0.
   // [*] Except some things.
@@ -157,8 +154,18 @@ int game_is_minimalist_complete() {
   // You're allowed to pick up jigpieces. You're *not* allowed to touch them; that should set minimalist_disqualify.
   //if (jigstore_has_anything()) return 0;
   
-  // OK, main quest complete and nothing else!
+  // OK, looking good!
   return 1;
+}
+
+int game_is_minimalist_complete() {
+  int n,d;
+  
+  // Any flowers unset, the main quest is incomplete so our answer is 0.
+  n=FLDV_COUNT(&d,fldv_flowers); if (n<d) return 0;
+  
+  // Beyond that, confirm the same things as "pending".
+  return game_is_minimalist_pending();
 }
 
 /* Measure completion.

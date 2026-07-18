@@ -13,6 +13,8 @@ struct vellum_stats {
   int store_listener;
   int dirty;
   
+  int minimalist; // -1,0,1 = disqualified,pending,won
+  
   // Positions relative to (tex) for dynamic values:
   int clockx,clocky;
   int flowerx,flowery;
@@ -32,11 +34,22 @@ static void _stats_del(struct vellum *vellum) {
   store_unlisten(VELLUM->store_listener);
 }
 
+/* Check minimalist completion.
+ * This can change during one instance of the pause menu, if they touch the maps.
+ */
+ 
+static void stats_check_minimalist(struct vellum *vellum) {
+  if (store_get_fld(NS_fld_minimalist)) VELLUM->minimalist=1;
+  else if (game_is_minimalist_pending()) VELLUM->minimalist=0;
+  else VELLUM->minimalist=-1;
+}
+
 /* Focus.
  */
  
 static void _stats_focus(struct vellum *vellum,int focus) {
   if (focus) {
+    stats_check_minimalist(vellum);
   }
 }
 
@@ -356,6 +369,12 @@ static void _stats_render(struct vellum *vellum,int x,int y,int w,int h) {
   int i=0; for (;i<7;i++,flx+=10) {
     graf_tile(&g.graf,flx,fly,0xa6+i+(VELLUM->flowerv[i]?0x10:0),0);
   }
+  
+  // Badges on the left.
+  int bx=x+NS_sys_tilesize;
+  int by=y+NS_sys_tilesize;
+  if (VELLUM->minimalist>0) graf_tile(&g.graf,bx,by,0xbe,0);
+  else if (VELLUM->minimalist==0) graf_tile(&g.graf,bx,by,0xbd,0);
 }
 
 /* New.
@@ -377,6 +396,7 @@ struct vellum *vellum_new_stats(struct modal *parent) {
   VELLUM->dirty=1;
   VELLUM->clocktex=egg_texture_new();
   VELLUM->clocksec=-1;
+  stats_check_minimalist(vellum);
   
   return vellum;
 }

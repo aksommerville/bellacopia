@@ -185,6 +185,7 @@ int cartographer_has_advice();
 int game_get_completion();
 
 int game_is_minimalist_complete();
+int game_is_minimalist_pending(); // or complete
 
 /* Get the things for stats vellum, in the preferred display order.
  * We don't produce Total Completion or Play Time.
