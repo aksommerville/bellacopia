@@ -153,6 +153,7 @@ To simplify a little, battle counts from here on will just be `wc -l src/game/ba
 On 5 July, the ROM crossed floppy disk size. Web zip is still under a meg.
 We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're the 3rd-largest project I've ever written. Will be first by the end, no doubt at all.
 I also checked the graphics size (pixel count) of all my older games -- we're the largest, and it's not even close.
+Crossed the halfway point for battles! There are now more implemented battles than planned ones.
 
 Goals:
 - [ ] 20 new battles.

@@ -82,4 +82,3 @@ Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the midd
 Skiing. L/R and brake, get between the flags.
 Snaring. One button. Hear a snare riff, then repeat it, with a metronome.
 Sparing. Bowling, second throw only.
-Steering. Drag race with only L/R, dodging critters etc.

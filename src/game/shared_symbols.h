@@ -482,6 +482,7 @@
 #define NS_battle_tempting 76
 #define NS_battle_floechart 77
 #define NS_battle_sonar 78
+#define NS_battle_steering 79
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -560,7 +561,8 @@
   _(distancing) \
   _(tempting) \
   _(floechart) \
-  _(sonar)
+  _(sonar) \
+  _(steering)
 
 /* "fld" are single bits.
  */

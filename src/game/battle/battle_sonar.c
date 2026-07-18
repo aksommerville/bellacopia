@@ -713,9 +713,6 @@ static void _sonar_update(struct battle *battle,double elapsed) {
     if (r->done) battle->outcome=0;
     else battle->outcome=1;
   } else if (r->done) battle->outcome=-1;
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Fill a column with the given color.
@@ -736,16 +733,6 @@ static void _sonar_render(struct battle *battle) {
   int fldx=(FBW>>1)-(fldw>>1);
   int fldy=(FBH>>1)-(fldh>>1);
   int i;
-  
-  if (0) {//XXX TEMP Show me all the walls.
-    const struct wall *wall=BATTLE->wallv;
-    for (i=BATTLE->wallc;i-->0;wall++) {
-      graf_line(&g.graf,
-        fldx+wall->ax*CELLSIZE,fldy+wall->ay*CELLSIZE,0x000080ff,
-        fldx+wall->bx*CELLSIZE,fldy+wall->by*CELLSIZE,0x000080ff
-      );
-    }
-  }
   
   // Lit walls.
   const struct lum *lum=BATTLE->lumv;

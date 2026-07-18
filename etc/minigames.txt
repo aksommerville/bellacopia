@@ -136,7 +136,7 @@
   2____D Stacking          Waiter             Fractia
   1      Staring           Deer               Woodland
   2E___D Stealing          Roblin             Goblins
-  2      Steering          Buck               Farm
+  2____D Steering          Buck               Farm
   2____D Stenography       Secretary          Fractia
  R2      Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
