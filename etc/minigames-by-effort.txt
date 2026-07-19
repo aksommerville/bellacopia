@@ -80,4 +80,3 @@ Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative 
 Robohorse. L/R control the horse's two legs. QWOP-ish.
 Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
 Skiing. L/R and brake, get between the flags.
-Snaring. One button. Hear a snare riff, then repeat it, with a metronome.

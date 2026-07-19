@@ -129,7 +129,7 @@
   2      Snorkel           Seal               Tundra
   2      SnowballFight     Snowman            Tundra
   2____D Snowboard         IceDragon          IcePalace
-  2      Snaring           Drummer            Battlefield
+  2____D Snaring           Drummer            Battlefield
   2____D Sonar             Bat                Cave
   2____D Sorting           Clerk              Fractia
   2____D Sparing           Beetle             Desert
