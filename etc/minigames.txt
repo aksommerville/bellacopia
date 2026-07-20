@@ -119,7 +119,7 @@
   2      Shovelling        Miner              Cave
   1____D ShovelThrowing    Skeleton           All
   2____D Shuffling         Dealer             Fractia
-  2      Skiing            Reindeer           Tundra
+  2____D Skiing            Reindeer           Tundra
   2____D SkiJump           IceDragon          IcePalace
   2      Skipping          Duck               Farm
   2____D Slapping          Gambler            Fractia

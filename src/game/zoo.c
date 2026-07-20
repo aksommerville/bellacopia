@@ -63,12 +63,12 @@ int zoo_get_spriteid(int fld) {
     case NS_fld_zoo7_0: return RID_sprite_walrus;
     case NS_fld_zoo7_1: return RID_sprite_albatross;
     case NS_fld_zoo7_2: return RID_sprite_polarbear;
-    case NS_fld_zoo7_3: return RID_sprite_leopard;
+    case NS_fld_zoo7_3: return RID_sprite_reindeer;
     // zoo8: east tundra
     case NS_fld_zoo8_0: return RID_sprite_walrus;
     case NS_fld_zoo8_1: return RID_sprite_albatross;
     case NS_fld_zoo8_2: return RID_sprite_koala;
-    case NS_fld_zoo8_3: return RID_sprite_leopard;
+    case NS_fld_zoo8_3: return RID_sprite_reindeer;
     // zoo9: under fractia
     case NS_fld_zoo9_0: return RID_sprite_spider;
     case NS_fld_zoo9_1: return RID_sprite_leopard;

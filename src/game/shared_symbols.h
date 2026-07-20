@@ -485,6 +485,7 @@
 #define NS_battle_steering 79
 #define NS_battle_sparing 80
 #define NS_battle_snaring 81
+#define NS_battle_skiing 82
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -566,7 +567,8 @@
   _(sonar) \
   _(steering) \
   _(sparing) \
-  _(snaring)
+  _(snaring) \
+  _(skiing)
 
 /* "fld" are single bits.
  */

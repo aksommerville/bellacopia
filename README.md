@@ -41,12 +41,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
-- [ ] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
+- [x] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
+- - ...this item has been sitting here for six months and I haven't once felt the need for it. Forget it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
-- [ ] New song during the election, maybe?
+- [x] New song during the election, maybe?
+- - ...this would be difficult, since we wouldn't want it to play outside Fractia. I don't think it's worth the trouble.
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
@@ -56,7 +58,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Make vanishing cream last a little longer.
 - [ ] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
+- - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
 - [ ] Some little fanfare on reaching 100%.
+- [ ] Set imageid_default in battles where warranted.
 
 - Battles written but not placed.
 
@@ -237,6 +241,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
 - GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.
+- ^ Not written in stone. We're probably not going to be released by GDEX 2026, probably will be showing it again in 2027.
 - - [x] Pins, buttons, stickers.
 - - [ ] Homemade stuffed witches, if I can work that out.
 - - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
@@ -269,8 +274,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - `pin-tree-256px.png`: Acrylic pin
 - - - `button_fishing-444px.png`: Button
 - - [x] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
-- - [ ] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
-- - - [ ] Made the fishpoles, they're hilarious, and I have a blue posterboard, just need to figure out how to stand it up.
+- - [x] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
+- - - [x] Made the fishpoles, they're hilarious, and I have a blue posterboard, just need to figure out how to stand it up.
 
 ## Quests and Prizes
 

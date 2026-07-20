@@ -126,6 +126,7 @@ const struct battle_type battle_type_placeholder={
   .support_cvc=1,
   .update_during_report=0,
   .input=battle_input_none,//TODO
+  .imageid_default=0,
   .del=_placeholder_del,
   .init=_placeholder_init,
   .update=_placeholder_update,

@@ -1,4 +1,4 @@
-rsprite sprite:leopard (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:reindeer (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
 rsprite sprite:polarbear (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:albatross (u8:weight)5 (u8:limit)1 (u32)0

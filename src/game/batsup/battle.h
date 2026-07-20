@@ -52,6 +52,7 @@ struct battle_type {
   int support_cvc; // CPU-vs-CPU supported. All battles should do this, I'm not sure what kind of game couldn't be played automatically.
   int update_during_report;
   const struct battle_input *input; // Best to use one of shared input descriptions below. Terminate with a (dur==0) record.
+  int imageid_default; // Only used as a fallback (but should be every time in Arcade Mode).
   
   void (*del)(struct battle *battle);
   int (*init)(struct battle *battle);

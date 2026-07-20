@@ -61,9 +61,14 @@ struct battle *battle_new(
   battle->args=*args;
   battle->outcome=-2;
   
-  // Prepare the color table automagically.
-  if (!battle->args.imageid&&g.camera.map) {
-    battle->args.imageid=g.camera.map->imageid;
+  /* Prepare the color table automagically.
+   * If the caller asks for a specific one, they get it.
+   * Otherwise check camera first, and finally the battle type's default, which is usually zero.
+   * And zero is fine; it becomes the uncontroversial meadow colors.
+   */
+  if (!battle->args.imageid) {
+    if (g.camera.map) battle->args.imageid=g.camera.map->imageid;
+    else battle->args.imageid=type->imageid_default;
   }
   battle_get_ctab_by_id(battle->ctab,BATTLE_COLOR_COUNT,battle->args.imageid);
   
