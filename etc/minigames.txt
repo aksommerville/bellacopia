@@ -83,7 +83,7 @@
   2      Math              Owl                Woodland
   1____D Medomat           Medomat            Fractia
   2____D MindControl       Nyarlathotep       Labyrinth
-  2      Mixing            Drunk              City
+  2____D Mixing            ZombieBrewer       Underground
   2____D MorseCode         Walrus             Tundra
   2      Newspaper         Boy                City
   2      Pairing           Snake              Jungle
@@ -107,7 +107,7 @@
   2____D Regex             Globlin            Goblins
   2      Remembering       Elephant           Jungle
   2____D Rescuing          Firefighter        Fractia
-  2      Robohorse         Cavalier           Battlefield
+  2      Robohorse         Groom              Battlefield
   2      Rodeo             Cowpoke            Desert
  R2      Rollerskates      Rabbit             Woodland
   2      Rowing            Viking             Sea

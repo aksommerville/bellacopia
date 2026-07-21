@@ -112,7 +112,7 @@ int zoo_get_spriteid(int fld) {
     // zoo17: under southeast (cheapside)
     case NS_fld_zoo17_0: return RID_sprite_spider;
     case NS_fld_zoo17_1: return RID_sprite_bat;
-    case NS_fld_zoo17_2: return RID_sprite_elephant;
+    case NS_fld_zoo17_2: return RID_sprite_zombie;
     case NS_fld_zoo17_3: return RID_sprite_walrus;
   }
   return 0;

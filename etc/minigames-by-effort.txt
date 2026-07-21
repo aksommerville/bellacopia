@@ -27,7 +27,6 @@ Karate Chop. Tap A until time expires.
 Levitation. Keep an indicator balanced.
 Licking. Hold A when the giant moving ice cream cone is in range.
 Lighting. Walk and jump to reach the candles, as an acolyte.
-Mixing. L/R to pour Blue or Red into your blender. Match a reference Purple without spilling.
 Newspaper. Throw newspapers across the street into mailboxes.
 Pairing. Pick the matching sock. First to pick it gets a point.
 Parachute. Deploy as late as you dare, last to land alive wins.

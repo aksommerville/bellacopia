@@ -192,7 +192,14 @@ static int cb_potion_book(int optionid,void *userdata) {
 }
  
 void begin_potion_book(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_story16)) {
+    // Some time after buying the book -- say, after you've told the story -- she ominously says "There used to be four of us."
+    // Referring to the thing in the basement.
+    begin_dialogue(159,sprite);
+    return;
+  }
   if (store_get_fld(NS_fld_potion_book)) {
+    // Speak soon after buying the book and it's just a polite "thank you".
     begin_dialogue(124,sprite);
     return;
   }
