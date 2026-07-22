@@ -413,8 +413,13 @@ Maybe point out that buried treasure, bridges, and races *are* constant.
 - Assignment of encrypted messages to stones. Same messages every time, mostly, but in random places.
 - Choice of items and battle for the goblin seals.
 - Rules and layout of the statue maze.
-- Layout of the labyrinth. (actually not constant even within one campaign).
 - Position of the remote surveyor points (and therefore distances).
+
+And things that randomize even within one campaign:
+
+- Layout of the Labyrinth.
+- Minesweeper puzzles.
+- Treadlepass gate.
 
 ## Lessons Learned
 
@@ -425,3 +430,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - The "activity" abstraction works great, I should do something similar in every big game.
 - Monthly goals and reports, my estimates were all way off, but this seems a healthy practice. Make a habit of it for large games.
 - Pick an orientation for sprites! I've settled on rightward as the default, but some early sprites (eg Dot) are leftward. Good to be consistent about that.
+- Adding things to `shared_symbols.h`, which one does a lot, forces a full rebuild. This needs a solution from the eggdev end, and I'm not sure what that will look like.

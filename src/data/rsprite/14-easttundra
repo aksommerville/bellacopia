@@ -3,3 +3,4 @@ rsprite sprite:stick (u8:weight)20 (u8:limit)1 (u32)0
 rsprite sprite:koala (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:albatross (u8:weight)5 (u8:limit)1 (u32)0
 rsprite sprite:walrus (u8:weight)5 (u8:limit)1 (u32)0
+rsprite sprite:geographer (u8:weight)4 (u8:limit)1 (u32)0
