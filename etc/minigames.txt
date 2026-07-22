@@ -138,7 +138,7 @@
   2E___D Stealing          Roblin             Goblins
   2____D Steering          Buck               Farm
   2____D Stenography       Secretary          Fractia
- R2      Stirring          Mouse              Woodland
+ R2____D Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
   2____D SumoHorse         Wrestler           Fractia
   2      Surrounding       Snake              Jungle

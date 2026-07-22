@@ -148,7 +148,7 @@ Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
 
 ## July 2026
 
-To simplify a little, battle counts from here on will just be `wc -l src/game/battle`. That adds one to this month's count artificially.
+Battle count now, just take the assigned `NS_battle_` symbols from `shared_symbols.c`. That's exactly what we had before, just easier to grok. (ie all but `battle_placeholder`)
 
 On 5 July, the ROM crossed floppy disk size. Web zip is still under a meg.
 We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're the 3rd-largest project I've ever written. Will be first by the end, no doubt at all.
@@ -156,7 +156,7 @@ I also checked the graphics size (pixel count) of all my older games -- we're th
 Crossed the halfway point for battles! There are now more implemented battles than planned ones.
 
 Goals:
-- [ ] 20 new battles.
+- [x] 20 new battles.
 - [ ] Cutscenes.
 
 ## August 2026

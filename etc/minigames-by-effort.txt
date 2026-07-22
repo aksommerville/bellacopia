@@ -52,7 +52,6 @@ Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Fi
 Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
 Snowball Fight. Once around the dpad, then A to throw it, then repeat.
 Staring. Dpad to keep your eyes on the foe's.
-Stirring. Circle the dpad.
 Surrounding. Snake.
 Swearing. Press the button for a word bubble like "$#@!", last word wins.
 Swinging. Hold L/R in phase, riding a swing.

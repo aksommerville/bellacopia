@@ -98,6 +98,7 @@ Campaign Trail of the Mummy doesn't count because it's on a timer.
 ## Minimum full clear time
 
 SUMMARY: Already first, by a ridiculous margin, and will get bigger. Our full clear is a much more involved thing than any game I've made in the past.
+Tho actually, I bet Bandit is way up there, it had a bunch of side quests.
 
 For games that distinguish Full Clear from Any%.
 
@@ -112,6 +113,7 @@ SUMMARY: Likely to be first, tho I still hold out hope of finishing in 2026.
 Measure via git commits. Only count thru the release, don't count post-release repairs or currency.
 Nothing older than CTM has reliable version control logs; they were all gitted after the fact if at all.
 Bandit and Zen were both huge projects, probably in the neighborhood of 6 months.
+The little games are typically one or two weeks.
 
 - 380 2017-09-15..2018-09-30 Plunder Squad. First commit says "begin version control". Unclear how much work had been done before that; can't be much.
 - 265 2023-01-06..2023-09-29 Full Moon.
