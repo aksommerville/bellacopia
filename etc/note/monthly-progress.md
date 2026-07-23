@@ -151,6 +151,7 @@ Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
 Battle count now, just take the assigned `NS_battle_` symbols from `shared_symbols.c`. That's exactly what we had before, just easier to grok. (ie all but `battle_placeholder`)
 
 On 5 July, the ROM crossed floppy disk size. Web zip is still under a meg.
+And as of 23 July, our ROM is more than twice as big as Spelling Bee's, which in turn is about four times larger than 3rd place, Season of Penance.
 We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're the 3rd-largest project I've ever written. Will be first by the end, no doubt at all.
 I also checked the graphics size (pixel count) of all my older games -- we're the largest, and it's not even close.
 Crossed the halfway point for battles! There are now more implemented battles than planned ones.
