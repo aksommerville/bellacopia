@@ -163,8 +163,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [ ] Cutscenes, second pass: Proper images.
 - - [ ] mayor
-- - [ ] war
-- - [ ] kidnap
+- - [x] war
+- - [x] kidnap
 - - [ ] rescue
 - - [ ] labyrinth
 - - [ ] toad
@@ -174,10 +174,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] map
 - - [ ] carpenter
 - - [ ] fish
-- - [ ] flowers
+- - [x] flowers
 - - [ ] hearts
 - - [ ] gold
-- - [ ] potion
+- - [x] potion
 
 - TODO Punted items, assess closer to release.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?
