@@ -61,6 +61,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
 - [ ] Some little fanfare on reaching 100%.
 - [ ] Set imageid_default in battles where warranted.
+- [x] "Steer" means bull, not deer! Redraw the sprite.
+- - [ ] `sprite:130-buck` is available for reuse
 
 - Battles written but not placed.
 

@@ -70,7 +70,7 @@
   2      Imitation         Monkey             Jungle
   2____D Jeter             Dancer             Fractia
   2      Jewelry           Princess           City
-  2      Joust             Cavalier           Battlefield
+  2____D Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle
  R2      Jumprope          Joey               Desert
  R2      KarateChop        Sensei             Battlefield

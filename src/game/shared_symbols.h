@@ -489,6 +489,7 @@
 #define NS_battle_mixing 83
 #define NS_battle_stirring 84
 #define NS_battle_cartography 85
+#define NS_battle_jousting 86
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -574,7 +575,8 @@
   _(skiing) \
   _(mixing) \
   _(stirring) \
-  _(cartography)
+  _(cartography) \
+  _(jousting)
 
 /* "fld" are single bits.
  */

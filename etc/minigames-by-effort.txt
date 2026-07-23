@@ -70,7 +70,6 @@ Dance Off. Tiny rhythm game on the dpad.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
-Joust. Joust, the video game. You on a broom, and he on Pegasus.
 Math. 10-key input, answer simple arithmetic problems.
 Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
 Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.

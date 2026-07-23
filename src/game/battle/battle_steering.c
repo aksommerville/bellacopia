@@ -141,7 +141,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
   switch (face) {
     case NS_face_monster: {
-        player->color=0xd59f3dff;
+        player->color=0xa85931ff;
         player->tileid=0x49;
       } break;
     case NS_face_dot: {
