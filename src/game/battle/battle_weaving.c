@@ -394,7 +394,7 @@ static void _weaving_update(struct battle *battle,double elapsed) {
    */
   if (BATTLE->term) {
     if ((BATTLE->termclock-=elapsed)>0.0) return;
-    BATTLE->termclock+=0.500;
+    BATTLE->termclock+=0.300;
     struct player *l=BATTLE->playerv;
     struct player *r=l+1;
     int lok=player_score_warp(battle,l,BATTLE->termp);

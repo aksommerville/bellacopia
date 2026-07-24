@@ -162,10 +162,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - [ ] Cutscenes, second pass: Proper images.
-- - [ ] mayor
+- - [x] mayor
 - - [x] war
 - - [x] kidnap
-- - [ ] rescue
+- - [x] rescue
 - - [ ] labyrinth
 - - [ ] toad
 - - [ ] barrel
