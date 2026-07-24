@@ -152,11 +152,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] gobbling: Nerf a little. Should be easy.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
+- [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
+- [ ] strangling: Use ctab. Pretty sure the foreground graphics are agnostic.
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
@@ -166,7 +168,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] war
 - - [x] kidnap
 - - [x] rescue
-- - [ ] labyrinth
+- - [x] labyrinth
 - - [ ] toad
 - - [ ] barrel
 - - [ ] things
@@ -194,6 +196,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
+- - Do at least a machine-generated translation for Spanish and French. German? Portugese? Anything non-Latin is off the table alas.
 - [ ] Check ladders in the outerworld, they probably all need some safe buffer.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
@@ -203,6 +206,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Punt this until the entire set of dialogue is more or less finished.
 - [ ] "Are you sure?" at New Game if there's a save with anything done. But *do not* implement this yet! I want an unencumbered New Game during development.
 - - Or we could sidestep the issue by allowing multiple save files. Consider it.
+- [ ] Review accessibility once all battles are complete. Rhythm games should be possible without audio, color-based games should work for the colorblind, etc.
 
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
 - - [ ] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server.
