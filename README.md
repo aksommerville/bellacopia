@@ -33,36 +33,28 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Goblin cave isn't fully darkening anymore. ...I forgot to remove hero from `GRP(light)` when burning a flammable.
-- - That happened during a full run. Quit and retry, it darkens as expected.
-- - Use a match to burn something. It seems to stick on.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
-- [x] Modal blotter: Can we have the generic layer track changes and ease in and out? Then also we would want the implementations to turn off their (blotter) request during animated dismissal.
-- - ...this item has been sitting here for six months and I haven't once felt the need for it. Forget it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
-- [x] New song during the election, maybe?
-- - ...this would be difficult, since we wouldn't want it to play outside Fractia. I don't think it's worth the trouble.
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
-- [x] Show in-progress Minimalist badge on stats vellum, to give users a hint whether they still have it.
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Make vanishing cream last a little longer.
 - [ ] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
 - - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
+- - Or maybe have the Things Story trigger when you get the last item, instead of triggering off Inventory Critic. That didn't make sense anyway.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] Set imageid_default in battles where warranted.
-- [x] "Steer" means bull, not deer! Redraw the sprite.
-- - [ ] `sprite:130-buck` is available for reuse
+- [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
 
 - Battles written but not placed.
@@ -70,23 +62,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
 - - Do be mindful of the Minimalist path, it needs to stay item-free.
-- - [x] Economy of Motion style keystroke tracker.
-- - [x] Sokoban in the real world. Include Ounce blocks that you can Hookshot, and unreachable blocks that you have to Snowglobe.
-- - - Or bits where you could either Vanishing Cream into a side channel to push, or Snowglobe.
-- - [x] Also diegetic Bomberman, same idea as Sokoban. ...already doable, use `CMD_map_flammable`.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
-- - [x] Constant flamethrower with a stompbox behind it, to require Marionette.
-- - [x] Treadle that you need a timed release remotely. Bomb or maybe Marionette or Snowglobe.
 - - [ ] Conveyor belts.
-- - [x] Something like Full Moon's trick floor, where you have to use Compass to know the path? Make it work with Divining Rod too.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
-- - [x] Secret knowledge accessible only with the telescope. This would be a great fit in the Temple, already has dead space at the edges.
-- - [x] Ice floor, that you slide until you hit the wall.
 - - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
-- - [x] Six treadles that you press in order. Use Divining Rod to see the order.
 
 - Fill out maps.
 - [ ] Fractia
@@ -144,10 +126,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
 - - [ ] Dark some regions.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
-- - [x] Dots<->Fractia door.
-- - [x] Dots<->Cheapside door.
 
 - Battle repairs.
+- [ ] armwrestling: Nerf.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.

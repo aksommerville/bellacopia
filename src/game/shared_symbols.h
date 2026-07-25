@@ -362,6 +362,7 @@
 #define NS_sprtype_treadlepass      48 /* (u16:fld)0 (u16:treadlec)6 */
 #define NS_sprtype_flamethrower     49 /* (u16:fld)0 (u8:offvalue_or_period_phase)0 (u8:length_and_orientation)0 ; low 2: 0..3=left,right,up,down. high 4: length-1 */
 #define NS_sprtype_trickfloor       50 /* (u32)0 */
+#define NS_sprtype_seasonblocks     51 /* (u8:role)1 (u24)0 ; 1=hint 2=puzzle */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -402,7 +403,8 @@
   _(sokoban) \
   _(treadlepass) \
   _(flamethrower) \
-  _(trickfloor)
+  _(trickfloor) \
+  _(seasonblocks)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -819,6 +821,7 @@
 #define NS_fld_dud6 235
 #define NS_fld_icedoor1 236
 #define NS_fld_escaped_labyrinth 237
+#define NS_fld_seasonblocks 238 /* Season blocks puzzle in the temple, completed. */
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -860,6 +863,7 @@
 #define NS_fld16_surveyor_b_guess 35
 #define NS_fld16_surveyor_c_guess 36
 #define NS_fld16_wishing_well 37 /* itemid */
+#define NS_fld16_seasonblocks_seed 38
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
