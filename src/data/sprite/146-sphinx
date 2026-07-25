@@ -1,0 +1,2 @@
+type (u16:sprtype)sphinx
+groups (b32:sprgrp)update

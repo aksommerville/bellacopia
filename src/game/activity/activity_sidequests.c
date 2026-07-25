@@ -758,3 +758,31 @@ void begin_escape_labyrinth() {
   struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
   if (!modal) return;
 }
+
+/* Purse upgrade.
+ */
+ 
+static int cb_purse1(int optionid,void *userdata) {
+  // Don't update the store until after our dialogue dismisses. If we're the last upgrade, a cutscene rolls.
+  store_set_fld(NS_fld_purse1,1);
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  goldmax+=100;
+  store_set_fld16(NS_fld16_goldmax,goldmax);
+  return 0;
+}
+ 
+void begin_purse1(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_purse1)) {
+    begin_dialogue(160,sprite);
+  } else {
+    bm_sound(RID_sound_treasure);
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=161,
+      .speaker=sprite,
+      .cb=cb_purse1,
+    };
+    struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    if (!modal) return;
+  }
+}

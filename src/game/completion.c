@@ -373,6 +373,6 @@ int last_gold_upgrade_was_collected() {
   if (store_get_fld(NS_fld_gold_book)) return 0; // Already done, will always be zero now.
   // We'll drive this one just by the scalar purse size, as opposed to the flags associated with those purse upgrades.
   int goldmax=store_get_fld16(NS_fld16_goldmax);
-  if (goldmax>=199) return 1; // Got all the purse upgrades. Keep this up to date.
+  if (goldmax>=299) return 1; // Got all the purse upgrades. Keep this up to date.
   return 0;
 }

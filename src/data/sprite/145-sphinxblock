@@ -1,0 +1,6 @@
+image image:temple_sprites
+tile 0x39 0
+type (u16:sprtype)pushable
+groups (b32:sprgrp)visible,update,solid,moveable,grabbable,hookpull
+weight (u16)1
+hitbox -7 7 -7 7

@@ -56,6 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Set imageid_default in battles where warranted.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
+- [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Must visible with the sphinxblock puzzle.
 
 - Battles written but not placed.
 
@@ -67,7 +68,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
-- - [ ] Use Snowglobe to put unreachable alphabet blocks in order.
+- - [x] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
@@ -138,6 +139,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
+- [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
 - [ ] strangling: Use ctab. Pretty sure the foreground graphics are agnostic.

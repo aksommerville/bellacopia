@@ -321,6 +321,7 @@
 #define NS_activity_battle 62 /* (u16:battle)0 */
 #define NS_activity_iceshop 63
 #define NS_activity_escape_labyrinth 64
+#define NS_activity_purse1 65
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -363,6 +364,7 @@
 #define NS_sprtype_flamethrower     49 /* (u16:fld)0 (u8:offvalue_or_period_phase)0 (u8:length_and_orientation)0 ; low 2: 0..3=left,right,up,down. high 4: length-1 */
 #define NS_sprtype_trickfloor       50 /* (u32)0 */
 #define NS_sprtype_seasonblocks     51 /* (u8:role)1 (u24)0 ; 1=hint 2=puzzle */
+#define NS_sprtype_sphinx           52 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -404,7 +406,8 @@
   _(treadlepass) \
   _(flamethrower) \
   _(trickfloor) \
-  _(seasonblocks)
+  _(seasonblocks) \
+  _(sphinx)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -822,6 +825,8 @@
 #define NS_fld_icedoor1 236
 #define NS_fld_escaped_labyrinth 237
 #define NS_fld_seasonblocks 238 /* Season blocks puzzle in the temple, completed. */
+#define NS_fld_sphinx 239
+#define NS_fld_purse1 240
 
 /* "fld16" are 16 unsigned bits each.
  */

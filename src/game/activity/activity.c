@@ -82,6 +82,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_battle: begin_battle(initiator,arg); break;
     case NS_activity_iceshop: begin_iceshop(); break;
     case NS_activity_escape_labyrinth: begin_escape_labyrinth(); break;
+    case NS_activity_purse1: begin_purse1(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }
