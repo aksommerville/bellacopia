@@ -154,7 +154,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] rescue
 - - [x] labyrinth
 - - [ ] toad
-- - [ ] barrel
+- - [x] barrel
 - - [ ] things
 - - [ ] broom
 - - [ ] map
