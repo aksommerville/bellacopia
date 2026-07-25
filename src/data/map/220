@@ -15,3 +15,4 @@ image image:labyrinth
 position 3 3 6 *
 parent map:211
 door @8,4 map:211 @11,4 0x0000
+rspriteres rsprite:seamonster

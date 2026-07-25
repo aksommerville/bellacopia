@@ -8,7 +8,7 @@
 
 #include "game/bellacopia.h"
 
-#define PRESELECT_BATTLE NS_battle_jousting
+#define PRESELECT_BATTLE NS_battle_scubatuba
 
 #define ROWC 20 /* FBH / font height */
 #define KEY_REPEAT_INITIAL 0.250

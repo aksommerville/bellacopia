@@ -63,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Set imageid_default in battles where warranted.
 - [x] "Steer" means bull, not deer! Redraw the sprite.
 - - [ ] `sprite:130-buck` is available for reuse
+- [ ] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
 
 - Battles written but not placed.
 

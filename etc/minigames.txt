@@ -113,7 +113,7 @@
   2      Rowing            Viking             Sea
   2____D Sawing            Carpenter          Fractia
   2      Scaring           Ghost              City
-  2      ScubaTuba         Tuna               Sea
+  2____D ScubaTuba         Tuna               SeaMonster
   2____D Shaking           Bartender          Fractia
   2      Sharing           Bear               Woodland
   2      Shovelling        Miner              Cave

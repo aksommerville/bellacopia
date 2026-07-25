@@ -74,7 +74,6 @@ Math. 10-key input, answer simple arithmetic problems.
 Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
 Rat Race. Race to the cheese, in a maze. Constant forward velocity and relative L/R.
 Robohorse. L/R control the horse's two legs. QWOP-ish.
-Scuba Tuba. Rhythm game on the dpad while tapping A to kick, to stay in the middle of the water.
 
 ## More ideas that occurred late. (not in minigames.txt)
 Invading. Space Invaders, play as the horde.
