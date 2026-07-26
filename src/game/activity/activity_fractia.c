@@ -23,12 +23,14 @@ void begin_logproblem2(struct sprite *sprite) {
 
 // Dismissing battle.
 static void cb_board_of_elections_dismiss(struct modal *modal,int outcome,void *userdata) {
-  struct modal_args_cutscene args={
-    .strix_title=1,
-    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
-  };
-  struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
-  if (!cutscene) return;
+  if (outcome>0) {
+    struct modal_args_cutscene args={
+      .strix_title=1,
+      .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+    };
+    struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+    if (!cutscene) return;
+  }
 }
 
 // Battle complete. Report consequences.

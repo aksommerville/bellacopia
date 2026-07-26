@@ -156,6 +156,10 @@ We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're t
 I also checked the graphics size (pixel count) of all my older games -- we're the largest, and it's not even close.
 Crossed the halfway point for battles! There are now more implemented battles than planned ones.
 
+Running the full-clear time a bit early, 50e80512014834c14a193fee607ce575ababbe52 on 2026-07-26, since I might not have time on the 31st.
+Also, doing it in web for the first time, just to ensure everything in web is kosher. (have only been spot-checking up to now).
+2:24:14
+
 Goals:
 - [x] 20 new battles.
 - [ ] Cutscenes.

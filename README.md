@@ -57,6 +57,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Must visible with the sphinxblock puzzle.
+- [x] Election story runs even if you lose the election contest.
+- [ ] Checkmark on jigsaws in the closet, if fully assembled.
+- [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 
 - Battles written but not placed.
 
