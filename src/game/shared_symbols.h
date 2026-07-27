@@ -496,6 +496,7 @@
 #define NS_battle_cartography 85
 #define NS_battle_jousting 86
 #define NS_battle_scubatuba 87
+#define NS_battle_math 88
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -583,7 +584,8 @@
   _(stirring) \
   _(cartography) \
   _(jousting) \
-  _(scubatuba)
+  _(scubatuba) \
+  _(math)
 
 /* "fld" are single bits.
  */

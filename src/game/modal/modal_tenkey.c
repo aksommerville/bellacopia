@@ -176,7 +176,7 @@ static void _tenkey_render(struct modal *modal) {
   int x0=(FBW>>1)-(totalw>>1);
   int y0=(FBH>>1)-(totalh>>1);
   graf_fill_rect(&g.graf,x0,y0,totalw,totalh,0xc0c0c0ff);
-  graf_fill_rect(&g.graf,x0+outer_margin,y0+outer_margin,NS_sys_tilesize*3,NS_sys_tilesize+1,0x002000ff);
+  graf_fill_rect(&g.graf,x0+outer_margin,y0+outer_margin,NS_sys_tilesize*3,NS_sys_tilesize+1,0x100000ff);
   
   // Prepare for griddish tiles.
   int gridx0=x0+outer_margin+(NS_sys_tilesize>>1);

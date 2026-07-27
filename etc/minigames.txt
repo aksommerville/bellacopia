@@ -80,7 +80,7 @@
  R2      Levitation        Monk               Desert
   2      Licking           Puppy              Farm
   2      Lighting          Acolyte            City
-  2      Math              Owl                Woodland
+  2____D Math              Owl                Woodland
   1____D Medomat           Medomat            Fractia
   2____D MindControl       Nyarlathotep       Labyrinth
   2____D Mixing            ZombieBrewer       Underground
