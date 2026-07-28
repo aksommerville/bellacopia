@@ -132,11 +132,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.
-- [ ] armwrestling: Nerf.
+- [x] armwrestling: Nerf.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
+- - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
-- [ ] gobbling: Nerf a little. Should be easy.
+- [x] gobbling: Nerf a little. Should be easy.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
@@ -145,7 +146,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
-- [ ] strangling: Use ctab. Pretty sure the foreground graphics are agnostic.
+- [x] strangling: Use ctab. Pretty sure the foreground graphics are agnostic.
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.

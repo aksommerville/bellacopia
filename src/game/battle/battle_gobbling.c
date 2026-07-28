@@ -13,6 +13,7 @@
 #define PULL_RATE_FAST (1.0/80.0)
 #define CPU_PENALTY 1.400 /* Give humans an edge against CPU players. */
 #define GOBBLE_TIME 1.000
+#define GOBBLE_DISTANCE 20
 
 struct battle_gobbling {
   struct battle hdr;
@@ -38,7 +39,10 @@ struct battle_gobbling {
       int discard; // Nonzero if it should render on the floor. (x) ix still relevant.
       int x; // Relative to table. Player is responsible for updating when (pull) changes.
       uint8_t tileid; // Zero if defunct. The actual tile zero is part of Stealing Contest's dragon, not something we could use.
+      int highlight; // Nonzero only for the nearest thing, when in gobble range. Poison and edible, same.
     } entreev[ENTREE_LIMIT];
+    double cpudelay;
+    double cpudelaylo,cpudelayhi;
   } playerv[2];
 };
 
@@ -49,6 +53,14 @@ struct battle_gobbling {
  
 static void _gobbling_del(struct battle *battle) {
   egg_texture_del(BATTLE->poison_texid);
+}
+
+/* Set random delay for a CPU player.
+ */
+ 
+static void player_cpudelay(struct player *player) {
+  double n=((rand()&0xffff)/65535.0);
+  player->cpudelay=player->cpudelaylo*(1.0-n)+player->cpudelayhi*n;
 }
 
 /* Init player.
@@ -66,6 +78,9 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
   if (player->human=human) { // Human
   } else { // CPU
+    player->cpudelayhi=0.200*player->skill+0.800*(1.0-player->skill);
+    player->cpudelaylo=player->cpudelayhi*0.500;
+    player_cpudelay(player);
   }
   switch (appearance) {
     case 0: { // Goblin
@@ -122,12 +137,11 @@ static int _gobbling_init(struct battle *battle) {
   /* Select six entrees.
    * Both players get the same six things but not in the same order.
    * There are six tiles of food: 1d 1e 1f 2d 2e 2f
-   * And let's say two tiles of non-food: 61 64 (cactus and iceskate, borrowed from Laziness)
-   * One may object that cacti are in fact edible and delicious, but look: Ours is a potted cactus with the spines still attached. Do not eat.
+   * And let's say two tiles of non-food: 62 64 (hammer and iceskate, borrowed from Laziness)
    * Select one non-food and the remaining five food. Do not repeat any.
    */
   uint8_t menu[ENTREE_LIMIT];
-  menu[0]=(rand()&1)?0x61:0x64;
+  menu[0]=(rand()&1)?0x62:0x64;
   uint8_t candidatev[]={0x1d,0x1e,0x1f,0x2d,0x2e,0x2f};
   int candidatec=sizeof(candidatev);
   int i=1; for (;i<ENTREE_LIMIT;i++) {
@@ -235,6 +249,7 @@ static void player_pull(struct battle *battle,struct player *player,double elaps
     if ((entree->x<0)||(entree->x>TABLEW)) {
       entree->discard=1;
       entree_choose_discard_position(entree,player->entreev,player->who?TABLEW:0);
+      entree->highlight=0;
     }
   }
 }
@@ -297,7 +312,7 @@ static void player_gobble(struct battle *battle,struct player *player) {
     int distance;
     if (player->who) distance=TABLEW-nearest->x;
     else distance=nearest->x;
-    if (distance>20) nearest=0;
+    if (distance>GOBBLE_DISTANCE) nearest=0;
   }
   if (!nearest) { // Nothing in range.
     bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
@@ -353,6 +368,13 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
     return;
   }
   
+  // If a delay was requested, pay it out.
+  if (player->cpudelay>0.0) {
+    player->cpudelay-=elapsed;
+    player_pull_no(battle,player,elapsed);
+    return;
+  }
+  
   // Find the nearest entree. Same logic as player_gobble().
   int distance=FBW;
   struct entree *nearest=0;
@@ -373,11 +395,12 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   // If the nearest entree doesn't exist, the only thing to do is nothing.
   if (!nearest) {
     player_pull_no(battle,player,elapsed);
+    player_cpudelay(player); // Might as well set a delay too; we're just killing time at this point.
     return;
   }
   
   // If the nearest entree is poison, keep pulling until it falls.
-  // CPU player will never eat poison. (TODO Maybe at very low skill?)
+  // CPU player will never eat poison.
   if (!tileid_is_food(nearest->tileid)) {
     player_pull(battle,player,elapsed);
     return;
@@ -396,6 +419,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   
   // Eat it.
   player_gobble(battle,player);
+  player_cpudelay(player);
 }
 
 /* Check outcome.
@@ -436,6 +460,30 @@ static int gobbling_check_outcome(struct battle *battle) {
   return 0;
 }
 
+/* Highlight nearest entree if in gobble range.
+ * Overkilling a little by refreshing this every frame.
+ */
+ 
+static void player_refresh_highlight(struct battle *battle,struct player *player) {
+  struct entree *nearest=0;
+  struct entree *entree=player->entreev;
+  int i=ENTREE_LIMIT;
+  for (;i-->0;entree++) {
+    entree->highlight=0;
+    if (!entree->tileid) continue;
+    if (entree->discard) continue;
+    if (!nearest) nearest=entree;
+    else if (player->who&&(entree->x>nearest->x)) nearest=entree;
+    else if (!player->who&&(entree->x<nearest->x)) nearest=entree;
+  }
+  if (nearest) {
+    int distance;
+    if (player->who) distance=TABLEW-nearest->x;
+    else distance=nearest->x;
+    if (distance<=GOBBLE_DISTANCE) nearest->highlight=1;
+  }
+}
+
 /* Update.
  */
  
@@ -450,6 +498,7 @@ static void _gobbling_update(struct battle *battle,double elapsed) {
   for (;i-->0;player++) {
     if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
     else player_update_cpu(battle,player,elapsed);
+    player_refresh_highlight(battle,player);
     if (battle->outcome>-2) return; // Eating poison forces an outcome immediately.
   }
   
@@ -584,6 +633,10 @@ static void player_render(struct battle *battle,struct player *player) {
       graf_tile(&g.graf,tablex+entree->x,entreey+24,entree->tileid,0);
     } else {
       graf_tile(&g.graf,tablex+entree->x,entreey,entree->tileid,0);
+      // If it's near enough to gobble, put an arrow above it. (whether edible or not)
+      if (entree->highlight) {
+        graf_tile(&g.graf,tablex+entree->x,entreey-20,0x69,0);
+      }
     }
   }
   

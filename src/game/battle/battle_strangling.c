@@ -1,8 +1,6 @@
 #include "game/bellacopia.h"
 
 #define END_COOLDOWN 1.0
-#define SKY_COLOR 0x5e9fc7ff
-#define GROUND_COLOR 0x126e29ff
 #define GROUNDY 150
 #define LABEL_SPEED 40.0 /* px/s */
 #define CHANGE_TIME_EASY 5.0 /* Should be a little longer than needed to win; it doesn't change. */
@@ -91,7 +89,7 @@ static void strangling_set_label(struct battle *battle,int labelid,int strix) {
   int srcc=text_get_string(&src,RID_strings_battle,strix);
   egg_texture_del(label->texid);
   if (srcc>0) {
-    label->texid=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
+    label->texid=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),battle->ctab[BATTLE_COLOR_SKY_TEXT]);
     egg_texture_get_size(&label->w,&label->h,label->texid);
   } else {
     label->texid=0;
@@ -332,8 +330,8 @@ static void strangling_render_meter(struct battle *battle,int x,int y,int w,int 
 static void _strangling_render(struct battle *battle) {
 
   // Background.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
+  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // Labels.

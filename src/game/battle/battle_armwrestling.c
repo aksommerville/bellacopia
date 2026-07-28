@@ -8,10 +8,10 @@
 #define STROKEMIN_BEST  0.280
 #define DECAY_WORST     0.500
 #define DECAY_BEST      0.500
-#define CPUTIME_WORST   0.110
-#define CPUTIME_BEST    0.080
+#define CPUTIME_WORST   0.120
+#define CPUTIME_BEST    0.090
 #define CPU_HEADSTART   0.500
-#define CPU_WEAR_OUT    0.003 /* CPU's tap clock increases continuously. If you last long enough, you can win. */
+#define CPU_WEAR_OUT    0.006 /* CPU's tap clock increases continuously. If you last long enough, you can win. */
 #define CPUTIME_LIMIT   0.130
 
 struct battle_armwrestling {
