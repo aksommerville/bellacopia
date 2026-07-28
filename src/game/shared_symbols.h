@@ -208,6 +208,7 @@
 #define NS_itemid_cuppa3 43
 #define NS_itemid_cuppatutti 44
 #define NS_itemid_wishing_well 45 /* Placeholder meaning "whatever's in the well". */
+#define NS_itemid_buried_bridge 46 /* Fake item for use with fishodds. */
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -253,7 +254,8 @@
   _(cuppa2) \
   _(cuppa3) \
   _(cuppatutti) \
-  _(wishing_well)
+  _(wishing_well) \
+  _(buried_bridge)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -322,6 +324,8 @@
 #define NS_activity_iceshop 63
 #define NS_activity_escape_labyrinth 64
 #define NS_activity_purse1 65
+#define NS_activity_grandpa 66
+#define NS_activity_grandkid 67
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -828,7 +832,8 @@
 #define NS_fld_escaped_labyrinth 237
 #define NS_fld_seasonblocks 238 /* Season blocks puzzle in the temple, completed. */
 #define NS_fld_sphinx 239
-#define NS_fld_purse1 240
+#define NS_fld_purse1 240 /* Temple. */
+#define NS_fld_purse2 241 /* Fractia, grandpa's puzzle. */
 
 /* "fld16" are 16 unsigned bits each.
  */

@@ -89,10 +89,16 @@ My little games are almost always under 0:05, and often under one minute.
 Plunder Squad doesn't count because it's configurable.
 Campaign Trail of the Mummy doesn't count because it's on a timer.
 
+Determining the optimal strategy for Bellacopia will be a fun puzzle. If you cheat and get the broom right away, under 8 minutes is possible.
+Got the temple's purse upgrade in 12:00. Ouch, longer than I expected. And would still need to get 100 G and get back to Cheapside to buy it.
+War, then Princess, got the Broom in 10:55.
+Let's put a purse upgrade in Fractia that's easy to get with late inventory eg broom, but possible to get early if you work for it.
+...ha ha yes! Added Grandpa's Puzzle. Now 10:01, and I'm sure that can be improved.
+
 - 0:36:46 Sitter 2009. Cooperative mode, just me. After a few years away, and some mistakes were made.
 - 0:22:29 Tag Team Adventure Quest. Playing solo, and it's been a while.
-- 0:18:11 <<< Bellacopia Maleficia.
 - 0:12:41 Spelling Bee. Takes some knowledge. A more naive path takes more like one hour.
+- 0:10:01 <<< Bellacopia Maleficia.
 - 0:02:19 Full Moon. Using some very non-obvious tricks. Most first-time players take a few hours.
 
 ## Minimum full clear time

@@ -416,6 +416,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0, // There is an associated fld16, but that's not what this means.
   },
+  [NS_itemid_buried_bridge]={ // Fake item for use with fishodds.
+    .tileid=0,
+    .hand_tileid=0,
+    .strix_name=0,
+    .strix_help=0,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
 };
 
 /* Get item reporting.

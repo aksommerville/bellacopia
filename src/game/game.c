@@ -409,6 +409,10 @@ int game_choose_fish(int x,int y,int z) {
             store_set_fld(fld,1);
             return itemid;
           }
+          if (itemid==NS_itemid_buried_bridge) { // Buried bridges are a little different, not subject to odds or clock.
+            if (fld) store_set_fld(fld,1);
+            return itemid;
+          }
           if (fishodds!=NS_fishodds_parent) {
             return game_apply_fishodds(fishodds);
           }

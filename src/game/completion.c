@@ -372,7 +372,8 @@ int last_heart_container_was_collected() {
 int last_gold_upgrade_was_collected() {
   if (store_get_fld(NS_fld_gold_book)) return 0; // Already done, will always be zero now.
   // We'll drive this one just by the scalar purse size, as opposed to the flags associated with those purse upgrades.
+  // But it would also be sensible to check NS_fld_princess,purse1,purse2,etc if we want to.
   int goldmax=store_get_fld16(NS_fld16_goldmax);
-  if (goldmax>=299) return 1; // Got all the purse upgrades. Keep this up to date.
+  if (goldmax>=399) return 1; // Got all the purse upgrades. Keep this up to date.
   return 0;
 }

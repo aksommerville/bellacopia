@@ -40,6 +40,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
+- - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
+- - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.

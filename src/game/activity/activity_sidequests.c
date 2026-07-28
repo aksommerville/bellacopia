@@ -786,3 +786,33 @@ void begin_purse1(struct sprite *sprite) {
     if (!modal) return;
   }
 }
+
+/* Grandpa and grandkid: A purse-upgrade puzzle in Fractia.
+ */
+ 
+static int cb_grandpa(int optionid,void *userdata) {
+  store_set_fld(NS_fld_purse2,1);
+  int goldmax=store_get_fld16(NS_fld16_goldmax);
+  goldmax+=100;
+  store_set_fld16(NS_fld16_goldmax,goldmax);
+  bm_sound(RID_sound_treasure);
+  return 1;
+}
+ 
+void begin_grandpa(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_purse2)) {
+    begin_dialogue(164,sprite);
+  } else {
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=163,
+      .speaker=sprite,
+      .cb=cb_grandpa,
+    };
+    struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  }
+}
+
+void begin_grandkid(struct sprite *sprite) {
+  begin_dialogue(162,sprite);
+}

@@ -50,6 +50,8 @@ void begin_zoo_replay(struct sprite *sprite,int fld);
 void begin_surveyor_entry(struct sprite *sprite,int fld16);
 void begin_escape_labyrinth();
 void begin_purse1(struct sprite *sprite);
+void begin_grandpa(struct sprite *sprite);
+void begin_grandkid(struct sprite *sprite);
 
 // activity_advice.c
 void begin_crystal();

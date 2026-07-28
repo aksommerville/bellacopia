@@ -234,6 +234,22 @@ static void wand_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Raise a buried bridge with the fishpole.
+ * (x,y) in plane meters where the bridge goes.
+ */
+ 
+static void hero_raise_bridge(struct sprite *sprite,int x,int y) {
+  // The map must have a safe tile at 0x0f. If not, quietly do nothing.
+  struct map *map=map_by_sprite_position(x,y,sprite->z);
+  if (!map) return;
+  if (map->physics[0x0f]!=NS_physics_safe) return;
+  x-=map->lng*NS_sys_mapw;
+  y-=map->lat*NS_sys_maph;
+  if ((x<0)||(y<0)||(x>=NS_sys_mapw)||(y>=NS_sys_maph)) return;
+  map->v[y*NS_sys_mapw+x]=0x0f;
+  g.camera.mapsdirty=1;
+}
+
 /* Fishpole.
  */
  
@@ -308,6 +324,11 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
       case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
       case NS_itemid_redfish: battle=NS_battle_redfish; break;
       case NS_itemid_seamonster: battle=NS_battle_seamonster; break;
+      case NS_itemid_buried_bridge: {
+          SPRITE->fish=0;
+          SPRITE->itemid_in_progress=0;
+          return;
+        }
       default: _item_only_: {
           // If it's a thing that can be got, get it.
           int quantity=SPRITE->fishquantity;
@@ -354,6 +375,8 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
           SPRITE->fish=store_get_fld16(NS_fld16_wishing_well);
           store_set_fld16(NS_fld16_wishing_well,0);
           SPRITE->fishquantity=10;
+        } else if (SPRITE->fish==NS_itemid_buried_bridge) {
+          hero_raise_bridge(sprite,x,y);
         }
       } else {
         bm_sound(RID_sound_fishpole_wompwomp);
