@@ -35,7 +35,7 @@
   2      Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
   2____D Curling           IceDragon          IcePalace
-  2      Cutting           Seamstress         Farm
+  2____D Cutting           Crab               Desert
  R2      DanceOff          Rooster            Farm
   2____D Dissection        Doctor             Fractia
   2____D Distancing        Wolf               Woodland

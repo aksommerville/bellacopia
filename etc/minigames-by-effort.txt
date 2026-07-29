@@ -65,7 +65,6 @@ Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself
 Bombing. Mini Super Bomberman?
 Breaching. L/R to turn, tap A to accelerate. Try to hit the surface perpendicular and at maximum velocity. (jumping whale)
 Cinematography. Bat flies across the screen, you have a rectangle that can move and zoom. Keep it in frame as tight as possible.
-Cutting. Auto-sweeping line, press A to commit angle and hold to continue cutting a straight line. Match the pattern.
 Dance Off. Tiny rhythm game on the dpad.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
 Flying. One-button bird race a la Reddin Iggle or Flappy Bird.
