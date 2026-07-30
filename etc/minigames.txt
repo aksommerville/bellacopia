@@ -25,7 +25,7 @@
   2____D CheeseCutting     Executioner        Fractia
   1____D Chess             Sage               Labyrinth
   2E___D Chopping          Goat               Farm
-  1      Cinematography    Filmmaker          Woodland
+  2____D Cinematography    Nosferatu          Cave
   2      ClamBaking        Dragon             Sea
   2      Climbing          Spider             Desert
   2____D Cobbling          Coblin             Goblins

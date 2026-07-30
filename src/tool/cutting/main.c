@@ -119,12 +119,78 @@ static int extract_points(const char *name,int x,int y,int w,int h) {
   return 0;
 }
 
+/* Alpha mode.
+ * GIMP 3 isn't storing chroma from transparent pixels even when I explicitly fucking tell it to.
+ * We need that for images that get rotated scaled up with linear filtering, if their edge isn't black. Doesn't come up a lot in Bellacopia but it does come up.
+ *
+ * Oh for fuck's sake.
+ * It's Egg dropping the alpha, isn't it?
+ */
+ 
+static int alpha_mode() {
+  fprintf(stderr,"%s %dx%d %s. 0x%08x\n",__func__,imgw,imgh,srcpath,img[68*imgw+180]);
+  int changec=0;
+  uint32_t *p=img;
+  int y=0; for (;y<imgh;y++) {
+    int x=0; for (;x<imgw;x++,p++) {
+      uint32_t pixel=*p;
+      if (pixel&0xff000000) continue; // Not transparent, carry on.
+      uint32_t opn=0; // Opaque neighbor or zero. "Opaque" meaning any alpha at all.
+      #define CK(dx,dy) { \
+        int subx=x+(dx),suby=y+(dy); \
+        if ((subx>=0)&&(suby>=0)&&(subx<imgw)&&(suby<imgh)) { \
+          uint32_t qpx=p[(dy)*imgw+(dx)]; \
+          if (qpx&0xff000000) { \
+            if (opn&&(qpx!=opn)) continue; /* Multiple opaque neighbors of different colors. Don't touch it. */ \
+            opn=qpx; \
+          } \
+        } \
+      }
+      CK( 0,-1)
+      CK(-1, 0)
+      CK( 1, 0)
+      CK( 0, 1)
+      if (!opn) {
+        CK(-1,-1)
+        CK( 1,-1)
+        CK(-1, 1)
+        CK( 1, 1)
+      }
+      #undef CK
+      if (!opn) continue; // No opaque neighbor. Leave it be.
+      uint32_t rplc=opn&0x00ffffff;
+      if (*p==rplc) continue; // Already the right value.
+      *p=rplc;
+      changec++;
+    }
+  }
+  if (changec) {
+    struct sr_encoder encoder={0};
+    if (image_encode(&encoder,img,imgw*imgh*4,imgw,imgh)<0) {
+      fprintf(stderr,"%s: Failed to reencode image\n",srcpath);
+      sr_encoder_cleanup(&encoder);
+      return -1;
+    }
+    if (file_write(srcpath,encoder.v,encoder.c)<0) {
+      fprintf(stderr,"%s: Failed to rewrite file, %d bytes\n",srcpath,encoder.c);
+      sr_encoder_cleanup(&encoder);
+      return -1;
+    }
+    fprintf(stderr,"%s: Rewrote file with %d changed pixels, %d bytes.\n",srcpath,changec,encoder.c);
+    sr_encoder_cleanup(&encoder);
+  } else {
+    fprintf(stderr,"%s: No change\n",srcpath);
+  }
+  return 0;
+}
+
 /* --help
  */
  
 static void print_usage() {
   fprintf(stderr,
     "Usage: %s SRCPATH\n"
+    "  --alpha      Alpha mode: Overwrite image in place, replacing transparent pixels with their opaque neighbor.\n"
   ,exename);
 }
 
@@ -136,7 +202,7 @@ int main(int argc,char **argv) {
   /* Read argv.
    */
   if ((argc>=1)&&argv&&argv[0]&&argv[0][0]) exename=argv[0];
-  const char *srcpath=0;
+  int alphamode=0;
   int argi=1;
   while (argi<argc) {
     const char *arg=argv[argi++];
@@ -169,7 +235,12 @@ int main(int argc,char **argv) {
       print_usage();
       return 0;
     }
+    if ((kc==5)&&!memcmp(k,"alpha",5)) {
+      alphamode=1;
+      continue;
+    }
     //TODO options?
+    
    _unexpected_arg_:;
     fprintf(stderr,"%s: Unexpected argument '%s'\n",exename,arg);
     return 1;
@@ -199,6 +270,13 @@ int main(int argc,char **argv) {
     return 1;
   }
   fprintf(stderr,"%s: Got reference image, %dx%d pixels.\n",srcpath,imgw,imgh);
+  
+  /* "alpha mode" shoe-horned in here just to avoid writing another tool.
+   */
+  if (alphamode) {
+    if (alpha_mode()<0) return 1;
+    return 0;
+  }
 
   /* Slice and analyze.
    */
