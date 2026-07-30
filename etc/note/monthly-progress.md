@@ -159,17 +159,21 @@ Crossed the halfway point for battles! There are now more implemented battles th
 Running the full-clear time a bit early, 50e80512014834c14a193fee607ce575ababbe52 on 2026-07-26, since I might not have time on the 31st.
 Also, doing it in web for the first time, just to ensure everything in web is kosher. (have only been spot-checking up to now).
 2:24:14
+...but having added tricksy early broom access, I think it will be back under 2 hours... 2:08:30. But could be done under 2, I'm sure.
+Hm. Funny how little impact the early broom had. It certainly felt different.
 
 Goals:
 - [x] 20 new battles.
-- [ ] Cutscenes.
+- [x] Cutscenes.
 
 ## August 2026
 
 LowRez and js13k are this month, and I am doing both. So don't expect a lot of Bellacopia progress.
+Still, try to do something every day, even if it's just some wee touch-up somewhere.
 
 Goals:
-- [ ] All battles complete.
+- [ ] 10 new battles.
+- [ ] Cheapside and Botire interiors.
 
 ## September 2026
 

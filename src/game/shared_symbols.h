@@ -502,6 +502,7 @@
 #define NS_battle_scubatuba 87
 #define NS_battle_math 88
 #define NS_battle_cutting 89
+#define NS_battle_breaching 90
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -591,7 +592,8 @@
   _(jousting) \
   _(scubatuba) \
   _(math) \
-  _(cutting)
+  _(cutting) \
+  _(breaching)
 
 /* "fld" are single bits.
  */

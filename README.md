@@ -62,6 +62,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Election story runs even if you lose the election contest.
 - [ ] Checkmark on jigsaws in the closet, if fully assembled.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
+- [ ] Sometimes the wall bonk sound plays repeatedly.
+- [ ] Make a passage from the wishing well to the Fractia secret door right next to it. Open from the secret-door side, with the Marionette.
+- [ ] If you skip kidnapping by using the goblins' secret door, will you never learn the kidnap story? We can't have that; it makes 100% unreachable.
+- - We could put the kidnap story up for sale, at the goblins' lemonade stand, when the situation arises. (assuming it does)
 
 - Battles written but not placed.
 
