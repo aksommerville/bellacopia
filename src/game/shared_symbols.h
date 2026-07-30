@@ -838,6 +838,7 @@
 #define NS_fld_sphinx 239
 #define NS_fld_purse1 240 /* Temple. */
 #define NS_fld_purse2 241 /* Fractia, grandpa's puzzle. */
+#define NS_fld_wishing_well_passage 242
 
 /* "fld16" are 16 unsigned bits each.
  */
