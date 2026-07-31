@@ -57,18 +57,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] Set imageid_default in battles where warranted.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
-- [x] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
-- - This is due to reverse door mitigation. It actually does try to re-enter the door first, before kicking off the bus's transition.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
-- [x] Election story runs even if you lose the election contest.
 - [ ] Checkmark on jigsaws in the closet, if fully assembled.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
-- [x] Make a passage from the wishing well to the Fractia secret door right next to it. Open from the secret-door side, with the Marionette.
-- [x] If you skip kidnapping by using the goblins' secret door, will you never learn the kidnap story? We can't have that; it makes 100% unreachable.
-- - We could put the kidnap story up for sale, at the goblins' lemonade stand, when the situation arises. (assuming it does)
-- - ...doesn't matter. `NS_fld_kidnap` gets set quietly when you cross the trigger point, and you magically acquire the story.
-- [x] Revisit reverse door mitigation, sometimes it feels too eager.
 
 - Battles written but not placed.
 
@@ -80,7 +72,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
 - - [ ] A cow or something, that approaches you when you ring the bell.
-- - [x] Use Snowglobe to put unreachable alphabet blocks in order.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
@@ -141,21 +132,18 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.
-- [x] armwrestling: Nerf.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [x] calligraphy: No fun, eliminate. ...actually! If we show the reference image always, it's pretty nice. The challenge is the etch-a-sketch controls, not the guessing-where-pixels-go.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
-- [x] gobbling: Nerf a little. Should be easy.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
+- [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
-- [x] strangling: Use ctab. Pretty sure the foreground graphics are agnostic.
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
@@ -166,10 +154,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Review economy, balance prices etc.
 - [ ] Can we passively enable mouse for all modals? Today you can use the mouse for jigsaw but it stops working when you click any other tab. I think users won't like that.
 - [ ] Make the songs longer. Aim for 2 minutes per song.
-- [ ] Home Run Derby pleases me so good, I want to make a whole baseball minigame. Is that crazy? Can we work it in there somewhere?
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
-- [ ] Is it possible to render Racketeering Contest to work with red-and-blue 3D glasses?
 - [ ] Review song and sound levels, right now they're pretty heterogenous.
 - [ ] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
@@ -266,9 +252,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Don't delete finished items.
 - [x] End the war => Hookshot
-- [ ] Run for mayor => no prize
+- [x] Run for mayor => no prize
 - [x] Hat the barrels => Bell
-- [ ] Catch em all => (incremental; multiple)
+- [x] Catch em all => (incremental; multiple)
 - [x] Rescue the Princess => purse+100
 - [x] Decipher the goblins' text => Phonograph
 - [x] Escape the labyrinth => no prize?
@@ -276,48 +262,15 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The toad and the boulder => no prize?
 - [x] Inventory critic => hc3
 - [ ] Expensive health care => Heart Container, plus incremental prizes. Can't be gold.
-- [ ] Worldwide broom races => ?
-- [ ] Tree stories => ?
+- [x] Worldwide broom races => ?
+- [x] Tree stories => ?
 - [ ] Reverse Sokoban => ?
 - [x] Bridges => The bridges are their own prize.
 - This set of quests doesn't feel adequate. Need like a dozen more.
 
 - Prizes unassigned.
-- [x] Magnifier. Buy in Temple Gift Shop. Maybe temporary.
-- [x] Telescope. Buy in Temple Gift Shop. Maybe temporary.
-- [x] hc1: castleshop
-- [x] hc2: temple pool
-- [x] hc3: invcritic
-- [x] hc4: south jungle
 - [ ] hc5
-- [x] Bomb: inconvenience
-- [x] Stopwatch: underworld, temporarily
-- [x] Bus Stop: inconvenience
-- [x] Snowglobe: Ice Palace.
-- [x] Tape Measure: underworld, temporarily
-- [x] Phonograph: Goblins' cave.
-- [x] Crystal Ball: underworld, temporarily
-- [x] Power Glove: Sea monster (Labyrinth).
-- [x] Marionette: underworld, temporarily
-- Can add as many purse upgrades as we like. I guess no more than 9, so it stays within 3 digits?
-
-- Stories
-- `story1` `NS_fld_mayor`
-- `story2` `NS_fld_war_over`
-- `story3` `NS_fld_kidnapped`
-- `story4` `NS_fld_recued_princess`
-- `story5` `NS_fld_escaped_labyrinth`
-- `story6` `NS_fld_root7`: Desert root devil.
-- `story7` `NS_fld_barrelhat_all`
-- `story8` `NS_fld_hc3`: Too Many Things = Pass inventory critic. Not perfect.
-- `story9` Broom Races: TODO
-- `story10` World Traveller: TODO (and not at all sure that it will be "World Traveller")
-- `story11` On Carpentry: TODO ('')
-- `story12` De Re Piscatarii: TODO ('')
-- `story13` `NS_fld_root_all`
-- `story14` The Witch With Lots Of Heart: TODO (could be anything)
-- `story15` Pocketfuls of Gold: TODO ('')
-- `story16` The Brewing of Potions: Sell directly at the potion shop.
+- [ ] purse3 (the king's purse upgrade doesn't have a "purse" name, purse3 is the fourth and last)
 
 ## Battles That Aren't Real Battles
 
@@ -374,6 +327,8 @@ Before the first release, validate and clean up this list. And if in-game credit
 - Morse Code Contest: "What hath God wrought" -Samuel Morse
 - Play testers: Alex, Xiangsi, Nick, Shawn, Katy
 - One of the Regex Contest clues is "Grumble, grumble", a reference to Zelda.
+- "Nyarlathotep" borrowed from Lovecraft, I think it was The Case of Charles Dexter Ward?
+- "Nosferatu" borrowed from the FW Murnau film, tho I think it's an ordinary word? ...a little googling suggests it's a corruption of the Romanian word for "plague", introduced by Bram Stoker.
 
 ## Morally Questionable
 

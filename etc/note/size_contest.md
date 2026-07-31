@@ -3,7 +3,7 @@
 By any reasonable standard, it's the largest game I've ever written.
 It amuses me to quantify this.
 
-Stats for bellacopia are from dfe4f66a58280d502f690ccb7c6323b81f86e50c, 15 July 2026. Still very incomplete.
+Stats for bellacopia are from dc580bb73e4ea7aeec8f2d94a50deee4b0e12c79, 31 July 2026. Still very incomplete.
 Currently the largest by 3/8 criteria.
 
 Would be cool to compare to others' games too, especially broadly-familiar ones like Zelda.
@@ -18,7 +18,7 @@ Using the same standard as my [journal](https://github.com/aksommerville/journal
 - 3563520 Bandit. Bloated due to uncompressed graphics, and surely lots of other poor design choices.
 - 3051520 Master Zen. ''
 - 2448768 Campaign Trail of the Mummy. Lots of high-resolution graphics. Not super wasteful tho.
-- 1607415 <<< Bellacopia Maleficia.
+- 1868769 <<< Bellacopia Maleficia.
 - 1494423 Secret of the Octopotamus. Pygame, so the bloated source is part of the distro.
 - 1243282 Full Moon.
 - 1189146 Sitter 3. Pygame.
@@ -34,7 +34,7 @@ Source for everything before Secret of the Octopotamus has been lost. I doubt th
 
 -  96226 Plunder Squad. Includes drivers and tooling.
 -  87747 Full Moon. Includes drivers and tooling.
--  72145 <<< Bellacopia Maleficia.
+-  80520 <<< Bellacopia Maleficia.
 -  22247 Campaign Trail of the Mummy.
 -  21584 Sitter 2009.
 -  20009 Ivan Denisovich. No idea why this ended up so big.
@@ -47,7 +47,7 @@ Combined pixel count of all images shipped with the game.
 `egglist list -fsize DIRECTORY` if they're stored loose.
 Bandit and Master Zen are unknown; got to figure out how to decode their graphics. I bet they're both over a million.
 
-- 4616044 <<< Bellacopia Maleficia.
+- 5336940 <<< Bellacopia Maleficia.
 - 2412544 Campaign Trail of the Mummy.
 - 1787678 Spelling Bee.
 - 1594368 Full Moon.
@@ -63,8 +63,8 @@ Bandit, Sitter 2009, and Plunder Squad all have substantial music, but all in tr
 
 - 1:03:27 (19) Master Zen. Expect this record to stand for all time!
 - 0:17:40 (14) Full Moon.
+- 0:10:43 (17) <<< Bellacopia Maleficia. Includes a few dummy songs but I don't think that matters much.
 - 0:10:40 (14) Spelling Bee.
-- 0:10:33 (17) <<< Bellacopia Maleficia.
 
 ## World size in screenfuls
 
@@ -108,7 +108,7 @@ Tho actually, I bet Bandit is way up there, it had a bunch of side quests.
 
 For games that distinguish Full Clear from Any%.
 
-- 2:04:51 <<< Bellacopia Maleficia.
+- 2:08:30 <<< Bellacopia Maleficia.
 - 0:21:23 Spelling Bee.
 - 0:03:59 Full Moon. Kind of ridiculous.
 
@@ -123,6 +123,6 @@ The little games are typically one or two weeks.
 
 - 380 2017-09-15..2018-09-30 Plunder Squad. First commit says "begin version control". Unclear how much work had been done before that; can't be much.
 - 265 2023-01-06..2023-09-29 Full Moon.
-- 208 2025-12-18..2026-07-15 <<< Bellacopia Maleficia.
+- 224 2025-12-18..2026-07-31 <<< Bellacopia Maleficia.
 -  77 2024-10-07..2024-12-23 Spelling Bee.
 -  53 2015-08-12..2015-10-04 Campaign Trail of the Mummy. Work had been done before version control.

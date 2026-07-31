@@ -150,26 +150,32 @@ Stats as of 863805772e927286f08a03cf482670292951f3ac, 2026-06-30:
 
 Battle count now, just take the assigned `NS_battle_` symbols from `shared_symbols.c`. That's exactly what we had before, just easier to grok. (ie all but `battle_placeholder`)
 
-On 5 July, the ROM crossed floppy disk size. Web zip is still under a meg.
-And as of 23 July, our ROM is more than twice as big as Spelling Bee's, which in turn is about four times larger than 3rd place, Season of Penance.
-We've surpassed egg2 in source size (egg2 is currently 71272 lines), and we're the 3rd-largest project I've ever written. Will be first by the end, no doubt at all.
-I also checked the graphics size (pixel count) of all my older games -- we're the largest, and it's not even close.
-Crossed the halfway point for battles! There are now more implemented battles than planned ones.
-
-Running the full-clear time a bit early, 50e80512014834c14a193fee607ce575ababbe52 on 2026-07-26, since I might not have time on the 31st.
-Also, doing it in web for the first time, just to ensure everything in web is kosher. (have only been spot-checking up to now).
-2:24:14
-...but having added tricksy early broom access, I think it will be back under 2 hours... 2:08:30. But could be done under 2, I'm sure.
-Hm. Funny how little impact the early broom had. It certainly felt different.
-
 Goals:
-- [x] 20 new battles.
+- [x] 20 new battles. ...27!
 - [x] Cutscenes.
+
+Lots of progress this month, I wish they could all be so productive!
+Crossed some interesting thresholds:
+ - 80k lines of source (added just over 20k), and it's now the third-largest project I've ever written, after Plunder Squad and Full Moon.
+ - ROM no longer fits on a floppy disk. Linux build is over 2 MB and web Zip is over 1 MB.
+ - Took a bunch of other measurements across most of my games, see `size_contest.md`. We're likely to end up first by all but 2 of the 8 metrics. (total size and music time)
+ - We're now past the halfway point for battles. 91 complete, and 65 planned.
+ - Cutscenes started and finished! Except a few things that don't exist yet have placeholders, and of course there will be tweaking in the future.
+ - Passed the 2-hour mark for full clear. (i'm sure it still can be done under 2, with some effort)
+
+Stats as of dc580bb73e4ea7aeec8f2d94a50deee4b0e12c79, 2026-07-31:
+ - Code: 80520
+ - `rom=1868769 code=965911 image=5336940px*87 song=10:43.895*19 sound=0:27.112*81 map=84960m*354`
+ - Battles: 91
+ - 100%: 2:08:30
+ - Minm:   27:49
+ - Any%:   14:08
 
 ## August 2026
 
 LowRez and js13k are this month, and I am doing both. So don't expect a lot of Bellacopia progress.
 Still, try to do something every day, even if it's just some wee touch-up somewhere.
+There's a bunch of little things on the to-do list, that can be grabbed for a half hour's work here or there. Interior graphics are a good choice.
 
 Goals:
 - [ ] 10 new battles.
@@ -177,14 +183,30 @@ Goals:
 
 ## September 2026
 
+Doing the GDEX game jam and maybe Uplifting too. So like August, it will be a slow Bellacopia month.
+
 Goals:
-- [ ] Feature-complete. Entire game is playable, presentable, and arguably finished.
+- [ ] 10 new battles.
 
 ## October 2026
 
+GDEX mid-month, and I expect to spend most of the time before that in GDEX-specific prep.
+But from the 19th onward, there's nothing planned, and we can really dig in and crank this thing out.
+
+Goals:
+- [ ] 20 new battles.
+- [ ] All decorative interiors complete: Cheapside, Botire, Fractia, Ice Palace, Sand Castle, Temple.
+
 ## November 2026
 
+Goals:
+- [ ] All battles complete. Should be about 20, if I meet the Aug, Sep, and Oct goals.
+- [ ] Underworld and outerworld fully decorated.
+- [ ] All quests finalish. (as of 31 July, still need Toad and Boulder, hc5, purse3, post-princess, and refined zoos)
+
 ## December 2026
+
+I'd like to enter December with only Arcade Mode, credits, and touch-up outstanding.
 
 Goals:
 - [ ] Bend every effort toward finishing before end of year, if we haven't yet.
