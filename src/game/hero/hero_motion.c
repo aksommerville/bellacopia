@@ -139,6 +139,43 @@ static int hero_fudge_vert(struct sprite *sprite,double elapsed) {
   return moved;
 }
 
+/* Hero has bumped something and is standing on a door.
+ * Return nonzero if we should trigger the door.
+ * (x,y) and (blx,bly) are relative to (map).
+ */
+ 
+static int hero_allow_reverse_door_mitigation(struct sprite *sprite,const struct map *map,int x,int y,int blx,int bly) {
+
+  // Either point OOB, shouldn't happen, but decline and abort.
+  if ((blx<0)||(blx>=NS_sys_mapw)||(bly<0)||(bly>=NS_sys_maph)) return 0;
+  if ((x<0)||(x>=NS_sys_mapw)||(y<0)||(y>=NS_sys_maph)) return 0;
+  
+  // The thing we bumped into must be solid. Not, eg, the bus.
+  uint8_t physics=map->physics[map->v[bly*NS_sys_mapw+blx]];
+  switch (physics) {
+    case NS_physics_solid:
+    case NS_physics_grabbable:
+      break;
+    default: return 0;
+  }
+  
+  // The opposite side must be passable. We only want the inside of the door, not its frame.
+  int opx=x-(blx-x);
+  int opy=y-(bly-y);
+  if ((opx>=0)&&(opy>=0)&&(opx<NS_sys_mapw)&&(opy<NS_sys_maph)) {
+    physics=map->physics[map->v[opy*NS_sys_mapw+opx]];
+    switch (physics) {
+      case NS_physics_vacant:
+      case NS_physics_safe:
+      case NS_physics_ice:
+        break;
+      default: return 0;
+    }
+  }
+
+  return 1;
+}
+
 /* Just collided with a wall.
  * Scan for any bump activities and trigger them.
  */
@@ -192,8 +229,10 @@ static void hero_check_bumps(struct sprite *sprite) {
           int dsty=cmd.arg[5];
           int fld=(cmd.arg[6]<<8)|cmd.arg[7];
           if ((cmd.opcode==CMD_map_burieddoor)&&!store_get_fld(fld)) break;
-          SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
-          _hero_tread_poi(sprite,cmd.opcode,cmd.arg,cmd.argc);
+          if (hero_allow_reverse_door_mitigation(sprite,map,mex,mey,x,y)) {
+            SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
+            _hero_tread_poi(sprite,cmd.opcode,cmd.arg,cmd.argc);
+          }
         } break;
       case CMD_map_flammable: { // Bump into a flammable with a match burning, it burns and your match goes out.
           if (SPRITE->matchclock<=0.0) break;

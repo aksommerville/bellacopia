@@ -57,7 +57,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] Set imageid_default in battles where warranted.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
-- [ ] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
+- [x] Bus stop immediately after passing thru a door, you briefly see the map you came from during the transition.
+- - This is due to reverse door mitigation. It actually does try to re-enter the door first, before kicking off the bus's transition.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
 - [x] Election story runs even if you lose the election contest.
 - [ ] Checkmark on jigsaws in the closet, if fully assembled.
@@ -67,7 +68,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] If you skip kidnapping by using the goblins' secret door, will you never learn the kidnap story? We can't have that; it makes 100% unreachable.
 - - We could put the kidnap story up for sale, at the goblins' lemonade stand, when the situation arises. (assuming it does)
 - - ...doesn't matter. `NS_fld_kidnap` gets set quietly when you cross the trigger point, and you magically acquire the story.
-- [ ] Revisit reverse door mitigation, sometimes it feels too eager.
+- [x] Revisit reverse door mitigation, sometimes it feels too eager.
 
 - Battles written but not placed.
 

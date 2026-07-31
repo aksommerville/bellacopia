@@ -796,8 +796,6 @@ void camera_render_pretransition(int dsttexid) {
     camera_render_chronflakes();
   }
   
-  //TODO Weather.
-  
   graf_set_output(&g.graf,1);
 }
 
