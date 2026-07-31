@@ -56,7 +56,7 @@ int zoo_get_spriteid(int fld) {
     case NS_fld_zoo5_3: return RID_sprite_elephant;
     // zoo6: mountains
     case NS_fld_zoo6_0: return RID_sprite_leopard;
-    case NS_fld_zoo6_1: return RID_sprite_koala;
+    case NS_fld_zoo6_1: return RID_sprite_sparrow;
     case NS_fld_zoo6_2: return RID_sprite_goat;
     case NS_fld_zoo6_3: return RID_sprite_soldier;
     // zoo7: west tundra

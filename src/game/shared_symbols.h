@@ -504,6 +504,7 @@
 #define NS_battle_cutting 89
 #define NS_battle_breaching 90
 #define NS_battle_cinematography 91
+#define NS_battle_flying 92
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -595,7 +596,8 @@
   _(math) \
   _(cutting) \
   _(breaching) \
-  _(cinematography)
+  _(cinematography) \
+  _(flying)
 
 /* "fld" are single bits.
  */

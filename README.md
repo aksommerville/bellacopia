@@ -61,6 +61,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Checkmark on jigsaws in the closet, if fully assembled.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
+- [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 
 - Battles written but not placed.
 
@@ -134,6 +135,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Battle repairs.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
+- [ ] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
