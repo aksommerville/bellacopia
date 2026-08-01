@@ -62,6 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
+- [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 
 - Battles written but not placed.
 
