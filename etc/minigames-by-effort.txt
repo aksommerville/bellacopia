@@ -61,7 +61,6 @@ Watermelon. Hold A to charge and release to spit a seed, going for distance.
 ## Hard
 Whining. Get mama bear's attention by tapping U when she's looking and A when not.
 Wining. Big pile of grapes that you jump on to squash.
-Wrapping. Place the toy in the middle of the wrapping paper, and it wraps itself. Score is how close to center.
 Bombing. Mini Super Bomberman?
 Dance Off. Tiny rhythm game on the dpad.
 Flipping. Bounce on a trampoline. Well-timed A to bounce higher. L/R to turn. First to flip and land feet-down wins.
@@ -73,3 +72,4 @@ Robohorse. L/R control the horse's two legs. QWOP-ish.
 Invading. Space Invaders, play as the horde.
 Defending. Space Invaders, play as usual. These would make a great pair in the battlefield!
 Shooting. Wolfenstein with a basketball.
+Rapping. Hiphoppotamus.
