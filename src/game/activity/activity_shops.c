@@ -78,6 +78,11 @@ static int cb_brewer_fill(int option,void *userdata) {
   return 1;
 }
 
+static int cb_brewer_join_post(int optionid,void *userdata) {
+  game_check_inventory_completion();
+  return 0;
+}
+
 static int cb_brewer_join(int option,void *userdata) {
   if (option!=4) return 0;
   int gold=store_get_fld16(NS_fld16_gold);
@@ -90,7 +95,14 @@ static int cb_brewer_join(int option,void *userdata) {
   gold-=10;
   store_set_fld16(NS_fld16_gold,gold);
   bm_sound(RID_sound_treasure);
-  begin_dialogue(127,0);
+  // Don't use begin_dialogue() here. We need to check after the dialogue, whether it's the last item.
+  // It's a pretty crazy world where buying potion is the very last item you collect, but it's certainly possible.
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=127,
+    .cb=cb_brewer_join_post,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
   return 1;
 }
  

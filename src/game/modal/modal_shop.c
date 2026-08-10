@@ -269,6 +269,9 @@ static void shop_purchase(struct modal *modal,const struct option *option) {
   // Dismiss.
   if (jingle) bm_sound(RID_sound_uiactivate);
   MODAL->stage=STAGE_FAREWELL;
+  
+  // Give game a chance to trigger all-items-collected.
+  game_check_inventory_completion();
 }
 
 /* Activate.

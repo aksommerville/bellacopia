@@ -469,6 +469,27 @@ static void game_report_item_full(int itemid) {
   int textc=text_get_string(&text,RID_strings_item,49);
   sprite_toast_set_text(sprite,text,textc);
 }
+
+// After dismissing game_report_item_acquire's modal, if it was the final item.
+static int cb_item_acquire_final(int optionid,void *userdata) {
+  store_set_fld(NS_fld_all_inventory,1);
+  struct modal_args_cutscene args={
+    .strix_title=8,
+    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  };
+  struct modal *modal=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
+  return 0;
+}
+
+void game_check_inventory_completion() {
+  if (store_get_fld(NS_fld_all_inventory)) return;
+  const struct invstore *invstore=g.store.invstorev;
+  int i=INVSTORE_SIZE;
+  for (;i-->0;invstore++) {
+    if (!invstore->itemid) return;
+  }
+  cb_item_acquire_final(0,0);
+}
  
 static void game_report_item_acquire(int itemid,int quantity) {
   // (quantity) will be zero for singletons.
@@ -509,9 +530,25 @@ static void game_report_item_acquire(int itemid,int quantity) {
     }
   }
   
+  // Check whether inventory is now full. If so, we'll trigger the story after this dialogue modal dismisses.
+  int invfull=1;
+  if (store_get_fld(NS_fld_all_inventory)) {
+    invfull=0; // Already done it.
+  } else {
+    const struct invstore *invstore=g.store.invstorev;
+    int i=INVSTORE_SIZE;
+    for (;i-->0;invstore++) {
+      if (!invstore->itemid) {
+        invfull=0;
+        break;
+      }
+    }
+  }
+  
   struct modal_args_dialogue args={
     .text=msg,
     .textc=msgc,
+    .cb=invfull?cb_item_acquire_final:0,
   };
   modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }

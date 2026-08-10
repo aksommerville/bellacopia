@@ -45,7 +45,6 @@ void game_tell_story(const struct story *story) {
   if (!story) return;
   int postaction=0; // What to do after the cutscene: -1,0,1=reject,nothing,accept
   int treefld=stories_get_tree_field();
-  fprintf(stderr,"%s:%d:%s:TODO: Tell story (strix %d), tree?%d\n",__FILE__,__LINE__,__func__,story->strix_title,treefld);
   
   // If this tree is already satisfied, pretend it's not there.
   if (treefld&&store_get_fld(treefld)) treefld=0;

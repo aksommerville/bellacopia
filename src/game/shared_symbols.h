@@ -849,6 +849,7 @@
 #define NS_fld_purse1 240 /* Temple. */
 #define NS_fld_purse2 241 /* Fractia, grandpa's puzzle. */
 #define NS_fld_wishing_well_passage 242
+#define NS_fld_all_inventory 243 /* Sets when you get the last item. */
 
 /* "fld16" are 16 unsigned bits each.
  */

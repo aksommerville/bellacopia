@@ -30,10 +30,13 @@ static void things_89(double elapsed,int strix,int framec) {
   still(128,80,128,80);
 }
 
-//90 But it's OK, because she put them all in alphabetical order!
+/*90 But it's OK, because she put them all in alphabetical order!
+ * XXX We're now triggering when the last thing gets collected, so this frame doesn't make sense anymore.
+ * (in fact, we know definitely that she has *not* put them in alphabetical order yet!)
 static void things_90(double elapsed,int strix,int framec) {
   still(0,160,128,80);
 }
+/**/
 
 /* Table of contents.
  */
@@ -43,5 +46,5 @@ const struct story_step story_stepv_things[]={
   {things_87,87,0},
   {things_88,88,0},
   {things_89,89,0},
-  {things_90,90,0},
+  //{things_90,90,0},
 {0}};

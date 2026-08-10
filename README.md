@@ -51,7 +51,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Make vanishing cream last a little longer.
-- [ ] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
+- [x] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
 - - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
 - - Or maybe have the Things Story trigger when you get the last item, instead of triggering off Inventory Critic. That didn't make sense anyway.
 - [ ] Some little fanfare on reaching 100%.

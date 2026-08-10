@@ -48,6 +48,11 @@ uint8_t bm_battle_bias(int battleid);
  */
 int game_get_item(int itemid,int quantity);
 
+/* If you add an item via store_add_itemid() directly, you *must* call this after.
+ * It might trigger the all-items-collected cutscene.
+ */
+void game_check_inventory_completion();
+
 /* Fails if this thing isn't losable, quantity is zero or negative, or quantity exceeds possessed quantity.
  * Does not perform any bells or whistles (ie it's not the exact opposite of game_get_item).
  */

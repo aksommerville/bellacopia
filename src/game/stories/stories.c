@@ -89,7 +89,7 @@ static struct story storyv[16]={
     .tileid_large=0x2e,
     .strix_title=8,
     .strix_desc=24,
-    .fld_present=NS_fld_hc3,
+    .fld_present=NS_fld_all_inventory,
     .fld_told=NS_fld_story8,
   },
   {
