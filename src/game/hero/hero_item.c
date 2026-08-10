@@ -349,7 +349,7 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
         .battle=battle,
         .args={
           .difficulty=0x80,
-          .bias=0x80,
+          .bias=0x80, // Should we use bm_battle_bias() here, to involve goodluck and powerglove? I'm thinking no.
           .lctl=1,
           .rctl=0,
           .lface=NS_face_dot,

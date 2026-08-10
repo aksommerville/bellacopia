@@ -162,7 +162,7 @@ void begin_battle(struct sprite *sprite,int battleid) {
     .battle=battleid,
     .args={
       .difficulty=0x80,
-      .bias=0x80,
+      .bias=bm_battle_bias(battleid),
       .lctl=1,
       .rctl=0,
       .lface=NS_face_dot,

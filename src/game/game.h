@@ -37,6 +37,9 @@ int game_warp(int mapid,int transition);
 void game_hurt_hero();
 void game_begin_gameover(); // Called by game_hurt_hero when warranted, but also sprite_hero.c:hero_hurt calls it.
 
+/* Takes care of goodluck and power glove for you.
+ * All battles should call this, unless you have a good reason not to.
+ */
 uint8_t bm_battle_bias(int battleid);
 
 /* Inventory: inventory.c

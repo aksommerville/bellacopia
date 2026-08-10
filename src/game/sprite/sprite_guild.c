@@ -119,7 +119,7 @@ static void _guild_collide(struct sprite *sprite,struct sprite *other) {
     .battle=SPRITE->battle,
     .args={
       .difficulty=0x80,
-      .bias=0x80,
+      .bias=bm_battle_bias(SPRITE->battle),
       .rctl=0,
       .rface=NS_face_monster,
     },

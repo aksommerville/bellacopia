@@ -632,7 +632,7 @@ static int cb_medomat_choose(int optionid,void *userdata) {
     .battle=NS_battle_medomat,
     .args={
       .difficulty=0x80,
-      .bias=0x80,
+      .bias=0x80, // medomat doesn't change for bias or difficulty, so don't consume a goodluck
       .lctl=1,
       .rctl=0,
       .lface=NS_face_dot,

@@ -48,7 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [x] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
-- [ ] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
+- [x] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Make vanishing cream last a little longer.
 - [x] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.

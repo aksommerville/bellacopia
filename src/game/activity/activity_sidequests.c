@@ -668,7 +668,7 @@ static int cb_zoo_replay(int optionid,void *userdata) {
     .battle=battleid,
     .args={
       .difficulty=0x80,
-      .bias=0x80,
+      .bias=bm_battle_bias(battleid),
       .rctl=0,
       .rface=NS_face_monster,
       .lctl=1,

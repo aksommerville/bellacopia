@@ -60,6 +60,7 @@ static int cb_board_of_elections_vote(int optionid,void *userdata) {
       .args={
         // The actual bias will be determined by the battle itself.
         // It needs fine-grained knowledge of the bias's constituents for presentation purposes.
+        // This battle is special. Power Glove and Good Luck don't influence it.
         .difficulty=0x80,
         .bias=0x80,
         .lctl=1,
