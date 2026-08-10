@@ -55,7 +55,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
 - - Or maybe have the Things Story trigger when you get the last item, instead of triggering off Inventory Critic. That didn't make sense anyway.
 - [ ] Some little fanfare on reaching 100%.
-- [ ] Set imageid_default in battles where warranted.
+- [x] Set imageid_default in battles where warranted.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
 - [ ] Checkmark on jigsaws in the closet, if fully assembled.
@@ -64,8 +64,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
-
-- Battles written but not placed.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -135,10 +133,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.
+- [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
+- [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
+- [ ] greenfish,bluefish,redfish: Sound when you grab it.
 - [ ] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.

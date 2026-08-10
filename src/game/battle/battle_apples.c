@@ -360,6 +360,7 @@ const struct battle_type battle_type_apples={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_a,
+  .imageid_default=RID_image_caves,
   .del=_apples_del,
   .init=_apples_init,
   .update=_apples_update,

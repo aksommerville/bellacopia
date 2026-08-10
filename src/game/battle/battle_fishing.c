@@ -473,6 +473,7 @@ const struct battle_type battle_type_fishing={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_horz,
+  .imageid_default=RID_image_temple,
   .del=_fishing_del,
   .init=_fishing_init,
   .update=_fishing_update,

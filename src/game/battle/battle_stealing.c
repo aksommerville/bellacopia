@@ -747,6 +747,7 @@ const struct battle_type battle_type_stealing={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_horz,
+  .imageid_default=RID_image_caves,
   .del=_stealing_del,
   .init=_stealing_init,
   .update=_stealing_update,

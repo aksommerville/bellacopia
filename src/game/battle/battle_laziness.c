@@ -466,6 +466,7 @@ const struct battle_type battle_type_laziness={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_horz,
+  .imageid_default=RID_image_caves,
   .del=_laziness_del,
   .init=_laziness_init,
   .update=_laziness_update,

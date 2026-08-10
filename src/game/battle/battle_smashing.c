@@ -658,6 +658,7 @@ const struct battle_type battle_type_smashing={
   .support_cvc=1,
   .update_during_report=1,
   .input=battle_input_a,
+  .imageid_default=RID_image_labyrinth,
   .del=_smashing_del,
   .init=_smashing_init,
   .update=_smashing_update,

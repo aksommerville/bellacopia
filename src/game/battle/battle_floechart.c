@@ -510,6 +510,7 @@ const struct battle_type battle_type_floechart={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_horz_a,
+  .imageid_default=RID_image_tundra,
   .del=_floechart_del,
   .init=_floechart_init,
   .update=_floechart_update,

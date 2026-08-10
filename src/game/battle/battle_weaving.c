@@ -533,6 +533,7 @@ const struct battle_type battle_type_weaving={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_horz, // Maybe we should declare 'dpad'? Verts work too and are arguably more comprehensible.
+  .imageid_default=RID_image_caves,
   .del=_weaving_del,
   .init=_weaving_init,
   .update=_weaving_update,

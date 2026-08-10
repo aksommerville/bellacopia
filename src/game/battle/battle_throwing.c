@@ -418,6 +418,7 @@ const struct battle_type battle_type_throwing={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_a_hold,
+  .imageid_default=RID_image_caves,
   .del=_throwing_del,
   .init=_throwing_init,
   .update=_throwing_update,

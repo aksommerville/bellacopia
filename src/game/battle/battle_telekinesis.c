@@ -386,6 +386,7 @@ const struct battle_type battle_type_telekinesis={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_dpad,
+  .imageid_default=RID_image_labyrinth,
   .del=_telekinesis_del,
   .init=_telekinesis_init,
   .update=_telekinesis_update,

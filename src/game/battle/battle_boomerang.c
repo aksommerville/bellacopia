@@ -521,6 +521,7 @@ const struct battle_type battle_type_boomerang={
   .support_pvp=1,
   .support_cvc=1,
   .input=boomerang_input,
+  .imageid_default=RID_image_desert,
   .del=_boomerang_del,
   .init=_boomerang_init,
   .update=_boomerang_update,
