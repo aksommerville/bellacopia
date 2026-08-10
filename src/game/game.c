@@ -63,6 +63,7 @@ int game_reset(int use_save) {
   feet_reset();
   spawner_reset();
   cartographer_reset();
+  zoo_reset();
   g.bugspray=0.0;
   g.vanishing=0.0;
   g.flash=0.0;

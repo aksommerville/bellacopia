@@ -372,6 +372,10 @@ int zoo_get_ticker_text(char *dst,int dsta,int fld);
  */
 int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid);
 
+/* The zoo has a private cache that you must clear when resetting the game.
+ */
+void zoo_reset();
+
 /* Surveyor contest: surveyor.c
  ************************************************************************/
  
