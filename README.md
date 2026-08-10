@@ -63,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
+- [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 
 - Battles written but not placed.
 
