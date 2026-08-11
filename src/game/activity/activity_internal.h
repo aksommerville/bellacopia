@@ -70,6 +70,7 @@ void begin_exit_cave(struct sprite *hero); // Door activities get the hero as in
 void begin_logproblem1(struct sprite *initiator);
 void begin_logproblem2(struct sprite *initiator);
 void begin_board_of_elections(struct sprite *initiator);
+void begin_guildguard(struct sprite *initiator);
 
 // activity_cheat.c
 void begin_cheat_store(struct sprite *initiator,int arg);

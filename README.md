@@ -34,7 +34,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
-- [ ] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
+- [x] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.

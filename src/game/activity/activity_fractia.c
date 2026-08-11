@@ -100,3 +100,25 @@ void begin_board_of_elections(struct sprite *sprite) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
 }
+
+/* Guildguard: Blocks the door of a guild after you win the first battle.
+ * If you talk to her, she just reads the warning label and departs.
+ */
+ 
+static int cb_guildguard(int optionid,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (sprite) {
+    sprite_kill_soon(sprite);
+  }
+  return 0;
+}
+ 
+void begin_guildguard(struct sprite *sprite) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=165,
+    .cb=cb_guildguard,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}

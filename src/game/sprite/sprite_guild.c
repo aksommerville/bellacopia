@@ -61,6 +61,54 @@ static void _guild_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* There's a special NPC "guildguard" who appears in front of the door after you win the first guild battle.
+ * She quietly lets herself out after you win the endorsement.
+ * This is just a little "are you sure?" to let them know the guild will reset if they leave partway thru.
+ */
+
+// Args will be reused. It's cool, there's only one guild active at a time.
+static uint8_t guild_guard_args[4]={
+  NS_activity_guildguard>>8,NS_activity_guildguard&0xff,
+  0,0,
+};
+ 
+static void guild_drop_guard() {
+  struct sprite *sprite=find_sprite_by_arg(guild_guard_args);
+  if (sprite) {
+    sprite_kill_soon(sprite);
+  }
+}
+
+static void guild_require_guard() {
+
+  // Already got? We will be called redundantly.
+  struct sprite *sprite=find_sprite_by_arg(guild_guard_args);
+  if (sprite) return;
+  
+  // Find a home. There should be one door on this map leading to the parent map. We want to be one meter north of that.
+  double x=-1.0,y=-1.0;
+  struct map *map=g.camera.map;
+  if (!map) return;
+  if (!map->parent) return; // Parent required.
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if (cmd.opcode==CMD_map_door) {
+      int dstmapid=(cmd.arg[2]<<8)|cmd.arg[3];
+      if (dstmapid!=map->parent) continue;
+      x=cmd.arg[0]+0.5;
+      y=cmd.arg[1]-0.5;
+      break;
+    }
+  }
+  if (x<0.0) return; // Failed to locate door.
+  x+=map->lng*NS_sys_mapw;
+  y+=map->lat*NS_sys_maph;
+  
+  // Spawn.
+  sprite=sprite_spawn(x,y,RID_sprite_guildguard,guild_guard_args,sizeof(guild_guard_args),0,0,0);
+}
+
 /* Are all guild members satisfied?
  * We don't bother confirming they belong to the same guild, since all sprites at one time will.
  */
@@ -87,11 +135,20 @@ static void guild_cb_battle(struct modal *modal,int outcome,void *userdata) {
     if (election_season) {
       sprite->tileid=SPRITE->tileid0+1;
     }
-    if (election_season&&!store_get_fld(SPRITE->fld)&&all_guild_satisfied()) {
+    if (!election_season) {
+      //TODO Some other prize when it's not election season.
+    } else if (store_get_fld(SPRITE->fld)) {
+      // Replaying after winning the endorsement. Sure, Dot, you do you.
+    } else if (all_guild_satisfied()) {
+      // Last of the guild. Wrap it up.
       store_set_fld(SPRITE->fld,1);
       modal_battle_add_consequence(modal,NS_itemid_text,113);
+      guild_drop_guard();
+    } else {
+      // Guild progress.
+      guild_require_guard();
     }
-    //TODO Some other prize when it's not election season.
+    
   } else if (outcome<0) {
     sprite->tileid=SPRITE->tileid0;
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);

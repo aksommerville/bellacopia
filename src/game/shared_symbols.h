@@ -326,6 +326,7 @@
 #define NS_activity_purse1 65
 #define NS_activity_grandpa 66
 #define NS_activity_grandkid 67
+#define NS_activity_guildguard 68
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */

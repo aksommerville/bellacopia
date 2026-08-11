@@ -1,0 +1,6 @@
+image image:fractia_sprites
+tile 0xc4 0
+type (u16:sprtype)npc
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+hitbox -7 7 -7 7
