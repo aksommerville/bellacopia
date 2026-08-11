@@ -7,13 +7,13 @@
 
 #include "game/bellacopia.h"
 
-#define DECK_SIZE 40
+#define DECK_SIZE 30
 #define DP_SLOW 4.000 /* rad/sec */
 #define DP_FAST 1.500
+#define SPLIT_TIME 1.000
 
 struct battle_shuffling {
   struct battle hdr;
-  uint32_t cardcolorv[DECK_SIZE];
   double timeout;
   
   struct player {
@@ -30,6 +30,8 @@ struct battle_shuffling {
     int xouter,xinner,xhand; // Horizontal positions in framebuffer pixels. Center of feature.
     int finished;
     int score; // Zero until (finished). Higher is better.
+    double finclock; // Counts up after (finished).
+    double splitclock; // Counts down between cutting and merging for animation.
     // man only:
     int input_blackout;
     // cpu only:
@@ -53,8 +55,8 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   player->cutp=-1;
   player->p=(((rand()&0xffff)-32768)*M_PI)/32768.0; // Random start position, mostly just for aesthetics.
   player->dp=DP_SLOW*(1.0-player->skill)+DP_FAST*player->skill;
-  player->xinner=(FBW*2)/5;
-  player->xouter=FBW/5;
+  player->xinner=(FBW*2)/5-10;
+  player->xouter=FBW/5-10;
   player->xhand=player->xinner-40;
   if (player==BATTLE->playerv) { // Left.
     player->who=0;
@@ -107,14 +109,6 @@ static int _shuffling_init(struct battle *battle) {
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
   BATTLE->timeout=20.0;
-  
-  uint32_t *dst=BATTLE->cardcolorv;
-  uint8_t luma=0xff;
-  int i=0;
-  for (;i<DECK_SIZE;i++,dst++,luma-=5) {
-    *dst=(luma<<24)|(luma<<16)|(luma<<8)|0xff;
-  }
-  
   return 0;
 }
 
@@ -188,6 +182,8 @@ static void player_update_man(struct battle *battle,struct player *player,double
       // Must leave at least one card in each half.
       if (player->cutp<1) player->cutp=1;
       else if (player->cutp>=DECK_SIZE) player->cutp=DECK_SIZE-1;
+      player->splitclock=SPLIT_TIME;
+      player->p=M_PI*0.5;
     }
     
   /* Merging?
@@ -212,6 +208,8 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
         // Must leave at least one card in each half.
         if (player->cutp<1) player->cutp=1;
         else if (player->cutp>=DECK_SIZE) player->cutp=DECK_SIZE-1;
+        player->splitclock=SPLIT_TIME;
+        player->p=M_PI*0.5;
       }
     }
   } else if (BATTLE->timeout<15.0) { // Wait for an uncertain amount of time, 3 seconds in the fastest case.
@@ -235,24 +233,28 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void _shuffling_update(struct battle *battle,double elapsed) {
-  if (battle->outcome>-2) return;
   
   /* If time runs out, anybody finished wins.
    */
-  if ((BATTLE->timeout-=elapsed)<=0.0) {
-    struct player *l=BATTLE->playerv;
-    struct player *r=l+1;
-    if (l->finished&&r->finished) battle->outcome=0; // Not possible.
-    else if (l->finished) battle->outcome=1;
-    else if (r->finished) battle->outcome=-1;
-    else battle->outcome=0;
-    return;
+  if (battle->outcome==-2) {
+    if ((BATTLE->timeout-=elapsed)<=0.0) {
+      struct player *l=BATTLE->playerv;
+      struct player *r=l+1;
+      if (l->finished&&r->finished) battle->outcome=0; // Not possible.
+      else if (l->finished) battle->outcome=1;
+      else if (r->finished) battle->outcome=-1;
+      else battle->outcome=0;
+    }
   }
   
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (!player->finished) {
+    if (player->finished) {
+      player->finclock+=elapsed;
+    } else if (player->splitclock>0.0) {
+      player->splitclock-=elapsed;
+    } else {
       if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
       else player_update_cpu(battle,player,elapsed);
       if (!player->finished) player_update_common(battle,player,elapsed); // Check (finished) again in case it changed during the controller update.
@@ -260,28 +262,30 @@ static void _shuffling_update(struct battle *battle,double elapsed) {
   }
   
   /* Check completion. Both players are allowed to finish; no perk for being first.
-   * TODO (finished) isn't quite right, let there be some animated wind-down.
    */
-  struct player *l=BATTLE->playerv;
-  struct player *r=l+1;
-  if (l->finished&&r->finished) {
-    if (l->score>r->score) battle->outcome=1;
-    else if (l->score<r->score) battle->outcome=-1;
-    else battle->outcome=0;
-    return;
+  if (battle->outcome==-2) {
+    struct player *l=BATTLE->playerv;
+    struct player *r=l+1;
+    if (l->finished&&r->finished) {
+      if (l->score>r->score) battle->outcome=1;
+      else if (l->score<r->score) battle->outcome=-1;
+      else battle->outcome=0;
+    }
   }
 }
 
-/* Render a deck. Just a stack of horizontal lines.
+/* Render a deck.
+ * (gapp) is an index 0..51 above which cards are slightly elevated.
  */
  
-static void shuffling_render_deck(struct battle *battle,struct player *player,int x,int y,const uint8_t *cardv,int cardc) {
-  graf_set_image(&g.graf,0);
-  int xa=x-20;
-  int xz=x+20;
-  y-=cardc; // half and double
-  for (;cardc-->0;y+=2,cardv++) {
-    graf_line(&g.graf,xa,y,BATTLE->cardcolorv[*cardv],xz,y,BATTLE->cardcolorv[*cardv]);
+static void shuffling_render_deck(struct battle *battle,struct player *player,int x,int y,const uint8_t *cardv,int cardc,int gapp) {
+  graf_set_image(&g.graf,RID_image_battle_casino);
+  x-=32;
+  y+=cardc;
+  y-=48;
+  for (;cardc-->0;y-=2,cardv++) {
+    if (cardc==gapp) y-=1;
+    graf_decal_xform(&g.graf,x,y,208,64,48,64,EGG_XFORM_SWAP);
   }
 }
 
@@ -297,31 +301,94 @@ static void shuffling_render_hand(struct battle *battle,struct player *player,in
  */
  
 static void player_render(struct battle *battle,struct player *player) {
-  const int midy=FBH>>1;
+  const int midy=(FBH>>1)+10;
   
-  /* If finished, show the whole deck with no animation.
+  /* If finished, animate the two halves merging together.
    * Plus the score, above it.
    */
   if (player->finished) {
-    int x=(player->xinner+player->xouter)>>1;
-    shuffling_render_deck(battle,player,x,midy,player->deck,DECK_SIZE);
+    double t=player->finclock/1.000;
+    if (t<0.0) t=0.0; else if (t>1.0) t=1.0;
+    int lc,rc,lxa,rxa,lya,rya;
+    int midx=(player->xinner+player->xouter)>>1;
+    double dy=sin(player->p)*DECK_SIZE;
+    if (player->xinner>player->xouter) {
+      lxa=player->xouter;
+      rxa=player->xinner;
+      lya=(int)(midy-dy);
+      rya=(int)(midy+dy);
+      rc=player->cutp;
+      lc=DECK_SIZE-rc;
+    } else {
+      lxa=player->xinner;
+      rxa=player->xouter;
+      lya=(int)(midy+dy);
+      rya=(int)(midy-dy);
+      lc=player->cutp;
+      rc=DECK_SIZE-lc;
+    }
+    lya+=lc;
+    rya+=rc;
+    lya-=48;
+    rya-=48;
+    int lxz=midx-4;
+    int rxz=midx+4;
+    int yz=midy+DECK_SIZE-48;
+    graf_set_image(&g.graf,RID_image_battle_casino);
+    int i=DECK_SIZE;
+    for (;i-->0;yz-=2) {
+      int v=player->deck[i];
+      int xa,xz,ya;
+      if (
+        ((v<player->cutp)&&(player->xinner>player->xouter))||
+        ((v>=player->cutp)&&(player->xinner<player->xouter))
+      ) {
+        xa=rxa;
+        xz=rxz;
+        ya=rya;
+        rya-=2;
+      } else {
+        xa=lxa;
+        xz=lxz;
+        ya=lya;
+        lya-=2;
+      }
+      int x=(int)(t*xz+(1.0-t)*xa);
+      int y=(int)(t*yz+(1.0-t)*ya);
+      graf_decal_xform(&g.graf,x-32,y,208,64,48,64,EGG_XFORM_SWAP);
+    }
+    
+    // Score.
     graf_set_image(&g.graf,RID_image_fonttiles);
-    if (player->score>=10) graf_tile(&g.graf,x-4,30,'0'+player->score/10,0);
-    graf_tile(&g.graf,x+4,30,'0'+player->score%10,0);
+    if (player->score>=10) graf_tile(&g.graf,midx-4,162,'0'+player->score/10,0);
+    graf_tile(&g.graf,midx+4,162,'0'+player->score%10,0);
 
   /* First we show the whole deck stationary, and the hand oscillating.
    */
   } else if (player->cutp<0) {
     int dy=(int)(sin(player->p)*DECK_SIZE);
+    int gapp=(dy+DECK_SIZE)>>1;
     shuffling_render_hand(battle,player,midy+dy);
-    shuffling_render_deck(battle,player,player->xinner,midy,player->deck,DECK_SIZE);
+    shuffling_render_deck(battle,player,player->xinner,midy,player->deck,DECK_SIZE,gapp);
+    
+  /* A brief animation between cutting and merging, show the two halves sliding apart.
+   */
+  } else if (player->splitclock>0.0) {
+    double t=1.0-player->splitclock/SPLIT_TIME;
+    int dx=(int)(t*(player->xouter-player->xinner));
+    int topy0=midy-player->cutp;
+    int btmy0=midy+(DECK_SIZE-player->cutp);
+    int topy=(int)(topy0*(1.0-t)+(midy-DECK_SIZE)*t);
+    int btmy=(int)(btmy0*(1.0-t)+(midy+DECK_SIZE)*t);
+    shuffling_render_deck(battle,player,player->xinner,btmy,player->deck+DECK_SIZE-player->cutp,player->cutp,-1);
+    shuffling_render_deck(battle,player,player->xinner+dx,topy,player->deck,DECK_SIZE-player->cutp,-1);
     
   /* Once cut, we show two decks oscillating a half-turn out of phase.
    */
   } else {
     double dy=sin(player->p)*DECK_SIZE;
-    shuffling_render_deck(battle,player,player->xinner,(int)(midy+dy),player->deck,player->cutp);
-    shuffling_render_deck(battle,player,player->xouter,(int)(midy-dy),player->deck+player->cutp,DECK_SIZE-player->cutp);
+    shuffling_render_deck(battle,player,player->xinner,(int)(midy+dy),player->deck,player->cutp,-1);
+    shuffling_render_deck(battle,player,player->xouter,(int)(midy-dy),player->deck+player->cutp,DECK_SIZE-player->cutp,-1);
   }
   
   /* If time is low and we're not finished, show a "hurry!" banner.
@@ -345,7 +412,7 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _shuffling_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x203028ff);
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x0b4c1eff);
   graf_set_image(&g.graf,RID_image_battle_casino);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -365,6 +432,7 @@ const struct battle_type battle_type_shuffling={
   .support_cvc=1,
   .no_timeout=1,
   .input=battle_input_a,
+  .update_during_report=1,
   .del=_shuffling_del,
   .init=_shuffling_init,
   .update=_shuffling_update,
