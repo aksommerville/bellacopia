@@ -201,6 +201,7 @@ struct invstore *modal_pause_get_highlighted_item(); // The inventory vellum per
 int modal_pause_get_inventory_position(); // => 1..INVSTORE_SIZE-1; index in (g.store.invstore)
 void modal_pause_set_inventory_position(int p);
 int get_puzzle_planes(int *v,int a); // [vellum_map.c], returns NS_plane_* for all the planes expected to contain a puzzle.
+void vellum_map_reset_cache(); // [vellum_map.c], there's some private bookkeeping that needs reset when the session clears.
 
 int modal_dialogue_add_option(struct modal *modal,int optionid,const char *src,int srcc);
 int modal_dialogue_add_option_string(struct modal *modal,int rid,int strix); // convenience; (strix) is (optionid) too.

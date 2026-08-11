@@ -64,6 +64,7 @@ int game_reset(int use_save) {
   spawner_reset();
   cartographer_reset();
   zoo_reset();
+  vellum_map_reset_cache();
   g.bugspray=0.0;
   g.vanishing=0.0;
   g.flash=0.0;

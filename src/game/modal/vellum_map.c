@@ -2,11 +2,15 @@
 #include "vellum.h"
 #include "jigsaw.h"
 
+static int maps_check_assembly(const struct plane *plane);
+
 // We have room in the closet for 5 puzzles. Try to design the world to need 5 exactly.
 static struct puzzle {
   uint8_t z;
   int srcx; // image:pause, srcy is 80, size 48x30
   int present; // MUTABLE.
+  int all_collected; // MUTABLE.
+  int all_assembled; // MUTABLE.
 } puzzlev[]={
   {NS_plane_outerworld,0},
   {NS_plane_tunnel1,48},
@@ -24,6 +28,16 @@ int get_puzzle_planes(int *v,int a) {
   int i=c;
   for (;i-->0;puzzle++,v++) *v=puzzle->z;
   return c;
+}
+
+void vellum_map_reset_cache() {
+  struct puzzle *puzzle=puzzlev;
+  int i=sizeof(puzzlev)/sizeof(struct puzzle);
+  for (;i-->0;puzzle++) {
+    puzzle->present=0; // Resets on load anyway, but just for consistency's sake.
+    puzzle->all_collected=0;
+    puzzle->all_assembled=0;
+  }
 }
 
 struct vellum_map {
@@ -104,6 +118,17 @@ static int map_check_outer_click(struct vellum *vellum) {
 static void _map_updatebg(struct vellum *vellum,double elapsed) {
 }
 
+/* A piece was newly connected. Did it finish assembly?
+ */
+ 
+static void map_maybe_assembled(struct vellum *vellum) {
+  if (VELLUM->puzzlep<0) return;
+  struct puzzle *puzzle=puzzlev+VELLUM->puzzlep;
+  if (!puzzle->all_collected) return; // Can't finish assembly if we don't have all the pieces.
+  if (puzzle->all_assembled) return; // Huh. How did they make a new connection then?
+  puzzle->all_assembled=maps_check_assembly(plane_by_position(puzzle->z));
+}
+
 /* Update.
  */
  
@@ -114,10 +139,10 @@ static void _map_update(struct vellum *vellum,double elapsed) {
   if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
     if (!map_check_outer_click(vellum)) jigsaw_grab(&VELLUM->jigsaw);
   } else if (!(g.input[0]&EGG_BTN_SOUTH)&&(g.pvinput[0]&EGG_BTN_SOUTH)) {
-    jigsaw_release(&VELLUM->jigsaw);
+    if (jigsaw_release(&VELLUM->jigsaw)) map_maybe_assembled(vellum);
   }
   if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) {
-    jigsaw_rotate(&VELLUM->jigsaw);
+    if (jigsaw_rotate(&VELLUM->jigsaw)) map_maybe_assembled(vellum);
   }
   
   int x,y;
@@ -155,6 +180,11 @@ static void map_render_closet(struct vellum *vellum,int x,int y,int w,int h) {
     if (!puzzle->present) continue;
     int srcy=(i==VELLUM->puzzlep)?112:80;
     graf_decal(&g.graf,dstx,dsty,puzzle->srcx,srcy,boxw,boxh);
+    if (puzzle->all_assembled) {
+      graf_decal(&g.graf,dstx-8,dsty+(boxh>>1)-8,176,0,16,16);
+    } else if (puzzle->all_collected) {
+      graf_decal(&g.graf,dstx-8,dsty+(boxh>>1)-8,192,0,16,16);
+    }
     dsty+=boxh;
   }
 }
@@ -181,6 +211,40 @@ static void _map_render(struct vellum *vellum,int x,int y,int w,int h) {
   }
 }
 
+/* Scan jigstore to determine whether all pieces of this plane are assembled.
+ * Since this is expensive, it's only called when the plane is fully collected, and never again once it goes true.
+ */
+ 
+static int maps_check_assembly(const struct plane *plane) {
+  if (!plane) return 0;
+  int gotc=0;
+  int x0,y0; // Undefined until (gotc) true.
+  const struct jigstore *jigstore=g.store.jigstorev;
+  int i=g.store.jigstorec;
+  for (;i-->0;jigstore++) {
+    const struct map *map=map_by_id(jigstore->mapid);
+    if (!map) continue;
+    if (map->z!=plane->z) continue;
+    // Puzzles are only considered complete if oriented properly (spares us from needing to compare their orientations).
+    if (jigstore->xform) return 0;
+    // Don't need to search the plane for it -- maps live inside their plane, arranged LRTB.
+    int p=map-plane->v;
+    if ((p<0)||(p>=plane->w*plane->h)) continue;
+    int col=p%plane->w;
+    int row=p/plane->w;
+    if (!gotc) { // First map defines the origin.
+      x0=jigstore->x-col*NS_sys_mapw;
+      y0=jigstore->y-row*NS_sys_maph;
+    } else { // All others compare to it.
+      if (jigstore->x-col*NS_sys_mapw!=x0) return 0;
+      if (jigstore->y-row*NS_sys_maph!=y0) return 0;
+    }
+    gotc++;
+  }
+  if (gotc!=plane->w*plane->h) return 0;
+  return 1;
+}
+
 /* New.
  */
  
@@ -197,20 +261,29 @@ struct vellum *vellum_new_map(struct modal *parent) {
   vellum->langchanged=_map_langchanged;
   
   /* Set (present) in all puzzles if at least one jigpiece exists for it.
+   * And (all_collected,all_assembled) as warranted.
+   * Note that we don't need to set these false; once they go true, they're true until end of session.
    */
   #define ZLIMIT 10 /* Greater than the highest (z) value for any puzzle. */
-  int present[ZLIMIT]={0};
+  int present[ZLIMIT]={0}; // Count of jigpieces by plane.
   const struct jigstore *jigstore=g.store.jigstorev;
   int i=g.store.jigstorec;
   for (;i-->0;jigstore++) {
     const struct map *map=map_by_id(jigstore->mapid);
     if (!map) continue;
     if (map->parent&&!(map=map_by_id(map->parent))) continue;
-    if (map->z<ZLIMIT) present[map->z]=1;
+    if (map->z<ZLIMIT) present[map->z]++;
   }
   struct puzzle *puzzle=puzzlev;
   for (i=sizeof(puzzlev)/sizeof(puzzlev[0]);i-->0;puzzle++) {
-    puzzle->present=present[puzzle->z];
+    puzzle->present=present[puzzle->z]?1:0;
+    if (puzzle->present) {
+      struct plane *plane=plane_by_position(puzzle->z);
+      if (present[puzzle->z]>=plane->w*plane->h) {
+        puzzle->all_collected=1;
+        if (!puzzle->all_assembled) puzzle->all_assembled=maps_check_assembly(plane);
+      }
+    }
   }
   #undef ZLIMIT
   

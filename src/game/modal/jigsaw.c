@@ -886,8 +886,8 @@ void jigsaw_grab(struct jigsaw *jigsaw) {
 /* Release.
  */
  
-void jigsaw_release(struct jigsaw *jigsaw) {
-  if (!jigsaw->grab) return;
+int jigsaw_release(struct jigsaw *jigsaw) {
+  if (!jigsaw->grab) return 0;
   jigsaw->hover=jigsaw->grab;
   jigsaw->grab=0;
   int maybedone=0;
@@ -898,17 +898,21 @@ void jigsaw_release(struct jigsaw *jigsaw) {
     bm_sound(RID_sound_jigsaw_drop);
   }
   jigsaw_force_legal_positions(jigsaw);
-  if (maybedone) bm_poll_completion();
+  if (maybedone) {
+    bm_poll_completion();
+    return 1;
+  }
+  return 0;
 }
 
 /* Rotate.
  */
  
-void jigsaw_rotate(struct jigsaw *jigsaw) {
+int jigsaw_rotate(struct jigsaw *jigsaw) {
   struct jigpiece *jigpiece=0;
   if (jigsaw->grab) jigpiece=jigsaw->grab;
   else if (jigsaw->hover) jigpiece=jigsaw->hover;
-  else return;
+  else return 0;
   
   // Pull it to the top. Then if (grab) or (hover) is not null, update them, since the order could change.
   jigpiece=jigsaw_to_top(jigsaw,jigpiece);
@@ -937,8 +941,10 @@ void jigsaw_rotate(struct jigsaw *jigsaw) {
   if (jigsaw_check_connections_all(jigsaw,jigpiece)) {
     bm_sound(RID_sound_jigsaw_connect);
     bm_poll_completion();
+    return 1;
   } else {
     bm_sound(RID_sound_jigsaw_rotate);
+    return 0;
   }
 }
 

@@ -44,8 +44,8 @@ void jigsaw_render(struct jigsaw *jigsaw);
 int jigsaw_is_grabbed(const struct jigsaw *jigsaw);
 
 void jigsaw_grab(struct jigsaw *jigsaw);
-void jigsaw_release(struct jigsaw *jigsaw);
-void jigsaw_rotate(struct jigsaw *jigsaw);
+int jigsaw_release(struct jigsaw *jigsaw); // Nonzero if newly connected.
+int jigsaw_rotate(struct jigsaw *jigsaw); // ''
 void jigsaw_motion(struct jigsaw *jigsaw,int x,int y);
 
 /* An extra service, since jigsaw's internals are uniquely suited to it.
