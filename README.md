@@ -139,8 +139,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
-- [ ] greenfish,bluefish,redfish: Sound when you grab it.
-- [ ] homerunderby: Show the continuous tie-break score somehow too.
+- [x] greenfish,bluefish,redfish: Sound when you grab it.
+- [x] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
@@ -149,6 +149,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [x] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
+- [x] steering: Maybe a penalty for riding the edge?
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.

@@ -219,6 +219,7 @@ static void _redfish_update(struct battle *battle,double elapsed) {
   if (battle->outcome!=-2) {
     BATTLE->cooldown=END_COOLDOWN;
     if (battle->outcome>0) {
+      bm_sound(RID_sound_collect);
       BATTLE->dotframe=3;
       BATTLE->fishx=BATTLE->dotx;
       BATTLE->fishy=GROUNDY-14.0;

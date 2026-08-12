@@ -37,6 +37,7 @@ struct battle_steering {
     double speed; // px/s
     double steerrate; // rad/s
     double bonkpeak; // px/s, must be substantially higher than (speed)
+    double gutter_penalty; // multiplier
     
     int insteer;
     int done;
@@ -135,6 +136,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   player->speed=90.0*(1.0-player->skill)+110.0*player->skill;
   player->bonkpeak=250.0*(1.0-player->skill)+200.0*player->skill;
   player->steerrate=4.0*(1.0-player->skill)+5.0*player->skill;
+  player->gutter_penalty=0.800*(1.0-player->skill)+0.999*player->skill;
   if (player->human=human) { // Human.
   } else { // CPU.
     player->speed*=0.900; // cpu penalty
@@ -353,8 +355,10 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   
   /* Regular motion.
    */
-  player->x+=sin(player->t)*player->speed*turbo*elapsed;
-  player->y-=cos(player->t)*player->speed*turbo*elapsed;
+  double speed=player->speed*turbo;
+  if ((player->x<30.0)||(player->x>120.0)) speed*=player->gutter_penalty;
+  player->x+=sin(player->t)*speed*elapsed;
+  player->y-=cos(player->t)*speed*elapsed;
   if (player->x<20.0) player->x=20.0;
   else if (player->x>130.0) player->x=130.0;
   if (player->y<=0.0) player->done=1;

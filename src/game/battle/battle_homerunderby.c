@@ -32,6 +32,7 @@ struct battle_homerunderby {
     int computed; // All go zero at the start of a pitch. CPU uses to signal it determined the swing time.
     double swingy; // CPU swings when ball crosses this threshold.
     double error; // Maximum CPU misjudgement of ball's position, in pixels.
+    double batw,batw_visible;
   } playerv[2];
   
   struct player *batter; // One of (playerv) or null.
@@ -135,7 +136,14 @@ static int _homerunderby_init(struct battle *battle) {
 static void homerunderby_score(struct battle *battle,int homerun,double quality) {
   if (BATTLE->scorec>=SCORE_LIMIT) return;
   struct score *score=BATTLE->scorev+BATTLE->scorec++;
-  if (BATTLE->batter) score->who=BATTLE->batter->who;
+  if (BATTLE->batter) {
+    score->who=BATTLE->batter->who;
+    if (homerun) {
+      double q=quality*16.0;
+      if (q<2.0) q=2.0;
+      if ((BATTLE->batter->batw+=q)>48.0) BATTLE->batter->batw=48.0;
+    }
+  }
   score->homerun=homerun;
   score->quality=quality;
 }
@@ -243,6 +251,14 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void _homerunderby_update(struct battle *battle,double elapsed) {
+
+  /* Advance quality indicators.
+   * Then if we have an outcome, no further updates.
+   */
+  struct player *l=BATTLE->playerv;
+  struct player *r=l+1;
+  if ((l->batw_visible+=elapsed*20.0)>l->batw) l->batw_visible=l->batw;
+  if ((r->batw_visible+=elapsed*20.0)>r->batw) r->batw_visible=r->batw;
   if (battle->outcome>-2) return;
   
   /* Move the ball.
@@ -396,6 +412,20 @@ static void _homerunderby_render(struct battle *battle) {
       }
     }
   }
+  
+  /* Quality indicators right of the scoreboard.
+   */
+  struct player *l=BATTLE->playerv;
+  struct player *r=l+1;
+  if ((l->batw_visible>0.0)||(r->batw_visible>0.0)) {
+    graf_set_image(&g.graf,RID_image_battle_athletes);
+    int lw=(int)l->batw_visible;
+    int rw=(int)r->batw_visible;
+    if (lw>48) lw=48;
+    if (rw>48) rw=48;
+    if (lw) graf_decal(&g.graf,69,153,96,192,lw,16);
+    if (rw) graf_decal(&g.graf,69,163,96,192,rw,16);
+  }
 }
 
 /* Type definition.
@@ -411,6 +441,7 @@ const struct battle_type battle_type_homerunderby={
   .support_pvp=1,
   .support_cvc=1,
   .input=battle_input_a,
+  .update_during_report=1,
   .del=_homerunderby_del,
   .init=_homerunderby_init,
   .update=_homerunderby_update,
