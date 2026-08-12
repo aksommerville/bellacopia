@@ -240,6 +240,15 @@ static struct note *temptation_spawn_note(struct battle *battle,struct player *p
   return note;
 }
 
+/* Stop singing.
+ */
+ 
+static void player_silence(struct battle *battle,struct player *player) {
+  if (!player->singing) return;
+  egg_song_event_note_off(3,(player->who<<1),player->singing);
+  player->singing=0;
+}
+
 /* Sing a note.
  */
  
@@ -247,7 +256,7 @@ static void player_sing(struct battle *battle,struct player *player,uint16_t btn
 
   // Check for illegal extra notes.
   if ((player->who&&BATTLE->sangr)||(!player->who&&BATTLE->sangl)) {
-    player->singing=0;
+    player_silence(battle,player);
     uint8_t noteid=0x3d; // C#4
     egg_song_event_note_once(3,(player->who<<1)+1,noteid,0x40,500);
     return;
@@ -265,15 +274,16 @@ static void player_sing(struct battle *battle,struct player *player,uint16_t btn
       case 2: noteid=0x4d; break; // F5
       case 3: noteid=0x52; break; // A#5
     }
-    egg_song_event_note_once(3,(player->who<<1),noteid,0x40,500);
+    player_silence(battle,player);
+    egg_song_event_note_on(3,(player->who<<1),noteid,0x40);
     temptation_spawn_note(battle,player);
-    player->singing=1;
+    player->singing=noteid;
     player->animclock=0.0;
     player->animframe=0;
     
   } else {
     // Incorrect note.
-    player->singing=0;
+    player_silence(battle,player);
     uint8_t noteid=0x3d; // C#4
     egg_song_event_note_once(3,(player->who<<1)+1,noteid,0x40,500);
   }
@@ -284,7 +294,7 @@ static void player_sing(struct battle *battle,struct player *player,uint16_t btn
 
 static void player_didnt_sing(struct battle *battle,struct player *player) {
   if (player->singing) {
-    player->singing=0;
+    player_silence(battle,player);
     uint8_t noteid=0x3d; // C#4
     egg_song_event_note_once(3,(player->who<<1)+1,noteid,0x40,500);
   }
@@ -574,6 +584,8 @@ static void _tempting_update(struct battle *battle,double elapsed) {
       if (l->score>r->score) battle->outcome=1;
       else if (l->score<r->score) battle->outcome=-1;
       else battle->outcome=0;
+      if (l->singing) egg_song_event_note_off(3,0,l->singing);
+      if (r->singing) egg_song_event_note_off(3,2,r->singing);
     }
   }
 }

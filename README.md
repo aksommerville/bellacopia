@@ -30,11 +30,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - 2026-07-07: Playtest at work. Xiangsi, Nick, Shawn, Katy, mostly Katy. Good reception, and got some actionable advice.
 - - Zoos were a hit. Players understood fast and kind of gravitated toward the zooage.
 - - Players were not at all drawn toward Root Devils. Maybe that will change when there's more narrative setup?
+- 2026-08-12: June and July were very productive. August and September won't be, due to jams and GDEX, but I feel like we're over the hump.
 
 ## TODO
 
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
-- [x] Maybe a warning when you leave a guild with the endorsement partially won? User wouldn't assume that it resets.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
@@ -46,19 +46,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Game over song.
 - [ ] Add Blackjack and maybe Poker at the Casino. We already have lovely playing card graphics.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [x] Consider eliminating rsprite by zoos a la carte, one monster at a time. Leads to some strategy: "I need to get rid of this walrus!"
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
-- [x] I forgot Power Glove and Goodluck for NPC-triggered battles (zookeeper and siren).
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Make vanishing cream last a little longer.
-- [x] Can inventory critic give you something other than a heart container? She comes late in the game, so it tends to be your last heart container, and causes two back-to-back cutscenes.
-- - It can't be inventory, and a purse upgrade or jigpiece would have the same problem. Could do just plain gold? Or maybe she maxes all your depletables?
-- - Or maybe have the Things Story trigger when you get the last item, instead of triggering off Inventory Critic. That didn't make sense anyway.
 - [ ] Some little fanfare on reaching 100%.
-- [x] Set imageid_default in battles where warranted.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
-- [x] Checkmark on jigsaws in the closet, if fully assembled.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
@@ -136,11 +129,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [x] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
-- [x] greenfish,bluefish,redfish: Sound when you grab it.
-- [x] homerunderby: Show the continuous tie-break score somehow too.
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
@@ -148,8 +138,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
-- [x] shuffling: Redo the whole appearance, use nice card graphics and animate the interleaving.
-- [x] steering: Maybe a penalty for riding the edge?
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
