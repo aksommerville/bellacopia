@@ -136,7 +136,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [ ] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
+- [x] cartography: Can we get the fingers pointing closer to the apparent center of the region? Sometimes it's right on the border. It matters, you might not know which region is being indicated.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] greenfish,bluefish,redfish: Sound when you grab it.

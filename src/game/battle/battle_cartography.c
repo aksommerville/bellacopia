@@ -160,6 +160,89 @@ static int cartography_dilate(uint8_t *dst,const uint8_t *src) {
   return result;
 }
 
+/* Find the ideal focus point for a region.
+ */
+ 
+static struct point cartography_find_center(struct battle *battle,int rgnid) {
+  if ((rgnid<1)||(rgnid>REGIONC)) return (struct point){0,0};
+  
+  /* Prepare to search for the longest column and longest row.
+   * We're going to scan the entire image, not some kind of seed-fill from the initial focus point.
+   */
+  int longcol=BATTLE->focusv[rgnid].x;
+  int longrow=BATTLE->focusv[rgnid].y;
+  int longcoly=0,longrowx=0;
+  int longcolc=0,longrowc=0,x,y;
+  const uint8_t *p;
+  
+  /* Naive scan on each axis, find the longest run of (rgnid) on each.
+   */
+  for (x=0,p=BATTLE->ref;x<MAPW;x++,p++) {
+    const uint8_t *subp=p;
+    y=0;
+    while (y<MAPH) {
+      if (*subp!=rgnid) {
+        y++;
+        subp+=MAPW;
+        continue;
+      }
+      int runlen=0;
+      while ((y<MAPH)&&(*subp==rgnid)) { runlen++; y++; subp+=MAPW; }
+      if (runlen>longcolc) {
+        longcolc=runlen;
+        longcol=x;
+        longcoly=y-runlen;
+      }
+    }
+  }
+  for (y=0,p=BATTLE->ref;y<MAPH;y++,p+=MAPW) {
+    const uint8_t *subp=p;
+    x=0;
+    while (x<MAPW) {
+      if (*subp!=rgnid) {
+        x++;
+        subp++;
+        continue;
+      }
+      int runlen=0;
+      while ((x<MAPW)&&(*subp==rgnid)) { runlen++; x++; subp++; }
+      if (runlen>longrowc) {
+        longrowc=runlen;
+        longrow=y;
+        longrowx=x-runlen;
+      }
+    }
+  }
+  
+  /* Having found the longest axis-aligned runs, take the midpoint of each.
+   * Each gives us the point for the *other* axis.
+   * If that ends up outside our bounds, maybe it's Croatia, just return the initial focus point.
+   */
+  x=longrowx+(longrowc>>1);
+  y=longcoly+(longcolc>>1);
+  if (BATTLE->ref[y*MAPW+x]!=rgnid) {
+    return BATTLE->focusv[rgnid];
+  }
+  
+  /* Now fine-tune a little.
+   * From (x,y), measure out to the four edges and center on each axis.
+   * Usually one axis is slightly off at this point, since it's centered on a bump slightly elsewhere.
+   * The second axis uses the result from the first, not its current value.
+   */
+  int xlo=x;
+  while ((xlo>0)&&(BATTLE->ref[y*MAPW+xlo-1]==rgnid)) xlo--;
+  int xhi=x;
+  while ((xhi<MAPW-1)&&(BATTLE->ref[y*MAPW+xhi+1]==rgnid)) xhi++;
+  x=(xlo+xhi)>>1;
+  int ylo=y;
+  while ((ylo>0)&&(BATTLE->ref[(ylo-1)*MAPW+x]==rgnid)) ylo--;
+  int yhi=y;
+  while ((yhi<MAPH-1)&&(BATTLE->ref[(yhi+1)*MAPW+x]==rgnid)) yhi++;
+  y=(ylo+yhi)>>1;
+  
+  return (struct point){x,y};
+}
+
 /* Generate the reference map.
  */
  
@@ -232,7 +315,6 @@ static int cartography_generate_ref(struct battle *battle) {
   }
   
   /* Dilate until all regions have reached their maximum size.
-   * Do not create any cardinal neighbors between regions. We're preserving a skinny border of zeroes between them all.
    * Oh shoot, we need a second buffer for this.
    * Two passes at a time, so the final map always ends up in (BATTLE->ref).
    */
@@ -276,6 +358,13 @@ static int cartography_generate_ref(struct battle *battle) {
     }
   }
   #undef NEIGHBORS
+  
+  /* We have a valid reference point in each region already, but sometimes it's an outlier.
+   * For each region, find the longest horizontal and longest vertical line, and put the reference point at their intersection.
+   */
+  for (i=REGIONC;i-->1;) {
+    BATTLE->focusv[i]=cartography_find_center(battle,i);
+  }
   
   return 0;
 }
@@ -596,7 +685,7 @@ static void player_render(struct battle *battle,struct player *player) {
   // Two fingers. Use fancies to share the paint buckets' batch.
   if ((player->ctabp<=REGIONC)&&(BATTLE->playclock>0.0)) {
     graf_fancy(&g.graf,dstx+20+player->handp*30,dsty+MAPH+25,player->tileid,0,0,NS_sys_tilesize,0,0x808080ff);
-    graf_fancy(&g.graf,dstx+BATTLE->focusv[player->ctabp].x,dsty+BATTLE->focusv[player->ctabp].y+10,player->tileid,0,0,NS_sys_tilesize,0,player->color);
+    graf_fancy(&g.graf,dstx+BATTLE->focusv[player->ctabp].x+1,dsty+BATTLE->focusv[player->ctabp].y+9,player->tileid,0,0,NS_sys_tilesize,0,player->color);
   }
 }
 
