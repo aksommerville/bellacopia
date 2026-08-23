@@ -6,6 +6,10 @@ ifeq (,$(EGG_SDK))
 endif
 EGGDEV:=$(EGG_SDK)/out/eggdev
 
+# If EGG_TARGETS was provided via environment, capture it.
+# We're including config.mk for the tools' sake and that will clobber it.
+PRE_EGG_TARGETS:=$(EGG_TARGETS)
+
 # Each directory under src/tool/ is a custom build-time tool written in C.
 # I'll try to borrow as much as possible from Egg, since that has to exist anyway.
 include $(EGG_SDK)/local/config.mk
@@ -22,7 +26,7 @@ TOOL_EXES:=$(patsubst %,out/%,$(TOOLS))
 all:$(TOOL_EXES)
 
 # Boilerplate Egg rules.
-all:;$(EGGDEV) build
+all:;EGG_TARGETS=$(PRE_EGG_TARGETS) $(EGGDEV) build
 clean:;rm -rf mid out
 run:;$(EGGDEV) run
 web-run:all;$(EGGDEV) serve --htdocs=out/bellacopia-web.zip --project=.

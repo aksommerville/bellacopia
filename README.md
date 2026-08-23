@@ -34,6 +34,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] !!! The things story trigger is broken. Filled inventory first with the Bell, then by spending and recovering a stick. Nothing.
+- - [x] Also, the trees' hint for that one still refers to the Inventory Critic. It needs to be more complicated now.
+- - `NS_fld_all_inventory` was not set.
+- - Attempted repro, getting stick last, and it did set the fld and run the cutscene.
+- - Maybe if an item has zero quantity? ...nope, still triggers with candy depleted.
+- - REPRO: When getting the bell completes your inventory, `NS_fld_all_inventory` doesn't get set and the cutscene doesn't play. (appropriate to not play cutscene; the barrels cutscene takes precedence)
+- - - And furthermore, confirmed the stick does not complete it then. How odd! It's two separate bugs.
+- - [x] Regetting stick must trigger it.
+- - [x] Getting hat must trigger it.
+- - [x] Look for other oddball final-item scenarios. ...fix was at `game_get_item`, I'm sure we're safe now.
 - [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
@@ -57,6 +67,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
+- [ ] Dot should show her plain face, no item, when quantity depleted.
+- [ ] Do something if you fly a figure-eight around the sirens.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

@@ -499,10 +499,12 @@ static void game_report_item_acquire(int itemid,int quantity) {
    * But stick is different: It enters and leaves your inventory frequently.
    * So we dedicate a field to indicate whether stick has been got before, and only show this dialogue the first time.
    * After the first time, getting another stick will be passive like getting gold or hearts.
+   * But be mindful: This still might be the item that completes our inventory!
    */
   if (itemid==NS_itemid_stick) {
     if (store_get_fld(NS_fld_had_stick)) {
       game_report_item_quantity_add(NS_itemid_stick,1);
+      game_check_inventory_completion();
       return;
     }
     store_set_fld(NS_fld_had_stick,1);
@@ -550,7 +552,10 @@ static void game_report_item_acquire(int itemid,int quantity) {
     .textc=msgc,
     .cb=invfull?cb_item_acquire_final:0,
   };
-  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (invfull) { // Set NS_fld_all_inventory in advance, in case something interferes with our callback.
+    store_set_fld(NS_fld_all_inventory,1);
+  }
 }
 
 /* Get item.

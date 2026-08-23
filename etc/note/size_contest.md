@@ -19,6 +19,7 @@ Using the same standard as my [journal](https://github.com/aksommerville/journal
 - 3051520 Master Zen. ''
 - 2448768 Campaign Trail of the Mummy. Lots of high-resolution graphics. Not super wasteful tho.
 - 1868769 <<< Bellacopia Maleficia.
+- 1767825 Just Below the Surface, Deluxe CD-ROM Edition.
 - 1494423 Secret of the Octopotamus. Pygame, so the bloated source is part of the distro.
 - 1243282 Full Moon.
 - 1189146 Sitter 3. Pygame.
@@ -76,6 +77,7 @@ Bandit and Zen are not measured, would need some figuring out.
 - 240 (57600m) Campaign Trail of the Mummy. Doesn't have a fixed screensize, count is based on a made-up 20x12m screen.
 - 205          Plunder Squad (blueprint count).
 - 150          Full Moon (map count).
+-  96  (4096m) All Fifty Two (inflated by extra-tiny screen).
 -  78 (20885m) Sitter 2009. Assuming a 266-meter screen, because that's the most common map size.
 -  50 (11208m) Spelling Bee.
 
