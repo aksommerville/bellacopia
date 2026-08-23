@@ -474,6 +474,12 @@ void hero_render(struct sprite *sprite,int x,int y) {
   uint8_t itemtileid=0;
   if (SPRITE->walking&&SPRITE->blocked) {
     // Pretend there's no item.
+  } else if (
+    (g.store.invstorev[0].limit>0)&&!g.store.invstorev[0].quantity&&
+    ((g.store.invstorev[0].itemid!=NS_itemid_match)||(SPRITE->matchclock<=0.0))
+  ) {
+    // Depletable equipped item is depleted -- don't draw it.
+    // Unless it's the match and lit.
   } else {
     const struct item_detail *detail=item_detail_for_equipped();
     if (detail) {

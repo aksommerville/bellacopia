@@ -673,7 +673,7 @@ static int vanishing_begin(struct sprite *sprite) {
   if (g.store.invstorev[0].quantity<1) return 0;
   g.store.invstorev[0].quantity--;
   g.store.dirty=1;
-  g.vanishing+=5.000;
+  g.vanishing+=8.000;
   sprite->physics&=~(1<<NS_physics_vanishable);
   bm_sound(RID_sound_vanishing);
   store_broadcast('i',NS_itemid_vanishing,0);
