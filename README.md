@@ -92,7 +92,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Underground entrance house
 - - - Same concerns as Dot's ladder, make it a little secret.
 - - [ ] Fishwife
-- - [ ] Carpenter
+- - [x] Carpenter
 - [ ] Battlefield
 - - [ ] Blue Captain's tent
 - - [ ] Red Captain's tent
