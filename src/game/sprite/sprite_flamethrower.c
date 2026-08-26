@@ -7,6 +7,7 @@
 struct sprite_flamethrower {
   struct sprite hdr;
   int fldid; // If zero, use (period).
+  int fldcombine; // Zero normally. 1 if combinable and field off, 2 if combinable and field on.
   int offvalue;
   int length;
   int dx,dy; // cardinal unit
@@ -21,6 +22,19 @@ struct sprite_flamethrower {
 
 #define SPRITE ((struct sprite_flamethrower*)sprite)
 
+/* Extra shoe-horn logic to permit using both fld and timer.
+ * When the field is OFF, timer is in control, when ON, the flamethrower is OFF.
+ */
+ 
+static int flamethrower_fld_is_combiney(uint16_t fld) {
+  switch (fld) {
+    case NS_fld_icepalace_flamethrow1:
+    case NS_fld_icepalace_flamethrow2:
+      return 1;
+  }
+  return 0;
+}
+
 /* Cleanup.
  */
  
@@ -34,7 +48,15 @@ static void _flamethrower_del(struct sprite *sprite) {
 static void flamethrower_cb_store(char type,int id,int value,void *userdata) {
   struct sprite *sprite=userdata;
   if ((type=='f')&&(id==SPRITE->fldid)) {
-    if (value==SPRITE->offvalue) {
+    if (SPRITE->fldcombine) {
+      if (value) {
+        SPRITE->fldcombine=2;
+        SPRITE->state=0;
+      } else {
+        SPRITE->fldcombine=1;
+        SPRITE->state=(SPRITE->clock>=SPRITE->halfperiod)?1:0;
+      }
+    } else if (value==SPRITE->offvalue) {
       SPRITE->state=0;
     } else {
       SPRITE->state=1;
@@ -47,7 +69,21 @@ static void flamethrower_cb_store(char type,int id,int value,void *userdata) {
  
 static int _flamethrower_init(struct sprite *sprite) {
   SPRITE->fldid=(sprite->arg[0]<<8)|sprite->arg[1];
-  if (SPRITE->fldid) { // Controlled by store.
+  
+  if (flamethrower_fld_is_combiney(SPRITE->fldid)) { // Controlled by timer but with a store override.
+    SPRITE->fldcombine=1;
+    SPRITE->offvalue=1;
+    SPRITE->period=0.500+((sprite->arg[2]>>4)*3.000)/16.0;
+    SPRITE->clock=((sprite->arg[2]&15)*SPRITE->period)/16.0;
+    SPRITE->halfperiod=SPRITE->period*0.5;
+    SPRITE->state=(SPRITE->clock>=SPRITE->halfperiod)?1:0;
+    if (store_get_fld(SPRITE->fldid)) {
+      SPRITE->fldcombine=1;
+      SPRITE->state=0;
+    }
+    SPRITE->store_listener=store_listen('f',flamethrower_cb_store,sprite);
+  
+  } else if (SPRITE->fldid) { // Controlled by store.
     SPRITE->offvalue=sprite->arg[2];
     if (store_get_fld(SPRITE->fldid)==SPRITE->offvalue) {
       SPRITE->state=0;
@@ -55,15 +91,18 @@ static int _flamethrower_init(struct sprite *sprite) {
       SPRITE->state=1;
     }
     SPRITE->store_listener=store_listen('f',flamethrower_cb_store,sprite);
+    
   } else if (sprite->arg[2]) { // Timed.
     SPRITE->period=0.500+((sprite->arg[2]>>4)*3.000)/16.0;
     SPRITE->clock=((sprite->arg[2]&15)*SPRITE->period)/16.0;
     SPRITE->halfperiod=SPRITE->period*0.5;
     SPRITE->state=(SPRITE->clock>=SPRITE->halfperiod)?1:0;
+    
   } else { // Always on.
     SPRITE->period=0.0;
     SPRITE->state=1;
   }
+  
   SPRITE->length=(sprite->arg[3]>>4)+1;
   switch (sprite->arg[3]&3) {
     case 0: SPRITE->dx=-1; sprite->xform=EGG_XFORM_XREV; break;
@@ -149,14 +188,17 @@ static void _flamethrower_update(struct sprite *sprite,double elapsed) {
 
   /* If we use a timer, tick it.
    */
-  if (SPRITE->fldid) {
+  if (SPRITE->fldid&&!SPRITE->fldcombine) {
     // No update necessary; store callback does it.
   } else if (SPRITE->period>0.0) {
     if ((SPRITE->clock-=elapsed)<=0.0) {
       SPRITE->clock+=SPRITE->period;
     }
-    if (SPRITE->clock>=SPRITE->halfperiod) SPRITE->state=1;
-    else SPRITE->state=0;
+    if (SPRITE->clock>=SPRITE->halfperiod) {
+      if (SPRITE->fldcombine==1) SPRITE->state=1;
+    } else {
+      SPRITE->state=0;
+    }
   }
   
   /* Tick the animation always, why not.
@@ -215,7 +257,7 @@ static void _flamethrower_render(struct sprite *sprite,int x,int y) {
   }
   
   // Then a 10x2px phase indicator on top of the base, for timed flamethrowers.
-  if (!SPRITE->fldid&&(SPRITE->period>0.0)) {
+  if ((SPRITE->fldcombine||!SPRITE->fldid)&&(SPRITE->period>0.0)) {
     const int len=10;
     const int off=(NS_sys_tilesize>>1)-2;
     double t=SPRITE->clock/SPRITE->period+0.5;

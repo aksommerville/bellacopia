@@ -53,6 +53,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Sometimes the wall bonk sound plays repeatedly.
+- - Happens reliably on ice.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
@@ -67,18 +68,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
-- - [ ] A cow or something, that approaches you when you ring the bell.
+- - [x] A cow or something, that approaches you when you ring the bell. ...all monsters do this now.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
-- - - Maybe eliminate the northernmost street, pad with trees for more separation from tundra.
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Vacant house next to Labor Union
 - - [ ] Athletes' Guild
-- - [ ] Vacant house between Athletes' Guild and Casino
+- - [ ] Grandpa's Puzzle House
 - - [ ] Casino
 - - [ ] Underground entrance house
 - - [ ] Public Sector Employees' Union

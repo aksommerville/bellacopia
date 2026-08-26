@@ -356,6 +356,7 @@ static int sprite_type_is_appetizing(const struct sprite_type *type) {
   if (type==&sprite_type_hero) return 1;
   if (type==&sprite_type_princess) return 1;
   if (type==&sprite_type_marionette) return 1;
+  if (type==&sprite_type_candy) return 1;
   return 0;
 }
  
@@ -368,6 +369,23 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
   for (;otherc-->0;otherp++) {
     struct sprite *other=*otherp;
     if (other->defunct) continue;
+    
+    /* Candy anywhere is tempting.
+     * Track all candy and retain the closest.
+     */
+    if (other->type==&sprite_type_candy) {
+      double dx=other->x-sprite->x;
+      double dy=other->y-sprite->y;
+      double d2=dx*dx+dy*dy;
+      if (!best||(best->type!=&sprite_type_candy)) {
+        best=other;
+        bestd2=d2;
+      } else if (d2<bestd2) {
+        best=other;
+        bestd2=d2;
+      }
+      continue;
+    }
     
     /* Hero or Princess are ignored if outside the attack range.
      * Also, Candy overrides the living no matter what.
@@ -395,23 +413,6 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
           best=other;
           bestd2=d2;
         }
-      }
-      continue;
-    }
-    
-    /* Candy anywhere is tempting.
-     * Track all candy and retain the closest.
-     */
-    if (other->type==&sprite_type_candy) {
-      double dx=other->x-sprite->x;
-      double dy=other->y-sprite->y;
-      double d2=dx*dx+dy*dy;
-      if (!best||(best->type!=&sprite_type_candy)) {
-        best=other;
-        bestd2=d2;
-      } else if (d2<bestd2) {
-        best=other;
-        bestd2=d2;
       }
       continue;
     }
