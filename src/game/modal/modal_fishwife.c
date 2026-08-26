@@ -108,7 +108,7 @@ static int _fishwife_init(struct modal *modal,const void *args,int argslen) {
   /* And the final layout.
    */
   MODAL->boxw=MODAL->promptw+8;
-  int minw=32+LIMIT_LIMIT*FISH_X_SPACING;
+  int minw=44+LIMIT_LIMIT*FISH_X_SPACING;
   if (MODAL->boxw<minw) MODAL->boxw=minw;
   MODAL->boxh=4+MODAL->prompth+ROWH*MODAL->rowc+4;
   MODAL->boxx=(FBW>>1)-(MODAL->boxw>>1);
@@ -268,6 +268,24 @@ static void _fishwife_render(struct modal *modal) {
       need_text=1;
     }
   }
+  
+  // Possessed quantity, far left of each row.
+  graf_set_tint(&g.graf,0x808080ff);
+  for (row=MODAL->rowv,i=MODAL->rowc,y=MODAL->prompty+MODAL->prompth+8;i-->0;row++,y+=ROWH) {
+    int x=MODAL->boxx+22;
+    int v=0;
+    switch (row->itemid) {
+      case NS_itemid_gold: v=store_get_fld16(NS_fld16_gold); break;
+      case NS_itemid_greenfish: v=store_get_fld16(NS_fld16_greenfish); break;
+      case NS_itemid_bluefish: v=store_get_fld16(NS_fld16_bluefish); break;
+      case NS_itemid_redfish: v=store_get_fld16(NS_fld16_redfish); break;
+    }
+    if (v>=999) v=999;
+    if (v>=100) { graf_tile(&g.graf,x,y,0x90+v/100,0); x+=4; }
+    if (v>=10) { graf_tile(&g.graf,x,y,0x90+(v/10)%10,0); x+=4; }
+    graf_tile(&g.graf,x,y,0x90+v%10,0);
+  }
+  graf_set_tint(&g.graf,0);
   
   // Row text.
   if (need_text) {

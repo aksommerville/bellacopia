@@ -57,7 +57,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [ ] Do something if you fly a figure-eight around the sirens.
-- [ ] Fishwife's modal should show how many you have in hand.
+- [x] Fishwife's modal should show how many you have in hand.
 - [x] Bell should animate and should draw monsters.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
@@ -91,7 +91,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - Replace with Goody's house: She tells you about the wand and teaches spells.
 - - [ ] Underground entrance house
 - - - Same concerns as Dot's ladder, make it a little secret.
-- - [ ] Fishwife
+- - [x] Fishwife
 - - [x] Carpenter
 - [ ] Battlefield
 - - [ ] Blue Captain's tent

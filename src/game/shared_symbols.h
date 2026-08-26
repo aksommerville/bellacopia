@@ -826,12 +826,12 @@
 #define NS_fld_minesweep2 216 /* west of the ladder; gates zoo */
 #define NS_fld_jigpiece_underlake 217
 #define NS_fld_jigpiece_ne 218
-#define NS_fld_burn1 219
-#define NS_fld_burn2 220
-#define NS_fld_burn3 221
-#define NS_fld_burn4 222
-#define NS_fld_burn5 223
-#define NS_fld_burn6 224
+#define NS_fld_burn1 219 /* unused */
+#define NS_fld_burn2 220 /* unused */
+#define NS_fld_burn3 221 /* unused */
+#define NS_fld_burn4 222 /* unused */
+#define NS_fld_burn5 223 /* unused */
+#define NS_fld_burn6 224 /* unused */
 #define NS_fld_forest_secret_entrance 225
 #define NS_fld_surveyor_complete 226
 #define NS_fld_motion_economist 227
