@@ -550,6 +550,10 @@ void hero_render(struct sprite *sprite,int x,int y) {
       case 2: itemtileid=0x8b; break;
       case 3: itemtileid=0x8c; break;
     }
+  } else if (itemtileid==0x7d) { // Bell: Different tile when jingling.
+    if (g.jingleclock>0.200) {
+      itemtileid=0x9f;
+    }
   }
   
   if (itemtileid) {

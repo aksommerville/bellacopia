@@ -92,6 +92,7 @@ extern struct g {
   int goldtrack;
   int raceid; // Nonzero if an open world race is in progress.
   int goodlucktrack;
+  double jingleclock; // Counts down after ringing the bell.
 } g;
 
 /* Misc global API.

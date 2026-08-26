@@ -80,6 +80,7 @@ int game_reset(int use_save) {
   g.goldtrack=store_get_fld16(NS_fld16_gold);
   g.goodlucktrack=store_get_fld16(NS_fld16_goodluck);
   g.raceid=0;
+  g.jingleclock=0.0;
   g.completion=game_get_completion();
   g.completion_listener=store_listen(0,game_cb_store,0);
   return 0;
@@ -148,21 +149,12 @@ void bm_poll_completion() {
 void game_update(double elapsed) {
   
   // Minor nonpersistent clocks.
-  if (g.bugspray>0.0) {
-    g.bugspray-=elapsed;
-  }
-  if (g.flash>0.0) {
-    g.flash-=elapsed;
-  }
-  if (g.vanishing>0.0) {
-    g.vanishing-=elapsed;
-  }
-  if (g.fishclock>0.0) {
-    g.fishclock-=elapsed;
-  }
-  if (g.monsterpause>0.0) {
-    g.monsterpause-=elapsed;
-  }
+  if (g.bugspray>0.0) g.bugspray-=elapsed;
+  if (g.flash>0.0) g.flash-=elapsed;
+  if (g.vanishing>0.0) g.vanishing-=elapsed;
+  if (g.fishclock>0.0) g.fishclock-=elapsed;
+  if (g.monsterpause>0.0) g.monsterpause-=elapsed;
+  if (g.jingleclock>0.0) g.jingleclock-=elapsed;
   
   // Weather.
   if (g.eqclock>0.0) bm_update_earthquake(elapsed);

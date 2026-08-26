@@ -26,6 +26,7 @@ struct sprite_monster {
   double dx,dy; // Speed, in STAGE_WALK. (m/s)
   int battle;
   double radius,radius2;
+  double bell_radius,bell_radius2;
   double speed;
   double animclock;
   double dazeclock; // For after the flash spell or stick whack.
@@ -51,6 +52,8 @@ static int _monster_init(struct sprite *sprite) {
   SPRITE->radius=2.0;
   SPRITE->speed=TEMPT_SPEED;
   SPRITE->neuterclock=NEUTER_TIME;
+  SPRITE->bell_radius=NS_sys_mapw;
+  SPRITE->bell_radius2=SPRITE->bell_radius*SPRITE->bell_radius;
   
   struct cmdlist_reader reader;
   if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
@@ -381,7 +384,9 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
       double dx=other->x-sprite->x;
       double dy=other->y-sprite->y;
       double d2=dx*dx+dy*dy;
-      if (d2>SPRITE->radius2) continue; // Too far away.
+      double r2=SPRITE->radius2;
+      if ((other->type==&sprite_type_hero)&&(g.jingleclock>0.0)) r2=SPRITE->bell_radius2; // Much wider radius to the hero after ringing bell.
+      if (d2>r2) continue; // Too far away.
       if (!best) {
         best=other;
         bestd2=d2;

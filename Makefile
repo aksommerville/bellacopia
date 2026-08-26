@@ -35,7 +35,8 @@ edit:;$(EGGDEV) serve \
   --htdocs=EGG_SDK/src/web \
   --htdocs=EGG_SDK/src/editor \
   --htdocs=src/editor \
-  --htdocs=/synth.wasm:EGG_SDK/out/web/synth.wasm \n  --htdocs=/build:out/bellacopia-web.zip \
+  --htdocs=/synth.wasm:EGG_SDK/out/web/synth.wasm \
+  --htdocs=/build:out/bellacopia-web.zip \
   --htdocs=/out:out \
   --writeable=src/data \
   --project=.

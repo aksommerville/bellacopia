@@ -693,9 +693,13 @@ void hero_unvanish(struct sprite *sprite) {
  */
  
 static int bell_begin(struct sprite *sprite) {
+  if (g.jingleclock>0.350) return 1; // Ignore if we just rang. OK to rering while still decaying, just not too soon.
   bm_sound(RID_sound_bell);
-  //TODO Visual feedback.
-  //TODO Some kind of global alert. Monsters should notice, maybe other things happen.
+  g.jingleclock=0.500;
+  struct sprite *toast=sprite_spawn(sprite->x,sprite->y-0.5,0,0,0,&sprite_type_toast,0,0);
+  if (toast) {
+    sprite_toast_set_text(toast,"\x7f",1); // Our font has a quarter note in place of DEL.
+  }
   return 1;
 }
 

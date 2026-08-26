@@ -48,7 +48,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
-- [x] Make vanishing cream last a little longer.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
@@ -57,8 +56,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
-- [x] Dot should show her plain face, no item, when quantity depleted.
 - [ ] Do something if you fly a figure-eight around the sirens.
+- [ ] Fishwife's modal should show how many you have in hand.
+- [x] Bell should animate and should draw monsters.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
