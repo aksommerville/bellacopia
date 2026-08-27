@@ -1,21 +1,40 @@
-5151515151515151515151515151515151515151
-5151436161616161616161616161616161445151
-5151520300000307070403060603030107505151
-5151520700030606070300070700060005505151
-5151520403040206070300010602010506505151
-5151520400070302060306070302030703505151
-5151520503030700020605040700010405505151
-5151520104060104020703010302010607505151
-5151520505040505030201040606050600505151
-5151534141414141410941414141414141545151
-5151515151515151515151515151515151515151
-5151515151515151515151515151515151515151
+a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1
+a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1
+a1a193b1b1b1b1b1b170b1b19b9c9db1b194a1a1
+a1a1a20d0e0e0e0e0e800da5abacada50ea0a1a1
+a1a1a20d0e0e0e0e0e80c0c1c2c3c4c5c6a0a1a1
+a1a1a20d0e0e0e0e0e800db50e0e0eb50ea0a1a1
+a1a1a20d0e0e0e0e0e800d0e0e0e0e0e0ea0a1a1
+a1a1a20d0e0e0e0e0e7172721c2c3c8291a4a1a1
+a1a1a20d0e0e0e0e0e0e0e0e0e0e0ea0a1a1a1a1
+a1a1a20d0e0e0e0e0e0e0e0e0e0e0ea0a1a1a1a1
+a1a1a3919191919191099191919191a4a1a1a1a1
+a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1
 
 image image:fractia_int
-door @9,9 map:58 @14,6 0x0000
+door @9,10 map:58 @14,6 0x0000
 position 4 4 0 0
 parent map:58
-sprite @4,3 sprite:jigpiece (u32)0
+sprite @14,9 sprite:jigpiece (u32)0
 sprite @7,4 sprite:gambler (u32)0
-sprite @11,4 sprite:dealer (u32)0
-sprite @14,7 sprite:hustler (u32)0
+sprite @4,5 sprite:dealer (u32)0
+sprite @4,8 sprite:hustler (u32)0
+sprite @16,2 sprite:casneon (u32)0
+sprite @3,2 sprite:casneon (u32)0
+sprite @4,2 sprite:casneon (u32)0
+sprite @5,2 sprite:casneon (u32)0
+sprite @6,2 sprite:casneon (u32)0
+sprite @7,2 sprite:casneon (u32)0
+sprite @8,2 sprite:casneon (u32)0
+sprite @10,2 sprite:casneon (u32)0
+sprite @11,2 sprite:casneon (u32)0
+sprite @12,2 sprite:casneon (u32)0
+sprite @13,2 sprite:casneon (u32)0
+sprite @14,2 sprite:casneon (u32)0
+sprite @15,2 sprite:casneon (u32)0
+switchable @14,7 (u16:fld)mayor
+switchable @12,7 (u16:fld)mayor
+switchable @13,7 (u16:fld)mayor
+bump @15,4 (u16:activity)blackjack (u32)0
+bump @11,4 (u16:activity)poker (u32)0
+bump @13,4 (u16:activity)battle_bet (u32)0

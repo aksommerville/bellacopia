@@ -86,6 +86,9 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_grandpa: begin_grandpa(initiator); break;
     case NS_activity_grandkid: begin_grandkid(initiator); break;
     case NS_activity_guildguard: begin_guildguard(initiator); break;
+    case NS_activity_poker: begin_poker(); break;
+    case NS_activity_blackjack: begin_blackjack(); break;
+    case NS_activity_battle_bet: begin_battle_bet(); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

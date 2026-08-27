@@ -106,6 +106,7 @@ extern const struct modal_type modal_type_fishwife; // Story Mode.
 extern const struct modal_type modal_type_gameover;
 extern const struct modal_type modal_type_toast; // Quick noninteractive, self-dismissing message.
 extern const struct modal_type modal_type_tenkey;
+extern const struct modal_type modal_type_battle_bet; // Choose a wager and difficulty. (caller launches the actual battle)
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -185,6 +186,11 @@ struct modal_args_toast {
 struct modal_args_tenkey {
   int value;
   void (*cb)(int value,void *userdata);
+  void *userdata;
+};
+
+struct modal_args_battle_bet {
+  void (*cb)(int wager,int bias,int payout,void *userdata); // wager zero if cancelled.
   void *userdata;
 };
 

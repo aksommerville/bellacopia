@@ -61,6 +61,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Fishwife's modal should show how many you have in hand.
 - [x] Bell should animate and should draw monsters.
 - [x] There's a little cranny in the west desert where I've seen the island-race Moon Song get stuck. Doesn't happen every time.
+- [ ] Poker at the casino. UI in place and activity ready to write.
+- [ ] Blackjack at the casino. UI in place and activity ready to write.
+- [ ] Consider dropping the initial limit for fish. Currently 999, and that makes maxing out the inventory basically impossible.
+- [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -80,7 +84,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Vacant house next to Labor Union
 - - [ ] Athletes' Guild
 - - [ ] Grandpa's Puzzle House
-- - [ ] Casino
+- - [x] Casino
 - - [ ] Underground entrance house
 - - [ ] Public Sector Employees' Union
 - - [ ] Food Service Guild
@@ -132,6 +136,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
+- [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.

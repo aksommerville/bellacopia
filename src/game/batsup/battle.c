@@ -17,6 +17,32 @@ const struct battle_type *battle_type_by_id(int battle) {
   return 0;
 }
 
+/* Usage by id.
+ */
+ 
+int battle_usage_by_id(int battleid,int playerc) {
+  if (battleid<1) return BATTLE_USAGE_NOT_BATTLE;
+  switch (battleid) {
+  
+    case NS_battle_placeholder:
+    case NS_battle_seamonster:
+      return BATTLE_USAGE_NOT_BATTLE;
+      
+    case NS_battle_strangling: // Could call it standard, but this one is very special.
+    case NS_battle_election:
+    case NS_battle_greenfish:
+    case NS_battle_bluefish:
+    case NS_battle_redfish:
+    case NS_battle_medomat:
+      return BATTLE_USAGE_NONSTANDARD;
+      
+    case NS_battle_chess:
+      if (playerc==2) return BATTLE_USAGE_NONSTANDARD;
+      return BATTLE_USAGE_STANDARD;
+  }
+  return BATTLE_USAGE_STANDARD;
+}
+
 /* Delete instance.
  */
 

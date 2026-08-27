@@ -44,31 +44,17 @@ static int _pvp_init(struct modal *modal,const void *arg,int argc) {
   
   /* List all of the available battle types, separately for 1 and 2 players.
    * NB: They must be ID'd contiguously from 1.
+   * We don't have any knowledge about specific battles; we get all that from (type) and battle_usage_by_id().
    */
   int id=1;
   for (;;id++) {
     const struct battle_type *type=battle_type_by_id(id);
     if (!type) break;
-    
-    // Pick off some oddballs.
-    if (id==NS_battle_placeholder) continue; // Not a real battle but for technical reasons it must look like one.
-    if (id==NS_battle_chess) { // 2p mode exists but it is real Chess, not something we'd present in a minigames contest. 1p is a regular battle.
-      if (MODAL->p1c<BATTLE_LIMIT) MODAL->p1v[MODAL->p1c++]=type;
-      continue;
+    if ((MODAL->p1c<BATTLE_LIMIT)&&(battle_usage_by_id(id,1)==BATTLE_USAGE_STANDARD)) {
+      MODAL->p1v[MODAL->p1c++]=type;
     }
-    if (id==NS_battle_seamonster) continue; // Not a real battle.
-    if (id==NS_battle_election) continue; // Could do, but it only feels right in the context of the game.
-    if (id==NS_battle_greenfish) continue; // Not really a battle (tho technically we could)
-    if (id==NS_battle_bluefish) continue;
-    if (id==NS_battle_redfish) continue;
-    //TODO If I don't finish any outstanding placeholder in time, pick it off here: sumohorse fencing jeter homerunderby dissection stenography sorting
-    
-    // Everything that survived the filter above has a 1-player mode.
-    if (MODAL->p1c<BATTLE_LIMIT) MODAL->p1v[MODAL->p1c++]=type;
-    
-    // And most have a 2-player mode, it's flagged on the type.
-    if (type->support_pvp) {
-      if (MODAL->p2c<BATTLE_LIMIT) MODAL->p2v[MODAL->p2c++]=type;
+    if ((MODAL->p2c<BATTLE_LIMIT)&&type->support_pvp&&(battle_usage_by_id(id,2)==BATTLE_USAGE_STANDARD)) {
+      MODAL->p2v[MODAL->p2c++]=type;
     }
   }
   if (!MODAL->p1c||!MODAL->p2c) {

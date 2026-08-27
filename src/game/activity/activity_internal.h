@@ -52,6 +52,9 @@ void begin_escape_labyrinth();
 void begin_purse1(struct sprite *sprite);
 void begin_grandpa(struct sprite *sprite);
 void begin_grandkid(struct sprite *sprite);
+void begin_poker();
+void begin_blackjack();
+void begin_battle_bet();
 
 // activity_advice.c
 void begin_crystal();

@@ -811,3 +811,162 @@ void begin_grandpa(struct sprite *sprite) {
 void begin_grandkid(struct sprite *sprite) {
   begin_dialogue(162,sprite);
 }
+
+/* Poker: Invite to play a hand.
+ */
+ 
+void begin_poker() {
+  fprintf(stderr,"%s:%d:TODO: %s\n",__FILE__,__LINE__,__func__);
+}
+
+/* Blackjack: Invite to play a hand.
+ */
+ 
+void begin_blackjack() {
+  fprintf(stderr,"%s:%d:TODO: %s\n",__FILE__,__LINE__,__func__);
+}
+
+/* Battle Bet: Select a wager and difficulty, then play a random battle.
+ * It's the arcade smash hit "Altered Bets"! ...or "Mortal Kombet"!
+ */
+ 
+static struct {
+  int wager,bias,payout;
+  int battleid;
+} battle_bet_globals={0};
+ 
+static void cb_battle_bet_ready(struct modal *modal,int outcome,void *userdata) {
+  if (outcome>0) {
+    struct prize prizev[8];
+    int prizec=game_get_prizes(prizev,8,battle_bet_globals.battleid,0);
+    // If gold is among the prizes already awarded (likely!), bump its quantity to the payout.
+    int i=prizec,got_gold=0;
+    while (i-->0) {
+      if (prizev[i].itemid==NS_itemid_gold) {
+        prizev[i].quantity=battle_bet_globals.payout;
+        got_gold=1;
+        break;
+      }
+    }
+    // If no gold was awarded, add a prize line item.
+    if (!got_gold&&(prizec<8)) {
+      prizev[prizec++]=(struct prize){.itemid=NS_itemid_gold,.quantity=battle_bet_globals.payout};
+    }
+    // And take anything special we won in-battle:
+    struct battle *battle=modal_battle_get_battle(modal);
+    if (battle&&battle->type->get_prizes) {
+      prizec+=battle->type->get_prizes(prizev+prizec,8-prizec,battle);
+    }
+    // Award and report.
+    struct prize *prize=prizev;
+    for (;prizec-->0;prize++) {
+      game_get_item(prize->itemid,prize->quantity);
+      modal_battle_add_consequence(modal,prize->itemid,prize->quantity);
+    }
+  } else if (outcome<0) {
+    // Don't actually hurt the hero until cb_final. Report it first. If it's her last heart, game_hurt_hero would trigger the gameover modal.
+    modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+    modal_battle_add_consequence(modal,NS_itemid_gold,-battle_bet_globals.wager);
+    int gold=store_get_fld16(NS_fld16_gold);
+    if ((gold-=battle_bet_globals.wager)<0) gold=0;
+    store_set_fld16(NS_fld16_gold,gold);
+  } else {
+    // In a tie, you do lose the wager.
+    modal_battle_add_consequence(modal,NS_itemid_gold,-battle_bet_globals.wager);
+    int gold=store_get_fld16(NS_fld16_gold);
+    if ((gold-=battle_bet_globals.wager)<0) gold=0;
+    store_set_fld16(NS_fld16_gold,gold);
+  }
+}
+ 
+static void cb_battle_bet_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<0) {
+    game_hurt_hero();
+  }
+}
+ 
+static void cb_battle_bet_configured(int wager,int bias,int payout,void *userdata) {
+  if (!wager) return; // Cancelled, no worries.
+  
+  /* Collect all valid battle ids.
+   * We might do additional filtering here in the future, eg only battles you've already played.
+   * But if not, we might consider doing this indexing at build time instead of here.
+   */
+  #define ID_LIMIT 200
+  int idv[ID_LIMIT];
+  int idc=0;
+  int id=1;
+  for (;;id++) {
+    const struct battle_type *type=battle_type_by_id(id);
+    if (!type) break;
+    if (battle_usage_by_id(id,1)!=BATTLE_USAGE_STANDARD) continue; // Ignore anything nonstandard.
+    if (idc>=ID_LIMIT) break;
+    idv[idc++]=id;
+  }
+  #undef ID_LIMIT
+  
+  /* Pick one at random.
+   * Or if there aren't any, quietly abort.
+   */
+  if (idc<1) return;
+  id=idv[rand()%idc];
+  const struct battle_type *type=battle_type_by_id(id);
+  
+  /* If you have a goodluck, spend it.
+   * No matter what spiciness level the user chose, the battle will be 0x20.
+   */
+  int goodluckc=store_get_fld16(NS_fld16_goodluck);
+  if (goodluckc>0) {
+    goodluckc--;
+    store_set_fld16(NS_fld16_goodluck,goodluckc);
+    bias=0x20;
+  }
+  
+  /* Launch modal_battle.
+   */
+  battle_bet_globals.wager=wager;
+  battle_bet_globals.bias=bias;
+  battle_bet_globals.payout=payout;
+  battle_bet_globals.battleid=id;
+  struct modal_args_battle args={
+    .battle=id,
+    .args={
+      .difficulty=0x80,
+      .bias=bias,
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_monster,
+      .imageid=type->imageid_default,
+      .no_store=0,
+    },
+    .cb=cb_battle_bet_ready,
+    .cb_final=cb_battle_bet_final,
+    .userdata=0,
+    .nameless_prompt=1, // We don't know the default monster's name.
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+}
+ 
+void begin_battle_bet() {
+
+  /* Power Glove normally has the effect of making all battles low-difficulty.
+   * We're not going to allow that here because it would be too cheatsy.
+   * Of course we could just quietly ignore the glove, but where's the fun in that?
+   * Instead, if the glove is equipped show a different presentation of the machine glitching out like "Unsupported hardware!".
+   * Was picturing this Whole Big Thing, but actually, a plain old text box is good.
+   */
+  if (g.store.invstorev[0].itemid==NS_itemid_glove) {
+    begin_dialogue(166,0);
+    return;
+  }
+  
+  /* Let modal_battle_bet gather the inputs.
+   */
+  struct modal_args_battle_bet args={
+    .cb=cb_battle_bet_configured,
+    .userdata=0,
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle_bet,&args,sizeof(args));
+  if (!modal) return;
+}

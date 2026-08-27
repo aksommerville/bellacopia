@@ -90,6 +90,15 @@ extern const struct battle_input battle_input_a[];
 
 const struct battle_type *battle_type_by_id(int battle); // NS_battle_*
 
+/* Battles are STANDARD unless we pick them off specifically in this function.
+ * Anything that picks a battle randomly should consult this.
+ * Some battles differentiate between 0, 1, and 2 player mode (eg chess is standard for 1 but nonstandard for 2).
+ */
+#define BATTLE_USAGE_NOT_BATTLE  0 /* Not something you can play. seamonster,placeholder */
+#define BATTLE_USAGE_NONSTANDARD 1 /* Playable battle but special. Don't present in pick-a-battle-at-random contexts. election,greenfish,strangling... */
+#define BATTLE_USAGE_STANDARD    2 /* Typical battles. */
+int battle_usage_by_id(int battleid,int playerc);
+
 void battle_del(struct battle *battle);
 
 struct battle *battle_new(

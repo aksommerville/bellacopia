@@ -327,6 +327,9 @@
 #define NS_activity_grandpa 66
 #define NS_activity_grandkid 67
 #define NS_activity_guildguard 68
+#define NS_activity_poker 69
+#define NS_activity_blackjack 70
+#define NS_activity_battle_bet 71 /* Arcade console in the casino. */
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -370,6 +373,7 @@
 #define NS_sprtype_trickfloor       50 /* (u32)0 */
 #define NS_sprtype_seasonblocks     51 /* (u8:role)1 (u24)0 ; 1=hint 2=puzzle */
 #define NS_sprtype_sphinx           52 /* (u32)0 */
+#define NS_sprtype_casneon          53 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -412,7 +416,8 @@
   _(flamethrower) \
   _(trickfloor) \
   _(seasonblocks) \
-  _(sphinx)
+  _(sphinx) \
+  _(casneon)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
