@@ -261,8 +261,14 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
     SPRITE->walking=0;
     double speed=8.0*elapsed;
     if (!sprite_move(sprite,SPRITE->slidedx*speed,SPRITE->slidedy*speed)) {
-      bm_sound(RID_sound_bump);
       SPRITE->sliding=0;
+      SPRITE->blocked=1;
+      if (SPRITE->slidetime>=0.250) {
+        bm_sound(RID_sound_bump);
+        hero_check_bumps(sprite);
+      }
+    } else {
+      SPRITE->slidetime+=elapsed;
     }
     return;
   }
@@ -273,10 +279,11 @@ void hero_motion_update(struct sprite *sprite,double elapsed) {
     return;
   }
   
-  if (SPRITE->onice&&(SPRITE->itemid_in_progress!=NS_itemid_broom)) {
+  if (SPRITE->onice&&!SPRITE->blocked&&(SPRITE->itemid_in_progress!=NS_itemid_broom)) {
     SPRITE->sliding=1;
     SPRITE->slidedx=SPRITE->facedx;
     SPRITE->slidedy=SPRITE->facedy;
+    SPRITE->slidetime=0.0;
     SPRITE->walking=0;
     return;
   }

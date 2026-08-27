@@ -52,7 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [ ] Sometimes the wall bonk sound plays repeatedly.
+- [x] Sometimes the wall bonk sound plays repeatedly.
 - - Happens reliably on ice.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?

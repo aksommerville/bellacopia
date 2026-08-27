@@ -72,6 +72,7 @@ struct sprite_hero {
   int sliding; // ice
   double slidedx,slidedy;
   int onice;
+  double slidetime;
   
   // Track (hints_override) from the focussed map. These go unequal for one update cycle.
   int hints_override;
