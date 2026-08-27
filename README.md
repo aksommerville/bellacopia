@@ -60,6 +60,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Do something if you fly a figure-eight around the sirens.
 - [x] Fishwife's modal should show how many you have in hand.
 - [x] Bell should animate and should draw monsters.
+- [x] There's a little cranny in the west desert where I've seen the island-race Moon Song get stuck. Doesn't happen every time.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -140,6 +141,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
+- [ ] shuffling: Sound.
+- [ ] slapping: Sound.
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
