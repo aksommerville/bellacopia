@@ -27,6 +27,17 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
             }
           }
         } break;
+      case CMD_map_ifitem: {
+          int x=cmd.arg[0],y=cmd.arg[1];
+          if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
+            int p=y*NS_sys_mapw+x;
+            if (store_get_itemid(cmd.arg[2])) {
+              map->v[p]=map->rov[p]+cmd.arg[3];
+            } else {
+              map->v[p]=map->rov[p];
+            }
+          }
+        } break;
       case CMD_map_burieddoor: {
           int x=cmd.arg[0],y=cmd.arg[1];
           if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {
