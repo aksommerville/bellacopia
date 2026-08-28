@@ -19,6 +19,7 @@ struct sprite_pushable {
   double targetx,targety;
   double moveclock; // Terminate move if it expires, and stay wherever we are.
   double pressdx,pressdy; // Must be a cardinal normal, if (pressure) nonzero.
+  int earthquake; // Track earthquakes and apply some correction at the end.
 };
 
 #define SPRITE ((struct sprite_pushable*)sprite)
@@ -176,10 +177,100 @@ static void pushable_end_move(struct sprite *sprite) {
   }
 }
 
+/* React to end of earthquake, attempt to quantize position.
+ * This only matters when there are multiple pushables in a line, eg the Sphinx's Riddle.
+ * We have some general slide-to-quantized logic in _pushable_update that handles singleton cases nicely.
+ * The first block to get this trigger clears the (earthquake) flag in all pushables and resolves them as a group.
+ */
+ 
+static void pushable_earthquake_ended(struct sprite *sprite) {
+  if (!g.camera.map) return;
+  int conflict=0;
+  uint8_t count_by_position[NS_sys_mapw*NS_sys_maph]={0};
+  struct sprite **otherp=GRP(moveable)->sprv;
+  int otheri=GRP(moveable)->sprc;
+  for (;otheri-->0;otherp++) {
+  
+    // Skip non-pushables. Clear (earthquake) in all.
+    struct sprite *other=*otherp;
+    if (other->type!=&sprite_type_pushable) continue;
+    struct sprite_pushable *OTHER=(void*)other;
+    OTHER->earthquake=0; // Don't call us again this frame.
+    
+    // Take the block's quantized position, and skip if OOB.
+    int qx=(int)other->x-g.camera.map->lng*NS_sys_mapw;
+    int qy=(int)other->y-g.camera.map->lat*NS_sys_maph;
+    if ((qx<0)||(qx>=NS_sys_mapw)||(qy<0)||(qy>=NS_sys_maph)) continue;
+    
+    // If there's already something on this cell, we have a conflict.
+    int p=qy*NS_sys_mapw+qx;
+    if (count_by_position[p]) conflict=1;
+    count_by_position[p]++;
+  }
+  
+  // No conflict? Great, let the generic logic handle fine-tuning.
+  if (!conflict) {
+    return;
+  }
+  
+  /* We will only move blocks opposite the direction of the recent earthquake; find that direction now.
+   */
+  int dx=-g.eqdx;
+  int dy=-g.eqdy;
+  if ((!dx&&!dy)||(dx&&dy)) {
+    return;
+  }
+  int fx=-dx,fy=-dy; // "Forward" direction, toward the conflict. ie the earthquake's direction.
+  
+  /* Iterate the pushables again.
+   * If I'm on the conflict cell, or there is an unbroken chain of presence from me to conflict along (fx,fy), take corrective action.
+   */
+  for (otherp=GRP(moveable)->sprv,otheri=GRP(moveable)->sprc;otheri-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->type!=&sprite_type_pushable) continue;
+    struct sprite_pushable *OTHER=(void*)other;
+    int qx=(int)other->x;
+    int qy=(int)other->y;
+    int subx=qx-g.camera.map->lng*NS_sys_mapw;
+    int suby=qy-g.camera.map->lat*NS_sys_maph;
+    if ((subx<0)||(subx>=NS_sys_mapw)||(suby<0)||(suby>=NS_sys_maph)) continue;
+    
+    int act=0;
+    int ckx=subx,cky=suby;
+    for (;;) {
+      if ((ckx<0)||(ckx>=NS_sys_mapw)||(cky<0)||(cky>=NS_sys_maph)) break;
+      int c=count_by_position[cky*NS_sys_mapw+ckx];
+      if (!c) break; // No conflict along our earthquake vector.
+      if (c>=2) { // Conflict! We need to act.
+        act=1;
+        break;
+      }
+      ckx+=fx;
+      cky+=fy;
+    }
+    if (!act) continue;
+    
+    OTHER->movedx=dx;
+    OTHER->movedy=dy;
+    int tx=qx+OTHER->movedx;
+    int ty=qy+OTHER->movedy;
+    OTHER->targetx=tx+0.5;
+    OTHER->targety=ty+0.5;
+    OTHER->moveclock=SLIDE_GIVEUP_TIME;
+  }
+}
+
 /* Update.
  */
 
 static void _pushable_update(struct sprite *sprite,double elapsed) {
+
+  if (g.eqclock>0.0) {
+    SPRITE->earthquake=1;
+  } else if (SPRITE->earthquake) {
+    SPRITE->earthquake=0;
+    pushable_earthquake_ended(sprite);
+  }
 
   if (SPRITE->movedx||SPRITE->movedy) {
     if ((SPRITE->moveclock-=elapsed)<=0.0) {
