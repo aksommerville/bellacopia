@@ -44,6 +44,59 @@ static void npc_prepare_moonsong(struct sprite *sprite) {
   }
 }
 
+/* Mr and Mrs Rabbit.
+ * Similar to Moon Song, we're very likely to be present when our flag changes.
+ * Can't imagine why a user would do this, but they can undo and turn the flag off, be ready for it.
+ */
+ 
+static void npc_mr_mrs_rabbit_reunited(struct sprite *sprite) {
+  if (sprite->tileid==SPRITE->tileid0) {
+    sprite->tileid=SPRITE->tileid0+0x10;
+    if (SPRITE->activity_arg==2) { // mrs
+      sprite->x-=0.5;
+      struct sprite *heart=sprite_spawn(sprite->x-0.5,sprite->y-1.0,RID_sprite_heart_ornament,0,0,0,0,0);
+    } else { // mr
+      sprite->x+=0.5;
+    }
+  }
+}
+
+static void npc_mr_mrs_rabbit_tragically_torn_asunder(struct sprite *sprite) {
+  if (sprite->tileid==SPRITE->tileid0+0x10) {
+    sprite->tileid=SPRITE->tileid0;
+    if (SPRITE->activity_arg==2) {
+      sprite->x+=0.5;
+      // Remove the heart ornament if we find one.
+      struct sprite **otherp=GRP(visible)->sprv;
+      int otheri=GRP(visible)->sprc;
+      for (;otheri-->0;otherp++) {
+        struct sprite *other=*otherp;
+        if (other->rid==RID_sprite_heart_ornament) {
+          sprite_kill_soon(other);
+        }
+      }
+    } else {
+      sprite->x-=0.5;
+    }
+  }
+}
+ 
+static void npc_mr_mrs_rabbit_cb(char type,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  if ((type=='f')&&(id==NS_fld_surveyor_complete)) {
+    if (value) npc_mr_mrs_rabbit_reunited(sprite);
+    else npc_mr_mrs_rabbit_tragically_torn_asunder(sprite);
+  }
+}
+
+static void npc_prepare_mr_mrs_rabbit(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_surveyor_complete)) {
+    npc_mr_mrs_rabbit_reunited(sprite);
+  } else {
+    SPRITE->store_listener=store_listen('f',npc_mr_mrs_rabbit_cb,sprite);
+  }
+}
+
 /* Init.
  */
  
@@ -59,6 +112,7 @@ static int _npc_init(struct sprite *sprite) {
     case NS_activity_logproblem1: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
     case NS_activity_logproblem2: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
     case NS_activity_moonsong: npc_prepare_moonsong(sprite); break;
+    case NS_activity_mr_mrs_rabbit: npc_prepare_mr_mrs_rabbit(sprite); break;
   }
   
   struct cmdlist_reader reader;

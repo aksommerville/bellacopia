@@ -94,5 +94,6 @@ void begin_battle(struct sprite *sprite,int battleid);
 
 // activity_dialogue.c
 void begin_statuemaze_clue(struct sprite *initiator,int arg);
+void begin_mr_mrs_rabbit(struct sprite *initiator,int arg);
 
 #endif

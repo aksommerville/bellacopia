@@ -1,0 +1,5 @@
+image image:cave_sprites
+tile 62 0
+type (u16:sprtype)ornament
+groups (b32:sprgrp)visible,update
+ornament 2 50

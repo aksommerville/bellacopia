@@ -71,6 +71,7 @@
 #define CMD_sprite_type          0x22 /* u16:sprtype */
 #define CMD_sprite_layer         0x23 /* u16:layer ; hero at 100 */
 #define CMD_sprite_weight        0x24 /* u16:weight ; NS_sprtype_pushable. 0=always, 1=glove */
+#define CMD_sprite_ornament      0x25 /* u8:framec u8:delay_4ms ; NS_sprtype_ornament */
 #define CMD_sprite_physics       0x40 /* b32:physics ; which are impassable */
 #define CMD_sprite_hitbox        0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups        0x42 /* b32:sprgrp */
@@ -331,6 +332,7 @@
 #define NS_activity_poker 69
 #define NS_activity_blackjack 70
 #define NS_activity_battle_bet 71 /* Arcade console in the casino. */
+#define NS_activity_mr_mrs_rabbit 72
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -375,6 +377,7 @@
 #define NS_sprtype_seasonblocks     51 /* (u8:role)1 (u24)0 ; 1=hint 2=puzzle */
 #define NS_sprtype_sphinx           52 /* (u32)0 */
 #define NS_sprtype_casneon          53 /* (u32)0 */
+#define NS_sprtype_ornament         54 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -418,7 +421,8 @@
   _(trickfloor) \
   _(seasonblocks) \
   _(sphinx) \
-  _(casneon)
+  _(casneon) \
+  _(ornament)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -893,10 +897,10 @@
 #define NS_fld16_race6time 28 /* 8ms ; undernorth */
 #define NS_fld16_goodluck 29
 #define NS_fld16_iceseq 30 /* 0..6, how many times we've beaten the Ice Dragon. */
-#define NS_fld16_surveyor_a 31
+#define NS_fld16_surveyor_a 31 /* Position of point A ((x<<8)|y). (not the distance!) */
 #define NS_fld16_surveyor_b 32
 #define NS_fld16_surveyor_c 33
-#define NS_fld16_surveyor_a_guess 34
+#define NS_fld16_surveyor_a_guess 34 /* Distance guessed. */
 #define NS_fld16_surveyor_b_guess 35
 #define NS_fld16_surveyor_c_guess 36
 #define NS_fld16_wishing_well 37 /* itemid */

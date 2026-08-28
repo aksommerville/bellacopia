@@ -14,3 +14,35 @@ void begin_statuemaze_clue(struct sprite *initiator,int arg) {
   };
   modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
+
+/* Mr and Mrs Rabbit.
+ */
+
+void begin_mr_mrs_rabbit(struct sprite *initiator,int arg) {
+  
+  // Regardless of who we are, if the quest is complete we just say thanks.
+  if (store_get_fld(NS_fld_surveyor_complete)) {
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=172,
+      .speaker=initiator,
+    };
+    modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    return;
+  }
+  
+  /* I was going to have Mrs Rabbit tell you "too high" or "too low" when all three are guessed, but that's tricky.
+   * See surveyor.c:surveyor_check(). The distance and tolerance don't live anywhere we can easily find them.
+   * This gag remains possible, but now I don't think it's worth the effort.
+   */
+  
+  /* Simple dialogue, a different message per speaker.
+   */
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=170,
+    .speaker=initiator,
+  };
+  if (arg==2) args.strix=171;
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}

@@ -23,3 +23,5 @@ sprite @8,2 sprite:tenkey (u16:fld16)surveyor_b_guess (u16)0
 bump @10,2 (u16:activity)surveyor_entry (u16:fld16)surveyor_c (u16)0
 bump @6,2 (u16:activity)surveyor_entry (u16:fld16)surveyor_a (u16)0
 bump @8,2 (u16:activity)surveyor_entry (u16:fld16)surveyor_b (u16)0
+sprite @1,4 sprite:mr_rabbit (u16:activity)mr_mrs_rabbit (u16:activity_arg)1
+sprite @3,4 sprite:mrs_rabbit (u16:activity)mr_mrs_rabbit (u16:activity_arg)2

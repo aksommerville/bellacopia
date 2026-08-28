@@ -118,13 +118,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
 - - [ ] Dark some regions.
-- - [ ] Mr and Mrs Rabbit at the surveyor challenge.
+- - [x] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end.
+- [ ] cheating: Make the background graphics more casiny.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
@@ -134,9 +135,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
+- [ ] shaking: Sound when the cork bounces.
 - [ ] shuffling: Sound.
 - [ ] slapping: Sound.
 - [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
+- [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
