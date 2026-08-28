@@ -18,6 +18,55 @@ struct sprite_bus {
 
 #define SPRITE ((struct sprite_bus*)sprite)
 
+/* Choose a starting position.
+ * Hero spawns us at her exact position; obviously we don't want to land there.
+ * The ideal is either directly above or below her.
+ * But fuzz it out a little if those fail. Don't give up too easy.
+ * If we succeed, (sprite->x,y) are overwritten.
+ */
+ 
+static int bus_try_landing_zone(struct sprite *sprite,double x,double y) {
+  sprite->x=x;
+  sprite->y=y;
+  return sprite_test_position(sprite);
+}
+ 
+static int bus_choose_landing_zone(struct sprite *sprite) {
+  double x0=sprite->x;
+  double y0=sprite->y;
+  const double yideal=1.600;
+  const double xideal=2.600;
+  
+  // Most preferred: Directly above or below.
+  if (bus_try_landing_zone(sprite,x0,y0+yideal)) return 0;
+  if (bus_try_landing_zone(sprite,x0,y0-yideal)) return 0;
+  
+  // Not great but hey: Directly left or right.
+  if (bus_try_landing_zone(sprite,x0-xideal,y0)) return 0;
+  if (bus_try_landing_zone(sprite,x0+xideal,y0)) return 0;
+  
+  // Try some diagonals at a slightly higher radius.
+  const double ywide=1.800;
+  const double xwide=2.800;
+  const int stepc=7;
+  int step=1;
+  for (;step<stepc;step++) {
+    double t=(step*M_PI*0.5)/stepc;
+    double dx=cos(t)*xwide;
+    double dy=sin(t)*ywide;
+    if (bus_try_landing_zone(sprite,x0+dx,y0+dy)) return 0;
+    if (bus_try_landing_zone(sprite,x0-dx,y0+dy)) return 0;
+    if (bus_try_landing_zone(sprite,x0+dx,y0-dy)) return 0;
+    if (bus_try_landing_zone(sprite,x0-dx,y0-dy)) return 0;
+  }
+  
+  // OK I give up.
+  return -1;
+}
+
+/* Init.
+ */
+
 static int _bus_init(struct sprite *sprite) {
 
   // If a bus already exists, reject. We're not made of busses.
@@ -30,20 +79,18 @@ static int _bus_init(struct sprite *sprite) {
     if (other->type==&sprite_type_bus) return -1;
   }
 
-  double y0=sprite->y;
-  sprite->y=y0+1.600;
-  if (!sprite_test_position(sprite)) {
-    sprite->y=y0-1.600;
-    if (!sprite_test_position(sprite)) {
-      return -1;
-    }
-  }
+  // If we can't find a good position, abort.
+  if (bus_choose_landing_zone(sprite)<0) return -1;
+  
   SPRITE->stopx=sprite->x;
   sprite->x+=10.0;
   SPRITE->alpha=0.0;
   SPRITE->ttl=BUS_TTL;
   return 0;
 }
+
+/* Update.
+ */
 
 static void _bus_update(struct sprite *sprite,double elapsed) {
 
@@ -74,6 +121,9 @@ static void _bus_update(struct sprite *sprite,double elapsed) {
   }
 }
 
+/* Render.
+ */
+
 static void _bus_render(struct sprite *sprite,int x,int y) {
   const int ht=NS_sys_tilesize>>1;
   uint8_t tileid=sprite->tileid;
@@ -90,6 +140,9 @@ static void _bus_render(struct sprite *sprite,int x,int y) {
   graf_tile(&g.graf,x+NS_sys_tilesize,y+ht,tileid+0x12,0);
   graf_set_alpha(&g.graf,0xff);
 }
+
+/* Type definition.
+ */
 
 static int bus_cb_dialogue(int busstop,void *userdata) {
   struct sprite *sprite=userdata;

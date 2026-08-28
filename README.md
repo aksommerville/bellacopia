@@ -44,7 +44,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [ ] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
+- [x] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
