@@ -17,3 +17,5 @@ sprite @12,9 sprite:jigpiece (u32)0
 sprite @6,2 sprite:ticker (u16:fld)zoo12_0 (u16)0
 sprite @4,4 sprite:zookeeper (u16:fld)zoo12_0 (u16)0
 zookeeper @6,3,4,3
+dark
+sprite @10,5 sprite:firepot (u8:radius_m)3 (u24)0

@@ -103,8 +103,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Underground entrance house
 - [ ] Jungle
 - [ ] Temple
-- - [ ] Lots of unused space at the north edge. Put some bonus challenges here or eliminate it.
-- - [ ] Some kind of hint in the southwest detached room, or change it to "Hidden Message" a la Sergio.
+- - [ ] Lots of unused space at the north edge. Put some bonus challenges here or eliminate it. ...remains pretty sparse even after adding the Sphinx.
+- - [x] Some kind of hint in the southwest detached room, or change it to "Hidden Message" a la Sergio.
 - - [ ] Gift shop
 - - [ ] Roof access room
 - [ ] Sea monster
@@ -117,7 +117,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
-- - [ ] Dark some regions.
+- - [x] Dark some regions.
 - - [x] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.

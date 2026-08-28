@@ -14,3 +14,4 @@
 image image:caves
 position 1 2 2 *
 sprite @4,8 sprite:jigpiece (u32)0
+dark

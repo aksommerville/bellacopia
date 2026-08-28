@@ -16,3 +16,5 @@ position 5 9 2 *
 sprite @5,4 sprite:jigpiece (u32)0
 sprite @14,8 sprite:treasure (u8:itemid)tapemeasure (u8:quantity)0 (u16:fld)0
 rspriteres rsprite:usoutheast
+dark
+sprite @8,6 sprite:firepot (u8:radius_m)3 (u24)0
