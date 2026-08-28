@@ -34,7 +34,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Gambling challenge in the casino. Choose a difficulty, implies a wager and payout, and play a random battle.
 - [ ] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
@@ -52,18 +51,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Pushblocks are sometimes bunching up incorrectly after an earthquake, need some more mitigation somehow. Most visible with the sphinxblock puzzle.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [x] Sometimes the wall bonk sound plays repeatedly.
-- - Happens reliably on ice.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [ ] Do something if you fly a figure-eight around the sirens.
-- [x] Fishwife's modal should show how many you have in hand.
-- [x] Bell should animate and should draw monsters.
-- [x] There's a little cranny in the west desert where I've seen the island-race Moon Song get stuck. Doesn't happen every time.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
-- [ ] Consider dropping the initial limit for fish. Currently 999, and that makes maxing out the inventory basically impossible.
+- [x] Consider dropping the initial limit for fish. Currently 999, and that makes maxing out the inventory basically impossible.
+- - Changing initial_limit didn't constrain it. ...fixed. Max inventory is now perfectly achievable, if a bit dull.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
@@ -73,7 +68,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
-- - [x] A cow or something, that approaches you when you ring the bell. ...all monsters do this now.
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.

@@ -137,7 +137,7 @@ static const struct item_detail item_detailv[]={
     .hand_tileid=0,
     .strix_name=28,
     .strix_help=0,
-    .initial_limit=999,
+    .initial_limit=99,
     .inventoriable=0,
     .fld16=NS_fld16_greenfish,
   },
@@ -146,7 +146,7 @@ static const struct item_detail item_detailv[]={
     .hand_tileid=0,
     .strix_name=29,
     .strix_help=0,
-    .initial_limit=999,
+    .initial_limit=99,
     .inventoriable=0,
     .fld16=NS_fld16_bluefish,
   },
@@ -155,7 +155,7 @@ static const struct item_detail item_detailv[]={
     .hand_tileid=0,
     .strix_name=30,
     .strix_help=0,
-    .initial_limit=999,
+    .initial_limit=99,
     .inventoriable=0,
     .fld16=NS_fld16_redfish,
   },
@@ -646,6 +646,8 @@ int game_get_item(int itemid,int quantity) {
     if (detail->initial_limit<0) {
       limit=store_get_fld16(-detail->initial_limit);
       if (!limit) fprintf(stderr,"%s:%d:WARNING: Initial limit for itemid %d expected in fld16 %d, but got zero.\n",__FILE__,__LINE__,itemid,-detail->initial_limit);
+    } else if (detail->initial_limit>0) {
+      limit=detail->initial_limit;
     }
     if (have>=limit) { // Already full.
       game_report_item_full(itemid);
