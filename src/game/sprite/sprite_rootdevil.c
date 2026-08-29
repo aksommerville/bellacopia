@@ -62,6 +62,9 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
 }
 
 static void rootdevil_cb_final(struct modal *modal,int outcome,void *userdata) {
+  if (GRP(hero)->sprc>0) {
+    sprite_hero_poke_quantized_position(GRP(hero)->sprv[0]);
+  }
   if (outcome<0) {
     game_hurt_hero();
   } else if (store_get_fld(NS_fld_root_all)) {

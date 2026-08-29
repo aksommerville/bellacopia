@@ -286,7 +286,10 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
   SPRITE->qnew=0;
   int qx=(int)sprite->x;
   int qy=(int)sprite->y;
-  if ((qx!=SPRITE->qx)||(qy!=SPRITE->qy)) {
+  if (SPRITE->qpoke) {
+    SPRITE->qnew=1;
+    SPRITE->qpoke=0;
+  } else if ((qx!=SPRITE->qx)||(qy!=SPRITE->qy)) {
     SPRITE->qnew=1;
     SPRITE->qx=qx;
     SPRITE->qy=qy;
@@ -487,6 +490,11 @@ uint8_t sprite_hero_get_facedir(const struct sprite *sprite) {
 int sprite_hero_get_item_in_play(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
   return SPRITE->itemid_in_progress;
+}
+
+void sprite_hero_poke_quantized_position(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  SPRITE->qpoke=1;
 }
 
 /* Do my feet touch the ground?

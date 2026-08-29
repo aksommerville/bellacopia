@@ -103,6 +103,7 @@ int sprite_hero_get_item_in_play(const struct sprite *sprite); // Not the held i
 int sprite_hero_is_grounded(const struct sprite *sprite); // We'll be savvy to some other types too. Anything in GRP(hero) should be valid.
 int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *sprite); // She has the old position during the new map's instantiation. This tells you the new.
 void sprite_hero_drop_compass(struct sprite *sprite);
+void sprite_hero_poke_quantized_position(struct sprite *sprite); // Force me to reexamine the quantized position, eg to poke the divining rod.
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();

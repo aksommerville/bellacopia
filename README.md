@@ -56,7 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
-- [ ] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
+- [x] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
