@@ -12,8 +12,12 @@ struct zoo_resident {
 static const struct zoo_resident zoo1v[]={
   {NS_fld_zoo1_0,RID_sprite_raccoon},
   {NS_fld_zoo1_1,RID_sprite_heron},
-  {NS_fld_zoo1_2,RID_sprite_wolf},
+  {NS_fld_zoo1_2,RID_sprite_pheasant},
   {NS_fld_zoo1_3,RID_sprite_fox},
+  //TODO flds not apportioned yet
+  //{NS_fld_zoo1_4,RID_sprite_bull},
+  //{NS_fld_zoo1_5,RID_sprite_mouse},
+  //{NS_fld_zoo1_6,RID_sprite_owl},
 0};
 
 // East Desert
@@ -53,7 +57,7 @@ static const struct zoo_resident zoo6v[]={
   {NS_fld_zoo6_0,RID_sprite_leopard},//XXX
   {NS_fld_zoo6_1,RID_sprite_sparrow},
   {NS_fld_zoo6_2,RID_sprite_goat},
-  {NS_fld_zoo6_3,RID_sprite_soldier},//XXX
+  {NS_fld_zoo6_3,RID_sprite_wolf},
 0};
 
 // West Tundra

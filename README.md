@@ -57,6 +57,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - [x] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
+- [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -70,6 +71,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
+- - [ ] Make the Cat or Dot statue's head passable and occluditory, like statuemaze.
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Vacant house next to Labor Union

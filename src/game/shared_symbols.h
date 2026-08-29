@@ -519,6 +519,7 @@
 #define NS_battle_ratrace 93
 #define NS_battle_wrapping 94
 #define NS_battle_flipping 95
+#define NS_battle_dodging 96
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -614,7 +615,8 @@
   _(flying) \
   _(ratrace) \
   _(wrapping) \
-  _(flipping)
+  _(flipping) \
+  _(dodging)
 
 /* "fld" are single bits.
  */

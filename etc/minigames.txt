@@ -40,7 +40,7 @@
   2____D Dissection        Doctor             Fractia
   2____D Distancing        Wolf               Woodland
   2      Diving            Penguin            Tundra
- R2      Dodging           Pheasant           Woodland
+ R2____D Dodging           Pheasant           Woodland
   1      Drawing           Gunslinger         Desert
   2____D Election          MayorCat           Fractia
   2____D Erudition         Snoblin            Goblins
