@@ -9,7 +9,7 @@
  R2____D Balacing          Orangutan          Jungle
   1____D Bluefish          Bluefish           All
   2____D Bobsleigh         IceDragon          IcePalace
-  2      BodySlam          Yak                Tundra
+  2____D BodySlam          Yak                Tundra
   2      Bombing           Grenadier          Battlefield
   2____D Boomerang         Koala              Desert
   2      Bouncing          Squirrel           Woodland

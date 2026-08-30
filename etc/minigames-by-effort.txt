@@ -3,7 +3,6 @@ Minigames, sorted roughly by estimated effort to implement.
 Remove finished games as you go.
 
 ## Easy
-Body Slam. Jump and press Down at the peak, to fall fast and slam thru layers of ice.
 Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
 Burrowing. Right to move, A to dig. Dig thru the dirt.
 Clam Baking. Hold A to engage flamethrower, only when the clam is open.

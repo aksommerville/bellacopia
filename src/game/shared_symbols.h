@@ -522,6 +522,7 @@
 #define NS_battle_dodging 96
 #define NS_battle_ceilingtouching 97
 #define NS_battle_balancing 98
+#define NS_battle_bodyslam 99
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -620,7 +621,8 @@
   _(flipping) \
   _(dodging) \
   _(ceilingtouching) \
-  _(balancing)
+  _(balancing) \
+  _(bodyslam)
 
 /* "fld" are single bits.
  */

@@ -72,7 +72,7 @@ static const struct zoo_resident zoo7v[]={
 static const struct zoo_resident zoo8v[]={
   {NS_fld_zoo8_0,RID_sprite_walrus},
   {NS_fld_zoo8_1,RID_sprite_albatross},
-  {NS_fld_zoo8_2,RID_sprite_koala},//XXX
+  {NS_fld_zoo8_2,RID_sprite_yak},
   {NS_fld_zoo8_3,RID_sprite_reindeer},
 0};
 
