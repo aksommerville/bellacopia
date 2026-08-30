@@ -6,7 +6,7 @@
 #RC____D NAME              OPPONENT           ZONE
   2____D Apples            Boblin             Goblins
   2____D ArmWrestling      Minotaur           Labyrinth
- R2      Balacing          Orangutan          Jungle
+ R2____D Balacing          Orangutan          Jungle
   1____D Bluefish          Bluefish           All
   2____D Bobsleigh         IceDragon          IcePalace
   2      BodySlam          Yak                Tundra

@@ -46,7 +46,7 @@ static const struct zoo_resident zoo4v[]={
 
 // North Jungle
 static const struct zoo_resident zoo5v[]={
-  {NS_fld_zoo5_0,RID_sprite_fishycist},//XXX
+  {NS_fld_zoo5_0,RID_sprite_orangutan},
   {NS_fld_zoo5_1,RID_sprite_koala},//XXX
   {NS_fld_zoo5_2,RID_sprite_leopard},
   {NS_fld_zoo5_3,RID_sprite_elephant},
