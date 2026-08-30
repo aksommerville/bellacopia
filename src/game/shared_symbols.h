@@ -520,6 +520,7 @@
 #define NS_battle_wrapping 94
 #define NS_battle_flipping 95
 #define NS_battle_dodging 96
+#define NS_battle_ceilingtouching 97
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -616,7 +617,8 @@
   _(ratrace) \
   _(wrapping) \
   _(flipping) \
-  _(dodging)
+  _(dodging) \
+  _(ceilingtouching)
 
 /* "fld" are single bits.
  */

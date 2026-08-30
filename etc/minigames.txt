@@ -20,7 +20,7 @@
   2____D CakeCarrying      Baker              Fractia
   2____D Calligraphy       Elephant           Jungle
   2____D Cartography       Geographer         Tundra
-  2      CeilingTouching   Giant              Cave
+  2____D CeilingTouching   Giant              Cave
   1____D Cheating          Hustler            Fractia
   2____D CheeseCutting     Executioner        Fractia
   1____D Chess             Sage               Labyrinth

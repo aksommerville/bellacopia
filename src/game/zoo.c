@@ -105,7 +105,7 @@ static const struct zoo_resident zoo12v[]={
   {NS_fld_zoo12_0,RID_sprite_spider},
   {NS_fld_zoo12_1,RID_sprite_bat},
   {NS_fld_zoo12_2,RID_sprite_medusa},//XXX
-  {NS_fld_zoo12_3,RID_sprite_vandal},//XXX
+  {NS_fld_zoo12_3,RID_sprite_giant},
 0};
 
 // Under Home
