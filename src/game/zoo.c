@@ -54,7 +54,7 @@ static const struct zoo_resident zoo5v[]={
 
 // Mountains
 static const struct zoo_resident zoo6v[]={
-  {NS_fld_zoo6_0,RID_sprite_leopard},//XXX
+  {NS_fld_zoo6_0,RID_sprite_beaver},
   {NS_fld_zoo6_1,RID_sprite_sparrow},
   {NS_fld_zoo6_2,RID_sprite_goat},
   {NS_fld_zoo6_3,RID_sprite_wolf},
