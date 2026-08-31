@@ -16,3 +16,4 @@ position 6 9 2 *
 sprite @9,5 sprite:jigpiece (u32)0
 rspriteres rsprite:usoutheast
 dark
+sprite @16,8 sprite:firepot (u8:radius_m)3 (u24)0

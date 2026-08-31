@@ -178,15 +178,30 @@ Still, try to do something every day, even if it's just some wee touch-up somewh
 There's a bunch of little things on the to-do list, that can be grabbed for a half hour's work here or there. Interior graphics are a good choice.
 
 Goals:
-- [ ] 10 new battles.
-- [ ] Cheapside and Botire interiors.
+- [x] 10 new battles. ...9. close enough!
+- [x] Cheapside and Botire interiors. ...still plenty unfinished but progress was made.
+
+I barely touched Bellacopia at all during LowRez and js13k, but I also finished both of those early and made some real progress.
+Crossed the auspicious 100-battles mark, and surpassed Full Moon by line count in the same commit.
+On 10 Sept, we'll cross Full Moon by dev time too.
+
+My 100% time has decreased a little. I've made it easier to get the broom early (if you know how), and bell attracts monsters so filling in the zoos now is easier.
+
+Stats as of c17ee715f967b760da0d0debb63510dd20579ea1, 2026-08-31:
+ - Code: 88272
+ - `rom=1943486 code=1034410 image=5402476px*88 song=10:43.895*19 sound=0:27.586*82 map=84960m*354`
+ - Battles: 100
+ - 100%: 1:51:42
+ - Minm:   26:09
+ - Any%:   13:49
 
 ## September 2026
 
-Doing the GDEX game jam and maybe Uplifting too. So like August, it will be a slow Bellacopia month.
+Doing the GDEX game jam, also judging Uplifting and js13k. So like August, it will be a slow Bellacopia month.
 
 Goals:
 - [ ] 10 new battles.
+- [ ] A few more interiors.
 
 ## October 2026
 

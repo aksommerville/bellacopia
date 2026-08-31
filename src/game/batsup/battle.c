@@ -34,6 +34,7 @@ int battle_usage_by_id(int battleid,int playerc) {
     case NS_battle_bluefish:
     case NS_battle_redfish:
     case NS_battle_medomat:
+    case NS_battle_shovelthrowing:
       return BATTLE_USAGE_NONSTANDARD;
       
     case NS_battle_chess:
