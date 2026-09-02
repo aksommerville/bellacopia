@@ -1,0 +1,2 @@
+type (u16:sprtype)figureeight
+groups (b32:sprgrp)update

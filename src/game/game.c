@@ -427,7 +427,9 @@ static int is_food_contest(int battle) {
   switch (battle) {
     case NS_battle_apples:
     case NS_battle_gobbling:
-    //TODO frogeating licking
+    case NS_battle_frogeating:
+    case NS_battle_oateating:
+    //TODO licking
       return 1;
   }
   return 0;

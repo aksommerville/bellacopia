@@ -58,6 +58,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - [x] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
 - [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
+- [ ] Oat Eating Contest
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

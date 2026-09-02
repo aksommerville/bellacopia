@@ -333,6 +333,7 @@
 #define NS_activity_blackjack 70
 #define NS_activity_battle_bet 71 /* Arcade console in the casino. */
 #define NS_activity_mr_mrs_rabbit 72
+#define NS_activity_summon_eight 73
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -378,6 +379,8 @@
 #define NS_sprtype_sphinx           52 /* (u32)0 */
 #define NS_sprtype_casneon          53 /* (u32)0 */
 #define NS_sprtype_ornament         54 /* (u32)0 */
+#define NS_sprtype_figureeight      55 /* (u8:orient_hv)01 (u24)0 */
+#define NS_sprtype_eightspawn       56 /* (u32)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -422,7 +425,9 @@
   _(seasonblocks) \
   _(sphinx) \
   _(casneon) \
-  _(ornament)
+  _(ornament) \
+  _(figureeight) \
+  _(eightspawn)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -524,6 +529,7 @@
 #define NS_battle_balancing 98
 #define NS_battle_bodyslam 99
 #define NS_battle_pouring 100
+#define NS_battle_oateating 101
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -624,7 +630,8 @@
   _(ceilingtouching) \
   _(balancing) \
   _(bodyslam) \
-  _(pouring)
+  _(pouring) \
+  _(oateating)
 
 /* "fld" are single bits.
  */
