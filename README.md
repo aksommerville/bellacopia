@@ -58,7 +58,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - [x] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
 - [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
-- [ ] Oat Eating Contest
+- [x] Oat Eating Contest
+- [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
+- [ ] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
+- [ ] Some fireworks when an animal gets captured.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -66,7 +69,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
-- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream.
+- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.

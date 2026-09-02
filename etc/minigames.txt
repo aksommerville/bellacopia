@@ -86,6 +86,7 @@
   2____D Mixing            ZombieBrewer       Underground
   2____D MorseCode         Walrus             Tundra
   2      Newspaper         Boy                City
+  2____D OatEating         Eight              Any
   2      Pairing           Snake              Jungle
  R2      Parachute         Chicken            Desert
   2      Parkour           Lizard             Cave
