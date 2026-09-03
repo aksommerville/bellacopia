@@ -106,7 +106,7 @@
   2      Rebounding        Hoplite            Battlefield
   2____D Redfish           RedFish            All
   2____D Regex             Globlin            Goblins
-  2      Remembering       Elephant           Jungle
+  2____D Remembering       Crow               Desert
   2____D Rescuing          Firefighter        Fractia
   2      Robohorse         Groom              Battlefield
   2      Rodeo             Cowpoke            Desert

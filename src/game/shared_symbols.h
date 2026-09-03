@@ -530,6 +530,7 @@
 #define NS_battle_bodyslam 99
 #define NS_battle_pouring 100
 #define NS_battle_oateating 101
+#define NS_battle_remembering 102
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -631,7 +632,8 @@
   _(balancing) \
   _(bodyslam) \
   _(pouring) \
-  _(oateating)
+  _(oateating) \
+  _(remembering)
 
 /* "fld" are single bits.
  */

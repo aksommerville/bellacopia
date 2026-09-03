@@ -62,6 +62,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [ ] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
 - [ ] Some fireworks when an animal gets captured.
+- [ ] 2-player race mode.
+- - [ ] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
+- - [ ] If so, shouldn't be too crazy to implement. Do it as a new mode peer to Arcade and Story.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -372,3 +375,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Monthly goals and reports, my estimates were all way off, but this seems a healthy practice. Make a habit of it for large games.
 - Pick an orientation for sprites! I've settled on rightward as the default, but some early sprites (eg Dot) are leftward. Good to be consistent about that.
 - Adding things to `shared_symbols.h`, which one does a lot, forces a full rebuild. This needs a solution from the eggdev end, and I'm not sure what that will look like.
+- Some items should only interact from within the pause menu (eg Phonograph). Not worth changing Bellacopia, but keep that in mind next time around. Three kinds of item: Equippable, passive, modal.

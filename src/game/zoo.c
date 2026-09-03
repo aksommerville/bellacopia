@@ -33,7 +33,7 @@ static const struct zoo_resident zoo3v[]={
   {NS_fld_zoo3_0,RID_sprite_leopard},//XXX
   {NS_fld_zoo3_1,RID_sprite_crab},
   {NS_fld_zoo3_2,RID_sprite_goat},//XXX
-  {NS_fld_zoo3_3,RID_sprite_soldier},//XXX
+  {NS_fld_zoo3_3,RID_sprite_crow},
 0};
 
 // South Jungle

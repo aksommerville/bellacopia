@@ -367,19 +367,20 @@ static void _ratrace_render(struct battle *battle) {
   /* Background.
    */
   graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  uint32_t edgecolor=battle->ctab[BATTLE_COLOR_GROUND_TEXT];
   struct edge *edge=BATTLE->edgev;
   int i=BATTLE->edgec;
-  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ox,(int)BATTLE->edgev[BATTLE->edgec-1].oy,0xffffffff);
+  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ox,(int)BATTLE->edgev[BATTLE->edgec-1].oy,edgecolor);
   for (;i-->0;edge++) {
-    graf_line_strip_more(&g.graf,(int)edge->ox,(int)edge->oy,0xffffffff);
+    graf_line_strip_more(&g.graf,(int)edge->ox,(int)edge->oy,edgecolor);
   }
-  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ix,(int)BATTLE->edgev[BATTLE->edgec-1].iy,0xffffffff);
+  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ix,(int)BATTLE->edgev[BATTLE->edgec-1].iy,edgecolor);
   for (edge=BATTLE->edgev,i=BATTLE->edgec;i-->0;edge++) {
-    graf_line_strip_more(&g.graf,(int)edge->ix,(int)edge->iy,0xffffffff);
+    graf_line_strip_more(&g.graf,(int)edge->ix,(int)edge->iy,edgecolor);
   }
   graf_line(&g.graf,
-    (int)BATTLE->edgev[0].ix,(int)BATTLE->edgev[0].iy,0xffffffff,
-    (int)BATTLE->edgev[0].ox,(int)BATTLE->edgev[0].oy,0xffffffff
+    (int)BATTLE->edgev[0].ix,(int)BATTLE->edgev[0].iy,edgecolor,
+    (int)BATTLE->edgev[0].ox,(int)BATTLE->edgev[0].oy,edgecolor
   );
   
   /* Players.
