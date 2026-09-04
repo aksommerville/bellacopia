@@ -52,7 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
-- [ ] Do something if you fly a figure-eight around the sirens.
+- [x] Do something if you fly a figure-eight around the sirens.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
@@ -62,17 +62,17 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [x] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
 - [ ] Some fireworks when an animal gets captured.
-- [ ] 2-player race mode.
+- [x] 2-player race mode.
 - - [x] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
 - - - Yes, it's a little tight but manageable.
 - - [x] If so, shouldn't be too crazy to implement. Do it as a new mode peer to Arcade and Story.
 - - [x] Alternative splittable camera, for broom races only.
-- - [ ] raceconfig ui
+- - [x] raceconfig ui
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
 - [ ] Modal to terminate broom race. We have it in story mode, but not the 2-player or time-trial mode.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [ ] Picking up jigpieces or sticks during race mode is fine, but don't show the dialogue even the first time.
+- [x] Picking up jigpieces or sticks during race mode is fine, but don't show the dialogue even the first time. ...not doing sprites
 - [ ] Settings modal, via Hello.
 - [ ] Roll credits via Hello.
 

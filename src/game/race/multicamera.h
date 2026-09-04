@@ -1,18 +1,11 @@
 /* multicamera.h
  * Replacement for the global "camera", to support 2-player broom races.
  * Unlike regular camera, we'll draw everything on the fly. And we don't need transitions. So there will be less state involved.
+ * Also, we don't participate in spawning sprites. But we do render anything you spawn.
  */
  
 #ifndef MULTICAMERA_H
 #define MULTICAMERA_H
-
-/* TODO How are we going to manage sprites?
- * Options:
- *  1. Nothing, just don't spawn anything.
- *  2. Manage locally and spawn static sprites but not rsprite. Keep everything live once spawned.
- *  3. Callbacks like regular camera, and keep everything live once spawned.
- * Will start with Option 1, Nothing, since it's easiest.
- */
 
 struct multicamera_view {
 
