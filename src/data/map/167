@@ -15,7 +15,7 @@ image image:fractia_int
 door @8,8 map:25 @6,6 0x0000
 position 5 4 0 0
 parent map:25
-sprite @5,3 sprite:wrestler (u32)0
+sprite @5,3 sprite:tennisplayer (u32)0
 sprite @11,7 sprite:samurai (u32)0
 sprite @5,7 sprite:dancer (u32)0
 sprite @11,3 sprite:ballplayer (u32)0

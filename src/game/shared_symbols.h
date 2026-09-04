@@ -460,7 +460,7 @@
 #define NS_battle_cheesecutting 29
 #define NS_battle_latin 30
 #define NS_battle_rescuing 31
-#define NS_battle_sumohorse 32
+#define NS_battle_rebounding 32
 #define NS_battle_fencing 33
 #define NS_battle_jeter 34
 #define NS_battle_homerunderby 35
@@ -563,7 +563,7 @@
   _(cheesecutting) \
   _(latin) \
   _(rescuing) \
-  _(sumohorse) \
+  _(rebounding) \
   _(fencing) \
   _(jeter) \
   _(homerunderby) \

@@ -103,7 +103,7 @@
   2____D Racketeering      Moblin             Goblins
   2      Ramming           Orca               Sea
   2____D RatRace           Rat                Cave
-  2      Rebounding        Hoplite            Battlefield
+  2____D Rebounding        TennisPlayer       City
   2____D Redfish           RedFish            All
   2____D Regex             Globlin            Goblins
   2____D Remembering       Crow               Desert
@@ -141,7 +141,6 @@
   2____D Stenography       Secretary          Fractia
  R2____D Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
-  2____D SumoHorse         Wrestler           Fractia
   2      Surrounding       Snake              Jungle
  R2      Swearing          Sailor             Sea
   2      Swinging          Kid                City

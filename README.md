@@ -147,7 +147,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] shaking: Sound when the cork bounces.
 - [ ] shuffling: Sound.
 - [ ] slapping: Sound.
-- [ ] sumohorse: Eliminate? Or rethink from the top. It's no fun.
+- [x] sumohorse: Eliminate? Or rethink from the top. It's no fun. ...eliminated in favor of rebounding.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
