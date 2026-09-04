@@ -17,3 +17,4 @@ sprite @7,3 sprite:zookeeper (u16:fld)zoo6_0 (u16)0
 sprite @8,3 sprite:ticker (u16:fld)zoo6_0 (u16)0
 zookeeper @8,4,4,3
 battle_jigpiece
+rsprite sprite:goat (u8)4 (u8)1 (u32)0

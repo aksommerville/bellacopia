@@ -60,11 +60,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
 - [x] Oat Eating Contest
 - [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
-- [ ] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
+- [x] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
 - [ ] Some fireworks when an animal gets captured.
 - [ ] 2-player race mode.
-- - [ ] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
+- - [x] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
+- - - Yes, it's a little tight but manageable.
 - - [ ] If so, shouldn't be too crazy to implement. Do it as a new mode peer to Arcade and Story.
+- [ ] Settings modal, via Hello.
+- [ ] Roll credits via Hello.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -176,6 +179,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] "Are you sure?" at New Game if there's a save with anything done. But *do not* implement this yet! I want an unencumbered New Game during development.
 - - Or we could sidestep the issue by allowing multiple save files. Consider it.
 - [ ] Review accessibility once all battles are complete. Rhythm games should be possible without audio, color-based games should work for the colorblind, etc.
+- [ ] Remove Debug Mode, or have it require a launch parameter or something. (it's ok if players get into it, just i don't want to present it as a recommendation)
 
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
 - - [ ] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server.
