@@ -35,5 +35,6 @@ struct race_status {
 void race_get_status(struct race_status *status);
 
 void race_render_overlay();
+void race_render_checkpoints(int scrollx,int scrolly,struct sprite *racer);
 
 #endif

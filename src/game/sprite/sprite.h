@@ -122,7 +122,7 @@ int sprite_princess_whack(struct sprite *sprite,double x,double y); // Equivalen
 
 int sprite_racer_get_checkpointp(const struct sprite *sprite);
 int sprite_racer_is_finished(const struct sprite *sprite);
-int sprite_racer_is_human(const struct sprite *sprite);
+int sprite_racer_is_human(const struct sprite *sprite); // => input index (nonzero if interactive)
 double sprite_racer_get_lap_time(const struct sprite *sprite);
 double sprite_racer_get_race_time(const struct sprite *sprite);
 int sprite_racer_get_lapp(const struct sprite *sprite);

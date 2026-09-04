@@ -43,9 +43,13 @@ static void raceconfig_activate(struct modal *modal) {
   fprintf(stderr,"%d %s\n",(int)egg_time_real(),__func__);
   struct modal_args_broomrace args={
     //.playerc=1,//XXX
-    //.raceid=RID_race_round_the_meadow,
     .playerc=2,
-    .raceid=RID_race_undernorth,
+    .raceid=RID_race_round_the_meadow,
+    //.raceid=RID_race_downstairs_lake,
+    //.raceid=RID_race_across_the_tundra,
+    //.raceid=RID_race_seaside_circle,
+    //.raceid=RID_race_desert_run,
+    //.raceid=RID_race_undernorth,
   };
   struct modal *race=modal_spawn(&modal_type_broomrace,&args,sizeof(args));
   if (!race) {

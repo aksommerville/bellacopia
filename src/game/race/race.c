@@ -331,6 +331,8 @@ static int race_spawn_sprites(struct race *race,int playerc) {
   struct sprite *dot=sprite_spawn(dotx,doty,0,racerargs,4,&sprite_type_racer,0,0);
   struct sprite *moon=sprite_spawn(moonx,moony,0,racerargs+4,4,&sprite_type_racer,0,0);
   if (!dot||!moon) return -1;
+  dot->z=race->plane;
+  moon->z=race->plane;
   return 0;
 }
 
@@ -418,18 +420,27 @@ void race_end() {
 
 /* Check completion.
  * Sprites will call this when one racer finishes.
+ * 1. If a human racer is still going, do nothing.
+ * 2. If only CPU racers are still going, set a long cooldown.
+ * 3. Otherwise, nobody is still racing, set a short cooldown.
  */
  
 void race_check_completion(int stop_soon) {
-  if (stop_soon) races.cooldown=5.0; // Dot is done. Give Moon a few seconds, but do stop without her before long.
+  int humanc=0,robotc=0;
   struct sprite **p=GRP(update)->sprv;
   int i=GRP(update)->sprc;
   for (;i-->0;p++) {
     struct sprite *sprite=*p;
     if (sprite->type!=&sprite_type_racer) continue;
-    if (!sprite_racer_is_finished(sprite)) return;
+    if (sprite_racer_is_human(sprite)) {
+      if (!sprite_racer_is_finished(sprite)) humanc++;
+    } else {
+      if (!sprite_racer_is_finished(sprite)) robotc++;
+    }
   }
-  races.cooldown=2.0;
+  if (humanc) return; // Let the humans finish.
+  else if (robotc) races.cooldown=5.0; // Long cooldown so Moon can wrap up.
+  else races.cooldown=2.0; // Short cooldown, we're done.
 }
 
 /* Update.
@@ -548,7 +559,7 @@ void race_get_status(struct race_status *status) {
     for (;i-->0;p++) {
       struct sprite *sprite=*p;
       if (sprite->type!=&sprite_type_racer) continue;
-      if (sprite_racer_is_human(sprite)) {
+      if (sprite_racer_is_human(sprite)==1) {
         status->lapp=sprite_racer_get_lapp(sprite);
         status->laptime=sprite_racer_get_lap_time(sprite);
         status->racetime=sprite_racer_get_race_time(sprite);
@@ -623,4 +634,41 @@ void race_render_overlay() {
       story_render_time(FBW-6,6,status.racetime);
     }
   }
+}
+
+/* Render checkpoint indicators.
+ */
+ 
+void race_render_checkpoints(int scrollx,int scrolly,struct sprite *racer) {
+  const int radius=32;
+  int highlightp=-1;
+  if (!racer) {
+    if (GRP(hero)->sprc>=1) racer=GRP(hero)->sprv[0];
+  }
+  if (racer) {
+    highlightp=sprite_racer_get_checkpointp(racer);
+  }
+  int cpp=race_get_checkpointc();
+  while (cpp-->0) {
+    double worldx,worldy;
+    if (race_get_checkpoint(&worldx,&worldy,cpp)<0) break;
+    int fbx=(int)(worldx*NS_sys_tilesize)-scrollx;
+    int fby=(int)(worldy*NS_sys_tilesize)-scrolly;
+    if (fbx<-radius) continue;
+    if (fby<-radius) continue;
+    if (fbx>=FBW+radius) continue;
+    if (fby>=FBH+radius) continue;
+    graf_set_image(&g.graf,RID_image_pause);
+    graf_set_filter(&g.graf,1);
+    double t=((g.framec&0x1f)*M_PI*0.25)/32.0;
+    uint8_t rotation=g.framec*3;
+    uint32_t color=(cpp==highlightp)?0x00ff00c0:0x80808080;
+    int i=8;
+    for (;i-->0;t+=M_PI*0.25) {
+      int dstx=fbx+radius*sin(t);
+      int dsty=fby-radius*cos(t);
+      graf_fancy(&g.graf,dstx,dsty,0x9b,0,rotation,NS_sys_tilesize,0,color);
+    }
+  }
+  graf_set_filter(&g.graf,0);
 }

@@ -664,41 +664,6 @@ static void camera_render_chronflakes() {
   }
 }
 
-/* Race checkpoints.
- */
- 
-static void camera_render_race_checkpoints() {
-  const int radius=32;
-  int highlightp=-1;
-  if (GRP(hero)->sprc>=1) {
-    struct sprite *hero=GRP(hero)->sprv[0];
-    highlightp=sprite_racer_get_checkpointp(hero);
-  }
-  int cpp=race_get_checkpointc();
-  while (cpp-->0) {
-    double worldx,worldy;
-    if (race_get_checkpoint(&worldx,&worldy,cpp)<0) break;
-    int fbx=(int)(worldx*NS_sys_tilesize)-g.camera.rx;
-    int fby=(int)(worldy*NS_sys_tilesize)-g.camera.ry;
-    if (fbx<-radius) continue;
-    if (fby<-radius) continue;
-    if (fbx>=FBW+radius) continue;
-    if (fby>=FBH+radius) continue;
-    graf_set_image(&g.graf,RID_image_pause);
-    graf_set_filter(&g.graf,1);
-    double t=((g.framec&0x1f)*M_PI*0.25)/32.0;
-    uint8_t rotation=g.framec*3;
-    uint32_t color=(cpp==highlightp)?0x00ff00c0:0x80808080;
-    int i=8;
-    for (;i-->0;t+=M_PI*0.25) {
-      int dstx=fbx+radius*sin(t);
-      int dsty=fby-radius*cos(t);
-      graf_fancy(&g.graf,dstx,dsty,0x9b,0,rotation,NS_sys_tilesize,0,color);
-    }
-  }
-  graf_set_filter(&g.graf,0);
-}
-
 /* Render.
  */
 
@@ -760,7 +725,7 @@ void camera_render_pretransition(int dsttexid) {
   /* During a race, show checkpoints.
    */
   if (g.raceid) {
-    camera_render_race_checkpoints();
+    race_render_checkpoints(g.camera.rx,g.camera.ry,0);
   }
   
   /* Render sprites.
