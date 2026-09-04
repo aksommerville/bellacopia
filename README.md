@@ -66,6 +66,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
 - - - Yes, it's a little tight but manageable.
 - - [ ] If so, shouldn't be too crazy to implement. Do it as a new mode peer to Arcade and Story.
+- - [ ] Alternative splittable camera, for broom races only.
+- - [ ] raceconfig ui
+- [ ] Picking up jigpieces or sticks during race mode is fine, but don't show the dialogue even the first time.
 - [ ] Settings modal, via Hello.
 - [ ] Roll credits via Hello.
 

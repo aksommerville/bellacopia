@@ -238,7 +238,12 @@ static void hello_begin_debug(struct modal *modal) {
  
 static void hello_begin_broom(struct modal *modal) {
   fprintf(stderr,"%d %s\n",(int)egg_time_real(),__func__);
-  //TODO Broom Race Mode
+  struct modal *race=modal_spawn(&modal_type_raceconfig,0,0);
+  if (!race) {
+    bm_sound(RID_sound_reject);
+    return;
+  }
+  bm_sound(RID_sound_uiactivate);
 }
 
 /* Launch Settings modal. This does not dismiss us.

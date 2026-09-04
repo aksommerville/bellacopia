@@ -9,6 +9,7 @@
 
 struct modal;
 struct modal_type;
+struct race_status; // game/race/race.h
 
 /* Generic modal.
  *************************************************************************/
@@ -107,6 +108,8 @@ extern const struct modal_type modal_type_gameover;
 extern const struct modal_type modal_type_toast; // Quick noninteractive, self-dismissing message.
 extern const struct modal_type modal_type_tenkey;
 extern const struct modal_type modal_type_battle_bet; // Choose a wager and difficulty. (caller launches the actual battle)
+extern const struct modal_type modal_type_raceconfig; // Broom Race Mode, outer lobby.
+extern const struct modal_type modal_type_broomrace; // Broom Race Mode, main event.
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -194,6 +197,11 @@ struct modal_args_battle_bet {
   void *userdata;
 };
 
+struct modal_args_broomrace {
+  int playerc;
+  int raceid;
+};
+
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
  * If you win a no-quantity item from battle (are we doing that?), use (d==0).
  * Use NS_itemid_text with (d) a strix in RID_strings_battle, for loose text.
@@ -222,5 +230,7 @@ struct modal *modal_dialogue_simple(int rid,int strix); // Convenience for stati
  * eg the carpenter makes a fixed quantity of matches, or if you're selling heart containers, obviously you're selling just one.
  */
 int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity);
+
+void modal_broomrace_report_completion(struct modal *modal,const struct race_status *status);
 
 #endif

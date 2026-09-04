@@ -299,7 +299,7 @@ static void race_restore_game_sprites() {
  
 static uint8_t racerargs[8]={0};
  
-static int race_spawn_sprites(struct race *race) {
+static int race_spawn_sprites(struct race *race,int playerc) {
 
   // Start around the first checkpoint. Horizontal orientation, Dot goes on top, and vertical, she goes left.
   double x=race->checkpointv[0].x;
@@ -319,8 +319,13 @@ static int race_spawn_sprites(struct race *race) {
   racerargs[1]=NS_face_dot;
   racerargs[2]=race->startdir;
   racerargs[3]=0;
-  racerargs[4]=0; // Moon controller.
-  racerargs[5]=NS_face_moonsong;
+  if (playerc==1) {
+    racerargs[4]=0; // Moon controller.
+    racerargs[5]=NS_face_moonsong;
+  } else {
+    racerargs[4]=2; // Princess controller.
+    racerargs[5]=NS_face_princess;
+  }
   racerargs[6]=race->startdir;
   racerargs[7]=0;
   struct sprite *dot=sprite_spawn(dotx,doty,0,racerargs,4,&sprite_type_racer,0,0);
@@ -332,7 +337,7 @@ static int race_spawn_sprites(struct race *race) {
 /* Begin race.
  */
  
-int race_begin(int raceid) {
+int race_begin(int raceid,int playerc) {
   struct race *race=race_get(raceid);
   if (!race) {
     fprintf(stderr,"%s: race:%d not found\n",__func__,raceid);
@@ -341,7 +346,7 @@ int race_begin(int raceid) {
   race_hide_game_sprites();
   races.race=race; // Must set before spawning sprites.
   g.raceid=raceid;
-  if (race_spawn_sprites(race)<0) {
+  if (race_spawn_sprites(race,playerc)<0) {
     races.race=0;
     g.raceid=0;
     race_restore_game_sprites();
@@ -357,6 +362,21 @@ int race_begin(int raceid) {
  */
 
 void race_end() {
+
+  /* If there's a broomrace modal on the stack, report the outcome to it, wrap up globals, and skip most of the rest.
+   * TODO We probably still want to record times. But not completion flags.
+   */
+  struct modal *modal=modal_get_topmost(&modal_type_broomrace);
+  if (modal) {
+    fprintf(stderr,"%s, modal in play (%p)\n",__func__,modal);
+    struct race_status status={0};
+    race_get_status(&status);
+    g.raceid=0;
+    races.race=0;
+    modal_broomrace_report_completion(modal,&status);
+    return;
+  }
+  fprintf(stderr,"%s, story mode\n",__func__);
 
   // Commit win flag and time, if improved.
   int arg=0;
@@ -453,6 +473,18 @@ int race_fld16_by_index(int p) {
   return races.racev[p].timefld16;
 }
 
+/* Start position for a race, by resource id.
+ */
+ 
+int race_get_start_position(int *subx,int *suby,int raceid) {
+  *subx=*suby=0;
+  struct race *race=race_get(raceid);
+  if (!race) return 0;
+  *subx=(int)race->checkpointv[0].x%NS_sys_mapw;
+  *suby=(int)race->checkpointv[0].y%NS_sys_maph;
+  return race->checkpointv[0].mapid;
+}
+
 /* Trivial accessors against active race.
  */
  
@@ -472,7 +504,7 @@ int race_get_checkpoint(double *x,double *y,int p) {
   if (p>=races.race->checkpointc) return -1;
   *x=races.race->checkpointv[p].x;
   *y=races.race->checkpointv[p].y;
-  return 0;
+  return races.race->plane;
 }
 
 int race_get_trackc() {
@@ -524,6 +556,71 @@ void race_get_status(struct race_status *status) {
         status->opponenttime=sprite_racer_get_race_time(sprite);
         status->opponent_finished=(sprite_racer_get_lapp(sprite)>status->lapc);
       }
+    }
+  }
+}
+
+/* Render "MM:SS.mmm", with position given as the center of the last digit.
+ */
+ 
+static void story_render_time(int x,int y,double f) {
+  int ms=(int)(f*1000.0);
+  if (ms<0) ms=0;
+  int sec=ms/1000; ms%=1000;
+  int min=sec/60; sec%=60;
+  if (min>99) {
+    min=99;
+    sec=99;
+    ms=999;
+  }
+  graf_tile(&g.graf,x,y,'0'+ms%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+(ms/10)%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+ms/100,0); x-=8;
+  graf_tile(&g.graf,x,y,'.',0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+sec%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+sec/10,0); x-=8;
+  graf_tile(&g.graf,x,y,':',0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+min%10,0); x-=8;
+  graf_tile(&g.graf,x,y,'0'+min/10,0);
+}
+
+/* Overlay, invoked by modal_story and modal_broomrace.
+ * Camera shows the checkpoints and sprites but anything else is up to us.
+ * (the thing that distinguishes responsibility here is that we only draw unscrolled things, and camera scrolled).
+ */
+ 
+void race_render_overlay() {
+  
+  /* Initial countdown.
+   */
+  double s=race_get_countdown();
+  if (s>0.0) {
+    int ms=(int)(s*1000.0);
+    if (ms<0) ms=0;
+    int si=ms/1000+1;
+    if (si>9) si=9;
+    ms%=1000;
+    if (ms>=250) {
+      graf_set_image(&g.graf,RID_image_fonttiles);
+      graf_tile(&g.graf,FBW>>1,FBH>>1,'0'+si,0);
+    }
+    
+  /* Stats.
+   */
+  } else {
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    struct race_status status={0};
+    race_get_status(&status);
+    if (status.lapp>status.lapc) { // Finished.
+      story_render_time((FBW>>1)+36-4,FBH>>1,status.racetime);
+      if (status.opponenttime>0.0) {
+        story_render_time((FBW>>1)+36-4,(FBH>>1)+8,status.opponenttime);
+      }
+    } else if (status.lapp>0) { // In progress.
+      graf_tile(&g.graf, 6,6,'0'+status.lapp,0);
+      graf_tile(&g.graf,14,6,'/',0);
+      graf_tile(&g.graf,22,6,'0'+status.lapc,0);
+      story_render_time(FBW-6,6,status.racetime);
     }
   }
 }

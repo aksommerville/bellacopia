@@ -502,7 +502,7 @@ void begin_bridget(struct sprite *initiator,int arg) {
 static int moonsong_cb(int optionid,void *userdata) {
   if (optionid!=4) return 0;
   int raceid=(int)(uintptr_t)userdata;
-  race_begin(raceid);
+  race_begin(raceid,1);
   return 0;
 }
  
