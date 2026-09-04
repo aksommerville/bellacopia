@@ -78,7 +78,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
-- - [ ] Make the Cat or Dot statue's head passable and occluditory, like statuemaze.
+- - [x] Make the Cat or Dot statue's head passable and occluditory, like statuemaze.
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Vacant house next to Labor Union

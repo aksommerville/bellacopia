@@ -381,6 +381,7 @@
 #define NS_sprtype_ornament         54 /* (u32)0 */
 #define NS_sprtype_figureeight      55 /* (u8:orient_hv)01 (u24)0 */
 #define NS_sprtype_eightspawn       56 /* (u32)0 */
+#define NS_sprtype_flagindicator    57 /* (u16:fld)0 (u8:delta)1 (u8)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -427,7 +428,8 @@
   _(casneon) \
   _(ornament) \
   _(figureeight) \
-  _(eightspawn)
+  _(eightspawn) \
+  _(flagindicator)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
