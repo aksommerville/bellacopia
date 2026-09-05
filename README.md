@@ -44,7 +44,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
 - [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
-- [x] Have the bus stop try a little harder, especially in tight spaces it can be annoying when it rejects.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
@@ -52,27 +51,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
-- [x] Do something if you fly a figure-eight around the sirens.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
-- [x] Divining rod keeps spinning after you strangle a root devil (until you leave the cell).
 - [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
-- [x] Oat Eating Contest
 - [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
-- [x] Put a goat rsprite by the mountain zoo, because goats are special there. (exception to the general rule that zoo maps are no-rsprite).
 - [ ] Some fireworks when an animal gets captured.
-- [x] 2-player race mode.
-- - [x] Is split screen feasible? Try running them one-player with the left and right quarter of the framebuffer blacked out to confirm.
-- - - Yes, it's a little tight but manageable.
-- - [x] If so, shouldn't be too crazy to implement. Do it as a new mode peer to Arcade and Story.
-- - [x] Alternative splittable camera, for broom races only.
-- - [x] raceconfig ui
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
 - [ ] Modal to terminate broom race. We have it in story mode, but not the 2-player or time-trial mode.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [x] Picking up jigpieces or sticks during race mode is fine, but don't show the dialogue even the first time. ...not doing sprites
 - [ ] Settings modal, via Hello.
 - [ ] Roll credits via Hello.
 
@@ -88,7 +76,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
-- - [x] Make the Cat or Dot statue's head passable and occluditory, like statuemaze.
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Vacant house next to Labor Union
@@ -123,7 +110,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Jungle
 - [ ] Temple
 - - [ ] Lots of unused space at the north edge. Put some bonus challenges here or eliminate it. ...remains pretty sparse even after adding the Sphinx.
-- - [x] Some kind of hint in the southwest detached room, or change it to "Hidden Message" a la Sergio.
 - - [ ] Gift shop
 - - [ ] Roof access room
 - [ ] Sea monster
@@ -136,8 +122,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
-- - [x] Dark some regions.
-- - [x] Mr and Mrs Rabbit at the surveyor challenge.
 
 - Battle repairs.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
@@ -157,7 +141,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] shaking: Sound when the cork bounces.
 - [ ] shuffling: Sound.
 - [ ] slapping: Sound.
-- [x] sumohorse: Eliminate? Or rethink from the top. It's no fun. ...eliminated in favor of rebounding.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
