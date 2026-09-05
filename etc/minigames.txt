@@ -154,7 +154,7 @@
   2____D Watching          Cook               Fractia
   2      Watermelon        Aardvark           Desert
   2____D Weaving           Spider             Cave
-  2      Whining           Cub                Woodland
+  2____D Whining           Cub                Woodland
   2      Wining            Hippopotamus       Farm
   2____D Wrapping          Elf                Tundra
   2____D Wrecking          Vandal             Battlefield
