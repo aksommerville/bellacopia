@@ -68,15 +68,15 @@ int batsup_world_set_image(struct batsup_world *world,int imageid) {
  */
 
 void batsup_world_update(struct batsup_world *world,double elapsed) {
-  struct batsup_sprite **spritep=world->spritev;
   int i=world->spritec;
-  for (;i-->0;spritep++) {
-    struct batsup_sprite *sprite=*spritep;
+  for (;i-->0;) {
+    struct batsup_sprite *sprite=world->spritev[i];
     if (sprite->defunct) continue;
     if (!sprite->update) continue;
     sprite->update(sprite,elapsed);
   }
-  for (i=world->spritec,spritep=world->spritev+world->spritec-1;i-->0;spritep--) {
+  struct batsup_sprite **spritep=world->spritev+world->spritec-1;
+  for (i=world->spritec;i-->0;spritep--) {
     struct batsup_sprite *sprite=*spritep;
     if (!sprite->defunct) continue;
     world->spritec--;

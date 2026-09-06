@@ -63,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [ ] Settings modal, via Hello.
 - [ ] Roll credits via Hello.
+- [ ] Add some match vendors downstairs.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

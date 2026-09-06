@@ -534,6 +534,7 @@
 #define NS_battle_oateating 101
 #define NS_battle_remembering 102
 #define NS_battle_whining 103
+#define NS_battle_wining 104
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -637,7 +638,8 @@
   _(pouring) \
   _(oateating) \
   _(remembering) \
-  _(whining)
+  _(whining) \
+  _(wining)
 
 /* "fld" are single bits.
  */
