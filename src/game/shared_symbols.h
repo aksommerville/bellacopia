@@ -334,6 +334,7 @@
 #define NS_activity_battle_bet 71 /* Arcade console in the casino. */
 #define NS_activity_mr_mrs_rabbit 72
 #define NS_activity_summon_eight 73
+#define NS_activity_princess_home 74
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */

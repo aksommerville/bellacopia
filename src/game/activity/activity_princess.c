@@ -199,3 +199,108 @@ void begin_linguist(struct sprite *sprite) {
   };
   struct modal *modal=modal_spawn(&modal_type_linguist,&args,sizeof(args));
 }
+
+/* princess_home: Talk to the Princess after having rescued her.
+ */
+ 
+static int get_princess_battle() {
+  /* We could check flags and restrict the set based on that.
+   * Or run a fixed set by some other logic?
+   * Lots of possibilities.
+   * But for now, it's just random.
+   */
+  #define CANDIDATE_LIMIT 256
+  const struct battle_type *candidatev[CANDIDATE_LIMIT];
+  int candidatec=0;
+  int id=1;
+  for (;;id++) {
+    const struct battle_type *type=battle_type_by_id(id);
+    if (!type) break;
+    int usage=battle_usage_by_id(id,1);
+    if (usage!=BATTLE_USAGE_STANDARD) continue;
+    candidatev[candidatec++]=type;
+    if (candidatec>=CANDIDATE_LIMIT) break;
+  }
+  #undef CANDIDATE_LIMIT
+  if (candidatec<=0) return -1;
+  const struct battle_type *type=candidatev[rand()%candidatec];
+  return type->id;
+}
+
+static uint8_t get_princess_bias() {
+  return 0x80;
+}
+ 
+static void cb_princess_battle(struct modal *modal,int outcome,void *userdata) {
+  // Ready to go if we ever want consequences. I'm thinking there should be none, these are just for practice.
+  //fprintf(stderr,"%s(%p,%d,%p)\n",__func__,modal,outcome,userdata);
+}
+ 
+static void cb_princess_battle_final(struct modal *modal,int outcome,void *userdata) {
+  //fprintf(stderr,"%s(%p,%d,%p)\n",__func__,modal,outcome,userdata);
+}
+ 
+static int cb_princess_home(int optionid,void *userdata) {
+  switch (optionid) {
+  
+    case 175: { // play game
+        int battleid=get_princess_battle();
+        if (battleid<=0) {
+          // Princess can politely decline. Not sure whether we'll use this.
+          begin_dialogue(178,userdata);
+        } else {
+          struct modal_args_battle args={
+            .battle=battleid,
+            .args={
+              .difficulty=0x80,
+              .bias=get_princess_bias(),
+              .lctl=1,
+              .rctl=0,
+              .lface=NS_face_dot,
+              .rface=NS_face_princess,
+              .imageid=-1, // Use the battle's default. Or we could give zero, and they'll be in the desert. Both sensible options.
+            },
+            .cb=cb_princess_battle,
+            .cb_final=cb_princess_battle_final,
+            .userdata=userdata,
+          };
+          struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+          if (!modal) break;
+        }
+      } break;
+      
+    case 176: { // take walk
+        fprintf(stderr,"TODO take a walk with the Princess\n");
+        begin_dialogue(179,userdata);
+      } break;
+      
+    case 177: { // gossip
+        char msg[256];
+        int msgc=game_get_gossip(msg,sizeof(msg));
+        if ((msgc<0)||(msgc>sizeof(msg))) msgc=0;
+        struct modal_args_dialogue args={
+          .text=msg,
+          .textc=msgc,
+          .speaker=userdata,
+        };
+        struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+      } break;
+      
+  }
+  return 0;
+}
+ 
+void begin_princess_home(struct sprite *sprite) {
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=174,
+    .speaker=sprite,
+    .cb=cb_princess_home,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,175); // play game
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,176); // take walk
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,177); // gossip
+}

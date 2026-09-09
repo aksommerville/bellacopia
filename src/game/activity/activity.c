@@ -90,6 +90,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_blackjack: begin_blackjack(); break;
     case NS_activity_battle_bet: begin_battle_bet(); break;
     case NS_activity_mr_mrs_rabbit: begin_mr_mrs_rabbit(initiator,arg); break;
+    case NS_activity_princess_home: begin_princess_home(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

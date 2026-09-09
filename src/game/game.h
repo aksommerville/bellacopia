@@ -174,14 +174,22 @@ struct secret {
 };
 int game_find_secrets(struct secret *dst,int dsta,double x,double y,int z,double radius);
 
-/* Generate textual advice for the Crystal Ball.
- */
-int game_get_advice(char *dst,int dsta);
-
 /* Nonzero if the cartographer can currently tell you something.
  * (crystal ball uses this).
  */
 int cartographer_has_advice();
+
+/* Textual advice from Crystal Ball or Princess: advice.c
+ *****************************************************************************************/
+
+/* Generate textual advice for the Crystal Ball.
+ */
+int game_get_crystal_ball_advice(char *dst,int dsta);
+
+/* Gossip from the Princess.
+ * She is essentially a second crystal ball, but a slightly dumber one.
+ */
+int game_get_gossip(char *dst,int dsta);
 
 /* Completion: completion.c
  **************************************************************************************/

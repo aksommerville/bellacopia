@@ -34,7 +34,7 @@ static int _crystal_init(struct modal *modal,const void *args,int argslen) {
   MODAL->dlower=-RAISE_RATE;
   
   char src[256];
-  int srcc=game_get_advice(src,sizeof(src));
+  int srcc=game_get_crystal_ball_advice(src,sizeof(src));
   if ((srcc<0)||(srcc>sizeof(src))) srcc=0;
   
   MODAL->msg_texid=font_render_to_texture(0,g.font,src,srcc,FBW/3,FBH/3,0x000000ff);

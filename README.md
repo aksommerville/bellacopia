@@ -34,9 +34,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Might be cool to re-engage with the Princess after her quest.
+- [x] Might be cool to re-engage with the Princess after her quest.
 - - Definitely. Have three options: Take a walk, Play a game, or Gossip.
 - - Some subtle but noticeable indicator near her to show how many walks you've taken and games you've played. A prize when you've done them all.
+- [ ] Walks with the Princess.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -148,6 +149,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] Princess battles are currently random, neutral bias, and consequence-free. We could make it more interesting if we want.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?
 - [ ] Is it possible to reach inconsistent states by pausing while item in progress?
 - [ ] Review economy, balance prices etc.

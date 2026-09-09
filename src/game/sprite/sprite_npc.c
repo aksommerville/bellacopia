@@ -97,6 +97,33 @@ static void npc_prepare_mr_mrs_rabbit(struct sprite *sprite) {
   }
 }
 
+/* princess_home: Hide if not rescued yet.
+ * Important that we hide, and not destroy, since she does get delivered while this sprite is present.
+ */
+ 
+static void npc_princess_home_cb(char type,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  if ((type=='f')&&(id==NS_fld_rescued_princess)&&value) {
+    sprite_group_add(GRP(visible),sprite);
+    sprite_group_add(GRP(solid),sprite);
+    sprite_group_add(GRP(grabbable),sprite);
+    sprite_group_add(GRP(moveable),sprite);
+  }
+}
+ 
+static void npc_prepare_princess_home(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_rescued_princess)) {
+    // We're already rescued, great, we're just a regular NPC now.
+  } else {
+    // Not rescued yet. Install a listener and neutralize until it fires.
+    SPRITE->store_listener=store_listen('f',npc_princess_home_cb,sprite);
+    sprite_group_remove(GRP(visible),sprite);
+    sprite_group_remove(GRP(solid),sprite);
+    sprite_group_remove(GRP(grabbable),sprite);
+    sprite_group_remove(GRP(moveable),sprite);
+  }
+}
+
 /* Init.
  */
  
@@ -109,10 +136,13 @@ static int _npc_init(struct sprite *sprite) {
   /* Certain activities imply tileid+1 when some flag is set, or a similar change.
    */
   switch (SPRITE->activity) {
+    // If we know the flag won't change while the sprite is alive, keep it simple:
     case NS_activity_logproblem1: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
     case NS_activity_logproblem2: if (store_get_fld(NS_fld_mayor)) sprite->tileid+=1; break;
+    // But most such sprites should prepare to react to flag changes on the fly:
     case NS_activity_moonsong: npc_prepare_moonsong(sprite); break;
     case NS_activity_mr_mrs_rabbit: npc_prepare_mr_mrs_rabbit(sprite); break;
+    case NS_activity_princess_home: npc_prepare_princess_home(sprite); break;
   }
   
   struct cmdlist_reader reader;
