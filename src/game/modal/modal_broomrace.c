@@ -49,6 +49,10 @@ static int _broomrace_init(struct modal *modal,const void *args,int argslen) {
  */
  
 static void _broomrace_update(struct modal *modal,double elapsed) {
+
+  if ((g.input[0]&EGG_BTN_AUX1)&&!(g.pvinput[0]&EGG_BTN_AUX1)) {
+    game_begin_activity(NS_activity_pauserace,MODAL->playerc,0);
+  }
   
   int i=GRP(update)->sprc;
   while (i-->0) {

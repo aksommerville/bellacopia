@@ -96,6 +96,8 @@ struct battle *battle_new(
   if (!battle->args.imageid) {
     if (g.camera.map) battle->args.imageid=g.camera.map->imageid;
     else battle->args.imageid=type->imageid_default;
+  } else if (battle->args.imageid<0) {
+    battle->args.imageid=type->imageid_default;
   }
   battle_get_ctab_by_id(battle->ctab,BATTLE_COLOR_COUNT,battle->args.imageid);
   

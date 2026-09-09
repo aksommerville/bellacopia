@@ -161,6 +161,7 @@ static void pvp_begin_game(struct modal *modal) {
       .bias=0x80,
       .lface=NS_face_dot,
       .lctl=1,
+      .imageid=-1, // Don't check camera, use battle's default.
       .no_store=1, // Important!
     },
     .cb=pvp_cb_battle,

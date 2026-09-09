@@ -483,9 +483,9 @@ static void player_render(struct battle *battle,struct player *player,int top) {
   // If terminated, show my runclock.
   if (player->term) {
     x=(int)player->needlex;
-    y=top+(int)player->needley-6;
-    if (y<5) y=5; // Left player saturated high, text would go offscreen.
-    if (!player->who) x-=8*6;
+    if (top) y=(FBH>>1)+10-4;
+    else y=(FBH>>1)-10-4;
+    if (!player->who) x-=8*5;
     int ms=(int)(player->runclock*1000.0);
     if (ms<0) ms=0;
     int sec=ms/1000; ms%=1000;
@@ -494,7 +494,7 @@ static void player_render(struct battle *battle,struct player *player,int top) {
       ms=999;
     }
     graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,x,y,'0'+sec/10,0); x+=8;
+    if (sec>=10) graf_tile(&g.graf,x,y,'0'+sec/10,0); x+=8;
     graf_tile(&g.graf,x,y,'0'+sec%10,0); x+=8;
     graf_tile(&g.graf,x,y,'.',0); x+=8;
     graf_tile(&g.graf,x,y,'0'+ms/100,0); x+=8;

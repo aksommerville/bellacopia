@@ -66,7 +66,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_cartographer: begin_cartographer(initiator); break;
     case NS_activity_exit_cave: begin_exit_cave(initiator); break;
     case NS_activity_moonsong: begin_moonsong(initiator,arg); break;
-    case NS_activity_pauserace: begin_pauserace(); break;
+    case NS_activity_pauserace: begin_pauserace(arg); break;
     case NS_activity_endrace: begin_endrace(arg); break;
     case NS_activity_fish_book: begin_fish_book(); break;
     case NS_activity_hearts_book: begin_hearts_book(); break;

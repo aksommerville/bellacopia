@@ -85,13 +85,13 @@ int busstop_name_by_index(int p) {
  */
  
 static int pauserace_cb(int optionid,void *userdata) {
-  if (optionid==141) {
+  if ((optionid==141)||(optionid==173)) {
     race_end();
   }
   return 0;
 }
  
-void begin_pauserace() {
+void begin_pauserace(int playerc) {
   struct modal_args_dialogue args={
     .rid=RID_strings_dialogue,
     .strix=139,
@@ -100,7 +100,7 @@ void begin_pauserace() {
   struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
   if (!modal) return;
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,140);
-  modal_dialogue_add_option_string(modal,RID_strings_dialogue,141);
+  modal_dialogue_add_option_string(modal,RID_strings_dialogue,(playerc==2)?173:141);
 }
 
 /* "Reset puzzle". Creating for diegetic minesweeper, but intending to be usable generically.

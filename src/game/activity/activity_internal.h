@@ -88,7 +88,7 @@ void begin_poet(struct sprite *initiator);
 // activity_misc.c
 void begin_phonograph();
 void begin_busstop(int arg);
-void begin_pauserace();
+void begin_pauserace(int playerc);
 void begin_reset_puzzle(struct sprite *initiator,int fldid);
 void begin_battle(struct sprite *sprite,int battleid);
 

@@ -483,6 +483,7 @@ static void _ceilingtouching_render(struct battle *battle) {
   int s=(int)(BATTLE->playclock+0.999);
   if (s>0) {
     graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
     if (s>=10) {
       if (s>99) s=99;
       graf_tile(&g.graf,(FBW>>1)-4,20,'0'+s/10,0);
@@ -490,6 +491,7 @@ static void _ceilingtouching_render(struct battle *battle) {
     } else {
       graf_tile(&g.graf,FBW>>1,20,'0'+s,0);
     }
+    graf_set_tint(&g.graf,0);
   }
 }
 

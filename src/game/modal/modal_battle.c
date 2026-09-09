@@ -393,7 +393,6 @@ static void battle_finish(struct modal *modal) {
     }
   }
 }
-/**/
 
 /* Update, prompt.
  */

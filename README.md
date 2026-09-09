@@ -48,7 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [ ] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
+- [x] Playing arcade mode after story mode, same run of the program, battles use the last visited map from story mode for background selection. Should use default.
 - [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [ ] Poker at the casino. UI in place and activity ready to write.
@@ -59,11 +59,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
-- [ ] Modal to terminate broom race. We have it in story mode, but not the 2-player or time-trial mode.
+- [x] Modal to terminate broom race. We have it in story mode, but not the 2-player or time-trial mode.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [ ] Settings modal, via Hello.
 - [ ] Roll credits via Hello.
 - [ ] Add some match vendors downstairs.
+- [ ] Once per session, before entering any 2-player mode, prompt users to tell us who is left and who is right.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

@@ -249,6 +249,7 @@ static void arcade_begin_game(struct modal *modal) {
     .args={
       .difficulty=MODAL->difficulty,
       .bias=MODAL->bias,
+      .imageid=-1, // Don't check camera, use battle's default.
       .no_store=1, // Store might not be initialized yet. Ticking its battleclock is first off wrong, and second, would cause the existing save to get clobbered.
     },
     .cb=arcade_cb_battle,

@@ -63,3 +63,4 @@ Invading. Space Invaders, play as the horde.
 Defending. Space Invaders, play as usual. These would make a great pair in the battlefield!
 Shooting. Wolfenstein with a basketball.
 Rapping. Hiphoppotamus.
+Analogy. "A is to B as C is to ???", against Thesaurus Rex.

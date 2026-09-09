@@ -98,7 +98,7 @@ static void _story_update(struct modal *modal,double elapsed) {
 
   // AUX1 to pause.
   if ((g.input[0]&EGG_BTN_AUX1)&&!(g.pvinput[0]&EGG_BTN_AUX1)) {
-    if (g.raceid) game_begin_activity(NS_activity_pauserace,0,0);
+    if (g.raceid) game_begin_activity(NS_activity_pauserace,1,0);
     else modal_spawn(&modal_type_pause,0,0);
     return;
   }

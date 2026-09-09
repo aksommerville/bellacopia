@@ -309,7 +309,7 @@
 #define NS_activity_cartographer 46
 #define NS_activity_exit_cave 47
 #define NS_activity_moonsong 48 /* (u16:raceid)0 */
-#define NS_activity_pauserace 49
+#define NS_activity_pauserace 49 /* (u16:playerc)0 */
 #define NS_activity_endrace 50 /* Calling race_end() triggers this. 0x0001=dot wins, 0x0002=moon wins, 0x0004=new high score, 0x0008=first time */
 #define NS_activity_fish_book 51
 #define NS_activity_hearts_book 52
