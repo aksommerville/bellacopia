@@ -29,8 +29,11 @@ static int _jigpiece_init(struct sprite *sprite) {
  */
  
 static void _jigpiece_update(struct sprite *sprite,double elapsed) {
-  if (GRP(hero)->sprc>=1) {
-    struct sprite *hero=GRP(hero)->sprv[0];
+  // Usually sprites just look at GRP(hero)->sprv[0], but we can interact with both racers in broom race mode, so it has to be a loop.
+  struct sprite **otherp=GRP(hero)->sprv;
+  int otheri=GRP(hero)->sprc;
+  for (;otheri-->0;otherp++) {
+    struct sprite *hero=*otherp;
     const double radius=0.750;
     double dx=hero->x-sprite->x;
     if ((dx>=-radius)&&(dx<=radius)) {
@@ -38,6 +41,7 @@ static void _jigpiece_update(struct sprite *sprite,double elapsed) {
       if ((dy>=-radius)&&(dy<=radius)) {
         if (game_get_item(NS_itemid_jigpiece,SPRITE->mapid)) {
           sprite_kill_soon(sprite);
+          return;
         }
       }
     }

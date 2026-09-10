@@ -6,11 +6,17 @@
  */
  
 #define VIEW_LIMIT 4
+
+#define MULTICAMERA_MAP_LIMIT 64 /* Allows maps up to id 512. Can extend arbitrarily, and we'll log a warning if more is needed. */
  
 static struct {
   struct multicamera_view viewv[VIEW_LIMIT];
   int viewc; // Zero if not initialized.
   int texid,texw,texh;
+  void (*cb_expose)(struct map *map,void *userdata);
+  void *userdata;
+  uint8_t exposebits[MULTICAMERA_MAP_LIMIT]; // Little-endian bits indexed by rid.
+  int warned_map_limit;
 } multicamera={0};
 
 /* Cleanup.
@@ -43,10 +49,16 @@ static void multicamera_bounds(int p,int x,int y,int w,int h) {
 /* Init.
  */
 
-int multicamera_init(int viewc) {
+int multicamera_init(
+  int viewc,
+  void (*cb_expose)(struct map *map,void *userdata),
+  void *userdata
+) {
   if ((viewc<1)||(viewc>VIEW_LIMIT)) return -1;
   if (multicamera.viewc) return -1;
   multicamera.viewc=viewc;
+  multicamera.cb_expose=cb_expose;
+  multicamera.userdata=userdata;
   
   // Establish view output bounds.
   switch (viewc) {
@@ -88,6 +100,12 @@ int multicamera_init(int viewc) {
     int human=sprite_racer_is_human(sprite);
     if ((human>=1)&&(human<=viewc)) {
       sprite_group_add(&multicamera.viewv[human-1].group,sprite);
+      
+      /* Lot of odds and ends in spriteland depend on (g.camera.z).
+       * Multicamera planes can change on the fly, but in practice they won't.
+       * Grab it from any of our focus sprites, and stash in (g.camera.z) for other sprites to examine.
+       */
+      g.camera.z=sprite->z;
     }
   }
   
@@ -100,6 +118,43 @@ int multicamera_init(int viewc) {
 struct multicamera_view *multicamera_get_view(int p) {
   if ((p<0)||(p>=multicamera.viewc)) return 0;
   return multicamera.viewv+p;
+}
+
+/* Look for new map exposures for one view.
+ * NB This is called often.
+ */
+ 
+static void multicamera_check_exposures(struct multicamera_view *view) {
+  if (!view->plane) return;
+  int mxa=view->x/(NS_sys_mapw*NS_sys_tilesize);
+  int mya=view->y/(NS_sys_maph*NS_sys_tilesize);
+  int mxz=(view->x+view->dstw-1)/(NS_sys_mapw*NS_sys_tilesize);
+  int myz=(view->y+view->dsth-1)/(NS_sys_maph*NS_sys_tilesize);
+  if (mxa<0) mxa=0;
+  if (mya<0) mya=0;
+  if (mxz>=view->plane->w) mxz=view->plane->w-1;
+  if (myz>=view->plane->h) myz=view->plane->h-1;
+  struct map *mrow=view->plane->v+mya*view->plane->w+mxa;
+  int my=mya;
+  for (;my<=myz;my++,mrow+=view->plane->w) {
+    int mx=mxa;
+    struct map *map=mrow;
+    for (;mx<=mxz;mx++,map++) {
+      if (map->rid<1) continue;
+      int major=map->rid>>3;
+      if (major>=MULTICAMERA_MAP_LIMIT) {
+        if (!multicamera.warned_map_limit) {
+          multicamera.warned_map_limit=1;
+          fprintf(stderr,"!!! Please update MULTICAMERA_MAP_LIMIT. Need at least up to map:%d !!!\n",map->rid);
+        }
+        continue;
+      }
+      uint8_t mask=1<<(map->rid&7);
+      if (multicamera.exposebits[major]&mask) continue; // Been here.
+      multicamera.exposebits[major]|=mask;
+      multicamera.cb_expose(map,multicamera.userdata);
+    }
+  }
 }
 
 /* Update.
@@ -121,6 +176,9 @@ void multicamera_update(double elapsed) {
     int ylimit=view->plane->h*NS_sys_maph*NS_sys_tilesize-view->dsth;
     if (view->x<0) view->x=0; else if (view->x>xlimit) view->x=xlimit;
     if (view->y<0) view->y=0; else if (view->y>ylimit) view->y=ylimit;
+    if (multicamera.cb_expose) {
+      multicamera_check_exposures(view);
+    }
   }
 }
 

@@ -82,7 +82,7 @@ static int _racer_init(struct sprite *sprite) {
   if (sprite_group_add(GRP(visible),sprite)<0) return -1;
   if (sprite_group_add(GRP(update),sprite)<0) return -1;
   if (sprite_group_add(GRP(solid),sprite)<0) return -1;
-  if (SPRITE->human==1) {
+  if (SPRITE->human) {
     if (sprite_group_add(GRP(hero),sprite)<0) return -1;
   }
   

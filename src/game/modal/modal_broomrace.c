@@ -23,6 +23,35 @@ static void _broomrace_del(struct modal *modal) {
   multicamera_quit();
 }
 
+/* Expose map.
+ */
+ 
+static void broomrace_cb_expose(struct map *map,void *userdata) {
+  struct modal *modal=userdata;
+  struct map_extras extras={0};
+  map_freshen_tiles(map,&extras);
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_sprite: {
+          double x=map->lng*NS_sys_mapw+cmd.arg[0]+0.5;
+          double y=map->lat*NS_sys_maph+cmd.arg[1]+0.5;
+          int rid=(cmd.arg[2]<<8)|cmd.arg[3];
+          const uint8_t *arg=cmd.arg+4;
+          
+          // There's a few sprites that we explicitly ignore.
+          if (rid==RID_sprite_hero) continue;
+          
+          // And if somehow it was already spawned -- unlikely -- ignore it.
+          if (find_sprite_by_arg(arg)) continue;
+          
+          struct sprite *sprite=sprite_spawn(x,y,rid,arg,4,0,0,0);
+        } break;
+    }
+  }
+}
+
 /* Init.
  */
  
@@ -39,7 +68,7 @@ static int _broomrace_init(struct modal *modal,const void *args,int argslen) {
   int x=0,y=0,mapid=0;
   if ((mapid=race_get_start_position(&x,&y,MODAL->raceid))<1) return -1;
   if (race_begin(MODAL->raceid,MODAL->playerc)<0) return -1;
-  if (multicamera_init(MODAL->playerc)<0) return -1;
+  if (multicamera_init(MODAL->playerc,broomrace_cb_expose,modal)<0) return -1;
   multicamera_update(0.0); // Ensure we have sensible camera positions even if the first update gets skipped.
   
   if (MODAL->playerc==2) {

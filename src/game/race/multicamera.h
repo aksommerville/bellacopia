@@ -18,7 +18,7 @@ struct multicamera_view {
    * (x,y) is the current top-left corner of our view, in plane pixels.
    */
   int x,y,z;
-  const struct plane *plane; // Lazy. Not expected to change, but we will react if it does.
+  struct plane *plane; // Lazy. Not expected to change, but we will react if it does.
   
   /* Should contain one sprite, and we'll focus on it.
    */
@@ -29,8 +29,13 @@ void multicamera_quit();
 
 /* (viewc) should be 1 or 2. We'll allow up to 4, why not.
  * Sprites must exist before you call. (eg race_begin() first, then multicamera_init()).
+ * (cb_expose) is called no more than once per map, when it first becomes visible in any view.
  */
-int multicamera_init(int viewc);
+int multicamera_init(
+  int viewc,
+  void (*cb_expose)(struct map *map,void *userdata),
+  void *userdata
+);
 
 /* Return the live object corresponding to one view.
  * (p) are sequential from zero.

@@ -54,8 +54,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
 - [x] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [ ] Some fireworks when an animal gets captured.
-- [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
-- - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
+- [x] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
+- - [x] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
+- - ...decline for darkness, but we are now spawning static sprites like siren and jigpiece.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [x] Settings modal, via Hello.
 - [x] Roll credits via Hello.
@@ -65,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
+- [ ] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
