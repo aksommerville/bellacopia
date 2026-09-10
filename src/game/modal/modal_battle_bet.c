@@ -38,7 +38,7 @@ static void _battle_bet_del(struct modal *modal) {
 }
 
 /* Recalculate (payout) based on (wager,difficulty).
- * Also sanitized (wager,difficulty), tho callers should not permit them to go invalid either.
+ * Also sanitize (wager,difficulty), tho callers should not permit them to go invalid either.
  */
  
 static void battle_bet_recalc(struct modal *modal) {
@@ -46,9 +46,19 @@ static void battle_bet_recalc(struct modal *modal) {
   else if (modal_battle_bet_wager>WAGER_MAX) modal_battle_bet_wager=WAGER_MAX;
   if (modal_battle_bet_difficulty<DIFFICULTY_MIN) modal_battle_bet_difficulty=DIFFICULTY_MIN;
   else if (modal_battle_bet_difficulty>DIFFICULTY_MAX) modal_battle_bet_difficulty=DIFFICULTY_MAX;
-  int mlt=modal_battle_bet_difficulty*2;
-  if (mlt<1) mlt=1; // Difficulty zero, you just win your money back, like a fool.
-  MODAL->payout=modal_battle_bet_wager*mlt;
+  double mlt;
+  switch (modal_battle_bet_difficulty) {
+    case 0: mlt=1.000; break;
+    case 1: mlt=1.200; break;
+    case 2: mlt=1.400; break;
+    case 3: mlt=1.600; break;
+    case 4: mlt=1.800; break;
+    case 5: mlt=2.000; break;
+    default: return;
+  }
+  MODAL->payout=lround(modal_battle_bet_wager*mlt);
+  if (MODAL->payout<1) MODAL->payout=1;
+  else if (MODAL->payout>99) MODAL->payout=99;
 }
 
 /* The static text labels are all stamped on to one texture.

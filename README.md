@@ -52,7 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
-- [ ] Casino arcade should pay out much less, maybe like `wager+difficulty`.
+- [x] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.

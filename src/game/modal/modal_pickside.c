@@ -108,7 +108,14 @@ static void pickside_confirm(struct modal *modal,struct player *player) {
  */
  
 static void pickside_cancel(struct modal *modal,struct player *player) {
-  if (!player->side||!player->confirmed) return;
+  if (!player->confirmed) {
+    // WEST when unconfirmed: Dismiss the modal without setting pickside_state.
+    // This is important. It's the only way out, if you reach this modal by accident with no second player plugged in.
+    bm_sound(RID_sound_uicancel);
+    modal->defunct=1;
+    return;
+  }
+  if (!player->side) return;
   player->confirmed=0;
   bm_sound_pan(RID_sound_uicancel,(player->side==2)?PLAYER_PAN:-PLAYER_PAN);
 }
