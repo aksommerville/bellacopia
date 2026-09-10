@@ -157,6 +157,21 @@ void modals_update(double elapsed) {
  
 void modals_render() {
 
+  // Ensure that any (stay_on_top) modals are on top.
+  for (;;) {
+    int done=1,i=g.modalc;
+    while (i-->1) {
+      struct modal *a=g.modalv[i-1];
+      struct modal *b=g.modalv[i];
+      if (a->stay_on_top&&!b->stay_on_top) {
+        done=0;
+        g.modalv[i-1]=b;
+        g.modalv[i]=a;
+      }
+    }
+    if (done) break;
+  }
+
   // Find the topmost opaque modal, and the topmost with blotter.
   struct modal *blotbefore=0;
   int opaquep=-1;

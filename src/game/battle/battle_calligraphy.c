@@ -569,9 +569,6 @@ static void _calligraphy_update(struct battle *battle,double elapsed) {
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render bits

@@ -85,13 +85,6 @@ static void _seamonster_update(struct battle *battle,double elapsed) {
   } else if (BATTLE->monstery>MONSTER_Y_BOTTOM) {
     battle->outcome=-1;
   }
-  
-  //XXX AUX2 to end the battle and unset the controlling flag, for testing purposes.
-  if (g.input[0]&EGG_BTN_AUX2) {
-    fprintf(stderr,"*** AUX2: Ending seamonster cutscene and unsetting its flag. ***\n");
-    store_set_fld(NS_fld_caught_seamonster,0);
-    battle->outcome=1;
-  }
 }
 
 /* Render.

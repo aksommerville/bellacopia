@@ -370,7 +370,6 @@ void race_end() {
    */
   struct modal *modal=modal_get_topmost(&modal_type_broomrace);
   if (modal) {
-    fprintf(stderr,"%s, modal in play (%p)\n",__func__,modal);
     struct race_status status={0};
     race_get_status(&status);
     g.raceid=0;
@@ -378,7 +377,6 @@ void race_end() {
     modal_broomrace_report_completion(modal,&status);
     return;
   }
-  fprintf(stderr,"%s, story mode\n",__func__);
 
   // Commit win flag and time, if improved.
   int arg=0;

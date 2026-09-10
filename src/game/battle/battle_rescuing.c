@@ -457,9 +457,6 @@ static void _rescuing_update(struct battle *battle,double elapsed) {
     else if (l<r) battle->outcome=-1;
     else battle->outcome=0;
   }
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.

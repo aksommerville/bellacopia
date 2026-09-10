@@ -110,6 +110,7 @@ extern const struct modal_type modal_type_tenkey;
 extern const struct modal_type modal_type_battle_bet; // Choose a wager and difficulty. (caller launches the actual battle)
 extern const struct modal_type modal_type_raceconfig; // Broom Race Mode, outer lobby.
 extern const struct modal_type modal_type_broomrace; // Broom Race Mode, main event.
+extern const struct modal_type modal_type_pickside;
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -232,5 +233,15 @@ struct modal *modal_dialogue_simple(int rid,int strix); // Convenience for stati
 int modal_shop_add_item(struct modal *modal,int itemid,int price,int quantity);
 
 void modal_broomrace_report_completion(struct modal *modal,const struct race_status *status);
+
+/* Call modal_pickside_require() before doing anything 2-player.
+ * Returns >0 if we're presenting the modal, not that you should need to care.
+ * If we haven't yet established which player is on which side, present a modal where the two players pick left or right.
+ * Egg is good about making [1] the first to interact and [2] the second, but that doesn't tell us which side of the sofa they're sitting on.
+ * And our battles have a strong sense of "left=one right=two".
+ * Main will call modal_pickside_apply() immediately after reading input from the platform. We may swizzle [1] and [2].
+ */
+int modal_pickside_require();
+void modal_pickside_apply(int *inputv/*3*/);
 
 #endif

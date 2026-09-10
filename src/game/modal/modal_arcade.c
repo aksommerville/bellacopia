@@ -339,7 +339,7 @@ static void arcade_adjust_players(struct modal *modal,int d) {
 static void _arcade_update(struct modal *modal,double elapsed) {
 
   // Difficulty and bias have a range of 255. Use key-repeat.
-  // Hold EAST to adjust difficulty; bias by default.
+  // We used to change difficulty while EAST held, but now we're aliasing EAST to WEST, and we weren't using difficulty anyway.
   int horz=g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT);
   if (horz==MODAL->horzpv) {
     int d=(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0;
@@ -347,16 +347,14 @@ static void _arcade_update(struct modal *modal,double elapsed) {
       if ((MODAL->horzclock-=elapsed)<=0.0) {
         MODAL->horzclock+=KEY_REPEAT_ONGOING;
         MODAL->horzc++;
-        if (g.input[0]&EGG_BTN_EAST) arcade_adjust_difficulty(modal,d*MODAL->horzc/5);
-        else arcade_adjust_bias(modal,d*MODAL->horzc/5);
+        arcade_adjust_bias(modal,d*MODAL->horzc/5);
       }
     }
   } else {
     MODAL->horzpv=horz;
     MODAL->horzclock=KEY_REPEAT_INITIAL;
     MODAL->horzc=1;
-    if (g.input[0]&EGG_BTN_EAST) arcade_adjust_difficulty(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
-    else arcade_adjust_bias(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
+    arcade_adjust_bias(modal,(horz==EGG_BTN_LEFT)?-1:(horz==EGG_BTN_RIGHT)?1:0);
   }
   
   // Potentially huge list of battles. Use key-repeat.

@@ -648,9 +648,6 @@ static void _wining_update(struct battle *battle,double elapsed) {
       }
     }
   }
-  
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render.

@@ -365,9 +365,6 @@ static void _cinematography_update(struct battle *battle,double elapsed) {
     sample->rbtile=rb->animframe;
     sample->rbxform=rb->xform;
   }
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.

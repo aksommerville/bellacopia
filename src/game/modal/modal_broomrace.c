@@ -42,6 +42,10 @@ static int _broomrace_init(struct modal *modal,const void *args,int argslen) {
   if (multicamera_init(MODAL->playerc)<0) return -1;
   multicamera_update(0.0); // Ensure we have sensible camera positions even if the first update gets skipped.
   
+  if (MODAL->playerc==2) {
+    modal_pickside_require();
+  }
+  
   return 0;
 }
 

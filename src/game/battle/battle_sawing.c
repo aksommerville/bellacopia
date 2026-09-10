@@ -263,9 +263,6 @@ static void _sawing_update(struct battle *battle,double elapsed) {
       battle->outcome=-1;
     }
   }
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.

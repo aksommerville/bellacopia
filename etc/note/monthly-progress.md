@@ -203,6 +203,10 @@ Goals:
 - [ ] 10 new battles.
 - [ ] A few more interiors.
 
+Added some interesting things this month:
+- 2-player broom races.
+- Reengage Princess.
+
 ## October 2026
 
 GDEX mid-month, and I expect to spend most of the time before that in GDEX-specific prep.

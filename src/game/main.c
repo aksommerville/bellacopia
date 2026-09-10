@@ -56,12 +56,15 @@ void egg_client_update(double elapsed) {
    */
   memcpy(g.pvinput,g.input,sizeof(g.input));
   egg_input_get_all(g.input,sizeof(g.input)/sizeof(g.input[0]));
+  modal_pickside_apply(g.input);
   int *v=g.input;
   int i=sizeof(g.input)/sizeof(g.input[0]);
   for (;i-->0;v++) {
     // (L1,R1)==(L2,R2). Might come up if you've accepted default mapping and the guesser guessed wrong. We never use the 2's.
     if ((*v)&(EGG_BTN_L1|EGG_BTN_L2)) (*v)|=(EGG_BTN_L1|EGG_BTN_L2);
     if ((*v)&(EGG_BTN_R1|EGG_BTN_R2)) (*v)|=(EGG_BTN_R1|EGG_BTN_R2);
+    // Also alias EAST to WEST -- we're not going to use EAST.
+    if ((*v)&EGG_BTN_EAST) (*v)|=EGG_BTN_WEST;
   }
   
   modals_update(elapsed);

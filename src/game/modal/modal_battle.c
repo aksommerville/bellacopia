@@ -335,6 +335,11 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
     battle_prepare_input(modal);
   }
   
+  // Prompt to pick sides if we need to.
+  if (MODAL->args.lctl&&MODAL->args.rctl) {
+    modal_pickside_require();
+  }
+  
   return 0;
 }
 

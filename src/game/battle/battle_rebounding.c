@@ -316,9 +316,6 @@ static void _rebounding_update(struct battle *battle,double elapsed) {
   // Collisions against the left and right walls cause a point and reset.
   if (BATTLE->ballx<FLDL) rebounding_score(battle,r);
   else if (BATTLE->ballx>FLDR) rebounding_score(battle,l);
-
-  //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.
