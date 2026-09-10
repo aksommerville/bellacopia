@@ -51,22 +51,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
-- [x] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
-- [x] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [ ] Some fireworks when an animal gets captured.
-- [x] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
-- - [x] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
-- - ...decline for darkness, but we are now spawning static sprites like siren and jigpiece.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [x] Settings modal, via Hello.
-- [x] Roll credits via Hello.
-- [x] Add some match vendors downstairs.
-- [x] Once per session, before entering any 2-player mode, prompt users to tell us who is left and who is right.
 - [ ] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
 - - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 - [ ] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
+- [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -137,7 +129,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
-- [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces.
+- [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
