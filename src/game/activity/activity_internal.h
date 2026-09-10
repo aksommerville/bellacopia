@@ -34,6 +34,7 @@ void begin_medomat();
 void begin_wishing_well();
 void begin_wishing_sewer();
 void begin_iceshop();
+void begin_ignis();
 
 // activity_sidequests.c
 void begin_tolltroll(struct sprite *initiator,int arg);

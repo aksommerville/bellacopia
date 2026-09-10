@@ -335,6 +335,7 @@
 #define NS_activity_mr_mrs_rabbit 72
 #define NS_activity_summon_eight 73
 #define NS_activity_princess_home 74
+#define NS_activity_ignis 75
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -870,7 +871,7 @@
 #define NS_fld_burn6 224 /* unused */
 #define NS_fld_forest_secret_entrance 225
 #define NS_fld_surveyor_complete 226
-#define NS_fld_motion_economist 227
+#define NS_fld_motion_economist 227 /* unused */
 #define NS_fld_sokoban1 228
 #define NS_fld_dots_underdoor 229
 #define NS_fld_dud1 230

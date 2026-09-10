@@ -804,3 +804,18 @@ void begin_iceshop() {
   modal_shop_add_item(modal,NS_itemid_match,5,0);
   modal_shop_add_item(modal,NS_itemid_pepper,7,0);
 }
+
+/* Ignis(tm): Your one-stop fire shop.
+ */
+ 
+void begin_ignis() {
+  struct modal_args_shop args={
+    .rid=RID_strings_dialogue,
+    .strix=180,
+  };
+  struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
+  if (!modal) return;
+  modal_shop_add_item(modal,NS_itemid_match,1,0);
+  modal_shop_add_item(modal,NS_itemid_pepper,3,0);
+  modal_shop_add_item(modal,NS_itemid_bomb,5,0);
+}

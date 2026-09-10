@@ -59,9 +59,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [ ] Settings modal, via Hello.
 - [x] Roll credits via Hello.
-- [ ] Add some match vendors downstairs.
+- [x] Add some match vendors downstairs.
 - [x] Once per session, before entering any 2-player mode, prompt users to tell us who is left and who is right.
 - [ ] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
+- - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 
