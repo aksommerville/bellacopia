@@ -51,17 +51,19 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
-- [ ] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
+- [x] Credits roll and `song:bloomful_rejoicement` after strangling the last root devil. (play the cutscene first?)
 - [x] Casino arcade should pay out much less, maybe like `wager+difficulty`.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [ ] Settings modal, via Hello.
-- [ ] Roll credits via Hello.
+- [x] Roll credits via Hello.
 - [ ] Add some match vendors downstairs.
 - [x] Once per session, before entering any 2-player mode, prompt users to tell us who is left and who is right.
 - [ ] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
+- [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
+- - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

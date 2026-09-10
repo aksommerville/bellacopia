@@ -111,6 +111,7 @@ extern const struct modal_type modal_type_battle_bet; // Choose a wager and diff
 extern const struct modal_type modal_type_raceconfig; // Broom Race Mode, outer lobby.
 extern const struct modal_type modal_type_broomrace; // Broom Race Mode, main event.
 extern const struct modal_type modal_type_pickside;
+extern const struct modal_type modal_type_credits;
 
 struct modal_args_story {
   int use_save; // If zero, we start from the beginning and erase any save.
@@ -201,6 +202,11 @@ struct modal_args_battle_bet {
 struct modal_args_broomrace {
   int playerc;
   int raceid;
+};
+
+struct modal_args_credits {
+  void (*cb)(void *userdata);
+  void *userdata;
 };
 
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.

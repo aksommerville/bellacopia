@@ -259,7 +259,8 @@ static void hello_begin_settings(struct modal *modal) {
  
 static void hello_begin_credits(struct modal *modal) {
   fprintf(stderr,"%d %s\n",(int)egg_time_real(),__func__);
-  //TODO Credits modal
+  struct modal *credits=modal_spawn(&modal_type_credits,0,0);
+  if (!credits) return;
 }
 
 /* Activate selected option.
