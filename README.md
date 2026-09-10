@@ -57,7 +57,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `race:downstairs_lake` uses darkness and firepots in story mode. Do we want that in Broom Race mode too? We don't currently have, and it would take some doing.
 - - [ ] Also the sirens in `race:seaside_circle`. And that might be a lighter lift.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [ ] Settings modal, via Hello.
+- [x] Settings modal, via Hello.
 - [x] Roll credits via Hello.
 - [x] Add some match vendors downstairs.
 - [x] Once per session, before entering any 2-player mode, prompt users to tell us who is left and who is right.

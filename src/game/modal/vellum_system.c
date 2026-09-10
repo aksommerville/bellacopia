@@ -270,8 +270,10 @@ struct vellum *vellum_new_system(struct modal *parent) {
   vellum->render=_system_render;
   vellum->langchanged=_system_langchanged;
   
-  system_add_label(vellum,LABELID_MAIN_MENU);
-  system_add_label(vellum,LABELID_QUIT);
+  if (!modal_pause_is_system_only(parent)) {
+    system_add_label(vellum,LABELID_MAIN_MENU);
+    system_add_label(vellum,LABELID_QUIT);
+  }
   system_add_label(vellum,LABELID_LANG);
   system_add_label(vellum,LABELID_INPUT);
   system_add_label(vellum,LABELID_MUSIC);

@@ -251,7 +251,11 @@ static void hello_begin_broom(struct modal *modal) {
  
 static void hello_begin_settings(struct modal *modal) {
   fprintf(stderr,"%d %s\n",(int)egg_time_real(),__func__);
-  //TODO Settings modal
+  struct modal_args_pause args={
+    .system_only=1,
+  };
+  struct modal *pause=modal_spawn(&modal_type_pause,&args,sizeof(args));
+  if (!pause) return;
 }
 
 /* Launch Credits modal. This does not dismiss us.

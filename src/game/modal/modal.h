@@ -129,6 +129,10 @@ struct modal_args_battle {
   int skip_outtro; // We normally wait for a keystroke after completion, while reporting the winner and consequences.
 };
 
+struct modal_args_pause {
+  int system_only; // Nonzero to include only the "System" vellum, for "Settings" from Hello.
+};
+
 struct modal_args_dialogue {
   const char *text;
   int textc;
@@ -216,6 +220,8 @@ struct modal_args_credits {
  */
 void modal_battle_add_consequence(struct modal *modal,int itemid,int d);
 struct battle *modal_battle_get_battle(struct modal *modal);
+
+int modal_pause_is_system_only(const struct modal *modal);
 
 void modal_pause_click_tabs(struct modal *modal,int x,int y);
 struct invstore *modal_pause_get_highlighted_item(); // The inventory vellum persists its position across modals. You can query that.

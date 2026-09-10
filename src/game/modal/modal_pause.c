@@ -20,6 +20,7 @@ struct modal_pause {
   double rise; // 0..1, 1 when we're at the proper elevation.
   double drise; // -1,1 during hello and goodbye animation
   int bgtexid,bgw,bgh; // Image of the full vellum sheet.
+  int system_only;
 };
 
 #define MODAL ((struct modal_pause*)modal)
@@ -124,12 +125,19 @@ static int _pause_init(struct modal *modal,const void *arg,int argc) {
   modal->blotter=1;
   MODAL->drise=1.0;
   
+  if (arg&&(argc==sizeof(struct modal_args_pause))) {
+    const struct modal_args_pause *ARG=arg;
+    MODAL->system_only=ARG->system_only;
+  }
+  
   pause_draw_bg(modal);
   
-  if (!pause_add_vellum(modal,vellum_new_inventory)) return -1;
-  if (!pause_add_vellum(modal,vellum_new_map)) return -1;
-  if (!pause_add_vellum(modal,vellum_new_stories)) return -1;
-  if (!pause_add_vellum(modal,vellum_new_stats)) return -1;
+  if (!MODAL->system_only) { // Regular pause menu has a bunch of vella.
+    if (!pause_add_vellum(modal,vellum_new_inventory)) return -1;
+    if (!pause_add_vellum(modal,vellum_new_map)) return -1;
+    if (!pause_add_vellum(modal,vellum_new_stories)) return -1;
+    if (!pause_add_vellum(modal,vellum_new_stats)) return -1;
+  }
   if (!pause_add_vellum(modal,vellum_new_system)) return -1;
   
   pause_focus_vellum(modal,1);
@@ -177,8 +185,11 @@ static void pause_change_page(struct modal *modal,int d) {
 static void _pause_update(struct modal *modal,double elapsed) {
 
   // Tick pausetime.
-  double *pausetime=store_require_clock(NS_clock_pausetime);
-  if (pausetime) (*pausetime)+=elapsed;
+  // Beware! If we're system_only, doing this would zap the saved game.
+  if (!MODAL->system_only) {
+    double *pausetime=store_require_clock(NS_clock_pausetime);
+    if (pausetime) (*pausetime)+=elapsed;
+  }
 
   // Rising?
   if (MODAL->drise<0.0) {
@@ -195,7 +206,12 @@ static void _pause_update(struct modal *modal,double elapsed) {
 
   // AUX1 to exit.
   // Important to use input[1] and not input[0], since we might be in mouse mode.
-  if ((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1)) {
+  // If we're the abbreviated "Settings" modal from Hello, also allow WEST to dismiss, for consistency.
+  int exit_requested=((g.input[1]&EGG_BTN_AUX1)&&!(g.pvinput[1]&EGG_BTN_AUX1));
+  if (MODAL->system_only) {
+    if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) exit_requested=1;
+  }
+  if (exit_requested) {
     if (MODAL->drise>=0.0) {
       MODAL->drise=-1.0;
       pause_focus_vellum(modal,0);
@@ -300,4 +316,12 @@ void modal_pause_click_tabs(struct modal *modal,int x,int y) {
   pause_focus_vellum(modal,0);
   vellump=np;
   pause_focus_vellum(modal,1);
+}
+
+/* Trivial public accessors.
+ */
+ 
+int modal_pause_is_system_only(const struct modal *modal) {
+  if (!modal||(modal->type!=&modal_type_pause)) return 0;
+  return MODAL->system_only;
 }

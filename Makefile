@@ -25,6 +25,9 @@ $(foreach T,$(TOOLS),$(eval \
 TOOL_EXES:=$(patsubst %,out/%,$(TOOLS))
 all:$(TOOL_EXES)
 
+# A few numbers that I'm watching obsessively.
+score:all;echo "Line count: $$(wc -l $$(find src -name '*.[ch]' -or -name '*.js') | tail -n1)" ; ls -l out ; $(EGGDEV) list -fsize out/bellacopia.egg
+
 # Boilerplate Egg rules.
 all:;EGG_TARGETS=$(PRE_EGG_TARGETS) $(EGGDEV) build
 clean:;rm -rf mid out
