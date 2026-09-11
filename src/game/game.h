@@ -137,6 +137,7 @@ int game_list_targets(int *dstv,int dsta,int mode);
 /* Get the position in plane meters for the given compass target on the given plane.
  * All targets are positionable on all planes. We'll point to a door if the real thing is somewhere else.
  * >=0 on success. Failure is possible if (strix) is unknown or if the map set is defective and we can't find a path.
+ * >0 if you're on the right plane already.
  * Expensive, please don't spam.
  * (px,py) are the position on plane (z) that you're searching from. Only relevant for plane zero.
  * This does not account for maps' hints_override; if you allow overrides, you must check those separately.

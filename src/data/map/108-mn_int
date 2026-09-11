@@ -16,3 +16,4 @@ door @8,8 map:24 @5,3 0x0000
 parent map:mn_ext
 position 1 0 0 0
 sprite @10,5 sprite:compasstech (u16:activity)magneticnorth (u16:activity_arg)0
+compass @8,4 (u16:compass)walk3 (u32)0

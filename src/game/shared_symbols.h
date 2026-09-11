@@ -147,6 +147,11 @@
 #define NS_compass_gold 27
 #define NS_compass_auto 41
 #define NS_compass_castle 66
+#define NS_compass_walk1 246 /* Walk targets match NS_fld_*, not a string */
+#define NS_compass_walk2 247
+#define NS_compass_walk3 248
+#define NS_compass_walk4 249
+#define NS_compass_walk5 250
 
 // Face choices for battle.
 #define NS_face_monster 0 /* "The monster", whatever the game prefers. */
@@ -336,6 +341,7 @@
 #define NS_activity_summon_eight 73
 #define NS_activity_princess_home 74
 #define NS_activity_ignis 75
+#define NS_activity_walk 76 /* (u16:fldid)required */
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -350,7 +356,7 @@
 #define NS_sprtype_bonfire          10 /* (u32)0 */
 #define NS_sprtype_tolltroll        11 /* (u16:cost)0 (u16:fld)0 ; Zeroes for the three-part fetch quest */
 #define NS_sprtype_toast            12 /* (u32)0 */
-#define NS_sprtype_princess         13 /* (u8)seq (u24)0 ; seq is (0,1,2)=(any,jail,frontdoor) */
+#define NS_sprtype_princess         13 /* (u8)seq (u16:fldid)0 (u8)0 ; seq is (0,1,2)=(any,jail,frontdoor). (fldid) only for post-rescue walks. */
 #define NS_sprtype_setfld           14 /* (u16:fld) (u16)0 */
 #define NS_sprtype_ornament2x2      15 /* (u32)0 */
 #define NS_sprtype_tvnews           16 /* (u32)0 */
@@ -890,6 +896,11 @@
 #define NS_fld_all_inventory 243 /* Sets when you get the last item. */
 #define NS_fld_icepalace_flamethrow1 244
 #define NS_fld_icepalace_flamethrow2 245
+#define NS_fld_walk1 246 /* fishwife */
+#define NS_fld_walk2 247 /* city hall */
+#define NS_fld_walk3 248 /* magnetic north */
+#define NS_fld_walk4 249 /* inconvenience store */
+#define NS_fld_walk5 250 /* crocodile god */
 
 /* "fld16" are 16 unsigned bits each.
  */

@@ -16,3 +16,4 @@ door @7,8 map:5 @12,9 0x0000
 position 4 1 0 0
 sprite @11,5 sprite:fishwife (u16:activity)fishwife (u16:activity_arg)0
 parent map:5
+compass @9,4 (u16:compass)walk1 (u32)0

@@ -16,3 +16,4 @@ door @5,5 map:93 @3,7 0x0000
 parent map:93
 position 0 5 0 0
 sprite @14,7 sprite:thingwalla (u16:activity)inconvenience (u16:activity_arg)0
+compass @13,4 (u16:compass)walk4 (u32)0

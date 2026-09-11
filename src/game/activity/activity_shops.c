@@ -811,7 +811,7 @@ void begin_iceshop() {
 void begin_ignis() {
   struct modal_args_shop args={
     .rid=RID_strings_dialogue,
-    .strix=180,
+    .strix=187,
   };
   struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
   if (!modal) return;

@@ -200,6 +200,7 @@ static int targetcmp(const void *A,const void *B) {
 
 /* Find the position on plane (dstz) amenable to a target whose final position is (srcx,srcy,srcz).
  * (p1x,p1y) if you have them; <0 if not.
+ * Returns 1 if it's on this plane, or 0 if at least one hop is required.
  */
  
 static uint8_t plane_search_visited[32];
@@ -211,7 +212,7 @@ static int targets_find_plane_position(int *dstx,int *dsty,int px,int py,int dst
   if (dstz&&(dstz==srcz)) {
     *dstx=srcx;
     *dsty=srcy;
-    return 0;
+    return 1;
   }
   
   // If both on plane zero and (px,py) in the same map as (srcx,srcy), we can answer.
@@ -224,12 +225,12 @@ static int targets_find_plane_position(int *dstx,int *dsty,int px,int py,int dst
       if (dstrow==srcrow) {
         *dstx=srcx;
         *dsty=srcy;
-        return 0;
+        return 1;
       }
     }
   }
   
-  // If searching from plane one and (p1x,p1y) provided, use those.
+  // If searching from plane one and (p1x,p1y) provided, use those. Assume they are not the final destination.
   if ((dstz==1)&&(p1x>=0)&&(p1y>=0)) {
     *dstx=p1x;
     *dsty=p1y;

@@ -70,6 +70,7 @@ void begin_cryptmsg(int arg);
 void begin_linguist(struct sprite *initiator);
 void begin_exit_cave(struct sprite *hero); // Door activities get the hero as initiator.
 void begin_princess_home(struct sprite *sprite);
+void begin_walk(struct sprite *sprite,int fldid);
 
 // activity_fractia.c
 void begin_logproblem1(struct sprite *initiator);

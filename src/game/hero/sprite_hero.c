@@ -1,5 +1,7 @@
 #include "hero_internal.h"
 
+static uint8_t respawn_princess_args[4]={0};
+
 /* Cleanup.
  */
  
@@ -120,7 +122,8 @@ static void hero_cb_map(struct map *map,int focus,void *userdata) {
   SPRITE->busstop_clock=0.0;
   
   if (SPRITE->respawn_princess) {
-    struct sprite *princess=sprite_spawn(sprite->x,sprite->y+0.125,RID_sprite_princess,0,0,0,0,0);
+    SPRITE->respawn_princess=0;
+    struct sprite *princess=sprite_spawn(sprite->x,sprite->y+0.125,RID_sprite_princess,respawn_princess_args,sizeof(respawn_princess_args),0,0,0);
     if (princess) {
       sprite_group_remove(GRP(solid),princess);
     }
@@ -372,6 +375,10 @@ void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int
           tolerance*=tolerance;
           if (d2<tolerance) {
             SPRITE->respawn_princess=1;
+            memcpy(respawn_princess_args,other->arg,sizeof(respawn_princess_args));
+            if (sprite_princess_get_target_if_successful(other)) { // We've reach the destination. Force arg[3] nonzero.
+              respawn_princess_args[3]=1;
+            }
           }
           break;
         }
@@ -519,4 +526,17 @@ int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *spr
   *dstx=SPRITE->doorx;
   *dsty=SPRITE->doory;
   return 1;
+}
+
+/* Find the hero sprite and force respawn_princess false.
+ */
+ 
+void hero_dont_respawn_princess() {
+  struct sprite **p=GRP(hero)->sprv;
+  int i=GRP(hero)->sprc;
+  for (;i-->0;p++) {
+    struct sprite *sprite=*p;
+    if (sprite->type!=&sprite_type_hero) continue;
+    SPRITE->respawn_princess=0;
+  }
 }

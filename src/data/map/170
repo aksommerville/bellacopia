@@ -18,3 +18,4 @@ parent map:59
 door @5,10 map:58 @15,0 0x0000
 sprite @4,2 sprite:tvnews (u32)0
 bump @11,3 (u16:activity)board_of_elections (u16)0 (u16)0
+compass @10,4 (u16:compass)walk2 (u32)0

@@ -13,6 +13,9 @@ struct sprite_princess {
   int recheck_solid;
   double armt;
   int targetx,targety,targetz;
+  int fldid; // Zero for the rescue sequence, otherwise walk1..walk5.
+  int finished; // If (fldid), nonzero after we reach the goal.
+  int target_near; // Nonzero if we're pointing to the final destination.
   
   // Forced motion, tapers down over time. For getting whacked by the stick.
   double whackdx,whackdy;
@@ -33,16 +36,18 @@ static void _princess_del(struct sprite *sprite) {
 static int _princess_init(struct sprite *sprite) {
   SPRITE->tileid0=sprite->tileid;
   SPRITE->targetz=-1;
+  SPRITE->fldid=(sprite->arg[1]<<8)|sprite->arg[2];
+  SPRITE->finished=sprite->arg[3];
 
   /* Already rescued? I will never exist anymore.
    */
-  if (store_get_fld(NS_fld_rescued_princess)) return -1;
+  int seq=(sprite->argc>=4)?sprite->arg[0]:0;
+  if (seq&&store_get_fld(NS_fld_rescued_princess)) return -1;
   
   /* Check my sequence tag. Is this the right spawn point for the narrative context?
    */
-  int seq=(sprite->argc>=4)?sprite->arg[0]:0;
   switch (seq) {
-    case 0: break; // Shouldn't use this, but zero will mean "always spawn".
+    case 0: break; // Always spawn.
     case 1: { // In the jail cell.
         if (store_get_fld(NS_fld_princess_outside)) return -1;
       } break;
@@ -183,8 +188,31 @@ static void _princess_update(struct sprite *sprite,double elapsed) {
   // Refresh target if necessary.
   if ((SPRITE->targetz!=sprite->z)&&(SPRITE->targetz!=-2)) {
     SPRITE->targetz=sprite->z;
-    if (game_get_target_position(&SPRITE->targetx,&SPRITE->targety,sprite->x,sprite->y,sprite->z,NS_compass_castle)<0) {
+    int compass=SPRITE->fldid;
+    if (!compass||SPRITE->finished) compass=NS_compass_castle;
+    int err=game_get_target_position(&SPRITE->targetx,&SPRITE->targety,sprite->x,sprite->y,sprite->z,compass);
+    if (err<0) {
       SPRITE->targetz=-2; // Error, poison it.
+      SPRITE->target_near=0;
+    } else {
+      SPRITE->target_near=err;
+    }
+  }
+  
+  // Check completion of walks.
+  if (SPRITE->fldid) {
+    if (SPRITE->finished) {
+      // sprite_npc takes care of this case.
+    } else if (SPRITE->target_near) {
+      // Target is on our plane. If we're within 2 meters of it, declare success and demand to be taken home.
+      double dx=SPRITE->targetx-sprite->x;
+      double dy=SPRITE->targety-sprite->y;
+      double d2=dx*dx+dy*dy;
+      if (d2<4.0) {
+        SPRITE->finished=1;
+        SPRITE->targetz=-1;
+        game_begin_activity(NS_activity_dialogue,186,sprite);
+      }
     }
   }
   
@@ -323,4 +351,13 @@ int sprite_princess_whack(struct sprite *sprite,double x,double y) {
   SPRITE->whackdx/=distance;
   SPRITE->whackdy/=distance;
   return 1;
+}
+
+/* Check completion of walks.
+ */
+ 
+int sprite_princess_get_target_if_successful(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_princess)) return 0;
+  if (!SPRITE->finished) return 0;
+  return SPRITE->fldid;
 }

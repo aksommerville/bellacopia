@@ -16,3 +16,4 @@ position 1 3 5 *
 parent map:43
 sprite @11,5 sprite:monk1 (u16:activity)dialogue (u16:activity_arg)86
 bump @9,5 (u16:activity)crocodile (u16)0 (u16)0
+compass @8,6 (u16:compass)walk5 (u32)0

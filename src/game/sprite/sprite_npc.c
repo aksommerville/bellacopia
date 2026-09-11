@@ -111,8 +111,30 @@ static void npc_princess_home_cb(char type,int id,int value,void *userdata) {
   }
 }
  
-static void npc_prepare_princess_home(struct sprite *sprite) {
-  if (store_get_fld(NS_fld_rescued_princess)) {
+static int npc_prepare_princess_home(struct sprite *sprite) {
+  int rescued=store_get_fld(NS_fld_rescued_princess);
+
+  /* If there's a princess sprite in play, Dot was taking her for a walk.
+   * Kill that princess and let me take over.
+   * If the walk was successful, set the appropriate flag.
+   */
+  if (rescued) {
+    struct sprite **otherp=GRP(update)->sprv;
+    int i=GRP(update)->sprc;
+    for (;i-->0;otherp++) {
+      struct sprite *other=*otherp;
+      if (other->type==&sprite_type_princess) {
+        int fldid=sprite_princess_get_target_if_successful(other);
+        if (fldid) {
+          store_set_fld(fldid,1);
+        }
+        sprite_kill_soon(other);
+        hero_dont_respawn_princess();
+      }
+    }
+  }
+
+  if (rescued) {
     // We're already rescued, great, we're just a regular NPC now.
   } else {
     // Not rescued yet. Install a listener and neutralize until it fires.
@@ -122,6 +144,7 @@ static void npc_prepare_princess_home(struct sprite *sprite) {
     sprite_group_remove(GRP(grabbable),sprite);
     sprite_group_remove(GRP(moveable),sprite);
   }
+  return 0;
 }
 
 /* Init.
@@ -142,7 +165,7 @@ static int _npc_init(struct sprite *sprite) {
     // But most such sprites should prepare to react to flag changes on the fly:
     case NS_activity_moonsong: npc_prepare_moonsong(sprite); break;
     case NS_activity_mr_mrs_rabbit: npc_prepare_mr_mrs_rabbit(sprite); break;
-    case NS_activity_princess_home: npc_prepare_princess_home(sprite); break;
+    case NS_activity_princess_home: if (npc_prepare_princess_home(sprite)<0) return -1; break;
   }
   
   struct cmdlist_reader reader;

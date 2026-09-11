@@ -239,6 +239,13 @@ static void cb_princess_battle(struct modal *modal,int outcome,void *userdata) {
 static void cb_princess_battle_final(struct modal *modal,int outcome,void *userdata) {
   //fprintf(stderr,"%s(%p,%d,%p)\n",__func__,modal,outcome,userdata);
 }
+
+static int cb_princess_choose_walk(int optionid,void *userdata) {
+  if ((optionid>=181)&&(optionid<=185)) {
+    game_begin_activity(NS_activity_walk,optionid-181+NS_fld_walk1,userdata);
+  }
+  return 0;
+}
  
 static int cb_princess_home(int optionid,void *userdata) {
   switch (optionid) {
@@ -270,8 +277,29 @@ static int cb_princess_home(int optionid,void *userdata) {
       } break;
       
     case 176: { // take walk
-        fprintf(stderr,"TODO take a walk with the Princess\n");
-        begin_dialogue(179,userdata);
+        // Princess demands the first untaken walk if there is one. They are sequential.
+        int fldid=NS_fld_walk1;
+        for (;fldid<=NS_fld_walk5;fldid++) {
+          if (!store_get_fld(fldid)) break;
+        }
+        if (fldid<=NS_fld_walk5) {
+          game_begin_activity(NS_activity_walk,fldid,userdata);
+        } else {
+          // All walks are complete, so now you get to choose.
+          struct modal_args_dialogue args={
+            .rid=RID_strings_dialogue,
+            .strix=179,
+            .speaker=userdata,
+            .cb=cb_princess_choose_walk,
+            .userdata=userdata,
+          };
+          struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+          modal_dialogue_add_option_string(modal,RID_strings_dialogue,181);
+          modal_dialogue_add_option_string(modal,RID_strings_dialogue,182);
+          modal_dialogue_add_option_string(modal,RID_strings_dialogue,183);
+          modal_dialogue_add_option_string(modal,RID_strings_dialogue,184);
+          modal_dialogue_add_option_string(modal,RID_strings_dialogue,185);
+        }
       } break;
       
     case 177: { // gossip
@@ -303,4 +331,69 @@ void begin_princess_home(struct sprite *sprite) {
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,175); // play game
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,176); // take walk
   modal_dialogue_add_option_string(modal,RID_strings_dialogue,177); // gossip
+}
+
+/* Begin a named walk.
+ */
+ 
+static uint8_t princess_walk_argv[4]={0};
+ 
+static int cb_begin_walk(int optionid,void *userdata) {
+  int fldid=(int)(uintptr_t)userdata;
+  
+  /* Find the NPC sprite that started this.
+   */
+  struct sprite *speaker=0;
+  struct sprite **spritep=GRP(update)->sprv;
+  int spritei=GRP(update)->sprc;
+  for (;spritei-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    if (sprite->rid!=RID_sprite_princess_home) continue;
+    speaker=sprite;
+    break;
+  }
+  if (!speaker) {
+    fprintf(stderr,"%s:%d: Failed to locate Princess sprite.\n",__FILE__,__LINE__);
+    return 0;
+  }
+  
+  /* Spawn a real princess at the same location.
+   * Then kill the speaker.
+   */
+  princess_walk_argv[1]=fldid>>8;
+  princess_walk_argv[2]=fldid;
+  struct sprite *princess=sprite_spawn(speaker->x,speaker->y,RID_sprite_princess,princess_walk_argv,sizeof(princess_walk_argv),0,0,0);
+  if (!princess) {
+    fprintf(stderr,"%s:%d: Failed to spawn Princess.\n",__FILE__,__LINE__);
+    return 0;
+  }
+  sprite_kill_soon(speaker);
+  
+  return 0;
+}
+ 
+void begin_walk(struct sprite *sprite,int fldid) {
+  if ((fldid<NS_fld_walk1)||(fldid>NS_fld_walk5)) return;
+  struct text_insertion ins={
+    .mode='r',
+    .r={
+      .rid=RID_strings_dialogue,
+      .strix=fldid-NS_fld_walk1+181,
+    },
+  };
+  char text[128];
+  int textc=text_format_res(text,sizeof(text),RID_strings_dialogue,180,&ins,1);
+  if ((textc<1)||(textc>sizeof(text))) {
+    cb_begin_walk(0,(void*)(uintptr_t)fldid);
+    return;
+  }
+  struct modal_args_dialogue args={
+    .text=text,
+    .textc=textc,
+    .speaker=sprite,
+    .cb=cb_begin_walk,
+    .userdata=(void*)(uintptr_t)fldid,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
 }
