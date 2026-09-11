@@ -36,6 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [x] Walks with the Princess.
 - - Say five of them? Fishwife, Crocodile, City Hall, Magnetic North, Inconvenience Store
+- [ ] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -58,7 +59,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
-- [ ] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
+- [x] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
+- - The cutscene does play and the flag gets set as expected. It's weird but not too jarring, I think. Keep as is.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
