@@ -1,0 +1,8 @@
+image image:meadow_sprites
+tile 0x66 0
+type (u16:sprtype)npc
+groups (b32:sprgrp)visible,update,solid,grabbable,moveable
+physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
+monster (u16:battle)snaring (u8:radius)0x30 (u8:speed)0x30 (u16)287 (u16)0
+hitbox -5 5 -7 7
+iffld (u16:fld)war_over

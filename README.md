@@ -43,7 +43,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
-- [ ] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
+- [x] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.

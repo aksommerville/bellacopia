@@ -35,3 +35,10 @@ switchable2 @13,3 (u16:fld)war_over
 switchable2 @14,3 (u16:fld)war_over
 switchable2 @15,2 (u16:fld)war_over
 rspriteres rsprite:battlefield
+sprite @4,6 sprite:pax_bonfire (u32)0
+sprite @5,8 sprite:pax_soldier (u32)0
+sprite @3,4 sprite:pax_vandal (u32)0
+sprite @3,8 sprite:pax_drummer (u32)0
+sprite @5,4 sprite:pax_cavalier (u32)0
+sprite @6,6 sprite:pax_vandal (u32)0
+sprite @2,6 sprite:pax_soldier (u32)0

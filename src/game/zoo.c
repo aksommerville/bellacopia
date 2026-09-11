@@ -303,6 +303,14 @@ int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid) {
   // Sticks are never subject to zoo removal.
   if (spriteid==RID_sprite_stick) return 0;
   
+  /* rsprite:battlefield does entirely its own thing (not actually zoo-related).
+   * The war ends from inside Blue Captain's tent, so we're not worried about instantaneous removal of existing rsprites -- there won't be any.
+   */
+  if (rspriteid==RID_rsprite_battlefield) {
+    if (store_get_fld(NS_fld_war_over)) return 1;
+    return 0;
+  }
+  
   // If we have a record of it already, query the store and that's it.
   int p=zoo_completion_search(rspriteid,spriteid);
   if (p>=0) {

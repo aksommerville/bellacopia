@@ -156,6 +156,26 @@ static int _npc_init(struct sprite *sprite) {
   SPRITE->activity_arg=(sprite->arg[2]<<8)|sprite->arg[3];
   if (game_activity_sprite_should_abort(SPRITE->activity,SPRITE->activity_arg,sprite->type)) return -1;
   
+  /* Added a wee convenience so NPC sprites can use the `monster` command and take no args from the spawn point.
+   * So we can copy a monster sprite and just change its type.
+   */
+  if (!SPRITE->activity) {
+    struct cmdlist_reader reader;
+    if (sprite_reader_init(&reader,sprite->cmd,sprite->cmdc)>=0) {
+      struct cmdlist_entry cmd;
+      while (cmdlist_reader_next(&cmd,&reader)>0) {
+        switch (cmd.opcode) {
+          case CMD_sprite_monster: {
+              int battleid=(cmd.arg[0]<<8)|cmd.arg[1];
+              int name=(cmd.arg[4]<<8)|cmd.arg[5]; // Can we get this out to modal_battle?
+              SPRITE->activity=NS_activity_battle;
+              SPRITE->activity_arg=battleid;
+            } break;
+        }
+      }
+    }
+  }
+  
   /* Certain activities imply tileid+1 when some flag is set, or a similar change.
    */
   switch (SPRITE->activity) {

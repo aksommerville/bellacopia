@@ -72,10 +72,11 @@
 #define CMD_sprite_layer         0x23 /* u16:layer ; hero at 100 */
 #define CMD_sprite_weight        0x24 /* u16:weight ; NS_sprtype_pushable. 0=always, 1=glove */
 #define CMD_sprite_ornament      0x25 /* u8:framec u8:delay_4ms ; NS_sprtype_ornament */
+#define CMD_sprite_iffld         0x26 /* u16:fld ; spawn only if (fld) set, at load only, no listener */
 #define CMD_sprite_physics       0x40 /* b32:physics ; which are impassable */
 #define CMD_sprite_hitbox        0x41 /* s8:l s8:r s8:t s8:b ; pixels, default (-8,8,-8,8) */
 #define CMD_sprite_groups        0x42 /* b32:sprgrp */
-#define CMD_sprite_monster       0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster */
+#define CMD_sprite_monster       0x60 /* u16:battle u4.4:radius u4.4:speed u16:name(RID_strings_battle) u16:reserved ; NS_sprtype_monster and NS_sprtype_npc */
 #define CMD_sprite_guild         0x61 /* u16:battle u16:name(RID_strings_battle) u16:fld u16:reserved ; NS_sprtype_guild */
 
 #define CMD_race_plane     0x20 /* u16:plane */
