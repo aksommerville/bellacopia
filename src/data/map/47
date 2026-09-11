@@ -57,5 +57,5 @@ sprite @1,9 sprite:bridget (u16:activity)bridget (u16:fld)bridge1start
 switchable @0,8 (u16:fld)bridge1done
 rspriteres rsprite:meadow
 track @7,4 1 4
-door @9,9 map:277 @9,9 0x0000
+door @9,9 map:277 @9,8 0x0000
 switchable @9,9 (u16:fld)forest_secret_entrance

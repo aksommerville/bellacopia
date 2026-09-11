@@ -53,6 +53,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
+- - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [ ] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
@@ -62,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
 - - The cutscene does play and the flag gets set as expected. It's weird but not too jarring, I think. Keep as is.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
+- [ ] Telescope doesn't work in maps with camera-override.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -121,6 +123,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
+- - [x] There's a whole lot of wall near the Cheapside-Botire passage. Can we squeeze a Hidden Message in there?
 
 - Battle repairs.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.

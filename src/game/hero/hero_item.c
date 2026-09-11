@@ -825,7 +825,7 @@ static int barrelhat_begin(struct sprite *sprite) {
 /* Telescope.
  */
  
-#define TELESCOPE_AWAY_SPEED 250.0 /* px/s (NB not meters) */
+#define TELESCOPE_AWAY_SPEED 20.0 /* m/s */
  
 static int telescope_begin(struct sprite *sprite) {
   SPRITE->itemid_in_progress=NS_itemid_telescope;
@@ -835,12 +835,16 @@ static int telescope_begin(struct sprite *sprite) {
 
 static void telescope_update(struct sprite *sprite,double elapsed) {
   if (!(g.input[0]&EGG_BTN_SOUTH)) {
+    // SOUTH released -- end the activity.
     g.telescoping=0;
     g.camera.teledx=0.0;
     g.camera.teledy=0.0;
     g.camera.cut=1;
     SPRITE->itemid_in_progress=0;
+  } else if (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
+    // Anything on dpad held -- suspend motion.
   } else {
+    // Normal cases -- move away.
     g.camera.teledx+=TELESCOPE_AWAY_SPEED*elapsed*SPRITE->facedx;
     g.camera.teledy+=TELESCOPE_AWAY_SPEED*elapsed*SPRITE->facedy;
   }
