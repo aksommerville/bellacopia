@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 148 0
+type (u16:sprtype)rhinoceros
+groups (b32:sprgrp)visible,update,solid,hazard
+hitbox -7 23 -8 8

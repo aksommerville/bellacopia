@@ -59,6 +59,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 - [ ] Telescope doesn't work in maps with camera-override.
+- [ ] Can we make the monks impervious to earthquake? It's confusing to see them akimbo after playing with the sphinx.
+- [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -68,6 +70,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
+- - [ ] Variation on numfloor using letters! The letters you place come from the name of the equipped item.
 
 - Fill out maps.
 - [ ] Fractia

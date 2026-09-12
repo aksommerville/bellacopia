@@ -393,6 +393,8 @@
 #define NS_sprtype_flagindicator    57 /* (u16:fld)0 (u8:delta)1 (u8)0 */
 #define NS_sprtype_numfloor         58 /* (32)0 ; Coordinates with all numfloor_ref on the same map. */
 #define NS_sprtype_numfloor_ref     59 /* (u16:fld16)password (u16:fld)fldid ; Must exist for the puzzle to work, we're the only thing associating the two fields. */
+#define NS_sprtype_rhinoceros       60 /* (u32)0 */
+#define NS_sprtype_landmine         61 /* (u16:fld)0 (u16)0 */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -442,7 +444,9 @@
   _(eightspawn) \
   _(flagindicator) \
   _(numfloor) \
-  _(numfloor_ref)
+  _(numfloor_ref) \
+  _(rhinoceros) \
+  _(landmine)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -871,7 +875,7 @@
 #define NS_fld_zoo17_1 213
 #define NS_fld_zoo17_2 214
 #define NS_fld_zoo17_3 215
-#define NS_fld_minesweep2 216 /* west of the ladder; gates zoo */
+#define NS_fld_minesweep2 216 /* unused */
 #define NS_fld_jigpiece_underlake 217
 #define NS_fld_jigpiece_ne 218
 #define NS_fld_burn1 219 /* unused */
@@ -909,6 +913,46 @@
 #define NS_fld_numfloor1 251 /* north leg of ice palace; door state */
 #define NS_fld_numfloor2 252 /* northeast leg of ice palace; door state */
 #define NS_fld_numfloor3 253 /* southeast leg of ice palace; door state */
+#define NS_fld_mine_zoo_door 254
+#define NS_fld_landmine1  255
+#define NS_fld_landmine2  256
+#define NS_fld_landmine3  257
+#define NS_fld_landmine4  258
+#define NS_fld_landmine5  259
+#define NS_fld_landmine6  260
+#define NS_fld_landmine7  261
+#define NS_fld_landmine8  262
+#define NS_fld_landmine9  263
+#define NS_fld_landmine10 264
+#define NS_fld_landmine11 265
+#define NS_fld_landmine12 266
+#define NS_fld_landmine13 267
+#define NS_fld_landmine14 268
+#define NS_fld_landmine15 269
+#define NS_fld_landmine16 270
+#define NS_fld_landmine17 271
+#define NS_fld_landmine18 272
+#define NS_fld_landmine19 273
+#define NS_fld_landmine20 274
+#define NS_fld_landmine21 275
+#define NS_fld_landmine22 276
+#define NS_fld_landmine23 277
+#define NS_fld_landmine24 278
+#define NS_fld_landmine25 279
+#define NS_fld_landmine26 280
+#define NS_fld_landmine27 281
+#define NS_fld_landmine28 282
+#define NS_fld_landmine29 283
+#define NS_fld_landmine30 284
+#define NS_fld_landmine31 285
+#define NS_fld_landmine32 286
+#define NS_fld_landmine33 287
+#define NS_fld_landmine34 288
+#define NS_fld_landmine35 289
+#define NS_fld_landmine36 290
+#define NS_fld_landmine37 291
+#define NS_fld_landmine38 292
+#define NS_fld_landmine39 293
 
 /* "fld16" are 16 unsigned bits each.
  */

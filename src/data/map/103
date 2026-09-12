@@ -1,19 +1,59 @@
-2113313131313131313131313131313131311421
-13b0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-32c0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-0707a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a03014
-0004a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00430
-1205a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00404
-2202a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00500
-2312a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a00510
-2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a01024
-2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-2122a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a02021
-2123111111111111111111111111111111112421
+2121212121212121212121212121212121212121
+2113313131313131313131313131142121212121
+31320501c4d3c3d3d4d4c4c3b400303131142121
+4e030101c4d3b4c3d3d3c3b4b407030300303114
+4e05d001c4c4b4c4c3c4c4d4d401d00503060730
+12040701d4c4c4d3c3d4d3d4b401010206040704
+23111111111112c4101111111111111205060604
+21212121212122d3202121212121212311111111
+21212121133132d4303114212121212121212121
+2121212122c3b4c3d4b420212121212121212121
+212121212209101112d320212121212121212121
+2121212123112421231124212121212121212121
 
 image image:caves
 position 1 0 2 *
-sprite @9,6 sprite:jigpiece (u32)0
-sprite @2,1 sprite:minesweeper (u16:fld)minesweep2 (u16)0
-cameralock (u16:fld)minesweep2
-bump @1,1 (u16:activity)reset_puzzle (u16:fld)minesweep2 (u16)0
+sprite @9,10 sprite:jigpiece (u32)0
+sprite @4,4 sprite:landmine (u16:fld)landmine1 (u16)0
+sprite @4,2 sprite:landmine (u16:fld)landmine2 (u16)0
+sprite @10,5 sprite:landmine (u16:fld)landmine3 (u16)0
+sprite @6,2 sprite:landmine (u16:fld)landmine4 (u16)0
+sprite @7,3 sprite:landmine (u16:fld)landmine5 (u16)0
+sprite @8,2 sprite:landmine (u16:fld)landmine6 (u16)0
+sprite @9,3 sprite:landmine (u16:fld)landmine7 (u16)0
+sprite @10,2 sprite:landmine (u16:fld)landmine8 (u16)0
+sprite @11,3 sprite:landmine (u16:fld)landmine9 (u16)0
+sprite @12,2 sprite:landmine (u16:fld)landmine10 (u16)0
+sprite @12,4 sprite:landmine (u16:fld)landmine11 (u16)0
+sprite @11,5 sprite:landmine (u16:fld)landmine12 (u16)0
+sprite @10,4 sprite:landmine (u16:fld)landmine13 (u16)0
+sprite @9,5 sprite:landmine (u16:fld)landmine14 (u16)0
+sprite @8,4 sprite:landmine (u16:fld)landmine15 (u16)0
+sprite @7,8 sprite:landmine (u16:fld)landmine16 (u16)0
+sprite @6,4 sprite:landmine (u16:fld)landmine17 (u16)0
+sprite @5,5 sprite:landmine (u16:fld)landmine18 (u16)0
+sprite @7,5 sprite:landmine (u16:fld)landmine19 (u16)0
+sprite @7,6 sprite:landmine (u16:fld)landmine20 (u16)0
+sprite @7,7 sprite:landmine (u16:fld)landmine21 (u16)0
+sprite @5,3 sprite:landmine (u16:fld)landmine22 (u16)0
+sprite @5,2 sprite:landmine (u16:fld)landmine23 (u16)0
+sprite @4,3 sprite:landmine (u16:fld)landmine24 (u16)0
+sprite @4,5 sprite:landmine (u16:fld)landmine25 (u16)0
+sprite @5,4 sprite:landmine (u16:fld)landmine26 (u16)0
+sprite @6,3 sprite:landmine (u16:fld)landmine27 (u16)0
+sprite @6,5 sprite:landmine (u16:fld)landmine28 (u16)0
+sprite @7,2 sprite:landmine (u16:fld)landmine29 (u16)0
+sprite @7,4 sprite:landmine (u16:fld)landmine30 (u16)0
+sprite @8,3 sprite:landmine (u16:fld)landmine31 (u16)0
+sprite @8,5 sprite:landmine (u16:fld)landmine32 (u16)0
+sprite @9,4 sprite:landmine (u16:fld)landmine33 (u16)0
+sprite @9,2 sprite:landmine (u16:fld)landmine34 (u16)0
+sprite @11,2 sprite:landmine (u16:fld)landmine35 (u16)0
+sprite @10,3 sprite:landmine (u16:fld)landmine36 (u16)0
+sprite @12,3 sprite:landmine (u16:fld)landmine37 (u16)0
+sprite @11,4 sprite:landmine (u16:fld)landmine38 (u16)0
+sprite @12,5 sprite:landmine (u16:fld)landmine39 (u16)0
+sprite @7,9 sprite:ounce (u16:fld)0 (u16)0
+stompbox @5,10 (u16:fld)mine_zoo_door
+switchable @0,4 (u16:fld)mine_zoo_door
+switchable @0,3 (u16:fld)mine_zoo_door

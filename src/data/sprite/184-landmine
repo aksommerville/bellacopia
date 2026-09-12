@@ -1,0 +1,5 @@
+image image:meadow_sprites
+tile 156 0
+type (u16:sprtype)landmine
+groups (b32:sprgrp)visible,update
+layer (u16)50
