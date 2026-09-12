@@ -1,0 +1,4 @@
+image image:icepalace
+tile 99 0
+type (u16:sprtype)numfloor_ref
+groups (b32:sprgrp)visible

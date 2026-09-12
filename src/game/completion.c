@@ -11,6 +11,12 @@ static const int fldv_side_quest[]={
   NS_fld_mayor,
   NS_fld_war_over,
   NS_fld_rescued_princess,
+  NS_fld_surveyor_complete,
+  NS_fld_minesweep1,
+  NS_fld_minesweep2,
+  NS_fld_purse1, // temple
+  NS_fld_purse2, // grandpa's puzzle
+  NS_fld_walk1,NS_fld_walk2,NS_fld_walk3,NS_fld_walk4,NS_fld_walk5,
 };
 static const int bucketfldv_side_quest[]={
   NS_fld_barrelhat1,NS_fld_barrelhat2,NS_fld_barrelhat3,NS_fld_barrelhat4,NS_fld_barrelhat5,NS_fld_barrelhat6,NS_fld_barrelhat7,NS_fld_barrelhat8,NS_fld_barrelhat9,0,

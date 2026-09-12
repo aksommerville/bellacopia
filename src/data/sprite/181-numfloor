@@ -1,0 +1,5 @@
+image image:icepalace
+tile 83 0
+type (u16:sprtype)numfloor
+groups (b32:sprgrp)update,visible
+layer (u16)10

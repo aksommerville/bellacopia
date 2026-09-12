@@ -368,3 +368,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Pick an orientation for sprites! I've settled on rightward as the default, but some early sprites (eg Dot) are leftward. Good to be consistent about that.
 - Adding things to `shared_symbols.h`, which one does a lot, forces a full rebuild. This needs a solution from the eggdev end, and I'm not sure what that will look like.
 - Some items should only interact from within the pause menu (eg Phonograph). Not worth changing Bellacopia, but keep that in mind next time around. Three kinds of item: Equippable, passive, modal.
+- Capturing `sprite->arg` by reference is a hazard, it keeps shooting me in the ass. Smarter to copy args, and have a separate dedicated "reference to rom" field.

@@ -391,6 +391,8 @@
 #define NS_sprtype_figureeight      55 /* (u8:orient_hv)01 (u24)0 */
 #define NS_sprtype_eightspawn       56 /* (u32)0 */
 #define NS_sprtype_flagindicator    57 /* (u16:fld)0 (u8:delta)1 (u8)0 */
+#define NS_sprtype_numfloor         58 /* (32)0 ; Coordinates with all numfloor_ref on the same map. */
+#define NS_sprtype_numfloor_ref     59 /* (u16:fld16)password (u16:fld)fldid ; Must exist for the puzzle to work, we're the only thing associating the two fields. */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -438,7 +440,9 @@
   _(ornament) \
   _(figureeight) \
   _(eightspawn) \
-  _(flagindicator)
+  _(flagindicator) \
+  _(numfloor) \
+  _(numfloor_ref)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -902,6 +906,9 @@
 #define NS_fld_walk3 248 /* magnetic north */
 #define NS_fld_walk4 249 /* inconvenience store */
 #define NS_fld_walk5 250 /* crocodile god */
+#define NS_fld_numfloor1 251 /* north leg of ice palace; door state */
+#define NS_fld_numfloor2 252 /* northeast leg of ice palace; door state */
+#define NS_fld_numfloor3 253 /* southeast leg of ice palace; door state */
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -944,6 +951,9 @@
 #define NS_fld16_surveyor_c_guess 36
 #define NS_fld16_wishing_well 37 /* itemid */
 #define NS_fld16_seasonblocks_seed 38
+#define NS_fld16_numfloor1 39 /* north leg of ice palace, password */
+#define NS_fld16_numfloor2 40 /* northeast leg of ice palace, password */
+#define NS_fld16_numfloor3 41 /* southeast leg of ice palace, password */
 
 /* "clock" are floating-point seconds, and persist as integer ms.
  */
