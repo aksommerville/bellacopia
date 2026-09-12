@@ -34,8 +34,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Walks with the Princess.
-- - Say five of them? Fishwife, Crocodile, City Hall, Magnetic North, Inconvenience Store
 - [ ] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
@@ -43,7 +41,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - [ ] Game over song.
-- [x] When the war is over, rsprites there should settle down. You can still engage, but maybe they just sit still in fixed positions? Like a zoo but fit for men.
 - [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
@@ -56,12 +53,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [ ] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
+- [x] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
 - - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
-- [x] If you collect the last jigpiece in a non-story broom race, does the cutscene play? Does the flag get set? And do we want the cutscene to play? This would be extremely unusual, but do check.
-- - The cutscene does play and the flag gets set as expected. It's weird but not too jarring, I think. Keep as is.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 - [ ] Telescope doesn't work in maps with camera-override.
 
@@ -123,7 +118,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
-- - [x] There's a whole lot of wall near the Cheapside-Botire passage. Can we squeeze a Hidden Message in there?
 
 - Battle repairs.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.

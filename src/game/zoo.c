@@ -278,10 +278,10 @@ static int zoo_fldid_for_spawn(int rspriteid,int spriteid,int mapid) {
     case RID_rsprite_usouthwest:  return zoo_fldid_by_spriteid(zoo16v,spriteid);
     case RID_rsprite_usoutheast:  return zoo_fldid_by_spriteid(zoo17v,spriteid);
     // Odd cases:
-    case RID_rsprite_isthmus:    return zoo_fldid_by_spriteid(zoo5v,spriteid); // Isthmus doesn't have a zoo; borrow the jungle's.
+    case RID_rsprite_isthmus:    break; // Isthmus doesn't have a zoo; it gets managed separately.
     case RID_rsprite_tundra:     return zoo_fldid_by_spriteid(zoo7v,spriteid); // tundra,westtundra: Same zoo.
     case RID_rsprite_westtundra: return zoo_fldid_by_spriteid(zoo7v,spriteid);
-    case RID_rsprite_battlefield: // TODO We'll be doing something else for the battlefield, not pinned down yet.
+    case RID_rsprite_battlefield:break; // Battlefield is managed a little different.
     // Won't have zoos, just listing for documentary purposes:
     case RID_rsprite_goblins:
     case RID_rsprite_labyrinth:
@@ -309,6 +309,20 @@ int zoo_should_suppress_monster(int spriteid,int mapid,int rspriteid) {
   if (rspriteid==RID_rsprite_battlefield) {
     if (store_get_fld(NS_fld_war_over)) return 1;
     return 0;
+  }
+  
+  /* rsprite:isthmus is a special case because sprites spawn there like anywhere else but there's no zoo for them.
+   * So instead we look at the neighbors: When the war is over and all of zoo5 (North Jungle) is zoo'd, everything in Isthmus gets suppressed.
+   */
+  if (rspriteid==RID_rsprite_isthmus) {
+    if (!store_get_fld(NS_fld_war_over)) return 0; // Must end war first.
+    const struct zoo_resident *resident=zoo5v;
+    int i=sizeof(zoo5v)/sizeof(struct zoo_resident);
+    for (;i-->0;resident++) {
+      if (!resident->fld) break;
+      if (!store_get_fld(resident->fld)) return 0; // North Jungle Zoo still has a vacancy.
+    }
+    return 1; // North Jungle and Battlefield finished -- finish Isthmus too.
   }
   
   // If we have a record of it already, query the store and that's it.
