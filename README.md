@@ -35,7 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
+- [x] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.

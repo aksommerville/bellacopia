@@ -15,10 +15,10 @@ static const int fldv_side_quest[]={
   NS_fld_minesweep1,
   NS_fld_purse1, // temple
   NS_fld_purse2, // grandpa's puzzle
-  NS_fld_walk1,NS_fld_walk2,NS_fld_walk3,NS_fld_walk4,NS_fld_walk5,
 };
 static const int bucketfldv_side_quest[]={
   NS_fld_barrelhat1,NS_fld_barrelhat2,NS_fld_barrelhat3,NS_fld_barrelhat4,NS_fld_barrelhat5,NS_fld_barrelhat6,NS_fld_barrelhat7,NS_fld_barrelhat8,NS_fld_barrelhat9,0,
+  NS_fld_walk1,NS_fld_walk2,NS_fld_walk3,NS_fld_walk4,NS_fld_walk5,0,
 };
 static const int fldv_heart_container[]={
   NS_fld_hc1,NS_fld_hc2,NS_fld_hc3,NS_fld_hc4,
@@ -289,28 +289,54 @@ int game_get_completables(struct completable *dst,int dsta) {
   return dstc;
 }
 
+/* Weight for one completable, by strix.
+ */
+ 
+double weight_for_completable(int strix) {
+  switch (strix) {
+    case 30: return 5.000; // Flowers
+    case 33: return 2.000; // Side quests
+    case 34: return 1.000; // Items
+    case 35: return 2.000; // Maps
+    case 36: return 1.000; // Heart containers
+    case 37: return 1.000; // Buried treasure
+    case 38: return 1.000; // Tree stories
+    case 41: return 1.000; // Zoos
+    case 42: return 1.000; // Bridges
+    case 43: return 1.000; // Broom races
+  }
+  return 0.0;
+}
+
 /* Tally completables.
  */
  
 int completables_total(struct completable *dst,const struct completable *src,int srcc) {
-  int numer=0;
-  int denom=0;
+  int numer=0,denom=0; // Straight off (src).
+  double adjsum=0.0; // Sum of weighted proportions.
+  double adjdenom=0.0; // Sum of weights.
   for (;srcc-->0;src++) {
+    if (src->denom<=0) continue;
     numer+=src->numer;
     denom+=src->denom;
+    double weight=weight_for_completable(src->strix);
+    if (weight>0.0) {
+      adjsum+=(weight*src->numer)/src->denom;
+      adjdenom+=weight;
+    }
   }
   if (dst) {
     dst->numer=numer;
     dst->denom=denom;
   }
   int pct=0;
-  if (denom>0) {
-    if (numer<=0) {
+  if (adjdenom>0.0) {
+    if (adjsum<=0.0) {
       pct=0;
-    } else if (numer>=denom) {
+    } else if (adjsum>=adjdenom) {
       pct=100;
     } else {
-      pct=(numer*100)/denom;
+      pct=lround((adjsum*100.0)/adjdenom);
       if (pct<1) pct=1;
       else if (pct>99) pct=99;
     }

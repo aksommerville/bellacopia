@@ -216,8 +216,15 @@ int game_get_completables(struct completable *dst,int dsta);
 
 /* Populate (dst) with the total numerator and denominator.
  * Returns sanitized percentage. 0 or 100 only if we are truly zero or complete.
+ * This percentage uses some opaque weights, it's not just (numer/denom).
  */
 int completables_total(struct completable *dst,const struct completable *src,int srcc);
+
+/* Given a strix in strings:1, how much does this field contribute to the total?
+ * By default, each completable has equal weight, regardless of how many data points contribute to it.
+ * Can be zero, for unknown things.
+ */
+double weight_for_completable(int strix);
 
 /* Returns a song rid for the outer world, depending on progress.
  */
