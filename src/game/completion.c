@@ -13,7 +13,6 @@ static const int fldv_side_quest[]={
   NS_fld_rescued_princess,
   NS_fld_surveyor_complete,
   NS_fld_minesweep1,
-  NS_fld_minesweep2,
   NS_fld_purse1, // temple
   NS_fld_purse2, // grandpa's puzzle
   NS_fld_walk1,NS_fld_walk2,NS_fld_walk3,NS_fld_walk4,NS_fld_walk5,

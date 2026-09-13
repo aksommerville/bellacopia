@@ -204,7 +204,7 @@ static int game_get_gossip_strix() {
   if (!store_get_fld(NS_fld_purse2)) return 117; // Grandpa's puzzle, Fractia.
   if (any_fld_unset(NS_fld_bridge1done,NS_fld_bridge7done)) return 118; // Bridget needs your help.
   if (!store_get_fld(NS_fld_stardoor)) return 119; // Go back to the cave and steal their secret treasure.
-  if (!store_get_fld(NS_fld_minesweep1)||!store_get_fld(NS_fld_minesweep2)) return 120; // Sweep the mines!
+  if (!store_get_fld(NS_fld_minesweep1)) return 120; // Sweep the mines!
   if (!store_get_fld(NS_fld_surveyor_complete)) {
     if (!store_get_itemid(NS_itemid_tapemeasure)) return 121; // Seek the treasure (tape measure)
     return 122; // Reunite the rabbits.
