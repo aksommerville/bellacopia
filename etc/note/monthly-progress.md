@@ -206,6 +206,8 @@ Goals:
 Added some interesting things this month:
 - 2-player broom races.
 - Reengage Princess.
+- numfloor and letfloor puzzles, and a few others.
+- Credits.
 
 ## October 2026
 

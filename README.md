@@ -31,12 +31,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Zoos were a hit. Players understood fast and kind of gravitated toward the zooage.
 - - Players were not at all drawn toward Root Devils. Maybe that will change when there's more narrative setup?
 - 2026-08-12: June and July were very productive. August and September won't be, due to jams and GDEX, but I feel like we're over the hump.
+- 2026-09-12: js13k and Uplifting 9 close tomorrow, and GDEX jam starts in a week. Sept probably done for dev, but it was a great 12 days, feeling really good about GDEX readiness.
 
 ## TODO
 
-- [x] !!! Segfault when I evidently captured an animal and entered battle upon him on the same frame.
-- - [x] Arrange a reliable reproduction. ...`sprite_zookeeper.c`: Wait until `sprite_monster_is_spent`. That's probably the fix too.
-- - Mitigated at `sprite_zookeeper.c:_zookeeper_update`, and that's probably all it needs. But also at `sprite_monster.c` callbacks.
 - [ ] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
@@ -56,13 +54,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
 - [ ] Some fireworks when an animal gets captured.
 - [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [x] BEFORE GDEX: Make the meadow zoo include all local rsprite. Add to the zoo or remove from rsprite, whatever, just make them match.
-- - And are there any others with dangling non-zoo rsprite?
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 - [ ] Telescope doesn't work in maps with camera-override.
-- [x] Can we make the monks impervious to earthquake? It's confusing to see them akimbo after playing with the sphinx.
 - [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
@@ -75,7 +70,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
 - - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
-- - [ ] Variation on numfloor using letters! The letters you place come from the name of the equipped item.
 
 - Fill out maps.
 - [ ] Fractia
@@ -150,6 +144,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] Finalize zoo and rsprite assignment, once all battles are written.
 - [ ] It might be a problem that we use aggregate input state in the outer world but `[1]` in one-player battles. Maybe mitigate that somehow during a one-player battle?
 - [ ] Princess battles are currently random, neutral bias, and consequence-free. We could make it more interesting if we want.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?
