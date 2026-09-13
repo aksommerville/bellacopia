@@ -1,0 +1,5 @@
+type (u16:sprtype)letfloor
+groups (b32:sprgrp)visible,update
+layer (u16)10
+image image:fractia_int
+tile 31 0

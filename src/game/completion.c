@@ -30,6 +30,8 @@ static const int fldv_buried_treasure[]={
   // bt5 is a jigpiece, doesn't count.
   NS_fld_bt6,NS_fld_bt7,NS_fld_bt8,NS_fld_bt9,NS_fld_bt10,
   NS_fld_bt11,NS_fld_bt12,NS_fld_bt13,NS_fld_bt14,NS_fld_bt15,
+  // bt16 jigpiece.
+  NS_fld_bt17,NS_fld_bt18, // 17 and 18 are in the fractia password house. Not buried, but definitely should participate in completion.
 };
 static const int fldv_story_tree[]={
   NS_fld_tree1,NS_fld_tree2,NS_fld_tree3,NS_fld_tree4,NS_fld_tree5,NS_fld_tree6,NS_fld_tree7,NS_fld_tree8,

@@ -59,8 +59,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 - [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 - [ ] Telescope doesn't work in maps with camera-override.
-- [ ] Can we make the monks impervious to earthquake? It's confusing to see them akimbo after playing with the sphinx.
+- [x] Can we make the monks impervious to earthquake? It's confusing to see them akimbo after playing with the sphinx.
 - [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
+- [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
+- - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

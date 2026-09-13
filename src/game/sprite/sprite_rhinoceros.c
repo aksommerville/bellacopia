@@ -61,6 +61,9 @@ static int _rhinoceros_init(struct sprite *sprite) {
  
 static int rhinoceros_hero_present(struct sprite *sprite) {
   if (g.bugspray>0.0) return 0;
+  // On the fence about this... Should vanishing cream and flash hide me too? They affect vision, not scent.
+  //if (g.vanishing>0.0) return 0;
+  //if (g.flash>0.0) return 0;
   if (GRP(hero)->sprc<1) return 0;
   struct sprite *hero=GRP(hero)->sprv[0];
   double ylo=sprite->y-0.500;

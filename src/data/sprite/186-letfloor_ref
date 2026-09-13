@@ -1,0 +1,3 @@
+type (u16:sprtype)letfloor_ref
+groups (b32:sprgrp)visible
+layer (u16)90

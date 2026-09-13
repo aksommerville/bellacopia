@@ -395,6 +395,8 @@
 #define NS_sprtype_numfloor_ref     59 /* (u16:fld16)password (u16:fld)fldid ; Must exist for the puzzle to work, we're the only thing associating the two fields. */
 #define NS_sprtype_rhinoceros       60 /* (u32)0 */
 #define NS_sprtype_landmine         61 /* (u16:fld)0 (u16)0 */
+#define NS_sprtype_letfloor         62 /* (u32)0 */
+#define NS_sprtype_letfloor_ref     63 /* (u16)strix (u16:fld)fldid ; strings:item */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -446,7 +448,9 @@
   _(numfloor) \
   _(numfloor_ref) \
   _(rhinoceros) \
-  _(landmine)
+  _(landmine) \
+  _(letfloor) \
+  _(letfloor_ref)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -953,6 +957,10 @@
 #define NS_fld_landmine37 291
 #define NS_fld_landmine38 292
 #define NS_fld_landmine39 293
+#define NS_fld_letfloor1 294
+#define NS_fld_letfloor2 295
+#define NS_fld_bt17 296 /* fractia password house (not actually buried) */
+#define NS_fld_bt18 297 /* fractia password house (not actually buried) */
 
 /* "fld16" are 16 unsigned bits each.
  */
