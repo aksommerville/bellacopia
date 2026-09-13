@@ -166,6 +166,13 @@ static void _zookeeper_update(struct sprite *sprite,double elapsed) {
     int wantp=zookeeper_wantv_search(sprite,other->rid);
     if (wantp<0) continue;
     
+    /* Hard to arrange, but it can happen that we catch a monster on the same frame that he entered combat against Dot.
+     * If it's already in combat, ie "spent", ignore it.
+     */
+    if (sprite_monster_is_spent(other)) {
+      continue;
+    }
+    
     zookeeper_acknowledge_capture(sprite,other->rid,other);
     sprite_kill_soon(other);
     SPRITE->wantc--;

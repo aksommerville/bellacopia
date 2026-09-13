@@ -524,6 +524,7 @@ static void _monster_update(struct sprite *sprite,double elapsed) {
  
 static void monster_cb_battle(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
+  if (!sprite_is_alive(sprite)) return;
   sprite_kill_soon(sprite);
   if (outcome>0) {
     struct prize prizev[8];
@@ -554,6 +555,7 @@ static void monster_cb_final(struct modal *modal,int outcome,void *userdata) {
 
 static void monster_cb_princess(struct modal *modal,int outcome,void *userdata) {
   struct sprite *sprite=userdata;
+  if (!sprite_is_alive(sprite)) return;
   sprite_kill_soon(sprite);
   if (outcome>0) {
     // Opportunity to do something here. Should we get a gold? Probly not, since we want to discourage the Princess from fighting.

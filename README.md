@@ -34,6 +34,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] !!! Segfault when I evidently captured an animal and entered battle upon him on the same frame.
+- - [x] Arrange a reliable reproduction. ...`sprite_zookeeper.c`: Wait until `sprite_monster_is_spent`. That's probably the fix too.
+- - Mitigated at `sprite_zookeeper.c:_zookeeper_update`, and that's probably all it needs. But also at `sprite_monster.c` callbacks.
 - [ ] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
