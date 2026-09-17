@@ -35,36 +35,33 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
-- [x] Settings modal launched from Hello, after visiting in Story Mode, no content. ...due to static vellump
+BEFORE GDEX:
+- [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
+- [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
+- [x] Some moving or at least animated things where you get the stopwatch, so you can see it work.
+- [x] Sokoban under Fractia: Six pieces is overkill, make it four.
+
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
-- [x] Game over song. ...it's good without
-- [x] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
-- - Well actually: It's fine for that to be phonograph, but phonograph should work in fixed-music areas too.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [x] I kind of want to throw the Princess in the Wishing Well. Can we make that happen? ...ha ha ha hell yeah we can
-- [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
-- [ ] Some fireworks when an animal gets captured.
-- [ ] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
+- [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
-- [ ] Some moving or at least animated things where you get the stopwatch, so you can see it work.
 - [ ] Telescope doesn't work in maps with camera-override.
 - [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 - [ ] Princess walks are kind of boring. Can we spice them up somehow?
-- [ ] Sokoban under Fractia: Six pieces is overkill, make it four.
+- - We could spawn monsters periodically that enter from behind you.
 - [ ] `bloomful_rejoicement`: I don't like the lead voice. Maybe something pluckier?
 - [ ] After telling the carpenter's story, the tree should react like "ooh what a spooky horror story!"
 - [ ] Minesweep should clearly indicate after you've lost.
