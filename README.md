@@ -36,6 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Can we weight the completion score differently? Maps, zoos, and items make a huge chunk of it (80% ish). I'd like one root devil to be worth like 20 puzzle pieces.
+- [x] Settings modal launched from Hello, after visiting in Story Mode, no content. ...due to static vellump
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -62,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 - [ ] Princess walks are kind of boring. Can we spice them up somehow?
+- [ ] Sokoban under Fractia: Six pieces is overkill, make it four.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

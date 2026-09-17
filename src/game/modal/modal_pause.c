@@ -140,6 +140,9 @@ static int _pause_init(struct modal *modal,const void *arg,int argc) {
   }
   if (!pause_add_vellum(modal,vellum_new_system)) return -1;
   
+  // This can and will happen: If you enter Settings from Hello after a Story session.
+  if ((vellump<0)||(vellump>=MODAL->vellumc)) vellump=0;
+  
   pause_focus_vellum(modal,1);
   
   return 0;
