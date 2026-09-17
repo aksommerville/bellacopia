@@ -689,22 +689,39 @@ static int wishing_well_get_sprite_position(double *x,double *y) {
 static int cb_wishing_well(int optionid,void *userdata) {
   if (optionid>0) {
     int ok=0;
-    struct invstore *invstore=store_get_itemid(optionid);
-    if (invstore&&(invstore->quantity>0)) {
-      invstore->quantity--;
-      store_broadcast('i',optionid,0);
-      ok=1;
-    } else {
-      const struct item_detail *details=item_detail_for_itemid(optionid);
-      if (details&&details->fld16) {
-        int q=store_get_fld16(details->fld16);
-        if (q>0) {
-          q--;
-          store_set_fld16(details->fld16,q);
-          ok=1;
+    
+    if (optionid==1001) { // Princess.
+      struct sprite **spritep=GRP(update)->sprv;
+      int i=GRP(update)->sprc;
+      for (;i-->0;spritep++) {
+        struct sprite *sprite=*spritep;
+        if (sprite->type!=&sprite_type_princess) continue;
+        sprite_kill_soon(sprite);
+        ok=1;
+        store_set_fld(NS_fld_princess_in_well,1);
+        store_set_fld(NS_fld_princess_vengeful,1);
+        break;
+      }
+    
+    } else { // Regular inventory, including those driven by fld16.
+      struct invstore *invstore=store_get_itemid(optionid);
+      if (invstore&&(invstore->quantity>0)) {
+        invstore->quantity--;
+        store_broadcast('i',optionid,0);
+        ok=1;
+      } else {
+        const struct item_detail *details=item_detail_for_itemid(optionid);
+        if (details&&details->fld16) {
+          int q=store_get_fld16(details->fld16);
+          if (q>0) {
+            q--;
+            store_set_fld16(details->fld16,q);
+            ok=1;
+          }
         }
       }
     }
+    
     if (ok) {
       store_set_fld16(NS_fld16_wishing_well,optionid);
       bm_sound(RID_sound_glug);
@@ -755,6 +772,16 @@ void begin_wishing_well() {
   if (store_get_fld16(NS_fld16_bluefish)) itemidv[itemidc++]=NS_itemid_bluefish;
   if (store_get_fld16(NS_fld16_redfish)) itemidv[itemidc++]=NS_itemid_redfish;
   
+  /* And if there's a Princess present, she's a candidate too.
+   */
+  struct sprite **spritep=GRP(update)->sprv;
+  for (i=GRP(update)->sprc;i-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    if (sprite->type!=&sprite_type_princess) continue;
+    itemidv[itemidc++]=1001;
+    break;
+  }
+  
   /* It's a little weird to not have anything tossable, but we do have verbiage for that case.
    */
   if (!itemidc) {
@@ -772,13 +799,18 @@ void begin_wishing_well() {
   struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
   if (!modal) return;
   for (i=0;i<itemidc;i++) {
-    const struct item_detail *detail=item_detail_for_itemid(itemidv[i]);
-    if (!detail) continue;
-    modal_dialogue_add_option_string_id(modal,RID_strings_item,detail->strix_name,itemidv[i]);
+    if (itemidv[i]==1001) { // Princess.
+      modal_dialogue_add_option_string_id(modal,RID_strings_battle,6,1001);
+    } else {
+      const struct item_detail *detail=item_detail_for_itemid(itemidv[i]);
+      if (!detail) continue;
+      modal_dialogue_add_option_string_id(modal,RID_strings_item,detail->strix_name,itemidv[i]);
+    }
   }
 }
 
 /* Wishing sewer.
+ * The main event is effected with fishpole; this activity just describes its state.
  */
  
 void begin_wishing_sewer() {

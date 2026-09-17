@@ -112,6 +112,9 @@ static void npc_princess_home_cb(char type,int id,int value,void *userdata) {
 }
  
 static int npc_prepare_princess_home(struct sprite *sprite) {
+
+  if (store_get_fld(NS_fld_princess_in_well)) return -1; // Nope, I'm not here.
+
   int rescued=store_get_fld(NS_fld_rescued_princess);
 
   /* If there's a princess sprite in play, Dot was taking her for a walk.

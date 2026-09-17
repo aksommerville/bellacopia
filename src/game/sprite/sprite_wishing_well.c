@@ -15,10 +15,15 @@ struct sprite_wishing_well {
 
 static int _wishing_well_init(struct sprite *sprite) {
   SPRITE->itemid=(sprite->arg[0]<<8)|sprite->arg[1];
-  const struct item_detail *detail=item_detail_for_itemid(SPRITE->itemid);
-  if (!detail) return -1;
-  sprite->imageid=RID_image_pause;
-  sprite->tileid=detail->tileid;
+  if (SPRITE->itemid==1001) { // Princess
+    sprite->imageid=RID_image_hero;
+    sprite->tileid=0xe0;
+  } else { // Regular inventory.
+    const struct item_detail *detail=item_detail_for_itemid(SPRITE->itemid);
+    if (!detail) return -1;
+    sprite->imageid=RID_image_pause;
+    sprite->tileid=detail->tileid;
+  }
   SPRITE->vish=NS_sys_tilesize;
   sprite_group_add(GRP(visible),sprite);
   sprite_group_add(GRP(update),sprite);

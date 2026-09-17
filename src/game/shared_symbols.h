@@ -963,6 +963,8 @@
 #define NS_fld_bt17 296 /* fractia password house (not actually buried) */
 #define NS_fld_bt18 297 /* fractia password house (not actually buried) */
 #define NS_fld_icepalace_visited 298
+#define NS_fld_princess_in_well 299
+#define NS_fld_princess_vengeful 300 /* Set when she enters the well; stays on until avenged. */
 
 /* "fld16" are 16 unsigned bits each.
  */
@@ -1003,7 +1005,7 @@
 #define NS_fld16_surveyor_a_guess 34 /* Distance guessed. */
 #define NS_fld16_surveyor_b_guess 35
 #define NS_fld16_surveyor_c_guess 36
-#define NS_fld16_wishing_well 37 /* itemid */
+#define NS_fld16_wishing_well 37 /* zero, itemid, or a constant: 1001=Princess */
 #define NS_fld16_seasonblocks_seed 38
 #define NS_fld16_numfloor1 39 /* north leg of ice palace, password */
 #define NS_fld16_numfloor2 40 /* northeast leg of ice palace, password */

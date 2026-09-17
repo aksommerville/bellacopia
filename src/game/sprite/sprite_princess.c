@@ -38,8 +38,13 @@ static int _princess_init(struct sprite *sprite) {
   SPRITE->targetz=-1;
   SPRITE->fldid=(sprite->arg[1]<<8)|sprite->arg[2];
   SPRITE->finished=sprite->arg[3];
+  
+  /* If I'm in the well, don't spawn.
+   */
+  if (store_get_fld(NS_fld_princess_in_well)) return -1;
 
   /* Already rescued? I will never exist anymore.
+   * Unless I'm seq-zero, the Princess at home.
    */
   int seq=(sprite->argc>=4)?sprite->arg[0]:0;
   if (seq&&store_get_fld(NS_fld_rescued_princess)) return -1;

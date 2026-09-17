@@ -228,8 +228,17 @@ static int cb_cartographer(int optionid,void *userdata) {
 }
  
 void begin_cartographer(struct sprite *initiator) {
+
+  /* Princess in the Wishing Well? Emergency!
+   * Tell Dot about it plainly, for free.
+   * It's our civic duty.
+   */
+  if (store_get_fld(NS_fld_princess_in_well)) {
+    begin_dialogue(190,initiator);
+    return;
+  }
   
-  /* First, if any secret is currently marked, you can have no more.
+  /* If any secret is currently marked, you can have no more.
    * Must clear all three before we give you a new one.
    */
   if (store_get_fld16(NS_fld16_carto1)||store_get_fld16(NS_fld16_carto2)||store_get_fld16(NS_fld16_carto3)) {

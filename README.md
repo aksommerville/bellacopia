@@ -48,7 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [ ] I kind of want to throw the Princess in the Wishing Well. Can we make that happen?
+- [x] I kind of want to throw the Princess in the Wishing Well. Can we make that happen? ...ha ha ha hell yeah we can
 - [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
@@ -66,6 +66,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Princess walks are kind of boring. Can we spice them up somehow?
 - [ ] Sokoban under Fractia: Six pieces is overkill, make it four.
 - [ ] `bloomful_rejoicement`: I don't like the lead voice. Maybe something pluckier?
+- [ ] After telling the carpenter's story, the tree should react like "ooh what a spooky horror story!"
+- [ ] Minesweep should clearly indicate after you've lost.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

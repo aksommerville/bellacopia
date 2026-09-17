@@ -63,7 +63,9 @@ static struct sprite *find_princess(struct sprite *king,int *near) {
 }
  
 void begin_king(struct sprite *sprite) {
-  if (store_get_fld(NS_fld_rescued_princess)) {
+  if (store_get_fld(NS_fld_princess_in_well)) {
+    begin_dialogue(188,sprite); // "WHERE IS SHE?"
+  } else if (store_get_fld(NS_fld_rescued_princess)) {
     begin_dialogue(32,sprite); // "Thanks again!"
   } else {
     int near=0;
@@ -317,8 +319,44 @@ static int cb_princess_home(int optionid,void *userdata) {
   }
   return 0;
 }
+
+static int cb_princess_revenge(int optionid,void *userdata) {
+  int battleid=NS_battle_crying;
+  struct modal_args_battle args={
+    .battle=battleid,
+    .args={
+      .difficulty=0x80,
+      .bias=0xf0,
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_princess,
+      .imageid=-1, // Use the battle's default. Or we could give zero, and they'll be in the desert. Both sensible options.
+    },
+    .cb=cb_princess_battle,
+    .cb_final=cb_princess_battle_final,
+    .userdata=userdata,
+  };
+  modal_spawn(&modal_type_battle,&args,sizeof(args));
+  return 1;
+}
  
 void begin_princess_home(struct sprite *sprite) {
+  
+  // If I'd been thrown in the well, get revenge before any of the usual activities.
+  if (store_get_fld(NS_fld_princess_vengeful)) {
+    store_set_fld(NS_fld_princess_vengeful,0);
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=189,
+      .speaker=sprite,
+      .cb=cb_princess_revenge,
+      .userdata=sprite,
+    };
+    modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    return;
+  }
+  
   struct modal_args_dialogue args={
     .rid=RID_strings_dialogue,
     .strix=174,

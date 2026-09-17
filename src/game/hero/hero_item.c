@@ -250,6 +250,17 @@ static void hero_raise_bridge(struct sprite *sprite,int x,int y) {
   g.camera.mapsdirty=1;
 }
 
+/* Generate the Princess sprite after we fish her out of the Wishing Sewer.
+ */
+ 
+static void hero_generate_unfished_princess(struct sprite *sprite) {
+  // (argv) is empty. If we were heading out, the destination is forgotten and she wants to go home.
+  // I think that's coherent. I would want to go right home too, if I'd been thru what she's been.
+  double x=sprite->x;
+  double y=sprite->y+1.0;
+  struct sprite *princess=sprite_spawn(x,y,RID_sprite_princess,0,0,0,0,0);
+}
+
 /* Fishpole.
  */
  
@@ -320,6 +331,7 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
     if (SPRITE->fish&&SPRITE->fishquantity!=1) goto _item_only_;
     switch (SPRITE->fish) {
       case 0: break;
+      case 1001: break; // Princess.
       case NS_itemid_greenfish: battle=NS_battle_greenfish; break;
       case NS_itemid_bluefish: battle=NS_battle_bluefish; break;
       case NS_itemid_redfish: battle=NS_battle_redfish; break;
@@ -374,7 +386,12 @@ static void fishpole_update(struct sprite *sprite,double elapsed) {
         if (SPRITE->fish==NS_itemid_wishing_well) {
           SPRITE->fish=store_get_fld16(NS_fld16_wishing_well);
           store_set_fld16(NS_fld16_wishing_well,0);
-          SPRITE->fishquantity=10;
+          store_set_fld(NS_fld_princess_in_well,0);
+          if (SPRITE->fish==1001) { // Princess
+            hero_generate_unfished_princess(sprite);
+          } else { // Regular inventory.
+            SPRITE->fishquantity=10;
+          }
         } else if (SPRITE->fish==NS_itemid_buried_bridge) {
           hero_raise_bridge(sprite,x,y);
         }
