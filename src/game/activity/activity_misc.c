@@ -5,10 +5,10 @@
  */
  
 static int cb_phonograph(int rid,void *userdata) {
+  if (!rid) return 0; // Cancelled.
+  if (rid==999) rid=0; // Zero for "default", can't be zero as an optionid.
   store_set_fld16(NS_fld16_phonograph,rid);
-  if (!g.song_override_outerworld&&map_is_outerworld(g.camera.map)) {
-    bm_song_gently(bm_song_for_outerworld());
-  }
+  bm_song_poke();
   return 1;
 }
  

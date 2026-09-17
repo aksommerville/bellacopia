@@ -35,6 +35,7 @@
 #define CMD_map_cameralock      0x28 /* u16:fld ; No lock if (fld) set. */
 #define CMD_map_surveyor        0x29 /* u16:fld16 ; This map is a candidate for remote surveyor-contest tiles. */
 #define CMD_map_hints_override  0x2a /* u16:fld ; If field unset, the hinting items behave different here. Compass, Divining Rod, Magnifier, Crystal Ball. */
+#define CMD_map_setfld          0x2b /* u16:fld ; Sets to one first time you visit this map. */
 #define CMD_map_position        0x40 /* u8:lng u8:lat u8:z u8:reserved ; REQUIRED. (z==0) for singletons, and (lng,lat) must still be unique for them. */
 #define CMD_map_switchable      0x41 /* u16:pos u16:fld ; tileid+1 if fld set */
 #define CMD_map_treadle         0x42 /* u16:pos u16:fld ; tileid+1 if fld set, clears fld on load and sets when touched */
@@ -961,6 +962,7 @@
 #define NS_fld_letfloor2 295
 #define NS_fld_bt17 296 /* fractia password house (not actually buried) */
 #define NS_fld_bt18 297 /* fractia password house (not actually buried) */
+#define NS_fld_icepalace_visited 298
 
 /* "fld16" are 16 unsigned bits each.
  */

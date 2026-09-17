@@ -76,6 +76,7 @@ int game_reset(int use_save) {
   g.fishclock=0.0;
   g.monsterpause=0.0;
   g.song_override_outerworld=0;
+  g.songid_requested=0;
   g.jigstate=0;
   g.goldtrack=store_get_fld16(NS_fld16_gold);
   g.goodlucktrack=store_get_fld16(NS_fld16_goodluck);
@@ -233,14 +234,27 @@ int game_focus_map(struct map *map) {
   while (cmdlist_reader_next(&cmd,&reader)>0) {
     switch (cmd.opcode) {
       case CMD_map_dark: break;
-      case CMD_map_song: if (!g.telescoping) bm_song_gently((cmd.arg[0]<<8)|cmd.arg[1]); break;
       case CMD_map_wind: break;
-      //case CMD_map_debugmsg: fprintf(stderr,"map:%d debugmsg='%.*s'\n",map->rid,cmd.argc,(char*)cmd.arg); break;
+      case CMD_map_setfld: store_set_fld((cmd.arg[0]<<8)|cmd.arg[1],1); break;
     }
   }
-  if (!g.raceid&&!g.song_override_outerworld&&map_is_outerworld(map)) {
-    bm_song_gently(bm_song_for_outerworld());
+  
+  int pvsong=g.songid_requested;
+  if (g.raceid) {
+    // Don't change song during a race.
+  } else if (g.telescoping) {
+    // Don't change song while telescoping.
+  } else if (g.song_override_outerworld) {
+    // Wait for song_override_outerworld to go false before changing song.
+  } else if (map->songid) {
+    // Explicit song for map.
+    g.songid_requested=map->songid;
+  } else if (map_is_outerworld(map)) {
+    // Outerworld, ie plane 1, are explicitly zero.
+    g.songid_requested=0;
   }
+  if (pvsong!=g.songid_requested) bm_song_poke();
+  
   return 0;
 }
 

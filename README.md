@@ -42,8 +42,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
-- [ ] Game over song.
-- [ ] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
+- [x] Game over song. ...it's good without
+- [x] Goblins' treasure shouldn't be the phonograph -- that place has fixed music, phonograph won't work in there.
+- - Well actually: It's fine for that to be phonograph, but phonograph should work in fixed-music areas too.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
@@ -64,6 +65,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 - [ ] Princess walks are kind of boring. Can we spice them up somehow?
 - [ ] Sokoban under Fractia: Six pieces is overkill, make it four.
+- [ ] `bloomful_rejoicement`: I don't like the lead voice. Maybe something pluckier?
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

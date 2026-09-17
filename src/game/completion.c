@@ -379,6 +379,7 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
     if (dstc<dsta) dstv[dstc]=(struct song_name_and_rid){strix,RID_song_##tag}; \
     dstc++; \
   }
+  if (dstc<dsta) dstv[dstc]=(struct song_name_and_rid){112,999}; dstc++; // "default"
   AVAILABLE(86,pretty_pretty_pickle)
   if (flowerc>=1) AVAILABLE(92,ladder_to_nowhere)
   if (flowerc>=2) AVAILABLE(87,barrel_of_salt)
@@ -387,6 +388,9 @@ int bm_get_available_songs(struct song_name_and_rid *dstv,int dsta) {
   if (flowerc>=5) AVAILABLE(88,feet_to_the_fire)
   if (flowerc>=6) AVAILABLE(93,crawling_chaos)
   if (flowerc>=7) AVAILABLE(91,smoke_and_mirrors)
+  if (store_get_fld(NS_fld_kidnapped)||store_get_fld(NS_fld_escaped)) AVAILABLE(113,bone_soup)
+  if (store_get_fld16(NS_fld16_statuemaze_seed)) AVAILABLE(114,minotaur) // fair proxy for having visited the temple
+  if (store_get_fld(NS_fld_icepalace_visited)) AVAILABLE(115,igloo)
   #undef AVAILABLE
   return dstc;
 }

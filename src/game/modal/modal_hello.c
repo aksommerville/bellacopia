@@ -165,6 +165,7 @@ static void hello_spawn_story_modal(struct modal *modal,int from_save) {
     bm_sound(RID_sound_reject);
     return;
   }
+  bm_song_poke();
 }
 
 static void hello_cb_intro(void *userdata) {

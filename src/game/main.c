@@ -100,7 +100,22 @@ void bm_song_force(int rid) {
 }
 
 void bm_song_gently(int rid) {
-  bm_song_force(rid);//TODO gentle song change
+  // Was thinking of a cross-fade or something but meh. This is good.
+  bm_song_force(rid);
+}
+
+void bm_song_poke() {
+  int phonograph=store_get_fld16(NS_fld16_phonograph);
+  if (phonograph) {
+    // Phonograph overrides all.
+    bm_song_gently(phonograph);
+  } else if (g.songid_requested) {
+    // Maps with explicit song.
+    bm_song_gently(g.songid_requested);
+  } else {
+    // Outerworld.
+    bm_song_gently(bm_song_for_outerworld());
+  }
 }
 
 void bm_sound_pan(int rid,double pan) {

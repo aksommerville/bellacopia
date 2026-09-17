@@ -408,7 +408,7 @@ void race_end() {
   race_restore_game_sprites();
   g.raceid=0;
   races.race=0;
-  bm_song_gently(bm_song_for_outerworld());
+  bm_song_poke();
   
   // If we have something to report, trigger it. Important to do this after restoring the sprites; it impacts camera.
   if (arg) {
@@ -448,7 +448,7 @@ void race_update(double elapsed) {
   if (races.countdown>0.0) {
     races.countdown-=elapsed;
     if (races.countdown<=0.0) {
-      bm_song_gently(RID_song_death_rattle);//TODO song for races
+      bm_song_gently(RID_song_death_rattle);
     }
   }
   if (races.cooldown>0.0) {

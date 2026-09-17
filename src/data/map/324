@@ -16,3 +16,4 @@ door @10,8 map:17 @9,2 0x0000
 position 2 5 7 0
 sprite @8,1 sprite:jigpiece (u32)0
 song song:igloo
+setfld (u16:fld)icepalace_visited

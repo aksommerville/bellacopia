@@ -52,12 +52,13 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
     // All Root Devils are in the outer world, and killing one changes the song.
     // Don't change for the one attached to the temple, since the pool area counts as inside, mostly.
     // Do clear the phonograph selection. User might have put on a record and now wouldn't realize she has a new song available.
+    int wasphonographed=store_get_fld16(NS_fld16_phonograph);
     store_set_fld16(NS_fld16_phonograph,0);
     if (store_get_fld(NS_fld_root_all)) {
       // Finale song begins during the battle outcome report.
       bm_song_force(RID_song_bloomful_rejoicement);
-    } else if (!g.song_override_outerworld) {
-      bm_song_gently(bm_song_for_outerworld());
+    } else if (!g.song_override_outerworld||wasphonographed) {
+      bm_song_poke();
     }
   } else if (outcome<0) {
     modal_battle_add_consequence(modal,NS_itemid_heart,-1);
@@ -65,12 +66,10 @@ static void rootdevil_cb_battle(struct modal *modal,int outcome,void *userdata) 
 }
 
 static void rootdevil_cb_post_credits(void *userdata) {
-  fprintf(stderr,"%s\n",__func__);
-  bm_song_gently(bm_song_for_outerworld());
+  bm_song_poke();
 }
 
 static void rootdevil_cb_post_cutscene(void *userdata) {
-  fprintf(stderr,"%s\n",__func__);
   struct modal_args_credits args={
     .cb=rootdevil_cb_post_credits,
   };

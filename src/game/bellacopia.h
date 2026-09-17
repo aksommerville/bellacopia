@@ -55,6 +55,7 @@ extern struct g {
   
   int song_playing;
   int song_override_outerworld; // When set, we won't engage the outerworld song. eg for the Temple's balcony and pool area.
+  int songid_requested; // Zero for outerworld, or the most recent song command from a map.
   struct sound_blackout {
     double when;
     int rid;
@@ -112,6 +113,7 @@ const uint8_t *tilesheet_get_jigctab(int rid); // never null
  */
 void bm_song_force(int rid); // If not playing now, cut the current one and start this.
 void bm_song_gently(int rid); // For maps, we'll eventually do a crossfade and maybe playhead capture.
+void bm_song_poke();
 void bm_sound_pan(int rid,double pan);
 static inline void bm_sound(int rid) { bm_sound_pan(rid,0.0); }
 
