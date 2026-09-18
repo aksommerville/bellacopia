@@ -370,10 +370,16 @@ static void _minesweeper_update(struct sprite *sprite,double elapsed) {
   }
 }
 
-/* Dummy render, just to ensure nobody tries to render us.
+/* Mostly we don't render anything, map does the work.
+ * But we will show a "Lose" word bubble, hopefully lining up with the reset bot, when appropriate.
  */
  
 static void _minesweeper_render(struct sprite *sprite,int x,int y) {
+  if (SPRITE->invalid) {
+    graf_set_image(&g.graf,RID_image_cave_sprites);
+    graf_tile(&g.graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*1,0x3c,0);
+    graf_tile(&g.graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*1,0x3d,0);
+  }
 }
 
 /* Type definition.

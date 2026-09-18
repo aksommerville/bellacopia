@@ -35,7 +35,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] !!! Started a race and the racer sprite spawned overlapping a monster, we both got stuck. I thought we were preventing that!
+- [x] !!! Started a race and the racer sprite spawned overlapping a monster, we both got stuck. I thought we were preventing that!
+- - Was only possible in the Old Mine, because Moon Song was far-ish from the start point. Sprites vanish based on proximity to the hero, not to the start point.
+- - Moved Moon, and this shouldn't be possible anymore.
 - [x] I broke background music in the last phonograph change -- Minotaur doesn't play anymore. But Bone Soup does. The hell? ...no change due to `song_override_outerworld`, even when innerworld, durp.
 - [x] Music broke after continue due to dead.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -61,7 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We could spawn monsters periodically that enter from behind you.
 - [ ] `bloomful_rejoicement`: I don't like the lead voice. Maybe something pluckier?
 - [x] After telling the carpenter's story, the tree should react like "ooh what a spooky horror story!"
-- [ ] Minesweep should clearly indicate after you've lost.
+- [x] Minesweep should clearly indicate after you've lost.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
