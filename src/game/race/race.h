@@ -34,7 +34,12 @@ struct race_status {
 };
 void race_get_status(struct race_status *status);
 
-void race_render_overlay();
+/* (with_stats) to show lap and times.
+ * race_render_overlay() expects only to be used against the main framebuffer.
+ * race_render_suboverlay() is called for each racer, against their scratch framebuffer.
+ */
+void race_render_overlay(int with_stats);
 void race_render_checkpoints(int scrollx,int scrolly,struct sprite *racer);
+void race_render_suboverlay(int w,int h,struct sprite *racer);
 
 #endif

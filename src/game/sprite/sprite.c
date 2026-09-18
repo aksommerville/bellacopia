@@ -146,6 +146,7 @@ struct sprite *sprite_new(
     (1<<NS_physics_hole)|
     (1<<NS_physics_vanishable)|
   0);
+  sprite->isfocus=1;
   
   if (sprite_group_add(GRP(keepalive),sprite)<0) {
     sprite_del(sprite);

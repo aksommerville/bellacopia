@@ -257,7 +257,7 @@ static void story_render_overlay(struct modal *modal) {
 static void _story_render(struct modal *modal) {
   camera_render();
   if (g.raceid) {
-    race_render_overlay();
+    race_render_overlay(1);
   } else {
     story_render_overlay(modal);
   }

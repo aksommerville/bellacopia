@@ -23,6 +23,15 @@ struct multicamera_view {
   /* Should contain one sprite, and we'll focus on it.
    */
   struct sprite_group group;
+  
+  /* Yours to set.
+   * (cb_pre_sprites) is called between the map and the sprites.
+   * (cb_post) after the view is finished.
+   * In both cases, (g.graf)'s output is armed, and you should treat its size as (dstw,dsth).
+   */
+  void (*cb_pre_sprites)(struct multicamera_view *view);
+  void (*cb_post)(struct multicamera_view *view);
+  void *userdata;
 };
 
 void multicamera_quit();

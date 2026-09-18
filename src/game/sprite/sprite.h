@@ -31,6 +31,7 @@ struct sprite {
   int rid;
   const uint8_t *cmd,*arg; // (cmd) is the entire resource or null. (arg) is at least 4 bytes always.
   int cmdc,argc;
+  int isfocus; // True by default. multicamera sets false for all sprites except the one driving the view.
 };
 
 /* Try not to use del/new/ref, they should only be used internally.

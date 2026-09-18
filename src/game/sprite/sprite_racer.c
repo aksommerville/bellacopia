@@ -451,7 +451,7 @@ static void _racer_render(struct sprite *sprite,int x,int y) {
   
   /* For humans, an indicator pointing to the next checkpoint.
    */
-  if (SPRITE->human&&!SPRITE->finished) {
+  if (SPRITE->human&&!SPRITE->finished&&sprite->isfocus) {
     double dx=SPRITE->cpx-sprite->x;
     double dy=SPRITE->cpy-sprite->y;
     double d2=dx*dx+dy*dy;

@@ -1,5 +1,4 @@
 #include "game/bellacopia.h"
-#include "game/race/race.h"
 #include "multicamera.h"
 
 /* Private globals.
@@ -279,6 +278,7 @@ static void multicamera_render_sprites(struct multicamera_view *view) {
     int dstx=(int)(sprite->x*NS_sys_tilesize)-view->x;
     int dsty=(int)(sprite->y*NS_sys_tilesize)-view->y;
     if (sprite->type->render) {
+      sprite->isfocus=sprite_group_has(&view->group,sprite);
       sprite->type->render(sprite,dstx,dsty);
     } else {
       graf_set_image(&g.graf,sprite->imageid);
@@ -293,10 +293,13 @@ static void multicamera_render_sprites(struct multicamera_view *view) {
 static void multicamera_view_render(struct multicamera_view *view) {
   graf_set_output(&g.graf,multicamera.texid);
   multicamera_render_maps(view);
-  struct sprite *racer=0;
-  if (view->group.sprc>=1) racer=view->group.sprv[0];
-  race_render_checkpoints(view->x,view->y,racer); // TODO conditionalize, if multicamera is ever used outside broom races.
+  if (view->cb_pre_sprites) {
+    view->cb_pre_sprites(view);
+  }
   multicamera_render_sprites(view);
+  if (view->cb_post) {
+    view->cb_post(view);
+  }
   graf_set_output(&g.graf,1);
   graf_set_input(&g.graf,multicamera.texid);
   graf_decal(&g.graf,view->dstx,view->dsty,0,0,view->dstw,view->dsth);

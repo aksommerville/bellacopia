@@ -16,6 +16,9 @@ struct modal_broomrace {
 
 #define MODAL ((struct modal_broomrace*)modal)
 
+void render_pre_sprites(struct multicamera_view *view);
+void render_post(struct multicamera_view *view);
+
 /* Cleanup.
  */
  
@@ -69,6 +72,15 @@ static int _broomrace_init(struct modal *modal,const void *args,int argslen) {
   if ((mapid=race_get_start_position(&x,&y,MODAL->raceid))<1) return -1;
   if (race_begin(MODAL->raceid,MODAL->playerc)<0) return -1;
   if (multicamera_init(MODAL->playerc,broomrace_cb_expose,modal)<0) return -1;
+  struct multicamera_view *view;
+  if (view=multicamera_get_view(0)) {
+    view->cb_pre_sprites=render_pre_sprites;
+    view->cb_post=render_post;
+  }
+  if (view=multicamera_get_view(1)) {
+    view->cb_pre_sprites=render_pre_sprites;
+    view->cb_post=render_post;
+  }
   multicamera_update(0.0); // Ensure we have sensible camera positions even if the first update gets skipped.
   
   if (MODAL->playerc==2) {
@@ -102,12 +114,31 @@ static void _broomrace_update(struct modal *modal,double elapsed) {
   multicamera_update(elapsed);
 }
 
+/* Render, between map and sprites.
+ * Target indicators go here.
+ */
+ 
+void render_pre_sprites(struct multicamera_view *view) {
+  struct sprite *racer=0;
+  if (view->group.sprc>=1) racer=view->group.sprv[0];
+  race_render_checkpoints(view->x,view->y,racer);
+}
+
+/* Render, in sub-view, after the maps and sprites are done.
+ */
+ 
+void render_post(struct multicamera_view *view) {
+  struct sprite *racer=0;
+  if (view->group.sprc>=1) racer=view->group.sprv[0];
+  race_render_suboverlay(view->dstw,view->dsth,racer);
+}
+
 /* Render.
  */
  
 static void _broomrace_render(struct modal *modal) {
   multicamera_render();
-  race_render_overlay();
+  race_render_overlay(0);
 }
 
 /* Type definition.

@@ -348,6 +348,7 @@ int race_begin(int raceid,int playerc) {
   race_hide_game_sprites();
   races.race=race; // Must set before spawning sprites.
   g.raceid=raceid;
+  g.race_playerc=playerc;
   if (race_spawn_sprites(race,playerc)<0) {
     races.race=0;
     g.raceid=0;
@@ -598,12 +599,13 @@ static void story_render_time(int x,int y,double f) {
  * (the thing that distinguishes responsibility here is that we only draw unscrolled things, and camera scrolled).
  */
  
-void race_render_overlay() {
+void race_render_overlay(int with_stats) {
   
   /* Initial countdown.
    */
   double s=race_get_countdown();
   if (s>0.0) {
+    graf_fill_rect(&g.graf,(FBW>>1)-4,(FBH>>1)-5,8,9,0x000000ff);
     int ms=(int)(s*1000.0);
     if (ms<0) ms=0;
     int si=ms/1000+1;
@@ -616,7 +618,7 @@ void race_render_overlay() {
     
   /* Stats.
    */
-  } else {
+  } else if (with_stats) {
     graf_set_image(&g.graf,RID_image_fonttiles);
     struct race_status status={0};
     race_get_status(&status);
@@ -631,6 +633,29 @@ void race_render_overlay() {
       graf_tile(&g.graf,22,6,'0'+status.lapc,0);
       story_render_time(FBW-6,6,status.racetime);
     }
+  }
+}
+
+/* Render one racer's overlay in multiplayer mode.
+ * Doesn't get called in story mode; race_render_overlay() takes care of it all there.
+ */
+
+void race_render_suboverlay(int w,int h,struct sprite *racer) {
+  if (!racer) return;
+  if (!races.race) return;
+  double racetime=sprite_racer_get_race_time(racer);
+  if (sprite_racer_is_finished(racer)) {
+    graf_fill_rect(&g.graf,0,0,w,h,0x00000080);
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    story_render_time((w>>1)+36-4,(h>>1),racetime);
+  } else {
+    graf_set_image(&g.graf,RID_image_fonttiles);
+    int lapp=sprite_racer_get_lapp(racer);
+    int lapc=races.race->lapc;
+    graf_tile(&g.graf, 6,6,'0'+lapp,0);
+    graf_tile(&g.graf,14,6,'/',0);
+    graf_tile(&g.graf,22,6,'0'+lapc,0);
+    story_render_time(w-6,6,racetime);
   }
 }
 
