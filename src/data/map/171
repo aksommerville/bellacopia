@@ -13,6 +13,5 @@
 
 image image:temple_int
 door @10,10 map:43 @1,9 (u16:activity)unoverride_outerworld_song
-parent map:43
 position 2 3 5 0
 song song:minotaur

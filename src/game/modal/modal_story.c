@@ -73,6 +73,7 @@ static int _story_init(struct modal *modal,const void *arg,int argc) {
     use_save=ARG->use_save;
   }
   if (game_reset(use_save)<0) return -1;
+  bm_song_poke(); // Necessary if we are starting a second time after dying. Harmless in all other cases.
   
   if ((MODAL->map_listener=camera_listen_map(story_cb_map_exposure,modal))<0) return -1;
   if ((MODAL->cell_listener=camera_listen_cell(story_cb_cell_exposure,modal))<0) return -1;

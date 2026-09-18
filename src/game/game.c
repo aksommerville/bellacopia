@@ -240,16 +240,17 @@ int game_focus_map(struct map *map) {
   }
   
   int pvsong=g.songid_requested;
+  int outerworld=map_is_outerworld(map);
   if (g.raceid) {
     // Don't change song during a race.
   } else if (g.telescoping) {
     // Don't change song while telescoping.
-  } else if (g.song_override_outerworld) {
+  } else if (g.song_override_outerworld&&outerworld) {
     // Wait for song_override_outerworld to go false before changing song.
   } else if (map->songid) {
     // Explicit song for map.
     g.songid_requested=map->songid;
-  } else if (map_is_outerworld(map)) {
+  } else if (outerworld) {
     // Outerworld, ie plane 1, are explicitly zero.
     g.songid_requested=0;
   }

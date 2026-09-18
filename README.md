@@ -35,7 +35,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] I broke background music in the last phonograph change -- Minotaur doesn't play anymore.
+- [x] I broke background music in the last phonograph change -- Minotaur doesn't play anymore. But Bone Soup does. The hell? ...no change due to `song_override_outerworld`, even when innerworld, durp.
+- [x] Music broke after continue due to dead.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
