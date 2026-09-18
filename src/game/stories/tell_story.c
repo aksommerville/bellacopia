@@ -38,7 +38,10 @@ static void cb_story_reject(void *userdata) {
 }
 
 static void cb_story_accept(void *userdata) {
-  modal_dialogue_simple(RID_strings_dialogue,92);
+  const struct story *story=userdata;
+  int strix=92; // "Thanks for telling me a story".
+  if (story&&(story->fld_present==NS_fld_carpenter_book)) strix=191;
+  modal_dialogue_simple(RID_strings_dialogue,strix);
 }
 
 void game_tell_story(const struct story *story) {
@@ -73,7 +76,7 @@ void game_tell_story(const struct story *story) {
     .strix_title=story->strix_title,
     .context=context,
     .cb=0,
-    .userdata=0,
+    .userdata=(void*)story,
   };
   if (postaction<0) args.cb=cb_story_reject;
   else if (postaction>0) args.cb=cb_story_accept;
