@@ -329,10 +329,18 @@ static int race_spawn_sprites(struct race *race,int playerc) {
   racerargs[6]=race->startdir;
   racerargs[7]=0;
   struct sprite *dot=sprite_spawn(dotx,doty,0,racerargs,4,&sprite_type_racer,0,0);
-  struct sprite *moon=sprite_spawn(moonx,moony,0,racerargs+4,4,&sprite_type_racer,0,0);
+  struct sprite *moon=sprite_spawn(moonx,moony,0,racerargs+4,4,&sprite_type_racer,0,0); // moon or princess
   if (!dot||!moon) return -1;
   dot->z=race->plane;
   moon->z=race->plane;
+  if (playerc==2) {
+    sprite_racer_set_pan(dot,-PLAYER_PAN);
+    sprite_racer_set_pan(moon,PLAYER_PAN);
+    sprite_racer_set_chid(dot,1);
+    sprite_racer_set_chid(moon,2);
+  } else { // One-player race, both arcade and outerworld, Dot whooshes on both channels and Moon is silent.
+    sprite_racer_set_chid(dot,0);
+  }
   return 0;
 }
 
@@ -358,6 +366,7 @@ int race_begin(int raceid,int playerc) {
   races.countdown=2.999;
   races.cooldown=0.0;
   bm_song_gently(0);
+  egg_play_song(3,RID_song_whoosh,1,0.200,0.0);
   return 0;
 }
 
@@ -365,6 +374,7 @@ int race_begin(int raceid,int playerc) {
  */
 
 void race_end() {
+  egg_play_song(3,0,0,0.0,0.0);
 
   /* If there's a broomrace modal on the stack, report the outcome to it, wrap up globals, and skip most of the rest.
    * TODO We probably still want to record times. But not completion flags.

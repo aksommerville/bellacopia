@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 BEFORE GDEX:
-- [ ] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
+- [x] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
 - [x] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
 - [x] Also: Don't show the other guy's guidance broom on my screen.
 - [x] Some moving or at least animated things where you get the stopwatch, so you can see it work.

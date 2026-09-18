@@ -129,6 +129,8 @@ int sprite_racer_is_human(const struct sprite *sprite); // => input index (nonze
 double sprite_racer_get_lap_time(const struct sprite *sprite);
 double sprite_racer_get_race_time(const struct sprite *sprite);
 int sprite_racer_get_lapp(const struct sprite *sprite);
+void sprite_racer_set_pan(struct sprite *sprite,double pan); // -PLAYER_PAN,0,PLAYER_PAN
+void sprite_racer_set_chid(struct sprite *sprite,int chid); // -1,0,1,2 = none(default),center,left,right
 
 void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl);
 

@@ -3,11 +3,17 @@
 
 #define CHECKPOINT_RADIUS2 4.0
 #define SAMPLE_PERIOD 0.250
+#define NOTE_TTL 10.000 /* Egg notes have a built-in time limit. */
 
 struct sprite_racer {
   struct sprite hdr;
   int human,face;
   int srcy;
+  double pan; // Default 0. Owner may set to PLAYER_PAN or -PLAYER_PAN if they're doing split-screen.
+  int chid; // Channel for my whoosh sound, on song 3. <0 for no whoosh.
+  int noteid; // Running note, zero if none.
+  int wheel; // -8192..0..8191
+  double note_ttl;
   
   // The man or CPU controller sets these and nothing else.
   int steer; // -1,0,1 = deasil,neutral,clockwise
@@ -51,12 +57,12 @@ struct sprite_racer {
  */
  
 static int _racer_init(struct sprite *sprite) {
+  SPRITE->chid=-1;
   SPRITE->human=sprite->arg[0];
   SPRITE->face=sprite->arg[1];
   uint8_t orient=sprite->arg[2];
   if ((SPRITE->human<0)||(SPRITE->human>2)) return -1;
-  // We allow Princess and the Green Witch, tho I don't plan to use these in outer-world races.
-  // Likewise, it wouldn't take much from here to support multiplayer, if we ever want that.
+  // NS_face_monster for the green witch, tho we're not actually using her.
   switch (SPRITE->face) {
     case NS_face_dot: SPRITE->srcy=0; break;
     case NS_face_moonsong: SPRITE->srcy=64; break;
@@ -283,11 +289,46 @@ static void racer_update_cpu(struct sprite *sprite,double elapsed) {
   else SPRITE->accel=0;
 }
 
+/* Update whoosh.
+ */
+ 
+static void racer_whoosh_target(struct sprite *sprite,int wheel,double elapsed) {
+  if (wheel<1) { // End the note.
+    if (SPRITE->noteid>0) {
+      egg_song_event_note_off(3,SPRITE->chid,SPRITE->noteid);
+      SPRITE->noteid=0;
+    }
+    SPRITE->wheel=0;
+  } else { // Begin note and adjust wheel.
+    if (wheel>8191) wheel=8191;
+    if (wheel!=SPRITE->wheel) {
+      egg_song_event_wheel(3,SPRITE->chid,SPRITE->wheel=wheel);
+    }
+    if (!SPRITE->noteid) {
+      egg_song_event_note_on(3,SPRITE->chid,SPRITE->noteid=0x40,0x40);
+      SPRITE->note_ttl=NOTE_TTL;
+    } else if ((SPRITE->note_ttl-=elapsed)<=0.0) {
+      egg_song_event_note_off(3,SPRITE->chid,SPRITE->noteid);
+      egg_song_event_note_on(3,SPRITE->chid,SPRITE->noteid,0x40);
+      SPRITE->note_ttl=NOTE_TTL;
+    }
+  }
+}
+
 /* Update.
  */
  
 static void _racer_update(struct sprite *sprite,double elapsed) {
   SPRITE->frame=0;
+  
+  /* Update my whoosh sound if applicable.
+   */
+  if (SPRITE->chid>=0) {
+    double vel=sqrt(SPRITE->dx*SPRITE->dx+SPRITE->dy*SPRITE->dy);
+         if (vel>=20.000) racer_whoosh_target(sprite,8000,elapsed);
+    else if (vel>= 1.000) racer_whoosh_target(sprite,(int)(((vel-1.0)*8000.0)/19.0),elapsed);
+    else racer_whoosh_target(sprite,0,elapsed);
+  }
 
   /* If finished, we do let normal physics wind down.
    * But the controllers no longer get to play.
@@ -356,16 +397,28 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
   /* Move per inertia.
    * When motion on one axis is blocked, flip and reduce it.
    * Our collisions are one-dimensional axis-aligned rectangles, not the circles you'd expect.
+   * Collisions with velocity below 1 happen often, sometimes when there actually is no collision.
+   * A full head-on collision approaches 18.
    */
   if (motion) {
     //fprintf(stderr,"d=%+f,%+f m/s\n",SPRITE->dx,SPRITE->dy);
     const double bounce=-0.500;
+    double dx0=SPRITE->dx;
+    double dy0=SPRITE->dy;
+    double x0=sprite->x;
+    double y0=sprite->y;
+    double sfxmag=0.0; // The more significant per-axis velocity, if collided.
     if (!sprite_move(sprite,SPRITE->dx*elapsed,0.0)) {
       SPRITE->dx*=bounce;
+      double mag=(dx0<0.0)?-dx0:dx0;
+      if (mag>sfxmag) sfxmag=mag;
     }
     if (!sprite_move(sprite,0.0,SPRITE->dy*elapsed)) {
       SPRITE->dy*=bounce;
+      double mag=(dy0<0.0)?-dy0:dy0;
+      if (mag>sfxmag) sfxmag=mag;
     }
+    if (SPRITE->human&&(sfxmag>=1.000)) bm_sound_pan(RID_sound_bump,SPRITE->pan);
   }
   
   /* Decide whether the shadow should be near or far.
@@ -422,7 +475,7 @@ static void _racer_update(struct sprite *sprite,double elapsed) {
         SPRITE->lapp++;
         SPRITE->laptime=0.0;
       }
-      if (SPRITE->human) bm_sound(RID_sound_collect);
+      if (SPRITE->human) bm_sound_pan(RID_sound_collect,SPRITE->pan);
       if (++(SPRITE->checkpointp)>=SPRITE->checkpointc) {
         SPRITE->checkpointp=0;
       }
@@ -514,4 +567,14 @@ int sprite_racer_get_lapp(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_racer)) return 0;
   if (SPRITE->finished) return SPRITE->lapc+1;
   return SPRITE->lapp;
+}
+
+void sprite_racer_set_pan(struct sprite *sprite,double pan) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return;
+  SPRITE->pan=pan;
+}
+
+void sprite_racer_set_chid(struct sprite *sprite,int chid) {
+  if (!sprite||(sprite->type!=&sprite_type_racer)) return;
+  SPRITE->chid=chid;
 }
