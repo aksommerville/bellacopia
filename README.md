@@ -35,11 +35,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] !!! Started a race and the racer sprite spawned overlapping a monster, we both got stuck. I thought we were preventing that!
-- - Was only possible in the Old Mine, because Moon Song was far-ish from the start point. Sprites vanish based on proximity to the hero, not to the start point.
-- - Moved Moon, and this shouldn't be possible anymore.
-- [x] I broke background music in the last phonograph change -- Minotaur doesn't play anymore. But Bone Soup does. The hell? ...no change due to `song_override_outerworld`, even when innerworld, durp.
-- [x] Music broke after continue due to dead.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -50,8 +45,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
-- [x] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
-- - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
@@ -61,9 +54,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 - [ ] Princess walks are kind of boring. Can we spice them up somehow?
 - - We could spawn monsters periodically that enter from behind you.
-- [ ] `bloomful_rejoicement`: I don't like the lead voice. Maybe something pluckier?
-- [x] After telling the carpenter's story, the tree should react like "ooh what a spooky horror story!"
-- [x] Minesweep should clearly indicate after you've lost.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
