@@ -35,13 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-BEFORE GDEX:
-- [x] Broom Race: Needs a bump sound when you crash. And can we do whooshing wind depending on velocity?
-- [x] Revise `race.c:race_render_overlay()` re multiplayer. Show both players' lap and time, and don't print it in the middle at the end.
-- [x] Also: Don't show the other guy's guidance broom on my screen.
-- [x] Some moving or at least animated things where you get the stopwatch, so you can see it work.
-- [x] Sokoban under Fractia: Six pieces is overkill, make it four.
-
+- [ ] I broke background music in the last phonograph change -- Minotaur doesn't play anymore.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -52,7 +46,7 @@ BEFORE GDEX:
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Poker at the casino. UI in place and activity ready to write.
 - [ ] Blackjack at the casino. UI in place and activity ready to write.
-- [ ] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
+- [x] Broom Races story: I really dislike the picture for the second (?) frame: "Some witches race on their brooms".
 - - While you're in there: We can add Grandpa's Puzzle to the Purse Upgrades story now.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
