@@ -52,8 +52,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
-- [ ] Princess walks are kind of boring. Can we spice them up somehow?
+- [x] Princess walks are kind of boring. Can we spice them up somehow?
 - - We could spawn monsters periodically that enter from behind you.
+- - [x] Basically working so far, but I think the monsters need to be made more aggressive.
+- - [x] Also need a bit more limit on the spawning, say only spawn if there's below some count of monsters globally?
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -138,6 +140,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - TODO Punted items, assess closer to release.
 - [ ] Finalize zoo and rsprite assignment, once all battles are written.
+- [ ] ^ also the kidnappers at `sprite_princess.c:princess_spawn_kidnapper()`
 - [ ] It might be a problem that we use aggregate input state in the outer world but `[1]` in one-player battles. Maybe mitigate that somehow during a one-player battle?
 - [ ] Princess battles are currently random, neutral bias, and consequence-free. We could make it more interesting if we want.
 - [ ] What if we kept a huge set of per-battle high scores? Maybe accessible via the zoos?

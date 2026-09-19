@@ -1,8 +1,15 @@
+/* sprite_princess.c
+ * We're the imprisoned Princess, basically an NPC, and also the live one that follows you around.
+ * The Princess at home is a regular sprite_type_npc. (and in hindsight, the one in prison should have been too).
+ * We are in play both for the escape-from-the-goblins quest and the optional side quests.
+ */
+
 #include "game/bellacopia.h"
 
 #define WHACK_TIME       0.500
 #define WHACK_SPEED_MAX 10.000
 #define WHACK_SPEED_MIN  1.000
+#define KIDNAPPER_POLL_TIME 2.000
 
 struct sprite_princess {
   struct sprite hdr;
@@ -16,6 +23,7 @@ struct sprite_princess {
   int fldid; // Zero for the rescue sequence, otherwise walk1..walk5.
   int finished; // If (fldid), nonzero after we reach the goal.
   int target_near; // Nonzero if we're pointing to the final destination.
+  double kidnap_ttl; // Counts down to the next possible kidnapper spawn.
   
   // Forced motion, tapers down over time. For getting whacked by the stick.
   double whackdx,whackdy;
@@ -38,13 +46,14 @@ static int _princess_init(struct sprite *sprite) {
   SPRITE->targetz=-1;
   SPRITE->fldid=(sprite->arg[1]<<8)|sprite->arg[2];
   SPRITE->finished=sprite->arg[3];
+  SPRITE->kidnap_ttl=KIDNAPPER_POLL_TIME;
   
-  /* If I'm in the well, don't spawn.
+  /* If I'm in the well, don't spawn. Shouldn't be possible.
    */
   if (store_get_fld(NS_fld_princess_in_well)) return -1;
 
   /* Already rescued? I will never exist anymore.
-   * Unless I'm seq-zero, the Princess at home.
+   * Unless I'm seq-zero, for the post-rescue side quests.
    */
   int seq=(sprite->argc>=4)?sprite->arg[0]:0;
   if (seq&&store_get_fld(NS_fld_rescued_princess)) return -1;
@@ -162,6 +171,128 @@ static void princess_check_missed_triggers(struct sprite *sprite) {
   }
 }
 
+/* If this cell looks kosher, spawn a kidnapper here and return it.
+ */
+ 
+static struct sprite *princess_spawn_kidnapper(struct sprite *sprite,const struct plane *plane,int x,int y) {
+  if ((x<0)||(y<0)||(x>=plane->w*NS_sys_mapw)||(y>=plane->h*NS_sys_maph)) return 0;
+  const struct map *map=plane->v+(y/NS_sys_maph)*plane->w+(x/NS_sys_mapw);
+  int subx=x-map->lng*NS_sys_mapw;
+  int suby=y-map->lat*NS_sys_maph;
+  if ((subx<0)||(suby<0)||(subx>=NS_sys_mapw)||(suby>=NS_sys_maph)) return 0; // just because i don't trust myself
+  switch (map->physics[map->v[suby*NS_sys_mapw+subx]]) {
+    case NS_physics_vacant:
+      break;
+    default: return 0;
+  }
+  double xlo=x-0.5,xhi=x+1.5;
+  double ylo=y-0.5,yhi=y+1.5;
+  struct sprite **otherp=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->x<xlo) continue;
+    if (other->y>xhi) continue;
+    if (other->y<ylo) continue;
+    if (other->y>yhi) continue;
+    return 0;
+  }
+  int candidatev[]={ // Monster sprites I haven't placed yet. TODO Decide who actually belongs here. Maybe a specific "kidnapper" monster?
+    RID_sprite_bull,
+    RID_sprite_mouse,
+    RID_sprite_owl,
+    RID_sprite_geographer,
+    RID_sprite_elf,
+    RID_sprite_fishycist,
+  };
+  int candidatec=sizeof(candidatev)/sizeof(int);
+  int rid=candidatev[rand()%candidatec];
+  return sprite_spawn(x+0.5,y+0.5,rid,0,0,0,0,0);
+}
+
+/* Poll for possible creation of a kidnapper.
+ * Only relevant to the post-rescue side quests, and only on the way out.
+ */
+ 
+static void princess_update_kidnappers(struct sprite *sprite,double elapsed) {
+
+  // Long delay between spawn opportunities.
+  if ((SPRITE->kidnap_ttl-=elapsed)>0.0) return;
+  SPRITE->kidnap_ttl+=KIDNAPPER_POLL_TIME;
+  
+  /* Only spawn when we're in the outerworld.
+   * We specifically do not want to spawn kidnappers in singletons or the Temple. Other places, meh?
+   * You are of course free to take the Princess downstairs, but there's never a need.
+   */
+  const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (!map||(map->z!=NS_plane_outerworld)) return;
+  const struct plane *plane=plane_by_position(map->z);
+  if (!plane) return;
+  
+  /* If there's too many monsters already, don't make a new one.
+   */
+  int monsterc=0;
+  struct sprite **otherp=GRP(solid)->sprv;
+  int i=GRP(solid)->sprc;
+  for (;i-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->type!=&sprite_type_monster) continue;
+    monsterc++;
+    if (monsterc>=5) {
+      return;
+    }
+  }
+  
+  /* Candidate cells are those just offscreen, along the edge with the greatest distance from Dot to Princess.
+   * The idea is she's following you and they come up from behind.
+   */
+  if (GRP(hero)->sprc<1) return;
+  struct sprite *hero=GRP(hero)->sprv[0];
+  if (hero->z!=sprite->z) return; // I think not possible? Maybe? Well, if it happens, skip this cycle.
+  double dx=sprite->x-hero->x;
+  double dy=sprite->y-hero->y;
+  double adx=(dx<0.0)?-dx:dx;
+  double ady=(dy<0.0)?-dy:dy;
+  // Candidate box. Single column or row.
+  int cx=g.camera.rx/NS_sys_tilesize;
+  int cy=g.camera.ry/NS_sys_tilesize;
+  int cw=NS_sys_mapw;
+  int ch=NS_sys_maph;
+  if (adx>=ady) {
+    if (dx<0.0) { // Left.
+      cx--;
+      cw=1;
+    } else { // Right.
+      cx=(g.camera.rx+FBW+NS_sys_tilesize)/NS_sys_tilesize;
+      cw=1;
+    }
+  } else {
+    if (dy<0.0) { // Top.
+      cy--;
+      ch=1;
+    } else { // Bottom.
+      cy=(g.camera.ry+FBH+NS_sys_tilesize)/NS_sys_tilesize;
+      ch=1;
+    }
+  }
+  
+  /* Test the whole candidate box, from middle outward.
+   */
+  int xmid=cx+(cw>>1);
+  int ymid=cy+(ch>>1);
+  int xi=cw; while (xi-->0) {
+    int qx=xmid+((xi&1)?(xi>>1):-(xi>>1));
+    int yi=ch; while (yi-->0) {
+      int qy=ymid+((yi&1)?(yi>>1):-(yi>>1));
+      struct sprite *kidnapper=princess_spawn_kidnapper(sprite,plane,qx,qy);
+      if (kidnapper) {
+        sprite_monster_extra_hungry_for_princess(kidnapper);
+        return;
+      }
+    }
+  }
+}
+
 /* Update.
  */
  
@@ -206,6 +337,7 @@ static void _princess_update(struct sprite *sprite,double elapsed) {
   
   // Check completion of walks.
   if (SPRITE->fldid) {
+    princess_update_kidnappers(sprite,elapsed);
     if (SPRITE->finished) {
       // sprite_npc takes care of this case.
     } else if (SPRITE->target_near) {

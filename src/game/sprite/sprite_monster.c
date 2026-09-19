@@ -36,6 +36,7 @@ struct sprite_monster {
   int spent;
   int name_strix; // RID_strings_battle
   int hurt;
+  int extra_hungry_for_princess;
 };
 
 #define SPRITE ((struct sprite_monster*)sprite)
@@ -404,6 +405,7 @@ static struct sprite *monster_find_target(struct sprite *sprite) {
       double d2=dx*dx+dy*dy;
       double r2=SPRITE->radius2;
       if ((other->type==&sprite_type_hero)&&(g.jingleclock>0.0)) r2=SPRITE->bell_radius2; // Much wider radius to the hero after ringing bell.
+      if ((other->type==&sprite_type_princess)&&SPRITE->extra_hungry_for_princess) r2=SPRITE->bell_radius2; // Same deal for kidnappers.
       if (d2>r2) continue; // Too far away.
       if (!best) {
         best=other;
@@ -680,4 +682,9 @@ void sprite_monster_shock(struct sprite *sprite,double x,double y) {
 int sprite_monster_is_spent(const struct sprite *sprite) {
   if (!sprite||(sprite->type!=&sprite_type_monster)) return 0;
   return SPRITE->spent;
+}
+
+void sprite_monster_extra_hungry_for_princess(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_monster)) return;
+  SPRITE->extra_hungry_for_princess=1;
 }

@@ -117,6 +117,7 @@ int sprite_ticker_get_fld(const struct sprite *sprite);
 
 void sprite_monster_shock(struct sprite *sprite,double x,double y); // For whacking with a stick.
 int sprite_monster_is_spent(const struct sprite *sprite); // Nonzero if this is a monster, and has already triggered its battle.
+void sprite_monster_extra_hungry_for_princess(struct sprite *sprite); // Tell this monster to use a much wider radius for the princess. For kidnappers.
 
 int sprite_npc_get_activity(const struct sprite *sprite);
 
