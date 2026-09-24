@@ -2,7 +2,7 @@
  * Press and release A once against a sliding indicator.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SKILL_RANGE 0.200 /* A CPU player with zero skill will be off by exactly this much, before clamping. */
 #define ANIMATE_TIME 2.000
@@ -127,12 +127,12 @@ static void player_update_man(struct battle *battle,struct player *player,double
   }
   if (player->pressp<0.0) {
     if (input&EGG_BTN_SOUTH) {
-      bm_sound(RID_sound_uimotion);
+      bm_sound_pan(RID_sound_uimotion,0.0);
       player->pressp=BATTLE->finger;
     }
   } else if (player->releasep<0.0) {
     if (!(input&EGG_BTN_SOUTH)) {
-      bm_sound(RID_sound_uiactivate);
+      bm_sound_pan(RID_sound_uiactivate,0.0);
       player->releasep=BATTLE->finger;
     }
   }
@@ -234,7 +234,7 @@ static void throwing_update_play(struct battle *battle,double elapsed) {
   // Update players.
   struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -321,10 +321,10 @@ static void player_render(struct battle *battle,struct player *player,int x,int 
       else tileid+=3;
     }
     if (tileid==player->tileid+2) {
-      if (g.framec&8) py--;
+      if (g_framec&8) py--;
     }
   }
-  graf_tile(&g.graf,x,py,tileid,xform);
+  graf_tile(g_graf,x,py,tileid,xform);
   
   int ballx=x;
   if (xform) ballx-=11; else ballx+=11;
@@ -346,7 +346,7 @@ static void player_render(struct battle *battle,struct player *player,int x,int 
       bally=y+5;
     }
   }
-  graf_tile(&g.graf,ballx,bally,player->tileid+4,0);
+  graf_tile(g_graf,ballx,bally,player->tileid+4,0);
 }
 
 /* Render.
@@ -354,15 +354,15 @@ static void player_render(struct battle *battle,struct player *player,int x,int 
  
 static void _throwing_render(struct battle *battle) {
   const int groundy=130;
-  graf_fill_rect(&g.graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
   
   int barw=(FBW*2)/3;
   int barh=20;
   int barx=(FBW>>1)-(barw>>1);
   int bary=40;
-  graf_fill_rect(&g.graf,barx,bary,barw,barh,0xffffffff);
+  graf_fill_rect(g_graf,barx,bary,barw,barh,0xffffffff);
   
   struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
@@ -374,35 +374,35 @@ static void _throwing_render(struct battle *battle) {
         ax=zx;
         zx=tmp;
       }
-      graf_fill_rect(&g.graf,ax,bary+(barh*(player->who+1))/3,zx-ax,1,player->bar_color);
+      graf_fill_rect(g_graf,ax,bary+(barh*(player->who+1))/3,zx-ax,1,player->bar_color);
     }
   }
   
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   if (BATTLE->stage==STAGE_PLAY) {
     int fingerx=(int)(BATTLE->finger*barw);
     if (fingerx<0) fingerx=0;
     else if (fingerx>=barw) fingerx=barw-1;
     fingerx+=barx;
-    graf_tile(&g.graf,fingerx,bary+barh,0x65,0);
+    graf_tile(g_graf,fingerx,bary+barh,0x65,0);
   }
   int ltargetx=barx+(int)(BATTLE->ltarget*barw);
   int rtargetx=barx+(int)(BATTLE->rtarget*barw);
-  graf_tile(&g.graf,ltargetx,bary-(NS_sys_tilesize>>1),0x69,0);
-  graf_tile(&g.graf,rtargetx,bary-(NS_sys_tilesize>>1),0x69,0);
+  graf_tile(g_graf,ltargetx,bary-(NS_sys_tilesize>>1),0x69,0);
+  graf_tile(g_graf,rtargetx,bary-(NS_sys_tilesize>>1),0x69,0);
   
   for (player=BATTLE->playerv,i=2;i-->0;player++) {
     if (player->pressp>=0.0) {
-      graf_tile(&g.graf,barx+(int)(player->pressp*barw),bary+(barh*(player->who+1))/3,player->tileid_icon,0);
+      graf_tile(g_graf,barx+(int)(player->pressp*barw),bary+(barh*(player->who+1))/3,player->tileid_icon,0);
     }
     if (player->releasep>=0.0) {
-      graf_tile(&g.graf,barx+(int)(player->releasep*barw),bary+(barh*(player->who+1))/3,player->tileid_icon,0);
+      graf_tile(g_graf,barx+(int)(player->releasep*barw),bary+(barh*(player->who+1))/3,player->tileid_icon,0);
     }
   }
   
   player_render(battle,BATTLE->playerv+0,FBW/6,groundy-(NS_sys_tilesize>>1),0);
   player_render(battle,BATTLE->playerv+1,(FBW*5)/6,groundy-(NS_sys_tilesize>>1),EGG_XFORM_XREV);
-  graf_tile(&g.graf,(FBW>>1)+2,groundy-(NS_sys_tilesize>>1),0x6a,0); // x+2 because the brim goes a bit right
+  graf_tile(g_graf,(FBW>>1)+2,groundy-(NS_sys_tilesize>>1),0x6a,0); // x+2 because the brim goes a bit right
 }
 
 /* Type definition.
@@ -411,7 +411,7 @@ static void _throwing_render(struct battle *battle) {
 const struct battle_type battle_type_throwing={
   .name="throwing",
   .objlen=sizeof(struct battle_throwing),
-  .id=NS_battle_throwing,
+  .id=10,
   .strix_name=49,
   .no_article=0,
   .no_contest=0,

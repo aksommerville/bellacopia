@@ -2,7 +2,7 @@
  * Tiny Dot walks around a giant stovetop with four pots. Look at one to prevent it from boiling.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define FRAME_PERIOD 0.150
 #define START_HEAT_RANGE 0.250 /* They start randomly from zero to this. */
@@ -329,7 +329,7 @@ static void _watching_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -384,18 +384,18 @@ static void pot_render(
     tileid_bottom+=1;
     tileid_top+=1;
   }
-  graf_tile(&g.graf,x-ht,y-ht,tileid_top,xform);
-  graf_tile(&g.graf,x+ht,y-ht,tileid_top^1,xform);
-  graf_tile(&g.graf,x-ht,y+ht,tileid_bottom,xform);
-  graf_tile(&g.graf,x+ht,y+ht,tileid_bottom^1,xform);
-  graf_tile(&g.graf,x-ht+liddx,y-NS_sys_tilesize-ht+liddy,0xf7,0);
-  graf_tile(&g.graf,x+ht+liddx,y-NS_sys_tilesize-ht+liddy,0xf8,0);
-  graf_tile(&g.graf,x-ht+liddx,y-ht+liddy,0xf9,0);
-  graf_tile(&g.graf,x+ht+liddx,y-ht+liddy,0xfa,0);
+  graf_tile(g_graf,x-ht,y-ht,tileid_top,xform);
+  graf_tile(g_graf,x+ht,y-ht,tileid_top^1,xform);
+  graf_tile(g_graf,x-ht,y+ht,tileid_bottom,xform);
+  graf_tile(g_graf,x+ht,y+ht,tileid_bottom^1,xform);
+  graf_tile(g_graf,x-ht+liddx,y-NS_sys_tilesize-ht+liddy,0xf7,0);
+  graf_tile(g_graf,x+ht+liddx,y-NS_sys_tilesize-ht+liddy,0xf8,0);
+  graf_tile(g_graf,x-ht+liddx,y-ht+liddy,0xf9,0);
+  graf_tile(g_graf,x+ht+liddx,y-ht+liddy,0xfa,0);
   if (xform) {
-    graf_tile(&g.graf,x-ht-NS_sys_tilesize,y-ht,0xf6,xform);
+    graf_tile(g_graf,x-ht-NS_sys_tilesize,y-ht,0xf6,xform);
   } else {
-    graf_tile(&g.graf,x+ht+NS_sys_tilesize,y-ht,0xf6,0);
+    graf_tile(g_graf,x+ht+NS_sys_tilesize,y-ht,0xf6,0);
   }
 }
 
@@ -421,7 +421,7 @@ static void player_render(struct battle *battle,struct player *player) {
     case 0x08: px+=NS_sys_tilesize*2; break;
     case 0x02: py+=NS_sys_tilesize*2; break;
   }
-  graf_tile(&g.graf,px,py,tileid,xform);
+  graf_tile(g_graf,px,py,tileid,xform);
   
   const int cheatdown=6;
   pot_render(battle,player,player->potv+0,midx-NS_sys_tilesize*2,midy-NS_sys_tilesize*2+cheatdown,EGG_XFORM_XREV);
@@ -443,16 +443,16 @@ static void render_damage_meter(struct battle *battle,struct player *player) {
   int y=midy-(barh>>1);
   int fillw=(int)(player->damage*barw);
   if (fillw<0) fillw=0; else if (fillw>barw) fillw=barw;
-  graf_fill_rect(&g.graf,x,y,barw,barh,0x40202080);
-  graf_fill_rect(&g.graf,x,y,fillw,barh,0xff0000ff);
+  graf_fill_rect(g_graf,x,y,barw,barh,0x40202080);
+  graf_fill_rect(g_graf,x,y,fillw,barh,0xff0000ff);
 }
 
 /* Render.
  */
  
 static void _watching_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
@@ -467,7 +467,7 @@ static void _watching_render(struct battle *battle) {
 const struct battle_type battle_type_watching={
   .name="watching",
   .objlen=sizeof(struct battle_watching),
-  .id=NS_battle_watching,
+  .id=22,
   .strix_name=149,
   .no_article=0,
   .no_contest=0,

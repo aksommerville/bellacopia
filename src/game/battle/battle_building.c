@@ -2,7 +2,7 @@
  * Mini platformer, carry boxes to build a staircase to ring the bell.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
 
 #define SPRID_LPLAYER 1
@@ -104,8 +104,8 @@ static void bell_update(struct batsup_sprite *sprite,double elapsed) {
       if (++(SPRITE->animframe)>=4) SPRITE->animframe=0;
       switch (SPRITE->animframe) {
         case 0: case 2: sprite->tileid=0x3b; break;
-        case 1: bm_sound(RID_sound_ding); sprite->tileid=0x4b; break;
-        case 3: bm_sound(RID_sound_dong); sprite->tileid=0x5b; break;
+        case 1: bm_sound_pan(RID_sound_ding,0.0); sprite->tileid=0x4b; break;
+        case 3: bm_sound_pan(RID_sound_dong,0.0); sprite->tileid=0x5b; break;
       }
     }
   }
@@ -574,21 +574,21 @@ static void man_update(struct batsup_sprite *sprite,double elapsed) {
     SPRITE->injump=0;
     SPRITE->inpickup=0;
   } else {
-    switch (g.input[SPRITE->inputp]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+    switch (g_input[SPRITE->inputp]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
       case EGG_BTN_LEFT: SPRITE->indx=-1; break;
       case EGG_BTN_RIGHT: SPRITE->indx=1; break;
       default: SPRITE->indx=0;
     }
-    switch (g.input[SPRITE->inputp]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+    switch (g_input[SPRITE->inputp]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
       case EGG_BTN_UP: SPRITE->indy=-1; break;
       case EGG_BTN_DOWN: SPRITE->indy=1; break;
       default: SPRITE->indy=0;
     }
     if (SPRITE->injump_blackout) {
-      if (!(g.input[SPRITE->inputp]&EGG_BTN_SOUTH)) SPRITE->injump_blackout=0;
-    } else if (g.input[SPRITE->inputp]&EGG_BTN_SOUTH) SPRITE->injump=1;
+      if (!(g_input[SPRITE->inputp]&EGG_BTN_SOUTH)) SPRITE->injump_blackout=0;
+    } else if (g_input[SPRITE->inputp]&EGG_BTN_SOUTH) SPRITE->injump=1;
     else SPRITE->injump=0;
-    if ((g.input[SPRITE->inputp]&EGG_BTN_WEST)&&!(g.pvinput[SPRITE->inputp]&EGG_BTN_WEST)) SPRITE->inpickup=1;
+    if ((g_input[SPRITE->inputp]&EGG_BTN_WEST)&&!(g_pvinput[SPRITE->inputp]&EGG_BTN_WEST)) SPRITE->inpickup=1;
     else SPRITE->inpickup=0;
   }
   player_update_common(sprite,elapsed);
@@ -765,7 +765,7 @@ static void _building_render(struct battle *battle) {
 const struct battle_type battle_type_building={
   .name="building",
   .objlen=sizeof(struct battle_building),
-  .id=NS_battle_building,
+  .id=44,
   .strix_name=170,
   .no_article=0,
   .no_contest=0,

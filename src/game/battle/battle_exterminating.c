@@ -1,4 +1,4 @@
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define FLDW 5
 #define FLDH 5
@@ -113,11 +113,11 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
  */
  
 static void player_update_human(struct battle *battle,struct player *player,double elapsed) {
-  if ((g.input[player->human]&EGG_BTN_LEFT)&&!(g.pvinput[player->human]&EGG_BTN_LEFT)) player_move(battle,player,-1,0);
-  if ((g.input[player->human]&EGG_BTN_RIGHT)&&!(g.pvinput[player->human]&EGG_BTN_RIGHT)) player_move(battle,player,1,0);
-  if ((g.input[player->human]&EGG_BTN_UP)&&!(g.pvinput[player->human]&EGG_BTN_UP)) player_move(battle,player,0,-1);
-  if ((g.input[player->human]&EGG_BTN_DOWN)&&!(g.pvinput[player->human]&EGG_BTN_DOWN)) player_move(battle,player,0,1);
-  if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) player_swap(battle,player);
+  if ((g_input[player->human]&EGG_BTN_LEFT)&&!(g_pvinput[player->human]&EGG_BTN_LEFT)) player_move(battle,player,-1,0);
+  if ((g_input[player->human]&EGG_BTN_RIGHT)&&!(g_pvinput[player->human]&EGG_BTN_RIGHT)) player_move(battle,player,1,0);
+  if ((g_input[player->human]&EGG_BTN_UP)&&!(g_pvinput[player->human]&EGG_BTN_UP)) player_move(battle,player,0,-1);
+  if ((g_input[player->human]&EGG_BTN_DOWN)&&!(g_pvinput[player->human]&EGG_BTN_DOWN)) player_move(battle,player,0,1);
+  if ((g_input[player->human]&EGG_BTN_SOUTH)&&!(g_pvinput[player->human]&EGG_BTN_SOUTH)) player_swap(battle,player);
 }
 
 /* Search and filter ops for CPU player.
@@ -442,17 +442,17 @@ static void player_render(struct battle *battle,struct player *player,int midx) 
     int x=x0;
     int xi=FLDW;
     for (;xi-->0;x+=tilesize,p++,xform++) {
-      graf_tile(&g.graf,x,y,((xi&1)==(yi&1))?0x7b:0x8b,0);
-      if (*p) graf_tile(&g.graf,x,y,0x8a,*xform);
+      graf_tile(g_graf,x,y,((xi&1)==(yi&1))?0x7b:0x8b,0);
+      if (*p) graf_tile(g_graf,x,y,0x8a,*xform);
     }
   }
   
   if (battle->outcome<=-2) {
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy-1)*tilesize,0x7a,BATTLE->cxform);
-    graf_tile(&g.graf,x0+(player->cx-1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
-    graf_tile(&g.graf,x0+(player->cx+1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
-    graf_tile(&g.graf,x0+(player->cx  )*tilesize,y0+(player->cy+1)*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(g_graf,x0+(player->cx  )*tilesize,y0+(player->cy-1)*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(g_graf,x0+(player->cx-1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(g_graf,x0+(player->cx  )*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(g_graf,x0+(player->cx+1)*tilesize,y0+(player->cy  )*tilesize,0x7a,BATTLE->cxform);
+    graf_tile(g_graf,x0+(player->cx  )*tilesize,y0+(player->cy+1)*tilesize,0x7a,BATTLE->cxform);
   }
 }
 
@@ -460,8 +460,8 @@ static void player_render(struct battle *battle,struct player *player,int midx) 
  */
  
 static void _exterminating_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_early);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_early);
   player_render(battle,BATTLE->playerv+0,(FBW*1)/3);
   player_render(battle,BATTLE->playerv+1,(FBW*2)/3);
 }
@@ -472,7 +472,7 @@ static void _exterminating_render(struct battle *battle) {
 const struct battle_type battle_type_exterminating={
   .name="exterminating",
   .objlen=sizeof(struct battle_exterminating),
-  .id=NS_battle_exterminating,
+  .id=3,
   .strix_name=17,
   .no_article=0,
   .no_contest=0,

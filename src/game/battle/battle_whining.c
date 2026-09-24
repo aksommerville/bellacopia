@@ -1,7 +1,7 @@
 /* battle_whining.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 120
 
@@ -305,7 +305,7 @@ static void _whining_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -344,10 +344,10 @@ static void player_render(struct battle *battle,struct player *player) {
   }
   uint8_t tileid=player->tileid;
   if (player->favor) tileid+=2;
-  graf_tile(&g.graf,backx ,midy-ht,tileid+0x00,xform);
-  graf_tile(&g.graf,frontx,midy-ht,tileid+0x01,xform);
-  graf_tile(&g.graf,backx ,midy+ht,tileid+0x10,xform);
-  graf_tile(&g.graf,frontx,midy+ht,tileid+0x11,xform);
+  graf_tile(g_graf,backx ,midy-ht,tileid+0x00,xform);
+  graf_tile(g_graf,frontx,midy-ht,tileid+0x01,xform);
+  graf_tile(g_graf,backx ,midy+ht,tileid+0x10,xform);
+  graf_tile(g_graf,frontx,midy+ht,tileid+0x11,xform);
 }
 
 /* Render mama bear.
@@ -376,14 +376,14 @@ static void mama_render(struct battle *battle) {
   } else if (BATTLE->mamaturnclock>0.0) {
     tileid+=2;
   }
-  graf_tile(&g.graf,backx ,y,tileid+0x20,xform);
-  graf_tile(&g.graf,frontx,y,tileid+0x21,xform);
+  graf_tile(g_graf,backx ,y,tileid+0x20,xform);
+  graf_tile(g_graf,frontx,y,tileid+0x21,xform);
   y-=NS_sys_tilesize;
-  graf_tile(&g.graf,backx ,y,tileid+0x10,xform);
-  graf_tile(&g.graf,frontx,y,tileid+0x11,xform);
+  graf_tile(g_graf,backx ,y,tileid+0x10,xform);
+  graf_tile(g_graf,frontx,y,tileid+0x11,xform);
   y-=NS_sys_tilesize;
-  graf_tile(&g.graf,backx ,y,tileid+0x00,xform);
-  graf_tile(&g.graf,frontx,y,tileid+0x01,xform);
+  graf_tile(g_graf,backx ,y,tileid+0x00,xform);
+  graf_tile(g_graf,frontx,y,tileid+0x01,xform);
 }
 
 /* Vertical bar for a player's whine level.
@@ -395,8 +395,8 @@ static void whining_bar(struct battle *battle,int x,double v,uint32_t color) {
   int fillh=(int)(v*h);
   if (fillh<0) fillh=0;
   else if (fillh>h) fillh=h;
-  graf_fill_rect(&g.graf,x-2,GROUNDY+4,w+2,h+2,0x000000ff);
-  graf_fill_rect(&g.graf,x-1,GROUNDY+5+h-fillh,w,fillh,color);
+  graf_fill_rect(g_graf,x-2,GROUNDY+4,w+2,h+2,0x000000ff);
+  graf_fill_rect(g_graf,x-1,GROUNDY+5+h-fillh,w,fillh,color);
 }
 
 /* Render a tile on the control wheel's rim.
@@ -410,9 +410,9 @@ static void whining_decorate_wheel(struct battle *battle,double midx,double midy
   int y=lround(midy-cos(t)*radius);
   int alpha=0xff-((age*255.0)/fadetime);
   if (alpha>0) {
-    if (alpha<0xff) graf_set_alpha(&g.graf,alpha);
-    graf_tile(&g.graf,x,y,tileid,0);
-    graf_set_alpha(&g.graf,0xff);
+    if (alpha<0xff) graf_set_alpha(g_graf,alpha);
+    graf_tile(g_graf,x,y,tileid,0);
+    graf_set_alpha(g_graf,0xff);
   }
 }
 
@@ -423,12 +423,12 @@ static void _whining_render(struct battle *battle) {
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // Sprites.
-  graf_set_image(&g.graf,RID_image_battle_forest2);
+  graf_set_image(g_graf,RID_image_battle_forest2);
   player_render(battle,l);
   player_render(battle,r);
   mama_render(battle);
@@ -439,9 +439,9 @@ static void _whining_render(struct battle *battle) {
   whining_decorate_wheel(battle,wheelx,wheely,BATTLE->ctltarget,0x54,0.0);
   double cost=cos(BATTLE->ctlt);
   double sint=sin(BATTLE->ctlt);
-  graf_set_filter(&g.graf,1);
-  graf_decal_rotate(&g.graf,(int)wheelx,(int)wheely,64,0,32,sint,cost,0.750);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,1);
+  graf_decal_rotate(g_graf,(int)wheelx,(int)wheely,64,0,32,sint,cost,0.750);
+  graf_set_filter(g_graf,0);
   if (BATTLE->recent_target>=0.0) whining_decorate_wheel(battle,wheelx,wheely,BATTLE->recent_target,0x54,BATTLE->recent_time);
   if (l->recentt>=0.0) whining_decorate_wheel(battle,wheelx,wheely,l->recentt,l->guesstileid,BATTLE->recent_time);
   if (r->recentt>=0.0) whining_decorate_wheel(battle,wheelx,wheely,r->recentt,r->guesstileid,BATTLE->recent_time);
@@ -459,7 +459,7 @@ static void _whining_render(struct battle *battle) {
 const struct battle_type battle_type_whining={
   .name="whining",
   .objlen=sizeof(struct battle_whining),
-  .id=NS_battle_whining,
+  .id=103,
   .strix_name=336,
   .no_article=0,
   .no_contest=0,

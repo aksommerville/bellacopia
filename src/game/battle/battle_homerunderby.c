@@ -2,7 +2,7 @@
  * A to swing.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SWINGT_LO (0.200*M_PI)
 #define SWINGT_HI (1.700*M_PI)
@@ -229,7 +229,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     if ((ya>0.0)&&(yz>0.0)&&(BATTLE->balldy>0.0)) {
       // (yz<ya) and (ballpvy<bally). If they overlap, we hit it.
       if ((yz<=BATTLE->bally)&&(ya>=BATTLE->ballpvy)) {
-        bm_sound(RID_sound_whack);
+        bm_sound_pan(RID_sound_whack,0.0);
         double ballt=player->swingt-M_PI*0.5;
         ballt*=2.0; // The quickie subtraction gives it a range close to the fair range. We need the ball to operate wider, to make fouls more likely.
         double velocity=(rand()&0xffff)/65535.0; // (x,y) velocity in m/s. We'll manage (z) separate.
@@ -270,14 +270,14 @@ static void _homerunderby_update(struct battle *battle,double elapsed) {
     BATTLE->reportclock-=elapsed;
   } else if (BATTLE->windup>0.0) {
     if ((BATTLE->windup-=elapsed)<=0.0) {
-      bm_sound(RID_sound_throw);
+      bm_sound_pan(RID_sound_throw,0.0);
     }
   } else {
     BATTLE->ballx+=BATTLE->balldx*elapsed;
     BATTLE->bally+=BATTLE->balldy*elapsed;
     BATTLE->ballz+=BATTLE->balldz*elapsed;
     if (BATTLE->ballz<0.0) { // Bounce if we hit the ground.
-      bm_sound(RID_sound_bump);
+      bm_sound_pan(RID_sound_bump,0.0);
       BATTLE->ballz=0.0;
       BATTLE->balldz=-BATTLE->balldz*BOUNCE_PENALTY;
       if (BATTLE->balldz<2.0) BATTLE->balldz=0.0;
@@ -306,7 +306,7 @@ static void _homerunderby_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player==BATTLE->batter) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
       player_update_common(battle,player,elapsed);
     } else {
@@ -354,19 +354,19 @@ static uint32_t reportcolors[8]={
  
 static void _homerunderby_render(struct battle *battle) {
   // Background is a static image, full framebuffer.
-  graf_set_image(&g.graf,RID_image_ballpark);
-  graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+  graf_set_image(g_graf,RID_image_ballpark);
+  graf_decal(g_graf,0,0,0,0,FBW,FBH);
   
   // Main sprites.
-  graf_set_image(&g.graf,RID_image_battle_athletes);
-  graf_tile(&g.graf,160,84,0x39,0); // Pitcher.
-  graf_tile(&g.graf,(int)BATTLE->ballx,(int)BATTLE->bally,0x6a,0); // Shadow.
-  graf_tile(&g.graf,(int)BATTLE->ballx,(int)(BATTLE->bally-BATTLE->ballz),0x69,0); // Ball.
+  graf_set_image(g_graf,RID_image_battle_athletes);
+  graf_tile(g_graf,160,84,0x39,0); // Pitcher.
+  graf_tile(g_graf,(int)BATTLE->ballx,(int)BATTLE->bally,0x6a,0); // Shadow.
+  graf_tile(g_graf,(int)BATTLE->ballx,(int)(BATTLE->bally-BATTLE->ballz),0x69,0); // Ball.
   if (BATTLE->batter) {
     int batterx=BATTLE->batter->who?170:150;
     int battery=166;
     uint8_t xform=BATTLE->batter->who?EGG_XFORM_XREV:0;
-    graf_tile(&g.graf,batterx,battery,BATTLE->batter->tileid,xform);
+    graf_tile(g_graf,batterx,battery,BATTLE->batter->tileid,xform);
     int batx=batterx;
     int baty=battery+3;
     if (xform) batx-=4; else batx+=4;
@@ -375,9 +375,9 @@ static void _homerunderby_render(struct battle *battle) {
     double batsint=sin(t);
     double batcost=cos(t);
     double batscale=0.750;
-    graf_set_filter(&g.graf,1);
-    graf_decal_rotate(&g.graf,batx,baty,NS_sys_tilesize*9,NS_sys_tilesize*4,NS_sys_tilesize*2,batsint,batcost,batscale);
-    graf_set_filter(&g.graf,0);
+    graf_set_filter(g_graf,1);
+    graf_decal_rotate(g_graf,batx,baty,NS_sys_tilesize*9,NS_sys_tilesize*4,NS_sys_tilesize*2,batsint,batcost,batscale);
+    graf_set_filter(g_graf,0);
   }
   
   // Report outcome of last at-bat.
@@ -385,29 +385,29 @@ static void _homerunderby_render(struct battle *battle) {
     int dsty=(FBH>>1)+20;
     int dstx=(FBW>>1)-((BATTLE->rpttilec*NS_sys_tilesize)>>1)+(NS_sys_tilesize>>1);
     uint8_t tileid=BATTLE->rpttileid;
-    uint32_t color=reportcolors[(g.framec>>3)&7];
+    uint32_t color=reportcolors[(g_framec>>3)&7];
     int i=BATTLE->rpttilec;
     for (;i-->0;dstx+=NS_sys_tilesize,tileid++) {
-      graf_fancy(&g.graf,dstx,dsty,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,dstx,dsty,tileid,0,0,NS_sys_tilesize,0,color);
     }
   }
   
   // Scoreboard.
-  graf_tile(&g.graf,13,160,BATTLE->playerv[0].placard,0);
-  graf_tile(&g.graf,29,160,BATTLE->playerv[0].placard+1,0);
-  graf_tile(&g.graf,13,170,BATTLE->playerv[1].placard,0);
-  graf_tile(&g.graf,29,170,BATTLE->playerv[1].placard+1,0);
+  graf_tile(g_graf,13,160,BATTLE->playerv[0].placard,0);
+  graf_tile(g_graf,29,160,BATTLE->playerv[0].placard+1,0);
+  graf_tile(g_graf,13,170,BATTLE->playerv[1].placard,0);
+  graf_tile(g_graf,29,170,BATTLE->playerv[1].placard+1,0);
   if (BATTLE->scorec>0) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     int lx=43,rx=43;
     const struct score *score=BATTLE->scorev;
     int i=BATTLE->scorec;
     for (;i-->0;score++) {
       if (score->who==0) {
-        graf_tile(&g.graf,lx,161,'0'+score->homerun,0);
+        graf_tile(g_graf,lx,161,'0'+score->homerun,0);
         lx+=10;
       } else if (score->who==1) {
-        graf_tile(&g.graf,rx,171,'0'+score->homerun,0);
+        graf_tile(g_graf,rx,171,'0'+score->homerun,0);
         rx+=10;
       }
     }
@@ -418,13 +418,13 @@ static void _homerunderby_render(struct battle *battle) {
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   if ((l->batw_visible>0.0)||(r->batw_visible>0.0)) {
-    graf_set_image(&g.graf,RID_image_battle_athletes);
+    graf_set_image(g_graf,RID_image_battle_athletes);
     int lw=(int)l->batw_visible;
     int rw=(int)r->batw_visible;
     if (lw>48) lw=48;
     if (rw>48) rw=48;
-    if (lw) graf_decal(&g.graf,69,153,96,192,lw,16);
-    if (rw) graf_decal(&g.graf,69,163,96,192,rw,16);
+    if (lw) graf_decal(g_graf,69,153,96,192,lw,16);
+    if (rw) graf_decal(g_graf,69,163,96,192,rw,16);
   }
 }
 
@@ -434,7 +434,7 @@ static void _homerunderby_render(struct battle *battle) {
 const struct battle_type battle_type_homerunderby={
   .name="homerunderby",
   .objlen=sizeof(struct battle_homerunderby),
-  .id=NS_battle_homerunderby,
+  .id=35,
   .strix_name=161,
   .no_article=0,
   .no_contest=1,

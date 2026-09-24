@@ -1,7 +1,7 @@
 /* battle_gobbling.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define TABLEW (NS_sys_tilesize*6)
@@ -280,7 +280,7 @@ static void gobbling_require_poison_label(struct battle *battle) {
   if (BATTLE->poison_texid) return;
   const char *src;
   int srcc=text_get_string(&src,RID_strings_battle,59);
-  BATTLE->poison_texid=font_render_to_texture(0,g.font,src,srcc,FBW,FBH,0xffffffff);
+  BATTLE->poison_texid=font_render_to_texture(0,g_font,src,srcc,FBW,FBH,0xffffffff);
   egg_texture_get_size(&BATTLE->poisonw,&BATTLE->poisonh,BATTLE->poison_texid);
 }
 
@@ -496,7 +496,7 @@ static void _gobbling_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_refresh_highlight(battle,player);
     if (battle->outcome>-2) return; // Eating poison forces an outcome immediately.
@@ -519,10 +519,10 @@ static void table_render(struct battle *battle,int dstx,int pull) {
   else if (pull<-VISIBLE_PULL_LIMIT) pull=-VISIBLE_PULL_LIMIT;
 
   // Wood.
-  graf_decal(&g.graf,dstx   ,124,160,24,32,24);
-  graf_decal(&g.graf,dstx+32,124,176,24,16,24);
-  graf_decal(&g.graf,dstx+48,124,176,24,16,24);
-  graf_decal(&g.graf,dstx+64,124,176,24,32,24);
+  graf_decal(g_graf,dstx   ,124,160,24,32,24);
+  graf_decal(g_graf,dstx+32,124,176,24,16,24);
+  graf_decal(g_graf,dstx+48,124,176,24,16,24);
+  graf_decal(g_graf,dstx+64,124,176,24,32,24);
   
   // Compute some tablecloth parameters.
   int clothx=dstx+(TABLEW>>1)-(CLOTHW>>1)+pull;
@@ -557,33 +557,33 @@ static void table_render(struct battle *battle,int dstx,int pull) {
     if (pull<0) { // Pulling left: Anchor to the right side.
       int tx=trx-NS_sys_tilesize;
       while (tx>tlx) {
-        graf_tile(&g.graf,tx,ty,0x0b,0);
+        graf_tile(g_graf,tx,ty,0x0b,0);
         tx-=NS_sys_tilesize;
       }
     } else { // Pulling right: Anchor to the left side.
       int tx=tlx+NS_sys_tilesize;
       while (tx<trx) {
-        graf_tile(&g.graf,tx,ty,0x0b,0);
+        graf_tile(g_graf,tx,ty,0x0b,0);
         tx+=NS_sys_tilesize;
       }
     }
   }
-  graf_tile(&g.graf,tlx,ty,ltile,lxform);
-  graf_tile(&g.graf,trx,ty,rtile,rxform);
+  graf_tile(g_graf,tlx,ty,ltile,lxform);
+  graf_tile(g_graf,trx,ty,rtile,rxform);
   
   // Tablecloth excess in a pile below the pulling edge.
   // It's not pixel-perfect, not at all. Start with two lumps, the minimum to connect to the corner.
   if (pileh>8) {
-    graf_tile(&g.graf,pilex,140,0x0d,pilexform);
-    graf_tile(&g.graf,pilex,136,0x0e,pilexform);
+    graf_tile(g_graf,pilex,140,0x0d,pilexform);
+    graf_tile(g_graf,pilex,136,0x0e,pilexform);
     if (pileh>32) {
-      graf_tile(&g.graf,pilex,132,0x0e,pilexform);
+      graf_tile(g_graf,pilex,132,0x0e,pilexform);
       if (pileh>64) {
-        graf_tile(&g.graf,pilex,128,0x0e,pilexform);
+        graf_tile(g_graf,pilex,128,0x0e,pilexform);
       }
     }
   } else if (pileh>0) {
-    graf_tile(&g.graf,pilex,138,0x0f,pilexform);
+    graf_tile(g_graf,pilex,138,0x0f,pilexform);
   }
 }
 
@@ -606,14 +606,14 @@ static void player_render(struct battle *battle,struct player *player) {
       armdstx-=player->armw;
       armxform=EGG_XFORM_XREV;
     }
-    graf_decal_xform(&g.graf,armdstx,armdsty,armsrcx,player->armsrcy,player->armw,16,armxform);
+    graf_decal_xform(g_graf,armdstx,armdsty,armsrcx,player->armsrcy,player->armw,16,armxform);
   }
   if (player->gobble>0.0) {
-    int frame=(g.framec&8)?1:0;
-    graf_decal_xform(&g.graf,dstx,100,player->srcx+32,player->srcy+frame*24,32,24,xform);
-    graf_decal_xform(&g.graf,dstx,124,player->srcx,player->srcy+24,32,24,xform);
+    int frame=(g_framec&8)?1:0;
+    graf_decal_xform(g_graf,dstx,100,player->srcx+32,player->srcy+frame*24,32,24,xform);
+    graf_decal_xform(g_graf,dstx,124,player->srcx,player->srcy+24,32,24,xform);
   } else {
-    graf_decal_xform(&g.graf,dstx,100,player->srcx,player->srcy,32,48,xform);
+    graf_decal_xform(g_graf,dstx,100,player->srcx,player->srcy,32,48,xform);
   }
   
   int tablex;
@@ -630,25 +630,25 @@ static void player_render(struct battle *battle,struct player *player) {
     if (!entree->tileid) continue;
     if (entree->tileid==player->highlight_poison) continue;
     if (entree->discard) {
-      graf_tile(&g.graf,tablex+entree->x,entreey+24,entree->tileid,0);
+      graf_tile(g_graf,tablex+entree->x,entreey+24,entree->tileid,0);
     } else {
-      graf_tile(&g.graf,tablex+entree->x,entreey,entree->tileid,0);
+      graf_tile(g_graf,tablex+entree->x,entreey,entree->tileid,0);
       // If it's near enough to gobble, put an arrow above it. (whether edible or not)
       if (entree->highlight) {
-        graf_tile(&g.graf,tablex+entree->x,entreey-20,0x69,0);
+        graf_tile(g_graf,tablex+entree->x,entreey-20,0x69,0);
       }
     }
   }
   
   if (player->highlight_poison) {
     int poisonx=tablex+(player->who?(TABLEW-10):10);
-    graf_tile(&g.graf,poisonx,100,player->highlight_poison,0);
-    if (g.framec%50>=10) {
-      graf_set_input(&g.graf,BATTLE->poison_texid);
-      graf_set_tint(&g.graf,0x800000ff);
-      graf_decal(&g.graf,poisonx-(BATTLE->poisonw>>1),90-BATTLE->poisonh,0,0,BATTLE->poisonw,BATTLE->poisonh);
-      graf_set_tint(&g.graf,0);
-      graf_set_image(&g.graf,RID_image_battle_goblins);
+    graf_tile(g_graf,poisonx,100,player->highlight_poison,0);
+    if (g_framec%50>=10) {
+      graf_set_input(g_graf,BATTLE->poison_texid);
+      graf_set_tint(g_graf,0x800000ff);
+      graf_decal(g_graf,poisonx-(BATTLE->poisonw>>1),90-BATTLE->poisonh,0,0,BATTLE->poisonw,BATTLE->poisonh);
+      graf_set_tint(g_graf,0);
+      graf_set_image(g_graf,RID_image_battle_goblins);
     }
   }
 }
@@ -657,9 +657,9 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _gobbling_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -670,7 +670,7 @@ static void _gobbling_render(struct battle *battle) {
 const struct battle_type battle_type_gobbling={
   .name="gobbling",
   .objlen=sizeof(struct battle_gobbling),
-  .id=NS_battle_gobbling,
+  .id=16,
   .strix_name=48,
   .no_article=0,
   .no_contest=0,

@@ -5,7 +5,7 @@
  * So the initial deck is composed of sequential integers, matching their index.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define DECK_SIZE 30
 #define DP_SLOW 4.000 /* rad/sec */
@@ -175,8 +175,8 @@ static void player_update_man(struct battle *battle,struct player *player,double
    */
   if (player->cutp<0) {
     if (player->input_blackout) {
-      if (!(g.input[player->human]&EGG_BTN_SOUTH)) player->input_blackout=0;
-    } else if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) {
+      if (!(g_input[player->human]&EGG_BTN_SOUTH)) player->input_blackout=0;
+    } else if ((g_input[player->human]&EGG_BTN_SOUTH)&&!(g_pvinput[player->human]&EGG_BTN_SOUTH)) {
       bm_sound_pan(RID_sound_uiactivate,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->cutp=(DECK_SIZE>>1)-(int)(sin(player->p)*(DECK_SIZE>>1));
       // Must leave at least one card in each half.
@@ -189,7 +189,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
   /* Merging?
    */
   } else {
-    if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) {
+    if ((g_input[player->human]&EGG_BTN_SOUTH)&&!(g_pvinput[player->human]&EGG_BTN_SOUTH)) {
       player_merge(battle,player);
     }
   }
@@ -255,7 +255,7 @@ static void _shuffling_update(struct battle *battle,double elapsed) {
     } else if (player->splitclock>0.0) {
       player->splitclock-=elapsed;
     } else {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
       if (!player->finished) player_update_common(battle,player,elapsed); // Check (finished) again in case it changed during the controller update.
     }
@@ -279,13 +279,13 @@ static void _shuffling_update(struct battle *battle,double elapsed) {
  */
  
 static void shuffling_render_deck(struct battle *battle,struct player *player,int x,int y,const uint8_t *cardv,int cardc,int gapp) {
-  graf_set_image(&g.graf,RID_image_battle_casino);
+  graf_set_image(g_graf,RID_image_battle_casino);
   x-=32;
   y+=cardc;
   y-=48;
   for (;cardc-->0;y-=2,cardv++) {
     if (cardc==gapp) y-=1;
-    graf_decal_xform(&g.graf,x,y,208,64,48,64,EGG_XFORM_SWAP);
+    graf_decal_xform(g_graf,x,y,208,64,48,64,EGG_XFORM_SWAP);
   }
 }
 
@@ -293,8 +293,8 @@ static void shuffling_render_deck(struct battle *battle,struct player *player,in
  */
  
 static void shuffling_render_hand(struct battle *battle,struct player *player,int y) {
-  graf_set_image(&g.graf,RID_image_battle_casino);
-  graf_tile(&g.graf,player->xhand,y,player->tileid,player->xform);
+  graf_set_image(g_graf,RID_image_battle_casino);
+  graf_tile(g_graf,player->xhand,y,player->tileid,player->xform);
 }
 
 /* Render player.
@@ -334,7 +334,7 @@ static void player_render(struct battle *battle,struct player *player) {
     int lxz=midx-4;
     int rxz=midx+4;
     int yz=midy+DECK_SIZE-48;
-    graf_set_image(&g.graf,RID_image_battle_casino);
+    graf_set_image(g_graf,RID_image_battle_casino);
     int i=DECK_SIZE;
     for (;i-->0;yz-=2) {
       int v=player->deck[i];
@@ -355,13 +355,13 @@ static void player_render(struct battle *battle,struct player *player) {
       }
       int x=(int)(t*xz+(1.0-t)*xa);
       int y=(int)(t*yz+(1.0-t)*ya);
-      graf_decal_xform(&g.graf,x-32,y,208,64,48,64,EGG_XFORM_SWAP);
+      graf_decal_xform(g_graf,x-32,y,208,64,48,64,EGG_XFORM_SWAP);
     }
     
     // Score.
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    if (player->score>=10) graf_tile(&g.graf,midx-4,162,'0'+player->score/10,0);
-    graf_tile(&g.graf,midx+4,162,'0'+player->score%10,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    if (player->score>=10) graf_tile(g_graf,midx-4,162,'0'+player->score/10,0);
+    graf_tile(g_graf,midx+4,162,'0'+player->score%10,0);
 
   /* First we show the whole deck stationary, and the hand oscillating.
    */
@@ -396,13 +396,13 @@ static void player_render(struct battle *battle,struct player *player) {
   if (!player->finished&&(BATTLE->timeout<5.0)) {
     int frame=(int)(BATTLE->timeout*6.0)%4;
     if (frame>=1) {
-      graf_set_image(&g.graf,RID_image_battle_casino);
+      graf_set_image(g_graf,RID_image_battle_casino);
       int x=((player->xinner+player->xouter)>>1)-24;
       int y=30;
       uint8_t tileid=0x30;
       int i=4;
       for (;i-->0;x+=NS_sys_tilesize,tileid++) {
-        graf_tile(&g.graf,x,y,tileid,0);
+        graf_tile(g_graf,x,y,tileid,0);
       }
     }
   }
@@ -412,8 +412,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _shuffling_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x0b4c1eff);
-  graf_set_image(&g.graf,RID_image_battle_casino);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x0b4c1eff);
+  graf_set_image(g_graf,RID_image_battle_casino);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -424,7 +424,7 @@ static void _shuffling_render(struct battle *battle) {
 const struct battle_type battle_type_shuffling={
   .name="shuffling",
   .objlen=sizeof(struct battle_shuffling),
-  .id=NS_battle_shuffling,
+  .id=41,
   .strix_name=167,
   .no_article=0,
   .no_contest=0,

@@ -19,7 +19,7 @@
  * The global timeout *does* include initial idle time, but for all other purposes things start happening at your first key-down.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define MESSAGE_LIMIT 32
 #define SIGNAL_LIMIT 256
@@ -654,7 +654,7 @@ static void _morsecode_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -690,35 +690,35 @@ static void player_render(
   /* Hero. Decorative.
    */
   const int xclearance=30;
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   // Desk, not flopped (contains text).
   if (align>0) {
-    graf_tile(&g.graf,fullx+xclearance,fully+fullh-8,0x10,0);
-    graf_tile(&g.graf,fullx+xclearance+16,fully+fullh-8,0x11,0);
+    graf_tile(g_graf,fullx+xclearance,fully+fullh-8,0x10,0);
+    graf_tile(g_graf,fullx+xclearance+16,fully+fullh-8,0x11,0);
   } else {
-    graf_tile(&g.graf,fullx+fullw-xclearance,fully+fullh-8,0x11,0);
-    graf_tile(&g.graf,fullx+fullw-xclearance-16,fully+fullh-8,0x10,0);
+    graf_tile(g_graf,fullx+fullw-xclearance,fully+fullh-8,0x11,0);
+    graf_tile(g_graf,fullx+fullw-xclearance-16,fully+fullh-8,0x10,0);
   }
   // Hero.
   uint8_t player_tileid=player->tileid;
   if (player->state) player_tileid+=2;
   if (align>0) {
-    graf_tile(&g.graf,fullx+xclearance-16,fully+fullh-24,player_tileid,0);
-    graf_tile(&g.graf,fullx+xclearance,fully+fullh-24,player_tileid+1,0);
-    graf_tile(&g.graf,fullx+xclearance-16,fully+fullh-8,player_tileid+0x10,0);
-    graf_tile(&g.graf,fullx+xclearance,fully+fullh-8,player_tileid+0x11,0);
+    graf_tile(g_graf,fullx+xclearance-16,fully+fullh-24,player_tileid,0);
+    graf_tile(g_graf,fullx+xclearance,fully+fullh-24,player_tileid+1,0);
+    graf_tile(g_graf,fullx+xclearance-16,fully+fullh-8,player_tileid+0x10,0);
+    graf_tile(g_graf,fullx+xclearance,fully+fullh-8,player_tileid+0x11,0);
   } else {
-    graf_tile(&g.graf,fullx+fullw-xclearance,fully+fullh-24,player_tileid+1,EGG_XFORM_XREV);
-    graf_tile(&g.graf,fullx+fullw-xclearance+16,fully+fullh-24,player_tileid,EGG_XFORM_XREV);
-    graf_tile(&g.graf,fullx+fullw-xclearance,fully+fullh-8,player_tileid+0x11,EGG_XFORM_XREV);
-    graf_tile(&g.graf,fullx+fullw-xclearance+16,fully+fullh-8,player_tileid+0x10,EGG_XFORM_XREV);
+    graf_tile(g_graf,fullx+fullw-xclearance,fully+fullh-24,player_tileid+1,EGG_XFORM_XREV);
+    graf_tile(g_graf,fullx+fullw-xclearance+16,fully+fullh-24,player_tileid,EGG_XFORM_XREV);
+    graf_tile(g_graf,fullx+fullw-xclearance,fully+fullh-8,player_tileid+0x11,EGG_XFORM_XREV);
+    graf_tile(g_graf,fullx+fullw-xclearance+16,fully+fullh-8,player_tileid+0x10,EGG_XFORM_XREV);
   }
   // Clicker.
   uint8_t clicker_tileid=player->state?0x01:0x00;
   if (align>0) {
-    graf_tile(&g.graf,fullx+xclearance,fully+fullh-24,clicker_tileid,0);
+    graf_tile(g_graf,fullx+xclearance,fully+fullh-24,clicker_tileid,0);
   } else {
-    graf_tile(&g.graf,fullx+fullw-xclearance,fully+fullh-24,clicker_tileid,EGG_XFORM_XREV);
+    graf_tile(g_graf,fullx+fullw-xclearance,fully+fullh-24,clicker_tileid,EGG_XFORM_XREV);
   }
   // Pole and wires.
   int polex,poledx;
@@ -732,8 +732,8 @@ static void player_render(
     poledx=-16;
   }
   for (;(polex>=-8)&&(polex<FBW+8);polex+=poledx) {
-    graf_tile(&g.graf,polex,fully+fullh-24,poletileid,0);
-    graf_tile(&g.graf,polex,fully+fullh-8,poletileid+0x10,0);
+    graf_tile(g_graf,polex,fully+fullh-24,poletileid,0);
+    graf_tile(g_graf,polex,fully+fullh-8,poletileid+0x10,0);
   }
 
   /* Message high and left-aligned.
@@ -741,20 +741,20 @@ static void player_render(
    */
   int dstx=fullx+10;
   int dsty=fully+10;
-  graf_set_image(&g.graf,RID_image_tinyfonttiles);
-  graf_set_tint(&g.graf,0x000000ff);
+  graf_set_image(g_graf,RID_image_tinyfonttiles);
+  graf_set_tint(g_graf,0x000000ff);
   const char *src=player->message;
   int i=player->messagec;
   for (;i-->0;src++,dstx+=6) {
     if (*src<=0x20) continue;
-    graf_tile(&g.graf,dstx,dsty,*src,0);
+    graf_tile(g_graf,dstx,dsty,*src,0);
   }
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0);
   
   /* Signal below message.
    */
-  graf_set_input(&g.graf,player->sigimg_texid);
-  graf_decal(&g.graf,fullx+(fullw>>1)-(player->sigimg_w>>1),dsty+10,0,0,player->sigimg_w,player->sigimg_h);
+  graf_set_input(g_graf,player->sigimg_texid);
+  graf_decal(g_graf,fullx+(fullw>>1)-(player->sigimg_w>>1),dsty+10,0,0,player->sigimg_w,player->sigimg_h);
   
   /* If game over, show the final telegram.
    */
@@ -765,10 +765,10 @@ static void player_render(
     int srch=3*NS_sys_tilesize;
     dstx=fullx+(fullw>>1)-(srcw>>1);
     dsty=fully=(fullh>>1)-(srch>>1);
-    graf_set_image(&g.graf,RID_image_battle_tundra);
-    graf_decal(&g.graf,dstx,dsty,srcx,srcy,srcw,srch);
-    graf_set_image(&g.graf,RID_image_tinyfonttiles);
-    graf_set_tint(&g.graf,0x111d45ff);
+    graf_set_image(g_graf,RID_image_battle_tundra);
+    graf_decal(g_graf,dstx,dsty,srcx,srcy,srcw,srch);
+    graf_set_image(g_graf,RID_image_tinyfonttiles);
+    graf_set_tint(g_graf,0x111d45ff);
     int textxa=dstx+8;
     int textxz=dstx+srcw-8;
     int texty=dsty+15;
@@ -779,23 +779,23 @@ static void player_render(
         textx=textxa;
         texty+=6;
       }
-      graf_tile(&g.graf,textx,texty,*src,0);
+      graf_tile(g_graf,textx,texty,*src,0);
     }
-    graf_set_tint(&g.graf,0xfff8f0ff);
+    graf_set_tint(g_graf,0xfff8f0ff);
     int nscore=(int)(player->score*100.0);
     if (nscore<-999) nscore=-999;
     else if (nscore>999) nscore=999;
     textx=textxa;
     texty=dsty+srch-5;
     if (nscore<0) {
-      graf_tile(&g.graf,textx,texty,'-',0);
+      graf_tile(g_graf,textx,texty,'-',0);
       textx+=6;
       nscore=-nscore;
     }
-    graf_tile(&g.graf,textx,texty,'0'+nscore/100,0); textx+=8;
-    graf_tile(&g.graf,textx,texty,'0'+(nscore/10)%10,0); textx+=8;
-    graf_tile(&g.graf,textx,texty,'0'+nscore%10,0);
-    graf_set_tint(&g.graf,0);
+    graf_tile(g_graf,textx,texty,'0'+nscore/100,0); textx+=8;
+    graf_tile(g_graf,textx,texty,'0'+(nscore/10)%10,0); textx+=8;
+    graf_tile(g_graf,textx,texty,'0'+nscore%10,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -804,19 +804,19 @@ static void player_render(
  
 static void _morsecode_render(struct battle *battle) {
   const int GROUNDY=113;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   player_render(battle,BATTLE->playerv+0,0,0,FBW>>1,GROUNDY,-1);
   player_render(battle,BATTLE->playerv+1,FBW>>1,0,FBW>>1,GROUNDY,1);
   
   /* Static Morse Code key.
    */
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   int srcx=0,srcy=NS_sys_tilesize*2;
   int srcw=NS_sys_tilesize*9,srch=NS_sys_tilesize*4;
-  graf_decal(&g.graf,(FBW>>1)-(srcw>>1),FBH-srch-1,srcx,srcy,srcw,srch);
+  graf_decal(g_graf,(FBW>>1)-(srcw>>1),FBH-srch-1,srcx,srcy,srcw,srch);
 }
 
 /* Type definition.
@@ -847,7 +847,7 @@ static const struct battle_input morsecode_input[]={
 const struct battle_type battle_type_morsecode={
   .name="morsecode",
   .objlen=sizeof(struct battle_morsecode),
-  .id=NS_battle_morsecode,
+  .id=66,
   .strix_name=238,
   .no_article=0,
   .no_contest=0,

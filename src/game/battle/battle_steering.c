@@ -1,7 +1,7 @@
 /* battle_steering.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define TLIMIT 1.0 /* 0..pi/2 */
 #define SPRITE_LIMIT 32
@@ -383,7 +383,7 @@ static void _steering_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -408,7 +408,7 @@ static void _steering_update(struct battle *battle,double elapsed) {
     if ((dy>=-12.0)&&(dy<12.0)) {
       double dx=r->x-l->x;
       if ((dx>=-12.0)&&(dx<12.0)) {
-        bm_sound(RID_sound_ouch);
+        bm_sound_pan(RID_sound_ouch,0.0);
         l->collisionclock=1.000;
         r->collisionclock=1.000;
         if (dx>0.0) {
@@ -437,16 +437,16 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   int scroll=player->y-sceneh+20;
 
   // Fill with the ground color, and darker stripes to make motion clear.
-  graf_fill_rect(&g.graf,scenex,sceney,scenew,sceneh,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,scenex,sceney,scenew,sceneh,battle->ctab[BATTLE_COLOR_GROUND]);
   const int stripew=40;
   int stripey=-scroll%(stripew*2);
   if (stripey>0) stripey-=stripew*2;
   for (;stripey<sceneh;stripey+=stripew*2) {
-    graf_fill_rect(&g.graf,scenex,sceney+stripey,scenew,stripew,0x00000040);
+    graf_fill_rect(g_graf,scenex,sceney+stripey,scenew,stripew,0x00000040);
   }
   
   // The road, 8x2 tiles repeating.
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   int roadsrcx=NS_sys_tilesize*8;
   int roadsrcy=NS_sys_tilesize*9;
   int roadw=NS_sys_tilesize*8;
@@ -455,7 +455,7 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   int roady=-scroll%roadh;
   if (roady>0) roady-=roadh;
   for (;roady<sceneh;roady+=roadh) {
-    graf_decal(&g.graf,roaddstx,roady,roadsrcx,roadsrcy,roadw,roadh);
+    graf_decal(g_graf,roaddstx,roady,roadsrcx,roadsrcy,roadw,roadh);
   }
   
   // Finish line.
@@ -463,7 +463,7 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   if ((finy>-8)&&(finy<sceneh+8)) {
     int finx=roaddstx+NS_sys_tilesize+(NS_sys_tilesize>>1);
     int i=6; for (;i-->0;finx+=NS_sys_tilesize) {
-      graf_tile(&g.graf,finx,finy,0xbc,0);
+      graf_tile(g_graf,finx,finy,0xbc,0);
     }
   }
   
@@ -471,7 +471,7 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   struct steering_sprite *sprite=BATTLE->spritev;
   int i=BATTLE->spritec;
   for (;i-->0;sprite++) {
-    graf_tile(&g.graf,scenex+(int)sprite->x,sceney+(int)sprite->y-scroll,sprite->tileid,sprite->xform);
+    graf_tile(g_graf,scenex+(int)sprite->x,sceney+(int)sprite->y-scroll,sprite->tileid,sprite->xform);
   }
   
   // Player sprite.
@@ -479,7 +479,7 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   if ((px>=scenex)&&(px<scenex+scenew)) {
     int py=sceney+(int)player->y-scroll;
     uint8_t rot=(int8_t)((player->t*128.0)/M_PI);
-    graf_fancy(&g.graf,px,py,player->tileid,0,rot,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,px,py,player->tileid,0,rot,NS_sys_tilesize,0,player->color);
   }
   
   // The other guy.
@@ -488,7 +488,7 @@ static void player_render(struct battle *battle,struct player *player,int scenex
   if ((px>=scenex)&&(px<scenex+scenew)) {
     int py=sceney+(int)other->y-scroll;
     uint8_t rot=(int8_t)((other->t*128.0)/M_PI);
-    graf_fancy(&g.graf,px,py,other->tileid,0,rot,NS_sys_tilesize,0,other->color);
+    graf_fancy(g_graf,px,py,other->tileid,0,rot,NS_sys_tilesize,0,other->color);
   }
 }
 
@@ -499,7 +499,7 @@ static void steering_render_progress(int x,int y,int w,int h,double t,uint32_t c
   int ty=(int)(t*(h-w));
   if (ty<0) ty=0; else if (ty>h-w) ty=h-w;
   ty+=y;
-  graf_fill_rect(&g.graf,x,ty,w,w,color);
+  graf_fill_rect(g_graf,x,ty,w,w,color);
 }
 
 /* Render.
@@ -517,7 +517,7 @@ static void _steering_render(struct battle *battle) {
   player_render(battle,r,leftw+midbarw,0,rightw,FBH);
   
   // Middle bar showing each player's progress.
-  graf_fill_rect(&g.graf,leftw,0,midbarw,FBH,0x000000ff);
+  graf_fill_rect(g_graf,leftw,0,midbarw,FBH,0x000000ff);
   int thumbw=(midbarw-3)>>1;
   steering_render_progress(leftw+1,1,thumbw,FBH-2,l->y/BATTLE->len,l->color);
   steering_render_progress(leftw+2+thumbw,1,thumbw,FBH-2,r->y/BATTLE->len,r->color);
@@ -529,7 +529,7 @@ static void _steering_render(struct battle *battle) {
 const struct battle_type battle_type_steering={
   .name="steering",
   .objlen=sizeof(struct battle_steering),
-  .id=NS_battle_steering,
+  .id=79,
   .strix_name=284,
   .no_article=0,
   .no_contest=0,

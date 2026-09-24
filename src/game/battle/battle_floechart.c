@@ -1,7 +1,7 @@
 /* battle_floechart.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define BGCOLC NS_sys_mapw
 #define BGROWC (NS_sys_maph-3)
@@ -379,7 +379,7 @@ static void _floechart_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player->row<0) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     } else {
       player_update_common(battle,player,elapsed);
@@ -444,9 +444,9 @@ static void player_render(struct battle *battle,struct player *player) {
     if ((player->col>=0)&&(player->col<CHARTCOLC)&&(vtx->tileid&0x10)) y--;
   }
   
-  graf_tile(&g.graf,x,y,tileid,0);
+  graf_tile(g_graf,x,y,tileid,0);
   if (player->loop>=LOOP_REPORT_STEPS) {
-    graf_tile(&g.graf,x,y-13,0x71,0);
+    graf_tile(g_graf,x,y-13,0x71,0);
   }
 }
 
@@ -456,30 +456,30 @@ static void player_render(struct battle *battle,struct player *player) {
 static void _floechart_render(struct battle *battle) {
 
   // Background and ice floes, mostly prepared batches.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_tile_batch(&g.graf,BATTLE->bgvtxv,BGCOLC*BGROWC);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_tile_batch(g_graf,BATTLE->bgvtxv,BGCOLC*BGROWC);
   
   /* Originally there was a third batch for arrows on the floes.
    * That proved a challenge to read and not much fun.
    * So instead, we draw dark blue lines on the water. Much clearer!
    */
   {
-    graf_set_input(&g.graf,0);
+    graf_set_input(g_graf,0);
     struct egg_render_tile *vtx=BATTLE->chartvtxv;
     struct floe *floe=BATTLE->floev;
     int i=CHARTCOLC*CHARTROWC;
     for (;i-->0;vtx++,floe++) {
-      graf_line(&g.graf,vtx->x,vtx->y,0x0020a0ff,vtx->x+floe->dx*20,vtx->y+floe->dy*20,0x0020a0ff);
+      graf_line(g_graf,vtx->x,vtx->y,0x0020a0ff,vtx->x+floe->dx*20,vtx->y+floe->dy*20,0x0020a0ff);
     }
   }
   
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_tile_batch(&g.graf,BATTLE->chartvtxv,CHARTCOLC*CHARTROWC);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_tile_batch(g_graf,BATTLE->chartvtxv,CHARTCOLC*CHARTROWC);
   
   // Ice cream cone below the correct output.
   struct egg_render_tile *vtx=BATTLE->chartvtxv+CHARTCOLC*(CHARTROWC-1)+BATTLE->correctout;
-  graf_tile(&g.graf,vtx->x,vtx->y+20,0x70,0);
+  graf_tile(g_graf,vtx->x,vtx->y+20,0x70,0);
   
   // Players.
   player_render(battle,BATTLE->playerv+0);
@@ -489,11 +489,11 @@ static void _floechart_render(struct battle *battle) {
   if (BATTLE->playclock>0.0) {
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1; else if (s>99) s=99;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
-    if (s>=10) graf_tile(&g.graf,(FBW>>1)-4,10,'0'+s/10,0);
-    graf_tile(&g.graf,(FBW>>1)+4,10,'0'+s%10,0);
-    graf_set_tint(&g.graf,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_set_tint(g_graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
+    if (s>=10) graf_tile(g_graf,(FBW>>1)-4,10,'0'+s/10,0);
+    graf_tile(g_graf,(FBW>>1)+4,10,'0'+s%10,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -503,7 +503,7 @@ static void _floechart_render(struct battle *battle) {
 const struct battle_type battle_type_floechart={
   .name="floechart",
   .objlen=sizeof(struct battle_floechart),
-  .id=NS_battle_floechart,
+  .id=77,
   .strix_name=280,
   .no_article=0,
   .no_contest=0,

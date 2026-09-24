@@ -1,7 +1,7 @@
 /* battle_math.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define PROMPT_LIMIT 8 /* Actually can't go above 7: 2 digits per operand, 1 character operator, and spaces around the operator. */
 #define INPUT_LIMIT 3 /* Hard limit; it's all we have space to render. */
@@ -318,7 +318,7 @@ static void _math_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
   }
   
@@ -350,16 +350,16 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->who) x0=(FBW>>1)+10;
   else x0=(FBW>>1)-10-totalw;
   int y0=(FBH>>1)-(totalh>>1)+20;
-  graf_fill_rect(&g.graf,x0,y0,totalw,totalh,0xc0c0c0ff);
+  graf_fill_rect(g_graf,x0,y0,totalw,totalh,0xc0c0c0ff);
   if (showdigits) {
-    graf_fill_rect(&g.graf,x0+outer_margin,y0+outer_margin,NS_sys_tilesize*3,NS_sys_tilesize+1,0x100000ff);
+    graf_fill_rect(g_graf,x0+outer_margin,y0+outer_margin,NS_sys_tilesize*3,NS_sys_tilesize+1,0x100000ff);
   }
   
   // Prepare for griddish tiles.
   int gridx0=x0+outer_margin+(NS_sys_tilesize>>1);
   int displayy=y0+outer_margin+(NS_sys_tilesize>>1);
   int gridy0=displayy+inner_margin+NS_sys_tilesize;
-  graf_set_image(&g.graf,RID_image_cave_sprites);
+  graf_set_image(g_graf,RID_image_cave_sprites);
   
   // Display digits or highlight icon.
   if (showdigits) {
@@ -378,11 +378,11 @@ static void player_render(struct battle *battle,struct player *player) {
           if ((player->input[2]>=0x30)&&(player->input[2]<=0x39)) tileidv[2]=0x40+player->input[2]-0x30;
         } break;
     }
-    graf_tile(&g.graf,gridx0,displayy,tileidv[0],0);
-    graf_tile(&g.graf,gridx0+NS_sys_tilesize,displayy,tileidv[1],0);
-    graf_tile(&g.graf,gridx0+NS_sys_tilesize*2,displayy,tileidv[2],0);
+    graf_tile(g_graf,gridx0,displayy,tileidv[0],0);
+    graf_tile(g_graf,gridx0+NS_sys_tilesize,displayy,tileidv[1],0);
+    graf_tile(g_graf,gridx0+NS_sys_tilesize*2,displayy,tileidv[2],0);
   } else if (player->highlight) {
-    graf_tile(&g.graf,gridx0+NS_sys_tilesize,displayy,player->highlight,0);
+    graf_tile(g_graf,gridx0+NS_sys_tilesize,displayy,player->highlight,0);
   }
   
   // Digits and such.
@@ -408,17 +408,17 @@ static void player_render(struct battle *battle,struct player *player) {
       int press=0;
       if ((col==player->selx)&&(row==player->sely)&&player->finger) {
         press=1;
-        graf_tile(&g.graf,x,y,0x61,0);
+        graf_tile(g_graf,x,y,0x61,0);
       } else {
-        graf_tile(&g.graf,x,y,0x60,0);
+        graf_tile(g_graf,x,y,0x60,0);
       }
       if (tileid) {
-        graf_tile(&g.graf,x,y+(press?2:0),tileid,0);
+        graf_tile(g_graf,x,y+(press?2:0),tileid,0);
       }
       if (press) {
-        graf_tile(&g.graf,x,y+2,player->tileid+1,0);
+        graf_tile(g_graf,x,y+2,player->tileid+1,0);
       } else if ((col==player->selx)&&(row==player->sely)) {
-        graf_tile(&g.graf,x,y,player->tileid,0);
+        graf_tile(g_graf,x,y,player->tileid,0);
       }
     }
   }
@@ -428,7 +428,7 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _math_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x102040ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x102040ff);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   
@@ -450,12 +450,12 @@ static void _math_render(struct battle *battle) {
     int y=30;
     const char *v=msg;
     int i=msgc;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    for (;i-->0;v++,x+=8) graf_tile(&g.graf,x,y,*v,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    for (;i-->0;v++,x+=8) graf_tile(g_graf,x,y,*v,0);
   }
   
   // Scoreboard.
-  graf_set_image(&g.graf,RID_image_cave_sprites);
+  graf_set_image(g_graf,RID_image_cave_sprites);
   int sbw=BATTLE->roundc*NS_sys_tilesize;
   int sbx=(FBW>>1)-(sbw>>1)+(NS_sys_tilesize>>1);
   int sby=48;
@@ -465,7 +465,7 @@ static void _math_render(struct battle *battle) {
     uint32_t color=0x808080ff;
     if (i<l->score) { tileid+=1; color=l->color; }
     else if (i>=BATTLE->roundc-r->score) { tileid+=1; color=r->color; }
-    graf_fancy(&g.graf,sbx,sby,tileid,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,sbx,sby,tileid,0,0,NS_sys_tilesize,0,color);
   }
   
   // Players.
@@ -479,7 +479,7 @@ static void _math_render(struct battle *battle) {
 const struct battle_type battle_type_math={
   .name="math",
   .objlen=sizeof(struct battle_math),
-  .id=NS_battle_math,
+  .id=88,
   .strix_name=303,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_flying.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SCENEW 1000
 #define SCENEH 75
@@ -341,7 +341,7 @@ static void _flying_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -392,12 +392,12 @@ static void player_render_1(struct battle *battle,struct player *player,int scro
   if (player->hurtclock>0.0) {
     tint=(int)((player->hurtclock*255.0)/HURT_TIME);
     if (tint>0xff) tint=0xff;
-    if (tint>0) graf_set_tint(&g.graf,0xff000000|tint);
+    if (tint>0) graf_set_tint(g_graf,0xff000000|tint);
   }
   
-  graf_set_image(&g.graf,RID_image_battle_forest);
-  graf_tile(&g.graf,dstx,dsty,tileid,0);
-  if (tint>0) graf_set_tint(&g.graf,0);
+  graf_set_image(g_graf,RID_image_battle_forest);
+  graf_tile(g_graf,dstx,dsty,tileid,0);
+  if (tint>0) graf_set_tint(g_graf,0);
   
   /* Report to my right, if done.
    * Wait for (rptclock) to go nonzero, there's an initial vertical slide before things start ticking.
@@ -407,21 +407,21 @@ static void player_render_1(struct battle *battle,struct player *player,int scro
     dstx=SCENEW+80-scroll;
     int i=player->rptringc;
     for (;i-->0;dstx+=NS_sys_tilesize) {
-      graf_tile(&g.graf,dstx,dsty,0x7c,0);
+      graf_tile(g_graf,dstx,dsty,0x7c,0);
     }
     // Clock.
     dstx=SCENEW+20-scroll;
     int ms=(int)(player->rptclock*1000.0);
     if (ms<0) ms=0; else if (ms>99999) ms=99999;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_SKY_TEXT]);
-    if (ms>=10000) graf_tile(&g.graf,dstx,dsty,'0'+ms/10000,0); dstx+=8;
-    graf_tile(&g.graf,dstx,dsty,'0'+(ms/1000)%10,0); dstx+=8;
-    graf_tile(&g.graf,dstx,dsty,'.',0); dstx+=8;
-    graf_tile(&g.graf,dstx,dsty,'0'+(ms/100)%10,0); dstx+=8;
-    graf_tile(&g.graf,dstx,dsty,'0'+(ms/10)%10,0); dstx+=8;
-    graf_tile(&g.graf,dstx,dsty,'0'+ms%10,0);
-    graf_set_tint(&g.graf,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_set_tint(g_graf,battle->ctab[BATTLE_COLOR_SKY_TEXT]);
+    if (ms>=10000) graf_tile(g_graf,dstx,dsty,'0'+ms/10000,0); dstx+=8;
+    graf_tile(g_graf,dstx,dsty,'0'+(ms/1000)%10,0); dstx+=8;
+    graf_tile(g_graf,dstx,dsty,'.',0); dstx+=8;
+    graf_tile(g_graf,dstx,dsty,'0'+(ms/100)%10,0); dstx+=8;
+    graf_tile(g_graf,dstx,dsty,'0'+(ms/10)%10,0); dstx+=8;
+    graf_tile(g_graf,dstx,dsty,'0'+ms%10,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -430,19 +430,19 @@ static void player_render_1(struct battle *battle,struct player *player,int scro
  
 static void player_render(struct battle *battle,struct player *player,int fully) {
 
-  graf_fill_rect(&g.graf,0,fully,FBW,SCENEH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,fully,FBW,SCENEH,battle->ctab[BATTLE_COLOR_SKY]);
   
   int scroll=(int)player->x-20;
   if (scroll<0) scroll=0; // Players should start at 20, but clamp if I forget and change it.
   
   // Finish line.
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   int finx=SCENEW-scroll;
   if ((finx>-10)&&(finx<FBW+10)) {
     int finy=fully+(NS_sys_tilesize>>1);
     int ystop=fully+SCENEH;
     for (;finy<ystop;finy+=NS_sys_tilesize) {
-      graf_tile(&g.graf,finx,finy,0xbc,EGG_XFORM_SWAP);
+      graf_tile(g_graf,finx,finy,0xbc,EGG_XFORM_SWAP);
     }
   }
   
@@ -450,8 +450,8 @@ static void player_render(struct battle *battle,struct player *player,int fully)
   int spikew=NS_sys_tilesize*3;
   int spikex=-(scroll%spikew);
   for (;spikex<FBW;spikex+=spikew) {
-    graf_decal_xform(&g.graf,spikex,fully,160,96,spikew,NS_sys_tilesize,EGG_XFORM_YREV);
-    graf_decal_xform(&g.graf,spikex,fully+SCENEH-NS_sys_tilesize,160,96,spikew,NS_sys_tilesize,0);
+    graf_decal_xform(g_graf,spikex,fully,160,96,spikew,NS_sys_tilesize,EGG_XFORM_YREV);
+    graf_decal_xform(g_graf,spikex,fully+SCENEH-NS_sys_tilesize,160,96,spikew,NS_sys_tilesize,0);
   }
   
   // Back of rings.
@@ -462,8 +462,8 @@ static void player_render(struct battle *battle,struct player *player,int fully)
     if (rx<-20) continue;
     if (rx>FBW+20) continue;
     int ry=fully+(int)ring->y;
-    graf_tile(&g.graf,rx,ry-(NS_sys_tilesize>>1),0x6d,0);
-    graf_tile(&g.graf,rx,ry+(NS_sys_tilesize>>1),0x7d,0);
+    graf_tile(g_graf,rx,ry-(NS_sys_tilesize>>1),0x6d,0);
+    graf_tile(g_graf,rx,ry+(NS_sys_tilesize>>1),0x7d,0);
   }
   
   // Other guy first, then me.
@@ -474,18 +474,18 @@ static void player_render(struct battle *battle,struct player *player,int fully)
   player_render_1(battle,player,scroll,fully);
   
   // Front of rings.
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   for (i=BATTLE->ringc,ring=BATTLE->ringv;i-->0;ring++) {
     int rx=(int)ring->x-scroll+6;
     if (rx<-20) continue;
     if (rx>FBW+20) continue;
     int ry=fully+(int)ring->y;
-    graf_tile(&g.graf,rx,ry-(NS_sys_tilesize>>1),0x6e,0);
-    graf_tile(&g.graf,rx,ry+(NS_sys_tilesize>>1),0x7e,0);
+    graf_tile(g_graf,rx,ry-(NS_sys_tilesize>>1),0x6e,0);
+    graf_tile(g_graf,rx,ry+(NS_sys_tilesize>>1),0x7e,0);
     // If this player has got or missed it, draw a highlight icon dead center vertically.
     if (ring->got[player->who]) {
       uint8_t tileid=(ring->got[player->who]>0)?0x78:0x79;
-      graf_tile(&g.graf,rx,fully+(SCENEH>>1),tileid,0);
+      graf_tile(g_graf,rx,fully+(SCENEH>>1),tileid,0);
     }
   }
   
@@ -494,7 +494,7 @@ static void player_render(struct battle *battle,struct player *player,int fully)
   if (!player->done&&(BATTLE->ttl<1.0)) {
     int alpha=(int)((1.0-BATTLE->ttl)*255.0);
     if (alpha>0xff) alpha=0xff;
-    if (alpha>0) graf_fill_rect(&g.graf,0,fully,FBW,SCENEH,0x00000000|alpha);
+    if (alpha>0) graf_fill_rect(g_graf,0,fully,FBW,SCENEH,0x00000000|alpha);
   }
 }
 
@@ -508,9 +508,9 @@ static void _flying_render(struct battle *battle) {
   int btmy=((FBH*3)>>2)-(SCENEH>>1);
   player_render(battle,BATTLE->playerv+0,topy);
   player_render(battle,BATTLE->playerv+1,btmy);
-  graf_fill_rect(&g.graf,0,0,FBW,topy,0x000000ff);
-  graf_fill_rect(&g.graf,0,topy+SCENEH,FBW,btmy-SCENEH-topy,0x000000ff);
-  graf_fill_rect(&g.graf,0,btmy+SCENEH,FBW,FBH-SCENEH-topy,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,topy,0x000000ff);
+  graf_fill_rect(g_graf,0,topy+SCENEH,FBW,btmy-SCENEH-topy,0x000000ff);
+  graf_fill_rect(g_graf,0,btmy+SCENEH,FBW,FBH-SCENEH-topy,0x000000ff);
   
   //TODO scoreboard, clock, scroll indicators...
 }
@@ -521,7 +521,7 @@ static void _flying_render(struct battle *battle) {
 const struct battle_type battle_type_flying={
   .name="flying",
   .objlen=sizeof(struct battle_flying),
-  .id=NS_battle_flying,
+  .id=92,
   .strix_name=312,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_flipping.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_visbits.h"
 
 #define GROUNDY 160
@@ -247,7 +247,7 @@ static void _flipping_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -282,8 +282,8 @@ static void player_render(struct battle *battle,struct player *player) {
   }
   int trampy=GROUNDY-ht;
   uint8_t tramptile=0x11+0x10*distension;
-  graf_tile(&g.graf,player->x-ht,trampy,tramptile,0);
-  graf_tile(&g.graf,player->x+ht,trampy,tramptile+1,0);
+  graf_tile(g_graf,player->x-ht,trampy,tramptile,0);
+  graf_tile(g_graf,player->x+ht,trampy,tramptile+1,0);
   
   // Hero.
   int srcx=(player->tileid&0x0f)*NS_sys_tilesize;
@@ -301,9 +301,9 @@ static void player_render(struct battle *battle,struct player *player) {
     }
     dsty+=12;
   }
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   batsup_render_decal(dstx,dsty,srcx,srcy,NS_sys_tilesize,NS_sys_tilesize*2.0,player->xform,t,1.0);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
 }
 
 /* Render.
@@ -311,13 +311,13 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _flipping_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_image(&g.graf,RID_image_battle_desert);
+  graf_set_image(g_graf,RID_image_battle_desert);
   player_render(battle,l);
   player_render(battle,r);
 }
@@ -328,7 +328,7 @@ static void _flipping_render(struct battle *battle) {
 const struct battle_type battle_type_flipping={
   .name="flipping",
   .objlen=sizeof(struct battle_flipping),
-  .id=NS_battle_flipping,
+  .id=95,
   .strix_name=318,
   .no_article=0,
   .no_contest=0,

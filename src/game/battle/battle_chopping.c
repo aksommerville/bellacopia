@@ -1,4 +1,5 @@
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
+#include "game/bellacopia.h" /* Need NS_itemid */
 
 #define END_COOLDOWN_TIME 1.000
 #define VEG_LIMIT 128
@@ -247,7 +248,7 @@ static void veg_finish(struct battle *battle,struct player *player,struct veg *v
   veg->defunct=1;
   BATTLE->check_veg=1;
   player->score++;
-  bm_sound(RID_sound_collect);
+  bm_sound_pan(RID_sound_collect,0.0);
   
   // If it has an itemid and has not been chopped (ie w==16), add it to (prizev).
   if (veg->itemid&&(veg->w==16)&&(player->prizec<PRIZE_LIMIT)) {
@@ -258,10 +259,10 @@ static void veg_finish(struct battle *battle,struct player *player,struct veg *v
   int dsty_max=20;
   int dsty_min=16-(player->score/3);
   int dsty=dsty_min+rand()%(dsty_max-dsty_min);
-  graf_set_output(&g.graf,player->texid_output);
-  graf_set_image(&g.graf,RID_image_battle_early);
-  graf_decal(&g.graf,dstx,dsty,veg->srcx,veg->srcy,veg->w,veg->h);
-  graf_set_output(&g.graf,1);
+  graf_set_output(g_graf,player->texid_output);
+  graf_set_image(g_graf,RID_image_battle_early);
+  graf_decal(g_graf,dstx,dsty,veg->srcx,veg->srcy,veg->w,veg->h);
+  graf_set_output(g_graf,1);
 }
 
 /* Check for vegetables at the chopping point.
@@ -294,16 +295,16 @@ static int chopping_chop(struct battle *battle,struct player *player) {
  
 static void player_update_human(struct battle *battle,struct player *player,double elapsed) {
   if (player->blackout) {
-    if (g.input[player->human]&EGG_BTN_SOUTH) return;
+    if (g_input[player->human]&EGG_BTN_SOUTH) return;
     player->blackout=0;
   }
-  if (g.input[player->human]&EGG_BTN_SOUTH) {
+  if (g_input[player->human]&EGG_BTN_SOUTH) {
     if (!player->chopping) {
       player->chopping=1;
       if (chopping_chop(battle,player)) {
-        bm_sound(RID_sound_chop);
+        bm_sound_pan(RID_sound_chop,0.0);
       } else {
-        bm_sound(RID_sound_chopmiss);
+        bm_sound_pan(RID_sound_chopmiss,0.0);
       }
     }
   } else {
@@ -333,9 +334,9 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       player->chopping=1;
       player->cooldown=player->kcooldown+player->kcooldownextra*((rand()&0xffff)/65535.0);
       if (chopping_chop(battle,player)) {
-        bm_sound(RID_sound_chop);
+        bm_sound_pan(RID_sound_chop,0.0);
       } else {
-        bm_sound(RID_sound_chopmiss); // Probably not possible.
+        bm_sound_pan(RID_sound_chopmiss,0.0); // Probably not possible.
       }
       return;
     }
@@ -424,47 +425,47 @@ static void _chopping_update(struct battle *battle,double elapsed) {
 static void player_render(struct battle *battle,struct player *player) {
   
   // Start with the belt.
-  graf_set_image(&g.graf,RID_image_battle_early);
+  graf_set_image(g_graf,RID_image_battle_early);
   int x=XEND-8;
   int y=player->y;
   for (;x>-8;x-=16) {
-    graf_tile(&g.graf,x,y,0xa0+player->animframe,0);
+    graf_tile(g_graf,x,y,0xa0+player->animframe,0);
   }
   
   // Box background.
-  graf_tile(&g.graf,XEND+8,y,0xa8,0);
+  graf_tile(g_graf,XEND+8,y,0xa8,0);
   
   // Decal of veg bits sitting in the box.
-  graf_set_input(&g.graf,player->texid_output);
-  graf_decal(&g.graf,XEND,y-24,0,0,16,32);
+  graf_set_input(g_graf,player->texid_output);
+  graf_decal(g_graf,XEND,y-24,0,0,16,32);
   
   // Box foreground. To ensure that bits don't occlude the front face.
-  graf_set_image(&g.graf,RID_image_battle_early);
-  graf_tile(&g.graf,XEND+8,y,0xa9,0);
+  graf_set_image(g_graf,RID_image_battle_early);
+  graf_tile(g_graf,XEND+8,y,0xa9,0);
   
   // The cook.
-  graf_decal(&g.graf,PLEFTX,player->y-40,player->srcx+(player->chopping?32:0),player->srcy,32,48);
+  graf_decal(g_graf,PLEFTX,player->y-40,player->srcx+(player->chopping?32:0),player->srcy,32,48);
   
   // Vegetables on the belt.
   struct veg *veg=BATTLE->vegv;
   int i=BATTLE->vegc;
   for (;i-->0;veg++) {
     if (veg->who!=player->who) continue;
-    graf_decal(&g.graf,veg->x,veg->y,veg->srcx,veg->srcy,veg->w,veg->h);
+    graf_decal(g_graf,veg->x,veg->y,veg->srcx,veg->srcy,veg->w,veg->h);
   }
   
   // Score indicator.
-  graf_decal(&g.graf,XEND+40,player->y-24,160,144,32,32);
-  graf_tile(&g.graf,XEND+46,player->y-9,0x30+(player->score/100)%10,0);
-  graf_tile(&g.graf,XEND+52,player->y-9,0x30+(player->score/ 10)%10,0);
-  graf_tile(&g.graf,XEND+58,player->y-9,0x30+(player->score    )%10,0);
+  graf_decal(g_graf,XEND+40,player->y-24,160,144,32,32);
+  graf_tile(g_graf,XEND+46,player->y-9,0x30+(player->score/100)%10,0);
+  graf_tile(g_graf,XEND+52,player->y-9,0x30+(player->score/ 10)%10,0);
+  graf_tile(g_graf,XEND+58,player->y-9,0x30+(player->score    )%10,0);
 }
 
 /* Render.
  */
  
 static void _chopping_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x5ca77fff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x5ca77fff);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -506,7 +507,7 @@ static int _chopping_get_prizes(struct prize *v,int a,struct battle *battle) {
 const struct battle_type battle_type_chopping={
   .name="chopping",
   .objlen=sizeof(struct battle_chopping),
-  .id=NS_battle_chopping,
+  .id=2,
   .strix_name=15,
   .no_article=0,
   .no_contest=0,

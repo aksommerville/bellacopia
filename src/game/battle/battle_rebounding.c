@@ -2,7 +2,7 @@
  * An advanced digital simulation of table tennis.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 /* Bounds of the field in framebuffer pixels.
  */
@@ -284,7 +284,7 @@ static void _rebounding_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -299,7 +299,7 @@ static void _rebounding_update(struct battle *battle,double elapsed) {
     ((BATTLE->bally<=FLDT)&&(BATTLE->balldy<0.0))||
     ((BATTLE->bally>=FLDB)&&(BATTLE->balldy>0.0))
   ) {
-    bm_sound(RID_sound_bump);
+    bm_sound_pan(RID_sound_bump,0.0);
     BATTLE->balldy=-BATTLE->balldy;
   }
   
@@ -326,7 +326,7 @@ static void player_render(struct battle *battle,struct player *player) {
   int ya=lround(player->y-player->barr);
   int yz=lround(player->y+player->barr);
   uint32_t color=player->color;
-  graf_line(&g.graf,x,ya,color,x,yz,color);
+  graf_line(g_graf,x,ya,color,x,yz,color);
 }
 
 /* Render.
@@ -336,13 +336,13 @@ static void _rebounding_render(struct battle *battle) {
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
   uint32_t linecolor=0xffffffff;
-  graf_line_strip_begin(&g.graf,FLDL,FLDT,linecolor);
-  graf_line_strip_more(&g.graf,FLDR,FLDT,linecolor);
-  graf_line_strip_more(&g.graf,FLDR,FLDB,linecolor);
-  graf_line_strip_more(&g.graf,FLDL,FLDB,linecolor);
-  graf_line_strip_more(&g.graf,FLDL,FLDT,linecolor);
+  graf_line_strip_begin(g_graf,FLDL,FLDT,linecolor);
+  graf_line_strip_more(g_graf,FLDR,FLDT,linecolor);
+  graf_line_strip_more(g_graf,FLDR,FLDB,linecolor);
+  graf_line_strip_more(g_graf,FLDL,FLDB,linecolor);
+  graf_line_strip_more(g_graf,FLDL,FLDT,linecolor);
   
   player_render(battle,l);
   player_render(battle,r);
@@ -350,7 +350,7 @@ static void _rebounding_render(struct battle *battle) {
   if (battle->outcome==-2) {
     int bx=lround(BATTLE->ballx-BATTLE->ballr);
     int by=lround(BATTLE->bally-BATTLE->ballr);
-    graf_fill_rect(&g.graf,bx,by,2,2,0x40ff60ff);
+    graf_fill_rect(g_graf,bx,by,2,2,0x40ff60ff);
   }
   
   const int sbcellw=6;
@@ -363,7 +363,7 @@ static void _rebounding_render(struct battle *battle) {
     uint32_t color=0x202020ff;
     if (i<l->score) color=l->color;
     else if (i>=SCORE_COUNT-r->score) color=r->color;
-    graf_fill_rect(&g.graf,sbx,sby,sbcellw,sbcellh,color);
+    graf_fill_rect(g_graf,sbx,sby,sbcellw,sbcellh,color);
   }
 }
 
@@ -373,7 +373,7 @@ static void _rebounding_render(struct battle *battle) {
 const struct battle_type battle_type_rebounding={
   .name="rebounding",
   .objlen=sizeof(struct battle_rebounding),
-  .id=NS_battle_rebounding,
+  .id=32,
   .strix_name=334,
   .no_article=0,
   .no_contest=0,

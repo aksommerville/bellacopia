@@ -2,7 +2,7 @@
  * Tap A first when the indicated card appears.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 /* The pile will appear to be infinite, but they're lying on each other.
  * Only so many will actually be recorded, including the currently in-flight card if there is one.
@@ -178,7 +178,7 @@ static int slapping_generate_message(struct battle *battle) {
     text[0]='?';
     textc=1;
   }
-  BATTLE->msg.texid=font_render_to_texture(0,g.font,text,textc,FBW,font_get_line_height(g.font),0xa5bd83ff);
+  BATTLE->msg.texid=font_render_to_texture(0,g_font,text,textc,FBW,font_get_line_height(g_font),0xa5bd83ff);
   egg_texture_get_size(&BATTLE->msg.w,&BATTLE->msg.h,BATTLE->msg.texid);
   BATTLE->msg.x=(FBW>>1)-(BATTLE->msg.w>>1);
   BATTLE->msg.y=(FBH>>2)-(BATTLE->msg.h>>1);
@@ -302,7 +302,7 @@ static void _slapping_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -336,7 +336,7 @@ static void player_render(struct battle *battle,struct player *player) {
     uint8_t xform=player->who?EGG_XFORM_XREV:0;
     int srcx=(player->tileid_hand&0x0f)*NS_sys_tilesize;
     int srcy=(player->tileid_hand>>4)*NS_sys_tilesize;
-    graf_decal_xform(&g.graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*3,NS_sys_tilesize*3,xform);
+    graf_decal_xform(g_graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*3,NS_sys_tilesize*3,xform);
   }
 }
 
@@ -347,12 +347,12 @@ static void slapping_render_card(struct battle *battle,int x,int y,uint8_t cardi
   int rank=RANK_FROM_CARDID(cardid);
   int suit=SUIT_FROM_CARDID(cardid);
   uint32_t color=COLOR_FROM_CARDID(cardid);
-  graf_decal(&g.graf,x,y,NS_sys_tilesize*13,0,NS_sys_tilesize*3,NS_sys_tilesize*4);
+  graf_decal(g_graf,x,y,NS_sys_tilesize*13,0,NS_sys_tilesize*3,NS_sys_tilesize*4);
   int x1=x+6;
   int y1=y+7;
-  graf_fancy(&g.graf,x1,y1,0x00+rank,0,0,NS_sys_tilesize,color,0x808080ff);
+  graf_fancy(g_graf,x1,y1,0x00+rank,0,0,NS_sys_tilesize,color,0x808080ff);
   x1+=7;
-  graf_fancy(&g.graf,x1,y1,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff);
+  graf_fancy(g_graf,x1,y1,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff);
   switch (rank) {
     /* Common ranks show the suit in a fixed pattern.
      * There are three columns always in the same places.
@@ -362,7 +362,7 @@ static void slapping_render_card(struct battle *battle,int x,int y,uint8_t cardi
     #define _(col,row) { \
       int X=x+11+col*12; \
       int Y=y+20+row*5; \
-      graf_fancy(&g.graf,X,Y,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff); \
+      graf_fancy(g_graf,X,Y,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff); \
     }
     case 0: _(1,3) break;
     case 1: _(1,0) _(1,6) break;
@@ -376,9 +376,9 @@ static void slapping_render_card(struct battle *battle,int x,int y,uint8_t cardi
     case 9: _(0,0) _(0,2) _(0,4) _(0,6) _(2,0) _(2,2) _(2,4) _(2,6) _(1,1) _(1,5) break;
     #undef _
     // Face cards are a 3x3 decal, and don't have variations or color:
-    case 10: graf_decal(&g.graf,x,y+NS_sys_tilesize,NS_sys_tilesize*4,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
-    case 11: graf_decal(&g.graf,x,y+NS_sys_tilesize,NS_sys_tilesize*7,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
-    case 12: graf_decal(&g.graf,x,y+NS_sys_tilesize,NS_sys_tilesize*10,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
+    case 10: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*4,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
+    case 11: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*7,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
+    case 12: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*10,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
   }
 }
 
@@ -391,7 +391,7 @@ static void slapping_render_pile(struct battle *battle) {
   const int ts=NS_sys_tilesize;
   const int ht=NS_sys_tilesize>>1;
   const int t15=ts+ht;
-  graf_decal(&g.graf,midx-t15,midy-2*ts,ts*13,ts*8,ts*3,ts*4);
+  graf_decal(g_graf,midx-t15,midy-2*ts,ts*13,ts*8,ts*3,ts*4);
   int i=BATTLE->cardc;
   int p=BATTLE->cardp;
   if (i<CARD_LIMIT) p=0; // Don't draw the empty slots at the end.
@@ -409,15 +409,15 @@ static void slapping_render_pile(struct battle *battle) {
  */
  
 static void _slapping_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x0b4c1eff);
-  graf_set_input(&g.graf,BATTLE->msg.texid);
-  graf_decal(&g.graf,BATTLE->msg.x,BATTLE->msg.y,0,0,BATTLE->msg.w,BATTLE->msg.h);
-  graf_set_image(&g.graf,RID_image_battle_casino);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x0b4c1eff);
+  graf_set_input(g_graf,BATTLE->msg.texid);
+  graf_decal(g_graf,BATTLE->msg.x,BATTLE->msg.y,0,0,BATTLE->msg.w,BATTLE->msg.h);
+  graf_set_image(g_graf,RID_image_battle_casino);
   slapping_render_pile(battle);
   if (BATTLE->inflight.cardid>=0) {
     int x=(int)BATTLE->inflight.x-NS_sys_tilesize-(NS_sys_tilesize>>1);
     int y=(int)BATTLE->inflight.y-(NS_sys_tilesize<<1);
-    graf_decal(&g.graf,x,y,NS_sys_tilesize*13,NS_sys_tilesize*4,NS_sys_tilesize*3,NS_sys_tilesize*4);
+    graf_decal(g_graf,x,y,NS_sys_tilesize*13,NS_sys_tilesize*4,NS_sys_tilesize*3,NS_sys_tilesize*4);
   }
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -429,7 +429,7 @@ static void _slapping_render(struct battle *battle) {
 const struct battle_type battle_type_slapping={
   .name="slapping",
   .objlen=sizeof(struct battle_slapping),
-  .id=NS_battle_slapping,
+  .id=40,
   .strix_name=166,
   .no_article=0,
   .no_contest=0,

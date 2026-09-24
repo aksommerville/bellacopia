@@ -1,7 +1,7 @@
 /* battle_frogeating.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define POND_RADIUS 62.0 /* The pond is a perfect circle, centered in the framebuffer. */
 #define FROG_RADIUS 7.0
@@ -502,7 +502,7 @@ static void _frogeating_update(struct battle *battle,double elapsed) {
       player->inpaddle=0;
       player->ingobble=0;
     } else {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -562,17 +562,17 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->who) armd=-armd;
   int armx=midx+armd;
   int army=midy+2;
-  graf_tile(&g.graf,armx,army,player->tileid+0x10,xform);
+  graf_tile(g_graf,armx,army,player->tileid+0x10,xform);
   
   int lx=midx-ht,rx=midx+ht;
   if (player->who) {
     lx=midx+ht;
     rx=midx-ht;
   }
-  graf_tile(&g.graf,lx,midy-ht,bodytile+0x00,xform);
-  graf_tile(&g.graf,rx,midy-ht,bodytile+0x01,xform);
-  graf_tile(&g.graf,lx,midy+ht,bodytile+0x10,xform);
-  graf_tile(&g.graf,rx,midy+ht,bodytile+0x11,xform);
+  graf_tile(g_graf,lx,midy-ht,bodytile+0x00,xform);
+  graf_tile(g_graf,rx,midy-ht,bodytile+0x01,xform);
+  graf_tile(g_graf,lx,midy+ht,bodytile+0x10,xform);
+  graf_tile(g_graf,rx,midy+ht,bodytile+0x11,xform);
 }
 
 /* Render.
@@ -588,9 +588,9 @@ static void _frogeating_render(struct battle *battle) {
   const int pondh=NS_sys_tilesize*8;
   const int pondx=(FBW>>1)-(pondw>>1);
   const int pondy=midy-(pondh>>1);
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_set_image(&g.graf,RID_image_battle_forest);
-  graf_decal(&g.graf,pondx,pondy,0,NS_sys_tilesize*8,pondw,pondh);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_set_image(g_graf,RID_image_battle_forest);
+  graf_decal(g_graf,pondx,pondy,0,NS_sys_tilesize*8,pondw,pondh);
   
   /* On the water, below the frogs, render input indicators.
    */
@@ -599,12 +599,12 @@ static void _frogeating_render(struct battle *battle) {
   if (l->inpaddle) {
     int x=midx+(int)l->padx+NS_sys_tilesize;
     int y=midy+(int)l->pady;
-    graf_tile(&g.graf,x,y,(l->inpaddle>0)?0x8c:0x8d,0);
+    graf_tile(g_graf,x,y,(l->inpaddle>0)?0x8c:0x8d,0);
   }
   if (r->inpaddle) {
     int x=midx+(int)r->padx-NS_sys_tilesize;
     int y=midy+(int)r->pady;
-    graf_tile(&g.graf,x,y,(r->inpaddle>0)?0x8c:0x8d,EGG_XFORM_XREV);
+    graf_tile(g_graf,x,y,(r->inpaddle>0)?0x8c:0x8d,EGG_XFORM_XREV);
   }
   
   /* Frogs.
@@ -614,14 +614,14 @@ static void _frogeating_render(struct battle *battle) {
   for (;i-->0;frog++) {
     int x=midx+(int)frog->x;
     int y=midy+(int)frog->y;
-    graf_tile(&g.graf,x,y,0x88,0);
+    graf_tile(g_graf,x,y,0x88,0);
     if (frog->present) {
-      graf_tile(&g.graf,x,y,frog->blink?0x8a:0x89,frog->xform);
+      graf_tile(g_graf,x,y,frog->blink?0x8a:0x89,frog->xform);
       uint32_t highlight=0;
            if (BATTLE->playerv[0].target==frog) highlight=BATTLE->playerv[0].color;
       else if (BATTLE->playerv[1].target==frog) highlight=BATTLE->playerv[1].color;
       if (highlight) {
-        graf_fancy(&g.graf,x,y-3,0x8b,0,0,NS_sys_tilesize,0,highlight);
+        graf_fancy(g_graf,x,y-3,0x8b,0,0,NS_sys_tilesize,0,highlight);
       }
     }
   }
@@ -642,7 +642,7 @@ static void _frogeating_render(struct battle *battle) {
     uint32_t color=0x808080ff;
     if (i<l->score) { tileid--; color=l->color; }
     else if (i>=BATTLE->frogc-r->score) { tileid--; color=r->color; }
-    graf_fancy(&g.graf,sbx,sby,tileid,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,sbx,sby,tileid,0,0,NS_sys_tilesize,0,color);
   }
    
   /* Clock.
@@ -652,9 +652,9 @@ static void _frogeating_render(struct battle *battle) {
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1;
     else if (s>99) s=99; // huh?
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    if (s>=10) graf_tile(&g.graf,(FBW>>1)-4,clocky,'0'+s/10,0);
-    graf_tile(&g.graf,(FBW>>1)+4,clocky,'0'+s%10,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    if (s>=10) graf_tile(g_graf,(FBW>>1)-4,clocky,'0'+s/10,0);
+    graf_tile(g_graf,(FBW>>1)+4,clocky,'0'+s%10,0);
   }
 }
 
@@ -664,7 +664,7 @@ static void _frogeating_render(struct battle *battle) {
 const struct battle_type battle_type_frogeating={
   .name="frogeating",
   .objlen=sizeof(struct battle_frogeating),
-  .id=NS_battle_frogeating,
+  .id=74,
   .strix_name=274,
   .no_article=0,
   .no_contest=0,

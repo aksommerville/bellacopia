@@ -1,7 +1,7 @@
 /* battle_balancing.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 120
 #define XMARGIN 20.0
@@ -222,7 +222,7 @@ static void _balancing_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -271,28 +271,28 @@ static void player_render(struct battle *battle,struct player *player) {
     case 3: tileid+=4; break;
   }
   
-  graf_tile(&g.graf,xl,yt,tileid+0x00,player->xform);
-  graf_tile(&g.graf,xr,yt,tileid+0x01,player->xform);
-  graf_tile(&g.graf,xl,yb,tileid+0x10,player->xform);
-  graf_tile(&g.graf,xr,yb,tileid+0x11,player->xform);
+  graf_tile(g_graf,xl,yt,tileid+0x00,player->xform);
+  graf_tile(g_graf,xr,yt,tileid+0x01,player->xform);
+  graf_tile(g_graf,xl,yb,tileid+0x10,player->xform);
+  graf_tile(g_graf,xr,yb,tileid+0x11,player->xform);
   
   // Tomato.
   if (player->splat) {
     int tomx=lround(player->tomx);
     int tomy=lround(player->tomy);
     int ht=NS_sys_tilesize>>1;
-    graf_tile(&g.graf,tomx-ht,yt,0x28,0);
-    graf_tile(&g.graf,tomx+ht,yt,0x29,0);
-    graf_tile(&g.graf,tomx-ht,yb,0x38,0);
-    graf_tile(&g.graf,tomx+ht,yb,0x39,0);
+    graf_tile(g_graf,tomx-ht,yt,0x28,0);
+    graf_tile(g_graf,tomx+ht,yt,0x29,0);
+    graf_tile(g_graf,tomx-ht,yb,0x38,0);
+    graf_tile(g_graf,tomx+ht,yb,0x39,0);
   } else {
     int tomx=lround(player->tomx);
     int tomy=lround(player->tomy);
     double sint=sin(player->tomt);
     double cost=cos(player->tomt);
-    graf_set_filter(&g.graf,1);
-    graf_decal_rotate(&g.graf,tomx,tomy,128,0,32,sint,cost,1.0);
-    graf_set_filter(&g.graf,0);
+    graf_set_filter(g_graf,1);
+    graf_decal_rotate(g_graf,tomx,tomy,128,0,32,sint,cost,1.0);
+    graf_set_filter(g_graf,0);
   }
 }
 
@@ -303,24 +303,24 @@ static void _balancing_render(struct battle *battle) {
 
   /* Background, including finish line indicator.
    */
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   const int checkw=3;
   int finx1=(int)BATTLE->finishx;
   int finx0=finx1-checkw;
   int finy=GROUNDY;
-  graf_fill_rect(&g.graf,finx0,finy,checkw*2,FBH-finy,0xffffffff);
+  graf_fill_rect(g_graf,finx0,finy,checkw*2,FBH-finy,0xffffffff);
   while (finy<FBH) {
-    graf_fill_rect(&g.graf,finx0,finy,checkw,checkw,0x000000ff);
+    graf_fill_rect(g_graf,finx0,finy,checkw,checkw,0x000000ff);
     finy+=checkw;
-    graf_fill_rect(&g.graf,finx1,finy,checkw,checkw,0x000000ff);
+    graf_fill_rect(g_graf,finx1,finy,checkw,checkw,0x000000ff);
     finy+=checkw;
   }
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
 
   /* Heroes. Right first in case they overlap.
    */
-  graf_set_image(&g.graf,RID_image_battle_jungle);
+  graf_set_image(g_graf,RID_image_battle_jungle);
   player_render(battle,BATTLE->playerv+1);
   player_render(battle,BATTLE->playerv+0);
 }
@@ -331,7 +331,7 @@ static void _balancing_render(struct battle *battle) {
 const struct battle_type battle_type_balancing={
   .name="balancing",
   .objlen=sizeof(struct battle_balancing),
-  .id=NS_battle_balancing,
+  .id=98,
   .strix_name=324,
   .no_article=0,
   .no_contest=0,

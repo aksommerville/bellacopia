@@ -2,7 +2,7 @@
  * A to jump. Smash the melons as they roll by.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 140
 #define GRAVITY_ACCEL 300.0
@@ -149,14 +149,14 @@ static int smashing_generate_bgtex(struct battle *battle) {
   int cliffr=(FBW>>1)+20;
   uint32_t floorcolor=0x402010ff;
   
-  graf_set_output(&g.graf,BATTLE->bgtexid);
-  graf_fill_rect(&g.graf,0,0,cliffl,BATTLE->bgh,floorcolor);
-  graf_fill_rect(&g.graf,cliffr,0,BATTLE->bgw-cliffr,BATTLE->bgh,floorcolor);
-  graf_fill_rect(&g.graf,0,0,cliffl,1,0x000000ff);
-  graf_fill_rect(&g.graf,cliffr,0,BATTLE->bgw-cliffr,1,0x000000ff);
-  graf_fill_rect(&g.graf,cliffl,0,1,BATTLE->bgh,0x000000ff);
-  graf_fill_rect(&g.graf,cliffr,0,1,BATTLE->bgh,0x000000ff);
-  graf_set_output(&g.graf,1);
+  graf_set_output(g_graf,BATTLE->bgtexid);
+  graf_fill_rect(g_graf,0,0,cliffl,BATTLE->bgh,floorcolor);
+  graf_fill_rect(g_graf,cliffr,0,BATTLE->bgw-cliffr,BATTLE->bgh,floorcolor);
+  graf_fill_rect(g_graf,0,0,cliffl,1,0x000000ff);
+  graf_fill_rect(g_graf,cliffr,0,BATTLE->bgw-cliffr,1,0x000000ff);
+  graf_fill_rect(g_graf,cliffl,0,1,BATTLE->bgh,0x000000ff);
+  graf_fill_rect(g_graf,cliffr,0,1,BATTLE->bgh,0x000000ff);
+  graf_set_output(g_graf,1);
   
   return 0;
 }
@@ -168,10 +168,10 @@ static void smashing_add_bgpixel(struct battle *battle,int x,int y,uint32_t colo
   y-=GROUNDY;
   if ((x<0)||(x>=BATTLE->bgw)) return;
   if ((y<0)||(y>=BATTLE->bgh)) return;
-  graf_set_output(&g.graf,BATTLE->bgtexid);
-  graf_set_input(&g.graf,0);
-  graf_point(&g.graf,x,y,color&0xffffff7f);
-  graf_set_output(&g.graf,1);
+  graf_set_output(g_graf,BATTLE->bgtexid);
+  graf_set_input(g_graf,0);
+  graf_point(g_graf,x,y,color&0xffffff7f);
+  graf_set_output(g_graf,1);
 }
 
 /* New.
@@ -565,7 +565,7 @@ static void _smashing_update(struct battle *battle,double elapsed) {
    */
   struct player *player=BATTLE->playerv;
   for (i=2;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -591,7 +591,7 @@ static void player_render(struct battle *battle,struct player *player) {
   const struct pose *pose=player->posev+player->posep;
   int dstx=(int)player->x-24;
   int dsty=(int)player->y-48;
-  graf_decal_xform(&g.graf,dstx,dsty,pose->srcx,pose->srcy,48,48,player->xform);
+  graf_decal_xform(g_graf,dstx,dsty,pose->srcx,pose->srcy,48,48,player->xform);
 }
 
 static void scoreboard_render(struct battle *battle,struct player *player) {
@@ -602,7 +602,7 @@ static void scoreboard_render(struct battle *battle,struct player *player) {
   int i=0;
   for (;i<SCORE_MAX;i++,y-=12) {
     uint32_t color=(i<player->score)?player->color:0x808080ff;
-    graf_fancy(&g.graf,x,y,0xde,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,x,y,0xde,0,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -611,7 +611,7 @@ static void vegetable_render(struct battle *battle,struct vegetable *veg) {
   int x=(int)veg->x;
   int y=(int)veg->y;
   int8_t rot=(int8_t)((veg->t*128.0)/M_PI);
-  graf_fancy(&g.graf,x,y,veg->tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,x,y,veg->tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
 }
 
 /* Render.
@@ -619,10 +619,10 @@ static void vegetable_render(struct battle *battle,struct vegetable *veg) {
  
 static void _smashing_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_set_input(&g.graf,BATTLE->bgtexid);
-  graf_decal(&g.graf,0,FBH-BATTLE->bgh,0,0,BATTLE->bgw,BATTLE->bgh);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_set_input(g_graf,BATTLE->bgtexid);
+  graf_decal(g_graf,0,FBH-BATTLE->bgh,0,0,BATTLE->bgw,BATTLE->bgh);
+  graf_set_image(g_graf,RID_image_battle_labyrinth2);
   
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -630,17 +630,17 @@ static void _smashing_render(struct battle *battle) {
   scoreboard_render(battle,BATTLE->playerv+0);
   scoreboard_render(battle,BATTLE->playerv+1);
   
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   struct vegetable *veg=BATTLE->vegetablev;
   int i=2;
   for (;i-->0;veg++) vegetable_render(battle,veg);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   struct particle *particle=BATTLE->particlev;
   for (i=BATTLE->particlec;i-->0;particle++) {
     if (particle->defunct) continue;
-    graf_point(&g.graf,(int)particle->x,(int)particle->y,particle->color);
+    graf_point(g_graf,(int)particle->x,(int)particle->y,particle->color);
   }
 }
 
@@ -650,7 +650,7 @@ static void _smashing_render(struct battle *battle) {
 const struct battle_type battle_type_smashing={
   .name="smashing",
   .objlen=sizeof(struct battle_smashing),
-  .id=NS_battle_smashing,
+  .id=48,
   .strix_name=174,
   .no_article=0,
   .no_contest=0,

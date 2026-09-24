@@ -1,7 +1,7 @@
 /* battle_calligraphy.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_calligraphy {
   struct battle hdr;
@@ -129,24 +129,24 @@ static int _calligraphy_init(struct battle *battle) {
   int reftexid=egg_texture_new();
   if (egg_texture_load_raw(reftexid,32,32,32*4,0,0)<0) return -1;
   egg_texture_clear(reftexid);
-  graf_reset(&g.graf);
-  graf_set_output(&g.graf,reftexid);
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_decal(&g.graf,0,0,l->srcx,l->srcy,32,32);
-  graf_flush(&g.graf);
+  graf_reset(g_graf);
+  graf_set_output(g_graf,reftexid);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_decal(g_graf,0,0,l->srcx,l->srcy,32,32);
+  graf_flush(g_graf);
   egg_texture_get_pixels(l->ref,sizeof(l->ref),reftexid);
   if ((l->srcx==r->srcx)&&(l->srcy==r->srcy)) { // They're usually the same, and we can skip a lot of work then.
     memcpy(r->ref,l->ref,sizeof(l->ref));
   } else {
     egg_texture_clear(reftexid);
-    graf_reset(&g.graf);
-    graf_set_output(&g.graf,reftexid);
-    graf_set_image(&g.graf,RID_image_battle_tundra);
-    graf_decal(&g.graf,0,0,r->srcx,r->srcy,32,32);
-    graf_flush(&g.graf);
+    graf_reset(g_graf);
+    graf_set_output(g_graf,reftexid);
+    graf_set_image(g_graf,RID_image_battle_tundra);
+    graf_decal(g_graf,0,0,r->srcx,r->srcy,32,32);
+    graf_flush(g_graf);
     egg_texture_get_pixels(r->ref,sizeof(r->ref),reftexid);
   }
-  graf_reset(&g.graf);
+  graf_reset(g_graf);
   egg_texture_del(reftexid);
   
   return 0;
@@ -364,8 +364,8 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
  */
  
 static void calligraphy_update_line(struct battle *battle,struct player *player,int ax,int ay,int bx,int by) {
-  graf_set_output(&g.graf,player->texid);
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_output(g_graf,player->texid);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   
   /* Egg doesn't do fat lines, so we're going to trace the line ourselves and render it as a series of fancies.
    * (dx,dy) are -1,0,1.
@@ -394,7 +394,7 @@ static void calligraphy_update_line(struct battle *battle,struct player *player,
   }
   int w=wx+wy;
   for (;;) {
-    graf_fancy(&g.graf,ax,ay,0x59,0,0,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,ax,ay,0x59,0,0,NS_sys_tilesize,0,player->color);
     if ((w>0)&&(ax!=bx)) {
       w+=wy;
       ax+=dx;
@@ -412,7 +412,7 @@ static void calligraphy_update_line(struct battle *battle,struct player *player,
     }
   }
   
-  graf_set_output(&g.graf,1);
+  graf_set_output(g_graf,1);
 }
 
 /* Update all players, after specific controller.
@@ -565,7 +565,7 @@ static void _calligraphy_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -583,20 +583,20 @@ static void calligraphy_shadow(int x,int y,int w,int h) {
   int dsty1=y-(NS_sys_tilesize>>1);
   int dsty2=dsty1+h+NS_sys_tilesize;
   for (i=colc;i-->0;dstx+=NS_sys_tilesize) {
-    graf_tile(&g.graf,dstx,dsty1,0x61,0);
-    graf_tile(&g.graf,dstx,dsty2,0x61,EGG_XFORM_YREV);
+    graf_tile(g_graf,dstx,dsty1,0x61,0);
+    graf_tile(g_graf,dstx,dsty2,0x61,EGG_XFORM_YREV);
   }
   int dsty=y+(NS_sys_tilesize>>1);
   int dstx1=x-(NS_sys_tilesize>>1);
   int dstx2=dstx1+w+NS_sys_tilesize;
   for (i=rowc;i-->0;dsty+=NS_sys_tilesize) {
-    graf_tile(&g.graf,dstx1,dsty,0x61,EGG_XFORM_SWAP);
-    graf_tile(&g.graf,dstx2,dsty,0x61,EGG_XFORM_SWAP|EGG_XFORM_YREV);
+    graf_tile(g_graf,dstx1,dsty,0x61,EGG_XFORM_SWAP);
+    graf_tile(g_graf,dstx2,dsty,0x61,EGG_XFORM_SWAP|EGG_XFORM_YREV);
   }
-  graf_tile(&g.graf,dstx1,dsty1,0x60,0);
-  graf_tile(&g.graf,dstx2,dsty1,0x60,EGG_XFORM_XREV);
-  graf_tile(&g.graf,dstx1,dsty2,0x60,EGG_XFORM_YREV);
-  graf_tile(&g.graf,dstx2,dsty2,0x60,EGG_XFORM_XREV|EGG_XFORM_YREV);
+  graf_tile(g_graf,dstx1,dsty1,0x60,0);
+  graf_tile(g_graf,dstx2,dsty1,0x60,EGG_XFORM_XREV);
+  graf_tile(g_graf,dstx1,dsty2,0x60,EGG_XFORM_YREV);
+  graf_tile(g_graf,dstx2,dsty2,0x60,EGG_XFORM_XREV|EGG_XFORM_YREV);
 }
 
 static void calligraphy_guides(int x0,int y0,int w,int h) {
@@ -610,21 +610,21 @@ static void calligraphy_guides(int x0,int y0,int w,int h) {
   int y2=y0+(h>>1);
   int y1=(y0+y2)>>1;
   int y3=(y4+y2)>>1;
-  graf_line(&g.graf,x0,y1,minor,x4,y1,minor);
-  graf_line(&g.graf,x0,y3,minor,x4,y3,minor);
-  graf_line(&g.graf,x1,y0,minor,x1,y4,minor);
-  graf_line(&g.graf,x3,y0,minor,x3,y4,minor);
-  graf_line(&g.graf,x0,y2,major,x4,y2,major);
-  graf_line(&g.graf,x2,y0,major,x2,y4,major);
+  graf_line(g_graf,x0,y1,minor,x4,y1,minor);
+  graf_line(g_graf,x0,y3,minor,x4,y3,minor);
+  graf_line(g_graf,x1,y0,minor,x1,y4,minor);
+  graf_line(g_graf,x3,y0,minor,x3,y4,minor);
+  graf_line(g_graf,x0,y2,major,x4,y2,major);
+  graf_line(g_graf,x2,y0,major,x2,y4,major);
 }
 
 static void calligraphy_render_int999(int x,int y,int v) {
   if (v<0) v=0;
   else if (v>999) v=999;
-  graf_tile(&g.graf,x+8,y,'0'+v%10,0);
+  graf_tile(g_graf,x+8,y,'0'+v%10,0);
   if (v>=10) {
-    graf_tile(&g.graf,x,y,'0'+(v/10)%10,0);
-    if (v>=100) graf_tile(&g.graf,x-8,y,'0'+v/100,0);
+    graf_tile(g_graf,x,y,'0'+(v/10)%10,0);
+    if (v>=100) graf_tile(g_graf,x-8,y,'0'+v/100,0);
   }
 }
 
@@ -636,60 +636,60 @@ static void _calligraphy_render(struct battle *battle) {
   struct player *r=l+1;
   
   // Background and shadows.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x100850ff);
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x100850ff);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   calligraphy_shadow(l->refx,l->refy,l->refw,l->refh);
   calligraphy_shadow(r->refx,r->refy,r->refw,r->refh);
   calligraphy_shadow(l->boxx,l->boxy,l->boxw,l->boxh);
   calligraphy_shadow(r->boxx,r->boxy,r->boxw,r->boxh);
   
   // Canvases and guidelines.
-  graf_fill_rect(&g.graf,l->refx,l->refy,l->refw,l->refh,0xc0e0f0ff);
-  graf_fill_rect(&g.graf,r->refx,r->refy,r->refw,r->refh,0xc0e0f0ff);
-  graf_fill_rect(&g.graf,l->boxx,l->boxy,l->boxw,l->boxh,0xf0f8ffff);
-  graf_fill_rect(&g.graf,r->boxx,r->boxy,r->boxw,r->boxh,0xf0f8ffff);
+  graf_fill_rect(g_graf,l->refx,l->refy,l->refw,l->refh,0xc0e0f0ff);
+  graf_fill_rect(g_graf,r->refx,r->refy,r->refw,r->refh,0xc0e0f0ff);
+  graf_fill_rect(g_graf,l->boxx,l->boxy,l->boxw,l->boxh,0xf0f8ffff);
+  graf_fill_rect(g_graf,r->boxx,r->boxy,r->boxw,r->boxh,0xf0f8ffff);
   calligraphy_guides(l->refx,l->refy,l->refw,l->refh);
   calligraphy_guides(r->refx,r->refy,r->refw,r->refh);
   calligraphy_guides(l->boxx,l->boxy,l->boxw,l->boxh);
   calligraphy_guides(r->boxx,r->boxy,r->boxw,r->boxh);
   
   // Reference images.
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_decal(&g.graf,l->refx,l->refy,l->srcx,l->srcy,l->refw,l->refh);
-  graf_decal(&g.graf,r->refx,r->refy,r->srcx,r->srcy,r->refw,r->refh);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_decal(g_graf,l->refx,l->refy,l->srcx,l->srcy,l->refw,l->refh);
+  graf_decal(g_graf,r->refx,r->refy,r->srcx,r->srcy,r->refw,r->refh);
   
   // Faint reference on canvases.
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_set_tint(&g.graf,0x00c000ff);
-  graf_set_alpha(&g.graf,0x80);
-  graf_decal_rotate(&g.graf,l->boxx+(l->boxw>>1),l->boxy+(l->boxh>>1),l->srcx,l->srcy,l->refw,0.0,1.0,4.0);
-  graf_decal_rotate(&g.graf,r->boxx+(r->boxw>>1),r->boxy+(r->boxh>>1),r->srcx,r->srcy,r->refh,0.0,1.0,4.0);
-  graf_set_tint(&g.graf,0);
-  graf_set_alpha(&g.graf,0xff);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_set_tint(g_graf,0x00c000ff);
+  graf_set_alpha(g_graf,0x80);
+  graf_decal_rotate(g_graf,l->boxx+(l->boxw>>1),l->boxy+(l->boxh>>1),l->srcx,l->srcy,l->refw,0.0,1.0,4.0);
+  graf_decal_rotate(g_graf,r->boxx+(r->boxw>>1),r->boxy+(r->boxh>>1),r->srcx,r->srcy,r->refh,0.0,1.0,4.0);
+  graf_set_tint(g_graf,0);
+  graf_set_alpha(g_graf,0xff);
   
   // Canvas images.
-  graf_set_input(&g.graf,l->texid);
-  graf_decal(&g.graf,l->boxx,l->boxy,0,0,l->boxw,l->boxh);
-  graf_set_input(&g.graf,r->texid);
-  graf_decal(&g.graf,r->boxx,r->boxy,0,0,r->boxw,r->boxh);
+  graf_set_input(g_graf,l->texid);
+  graf_decal(g_graf,l->boxx,l->boxy,0,0,l->boxw,l->boxh);
+  graf_set_input(g_graf,r->texid);
+  graf_decal(g_graf,r->boxx,r->boxy,0,0,r->boxw,r->boxh);
   
   // Cursors and clock.
   if (battle->outcome==-2) {
-    graf_set_image(&g.graf,RID_image_battle_tundra);
-    graf_fancy(&g.graf,l->boxx+l->penx,l->boxy+l->peny,0x59,0,0,NS_sys_tilesize,0,(g.framec&16)?l->color:0x80808080);
-    graf_fancy(&g.graf,r->boxx+r->penx,r->boxy+r->peny,0x59,0,0,NS_sys_tilesize,0,(g.framec&16)?r->color:0x80808080);
-    if (l->use_indicator) graf_fancy(&g.graf,l->boxx+l->penx,l->boxy+l->peny,0x5a,0,0,NS_sys_tilesize,0,l->indicator?0x00ff00ff:0xff0000ff);
-    if (r->use_indicator) graf_fancy(&g.graf,r->boxx+r->penx,r->boxy+r->peny,0x5a,0,0,NS_sys_tilesize,0,r->indicator?0x00ff00ff:0xff0000ff);
+    graf_set_image(g_graf,RID_image_battle_tundra);
+    graf_fancy(g_graf,l->boxx+l->penx,l->boxy+l->peny,0x59,0,0,NS_sys_tilesize,0,(g_framec&16)?l->color:0x80808080);
+    graf_fancy(g_graf,r->boxx+r->penx,r->boxy+r->peny,0x59,0,0,NS_sys_tilesize,0,(g_framec&16)?r->color:0x80808080);
+    if (l->use_indicator) graf_fancy(g_graf,l->boxx+l->penx,l->boxy+l->peny,0x5a,0,0,NS_sys_tilesize,0,l->indicator?0x00ff00ff:0xff0000ff);
+    if (r->use_indicator) graf_fancy(g_graf,r->boxx+r->penx,r->boxy+r->peny,0x5a,0,0,NS_sys_tilesize,0,r->indicator?0x00ff00ff:0xff0000ff);
     
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     int sec=(int)(BATTLE->playtime+0.999);
     if (sec>99) sec=99; else if (sec<1) sec=1;
-    graf_tile(&g.graf,(FBW>>1)-4,16,'0'+sec/10,0);
-    graf_tile(&g.graf,(FBW>>1)+4,16,'0'+sec%10,0);
+    graf_tile(g_graf,(FBW>>1)-4,16,'0'+sec/10,0);
+    graf_tile(g_graf,(FBW>>1)+4,16,'0'+sec%10,0);
     
   // Scores.
   } else {
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     calligraphy_render_int999(FBW/3,16,l->score);
     calligraphy_render_int999((FBW*2)/3,16,r->score);
   }
@@ -701,7 +701,7 @@ static void _calligraphy_render(struct battle *battle) {
 const struct battle_type battle_type_calligraphy={
   .name="calligraphy",
   .objlen=sizeof(struct battle_calligraphy),
-  .id=NS_battle_calligraphy,
+  .id=67,
   .strix_name=259,
   .no_article=0,
   .no_contest=0,

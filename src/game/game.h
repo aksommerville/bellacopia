@@ -5,6 +5,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+struct map;
+struct sprite;
+struct sprite_type;
+
 /* Top-level global events: game.c
  **************************************************************************************/
 

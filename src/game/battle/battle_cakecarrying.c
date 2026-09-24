@@ -2,7 +2,7 @@
  * Balance a cake while standing on a train that's stopping.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define LAYERC 4
 #define CAR_COLC 17
@@ -140,12 +140,12 @@ static int _cakecarrying_init(struct battle *battle) {
  */
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
-  switch (g.input[player->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[player->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: player->indx=-1; break;
     case EGG_BTN_RIGHT: player->indx=1; break;
     default: player->indx=0; break;
   }
-  player->injump=(g.input[player->human]&EGG_BTN_SOUTH)?1:0;
+  player->injump=(g_input[player->human]&EGG_BTN_SOUTH)?1:0;
 }
 
 /* Update CPU player.
@@ -422,14 +422,14 @@ static void _cakecarrying_update(struct battle *battle,double elapsed) {
    */
   if ((BATTLE->bumpclock-=elapsed)<=0.0) {
     BATTLE->bumpclock+=BATTLE->bumpinterval;
-    bm_sound(RID_sound_trainbump);
+    bm_sound_pan(RID_sound_trainbump,0.0);
     cakecarrying_bump_players(battle);
   }
   
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -468,15 +468,15 @@ static void _cakecarrying_update(struct battle *battle,double elapsed) {
 static void player_render(struct battle *battle,struct player *player) {
   int heady=(int)player->y;
   heady-=NS_sys_tilesize+(NS_sys_tilesize>>1);
-  graf_tile(&g.graf,player->x,heady,player->tileid,player->xform);
-  graf_tile(&g.graf,player->x,heady+NS_sys_tilesize,player->tileid+0x10,player->xform);
+  graf_tile(g_graf,player->x,heady,player->tileid,player->xform);
+  graf_tile(g_graf,player->x,heady+NS_sys_tilesize,player->tileid+0x10,player->xform);
 }
 
 static void cake_render(struct battle *battle,struct player *player) {
   struct layer *layer=player->layerv;
   int i=LAYERC;
   for (;i-->0;layer++) {
-    graf_tile(&g.graf,(int)layer->x,(int)layer->y,layer->tileid,0);
+    graf_tile(g_graf,(int)layer->x,(int)layer->y,layer->tileid,0);
   }
   // Candle lights up after victory.
   if (player->outcome>0) {
@@ -490,7 +490,7 @@ static void cake_render(struct battle *battle,struct player *player) {
       case 2: xform=EGG_XFORM_XREV; break;
       case 3: tileid++; xform=EGG_XFORM_XREV; break;
     }
-    graf_tile(&g.graf,x,y,tileid,xform);
+    graf_tile(g_graf,x,y,tileid,xform);
   }
 }
 
@@ -498,8 +498,8 @@ static void cake_render(struct battle *battle,struct player *player) {
  */
  
 static void _cakecarrying_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   /* Track.
    */
@@ -507,7 +507,7 @@ static void _cakecarrying_render(struct battle *battle) {
   int y=150;
   int xz=FBW+NS_sys_tilesize;
   for (;x<xz;x+=NS_sys_tilesize) {
-    graf_tile(&g.graf,x,y,0xaa,0);
+    graf_tile(g_graf,x,y,0xaa,0);
   }
   
   /* Body of the car.
@@ -523,7 +523,7 @@ static void _cakecarrying_render(struct battle *battle) {
     int carx=carx0;
     int xi=CAR_COLC;
     for (;xi-->0;carx+=NS_sys_tilesize,src++) {
-      graf_tile(&g.graf,carx,cary,*src,0);
+      graf_tile(g_graf,carx,cary,*src,0);
     }
   }
   
@@ -532,8 +532,8 @@ static void _cakecarrying_render(struct battle *battle) {
   /* Wheels.
    */
   uint8_t tileid=0xab+BATTLE->wheelframe;
-  graf_tile(&g.graf,60,144,tileid,0);
-  graf_tile(&g.graf,260,144,tileid,0);
+  graf_tile(g_graf,60,144,tileid,0);
+  graf_tile(g_graf,260,144,tileid,0);
   
   /* Right player first, because the human is left in one-player mode.
    */
@@ -549,7 +549,7 @@ static void _cakecarrying_render(struct battle *battle) {
 const struct battle_type battle_type_cakecarrying={
   .name="cakecarrying",
   .objlen=sizeof(struct battle_cakecarrying),
-  .id=NS_battle_cakecarrying,
+  .id=27,
   .strix_name=154,
   .no_article=0,
   .no_contest=0,

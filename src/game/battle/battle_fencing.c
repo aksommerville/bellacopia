@@ -2,7 +2,7 @@
  * Tap A to place fenceposts.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define PLANKC_WIN   24 /* One player gets so many, they win. */
 #define PLANKC_LIMIT 45 /* Total planks across both players can't exceed this; stop if we reach it. */
@@ -122,7 +122,7 @@ static void _fencing_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -153,29 +153,29 @@ static void player_render(struct battle *battle,struct player *player) {
   }
   int i=player->plankc;
   for (;i-->0;x+=dx) {
-    graf_tile(&g.graf,x,152,0x8e,0);
-    graf_tile(&g.graf,x,136,0x7e,0);
-    graf_tile(&g.graf,x,120,0x6e,0);
+    graf_tile(g_graf,x,152,0x8e,0);
+    graf_tile(g_graf,x,136,0x7e,0);
+    graf_tile(g_graf,x,120,0x6e,0);
   }
   if (player->installclock>0.0) { // One more plank if our hand is up. It's not counted yet. Do not advance (x).
-    graf_tile(&g.graf,x,152,0x8e,0);
-    graf_tile(&g.graf,x,136,0x7e,0);
-    graf_tile(&g.graf,x,120,0x6e,0);
+    graf_tile(g_graf,x,152,0x8e,0);
+    graf_tile(g_graf,x,136,0x7e,0);
+    graf_tile(g_graf,x,120,0x6e,0);
   }
   if (player->who) x+=12; else x-=12;
   int y=144;
   uint8_t tileid=player->tileid;
   if (player->installclock>0.0) tileid+=2;
   if (player->xform) {
-    graf_tile(&g.graf,x-ht,y-ht,tileid+0x01,player->xform);
-    graf_tile(&g.graf,x+ht,y-ht,tileid+0x00,player->xform);
-    graf_tile(&g.graf,x-ht,y+ht,tileid+0x11,player->xform);
-    graf_tile(&g.graf,x+ht,y+ht,tileid+0x10,player->xform);
+    graf_tile(g_graf,x-ht,y-ht,tileid+0x01,player->xform);
+    graf_tile(g_graf,x+ht,y-ht,tileid+0x00,player->xform);
+    graf_tile(g_graf,x-ht,y+ht,tileid+0x11,player->xform);
+    graf_tile(g_graf,x+ht,y+ht,tileid+0x10,player->xform);
   } else {
-    graf_tile(&g.graf,x-ht,y-ht,tileid+0x00,player->xform);
-    graf_tile(&g.graf,x+ht,y-ht,tileid+0x01,player->xform);
-    graf_tile(&g.graf,x-ht,y+ht,tileid+0x10,player->xform);
-    graf_tile(&g.graf,x+ht,y+ht,tileid+0x11,player->xform);
+    graf_tile(g_graf,x-ht,y-ht,tileid+0x00,player->xform);
+    graf_tile(g_graf,x+ht,y-ht,tileid+0x01,player->xform);
+    graf_tile(g_graf,x-ht,y+ht,tileid+0x10,player->xform);
+    graf_tile(g_graf,x+ht,y+ht,tileid+0x11,player->xform);
   }
 }
 
@@ -184,27 +184,27 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _fencing_render(struct battle *battle) {
   const int groundy=160;
-  graf_fill_rect(&g.graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_athletes);
+  graf_fill_rect(g_graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_athletes);
   
   // Decorative fenceposts at fixed positions, behind the rails.
-  graf_tile(&g.graf, 80,152,0x8d,0);
-  graf_tile(&g.graf, 80,136,0x7d,0);
-  graf_tile(&g.graf, 80,120,0x6d,0);
-  graf_tile(&g.graf,160,152,0x8d,0);
-  graf_tile(&g.graf,160,136,0x7d,0);
-  graf_tile(&g.graf,160,120,0x6d,0);
-  graf_tile(&g.graf,240,152,0x8d,0);
-  graf_tile(&g.graf,240,136,0x7d,0);
-  graf_tile(&g.graf,240,120,0x6d,0);
+  graf_tile(g_graf, 80,152,0x8d,0);
+  graf_tile(g_graf, 80,136,0x7d,0);
+  graf_tile(g_graf, 80,120,0x6d,0);
+  graf_tile(g_graf,160,152,0x8d,0);
+  graf_tile(g_graf,160,136,0x7d,0);
+  graf_tile(g_graf,160,120,0x6d,0);
+  graf_tile(g_graf,240,152,0x8d,0);
+  graf_tile(g_graf,240,136,0x7d,0);
+  graf_tile(g_graf,240,120,0x6d,0);
   
   // Rails for the planks to attach to.
   int dstx=NS_sys_tilesize>>1;
   for (;dstx<FBW;dstx+=NS_sys_tilesize) {
-    graf_tile(&g.graf,dstx,152,0x6b,0);
-    graf_tile(&g.graf,dstx,136,0x6b,0);
+    graf_tile(g_graf,dstx,152,0x6b,0);
+    graf_tile(g_graf,dstx,136,0x6b,0);
   }
   
   player_render(battle,BATTLE->playerv+0);
@@ -217,7 +217,7 @@ static void _fencing_render(struct battle *battle) {
 const struct battle_type battle_type_fencing={
   .name="fencing",
   .objlen=sizeof(struct battle_fencing),
-  .id=NS_battle_fencing,
+  .id=33,
   .strix_name=159,
   .no_article=0,
   .no_contest=0,

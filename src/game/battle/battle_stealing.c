@@ -4,7 +4,10 @@
  * If it sees you moving, or sees you holding gold, it burninates: You drop the gold and get pushed to the edge.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
+#include "game/game.h" /* struct prize */
+
+#define NS_itemid_gold 14
 
 #define PLAY_TIME 20.0
 #define START_MARGIN 36.0 /* Pixels from horizontal edge, where we start. */
@@ -258,13 +261,13 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
 static void player_check_gather(struct battle *battle,struct player *player) {
   if (player->carrying) return;
   player->carrying=1;
-  bm_sound(RID_sound_collect);
+  bm_sound_pan(RID_sound_collect,0.0);
 }
 
 static void player_check_deposit(struct battle *battle,struct player *player) {
   if (!player->carrying) return;
   player->carrying=0;
-  bm_sound(RID_sound_deposit_coin);
+  bm_sound_pan(RID_sound_deposit_coin,0.0);
   player->score++;
 }
 
@@ -406,7 +409,7 @@ static void dragon_update(struct battle *battle,double elapsed) {
     stealing_generate_fireball(battle,x,y,0.0);
     stealing_generate_fireball(battle,x,y,-2.0*NS_sys_tilesize);
     stealing_generate_fireball(battle,x,y, 2.0*NS_sys_tilesize);
-    bm_sound(RID_sound_breathe_fire);
+    bm_sound_pan(RID_sound_breathe_fire,0.0);
   }
   
   /* Tick down watchclock.
@@ -446,7 +449,7 @@ static int fireball_update(struct battle *battle,struct fireball *fireball,doubl
     if ((dx<-radius)||(dx>radius)) continue;
     double dy=GROUNDY-(NS_sys_tilesize>>1)-fireball->y;
     if ((dy<-radius)||(dy>radius)) continue;
-    bm_sound(RID_sound_ouch);
+    bm_sound_pan(RID_sound_ouch,0.0);
     player->hurt=1;
     player->carrying=0;
     return 0;
@@ -588,7 +591,7 @@ static void _stealing_update(struct battle *battle,double elapsed) {
   // Update players.
   struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -617,11 +620,11 @@ static void player_render(struct battle *battle,struct player *player) {
   
   // Celebration or misery dance, if established.
   if (player->outcome>0) {
-    if (g.framec&8) y--;
-    graf_tile(&g.graf,x,y,player->tileid+2,xform);
+    if (g_framec&8) y--;
+    graf_tile(g_graf,x,y,player->tileid+2,xform);
     return;
   } else if (player->outcome<0) {
-    graf_tile(&g.graf,x,y,player->tileid+3,xform);
+    graf_tile(g_graf,x,y,player->tileid+3,xform);
     return;
   }
   
@@ -631,15 +634,15 @@ static void player_render(struct battle *battle,struct player *player) {
     case 1: tileid-=1; break;
     case 3: tileid-=2; break;
   }
-  if (player->hurt) graf_set_tint(&g.graf,0xff0000c0);
-  graf_tile(&g.graf,x,y,tileid,xform);
-  graf_set_tint(&g.graf,0);
+  if (player->hurt) graf_set_tint(g_graf,0xff0000c0);
+  graf_tile(g_graf,x,y,tileid,xform);
+  graf_set_tint(g_graf,0);
   
   // Draw a coin on top if we're carrying one.
   if (player->carrying) {
     int coinx=x+(NS_sys_tilesize>>1)*player->facedx;
     int coiny=y+2;
-    graf_tile(&g.graf,coinx,coiny,0x6b,0);
+    graf_tile(g_graf,coinx,coiny,0x6b,0);
   }
 }
 
@@ -654,7 +657,7 @@ static void fireball_render(struct battle *battle,struct fireball *fireball) {
     case 2: tileid+=0x10; break;
     case 3: tileid+=0x10; xform=EGG_XFORM_XREV; break;
   }
-  graf_tile(&g.graf,(int)fireball->x,(int)fireball->y,tileid,xform);
+  graf_tile(g_graf,(int)fireball->x,(int)fireball->y,tileid,xform);
 }
 
 /* Render sparkle.
@@ -670,7 +673,7 @@ static void sparkle_render(struct battle *battle,struct sparkle *sparkle) {
     case 2: tileid+=0x20; break;
     case 3: tileid+=0x10; break;
   }
-  graf_tile(&g.graf,sparkle->x,sparkle->y,tileid,0);
+  graf_tile(g_graf,sparkle->x,sparkle->y,tileid,0);
 }
 
 /* Render.
@@ -679,15 +682,15 @@ static void sparkle_render(struct battle *battle,struct sparkle *sparkle) {
 static void _stealing_render(struct battle *battle) {
 
   // Background. Then everything else comes from the one image.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   
   // Dragon's body and the pile of gold, a static image.
   const int dragonw=NS_sys_tilesize*5;
   const int dragonh=NS_sys_tilesize*3;
-  graf_decal(&g.graf,(FBW>>1)-(dragonw>>1),GROUNDY-dragonh,0,0,dragonw,dragonh);
+  graf_decal(g_graf,(FBW>>1)-(dragonw>>1),GROUNDY-dragonh,0,0,dragonw,dragonh);
   
   // Sparkles on the gold.
   struct sparkle *sparkle=BATTLE->sparklev;
@@ -701,11 +704,11 @@ static void _stealing_render(struct battle *battle) {
   // Dragon's head.
   int headx=(int)((FBW>>1)+BATTLE->dragon.headx*NS_sys_tilesize);
   int heady=GROUNDY-NS_sys_tilesize*2-(NS_sys_tilesize>>1);
-  graf_tile(&g.graf,headx,heady,BATTLE->dragon.headtile,BATTLE->dragon.headxform);
+  graf_tile(g_graf,headx,heady,BATTLE->dragon.headtile,BATTLE->dragon.headxform);
   
   // Decorative piggy banks.
-  graf_tile(&g.graf,NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,0);
-  graf_tile(&g.graf,FBW-NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,EGG_XFORM_XREV);
+  graf_tile(g_graf,NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,0);
+  graf_tile(g_graf,FBW-NS_sys_tilesize,GROUNDY-(NS_sys_tilesize>>1),0x6c,EGG_XFORM_XREV);
   
   // Players.
   player_render(battle,BATTLE->playerv+0);
@@ -713,9 +716,9 @@ static void _stealing_render(struct battle *battle) {
   
   // Number overlays.
   // Scores can't get anywhere near 10, don't worry.
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_tile(&g.graf,NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[0].score,0);
-  graf_tile(&g.graf,FBW-NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[1].score,0);
+  graf_set_image(g_graf,RID_image_fonttiles);
+  graf_tile(g_graf,NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[0].score,0);
+  graf_tile(g_graf,FBW-NS_sys_tilesize,GROUNDY+(NS_sys_tilesize>>1),'0'+BATTLE->playerv[1].score,0);
   // Could render the clock if we like. I don't really feel a need for it.
 }
 
@@ -740,7 +743,7 @@ static int _stealing_get_prizes(struct prize *v,int a,struct battle *battle) {
 const struct battle_type battle_type_stealing={
   .name="stealing",
   .objlen=sizeof(struct battle_stealing),
-  .id=NS_battle_stealing,
+  .id=11,
   .strix_name=50,
   .no_article=0,
   .no_contest=0,

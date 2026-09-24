@@ -1,7 +1,7 @@
 /* battle_fission.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 139 /* Must agree with image:battle_fission */
 #define RODC 5
@@ -263,7 +263,7 @@ static void _fission_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -318,7 +318,7 @@ static void _fission_update(struct battle *battle,double elapsed) {
       battle_song(0);
       BATTLE->stopped_music=1;
     } else if (BATTLE->blowclock<=BATTLE->klaxtime) {
-      bm_sound(RID_sound_klaxon);
+      bm_sound_pan(RID_sound_klaxon,0.0);
       BATTLE->klaxtime-=0.400;
       BATTLE->redalert=RED_ALERT_TIME;
     }
@@ -330,13 +330,13 @@ static void _fission_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
   int y=58;
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_set_image(g_graf,RID_image_battle_sea);
   uint8_t tileid=player->tileid;
   if (BATTLE->doomsday>0.0) {
     tileid+=2;
-    if (!((g.framec+player->who*0x40)&0x70)) tileid+=1; // blink
+    if (!((g_framec+player->who*0x40)&0x70)) tileid+=1; // blink
   }
-  graf_tile(&g.graf,player->xv[player->xp],y,tileid,player->xform);
+  graf_tile(g_graf,player->xv[player->xp],y,tileid,player->xform);
   if (BATTLE->doomsday>0.0) return; // Don't bother silhouetting the rods or hand.
   int i=RODC;
   while (i-->0) {
@@ -344,9 +344,9 @@ static void player_render(struct battle *battle,struct player *player) {
     int dis=(int)(player->disv[i]*14.5);
     if (dis<0) dis=0; else if (dis>14) dis=14;
     rody-=dis;
-    graf_tile(&g.graf,player->xv[i],rody,0x00,0);
+    graf_tile(g_graf,player->xv[i],rody,0x00,0);
     if (i==player->xp) {
-      graf_tile(&g.graf,player->xv[i],rody-9,player->tileid+1,0);
+      graf_tile(g_graf,player->xv[i],rody-9,player->tileid+1,0);
     }
   }
 }
@@ -355,16 +355,16 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void reactometer_render(struct battle *battle,struct player *player,int x,int y) {
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_set_image(g_graf,RID_image_battle_sea);
   double n=player->reactivity/RODC;
   uint8_t tileid=0x02;
   if (n>=0.800) { // Try to agree with the tile's red zone.
-    tileid=(g.framec&8)?0x03:0x04;
+    tileid=(g_framec&8)?0x03:0x04;
   }
   double t=-M_PI+0.500+n*(M_PI*2.0-1.000);
   uint8_t rot=(int8_t)((t*128.0)/M_PI);
-  graf_fancy(&g.graf,x,y,tileid,0,0,NS_sys_tilesize,0,0x808080ff);
-  graf_fancy(&g.graf,x,y,0x01,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,x,y,tileid,0,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,x,y,0x01,0,rot,NS_sys_tilesize,0,0x808080ff);
 }
 
 /* Horizontal bar showing one player's score.
@@ -375,7 +375,7 @@ static void scorebar_render(struct battle *battle,int x,int y,int w,int h,double
   if (barw<=0) return;
   if (barw>w) barw=w;
   if (align>0) x=x+w-barw;
-  graf_fill_rect(&g.graf,x,y,barw,h,color);
+  graf_fill_rect(g_graf,x,y,barw,h,color);
 }
 
 /* Animated lightbulbs around the level indicator.
@@ -397,7 +397,7 @@ static void lightbulbs_render(uint8_t tileid,int period,int phase) {
     for (;i-->0;x+=plan->dx) {
       if (++phase>=period) {
         phase=0;
-        graf_tile(&g.graf,x,plan->y,tileid,0);
+        graf_tile(g_graf,x,plan->y,tileid,0);
       }
     }
   }
@@ -411,11 +411,11 @@ static void _fission_render(struct battle *battle) {
   /* First just the background fill. Either white+black or sky+ground.
    */
   if (BATTLE->doomsday>0.0) {
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0xffffffff);
-    graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,0x000000ff);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,0xffffffff);
+    graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,0x000000ff);
   } else {
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-    graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+    graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
   }
   
   /* Heroes and rods render before the main scenery -- rods count on the pile for occlusion.
@@ -436,13 +436,13 @@ static void _fission_render(struct battle *battle) {
     if (blackness>=1.0) whiteout=0x00;
     else if (blackness<=0.0) whiteout=0xff;
     else whiteout=(int)((1.0-blackness)*255.0);
-    graf_set_tint(&g.graf,0x000000ff);
-    graf_set_image(&g.graf,RID_image_battle_fission);
-    graf_decal(&g.graf,0,0,0,0,FBW,FBH);
-    graf_set_tint(&g.graf,0);
+    graf_set_tint(g_graf,0x000000ff);
+    graf_set_image(g_graf,RID_image_battle_fission);
+    graf_decal(g_graf,0,0,0,0,FBW,FBH);
+    graf_set_tint(g_graf,0);
   } else { // Normal case, where everyone is still alive.
-    graf_set_image(&g.graf,RID_image_battle_fission);
-    graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+    graf_set_image(g_graf,RID_image_battle_fission);
+    graf_decal(g_graf,0,0,0,0,FBW,FBH);
   }
   
   /* Control panel.
@@ -451,7 +451,7 @@ static void _fission_render(struct battle *battle) {
   if (BATTLE->doomsday<=0.0) {
     reactometer_render(battle,BATTLE->playerv+0,110,161);
     reactometer_render(battle,BATTLE->playerv+1,210,161);
-    graf_set_image(&g.graf,RID_image_battle_sea);
+    graf_set_image(g_graf,RID_image_battle_sea);
     int lblx=0,lblw;
     switch (BATTLE->level) {
       case LEVEL_OFF: {
@@ -460,15 +460,15 @@ static void _fission_render(struct battle *battle) {
       case LEVEL_REACT: {
           lblx=21;
           lblw=20;
-          lightbulbs_render(0x05,3,g.framec/10);
+          lightbulbs_render(0x05,3,g_framec/10);
         } break;
       case LEVEL_CRITICAL: {
           lblx=44;
           lblw=28;
-          lightbulbs_render((g.framec&8)?0x06:0x07,1,0);
+          lightbulbs_render((g_framec&8)?0x06:0x07,1,0);
         } break;
     }
-    graf_decal(&g.graf,124+lblx,157,128+lblx,0,lblw,7);
+    graf_decal(g_graf,124+lblx,157,128+lblx,0,lblw,7);
     scorebar_render(battle, 61,72,95,2,BATTLE->playerv[0].score,BATTLE->playerv[0].color,-1);
     scorebar_render(battle,164,72,95,2,BATTLE->playerv[1].score,BATTLE->playerv[1].color, 1);
   }
@@ -476,10 +476,10 @@ static void _fission_render(struct battle *battle) {
   /* Whiteout or red alert.
    */
   if (whiteout>0) {
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0xffffff00|whiteout);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,0xffffff00|whiteout);
   } else if (BATTLE->redalert>0.0) {
     int alpha=(int)((BATTLE->redalert*128.0)/RED_ALERT_TIME);
-    if (alpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xff000000|alpha);
+    if (alpha>0) graf_fill_rect(g_graf,0,0,FBW,FBH,0xff000000|alpha);
   }
 }
 
@@ -489,7 +489,7 @@ static void _fission_render(struct battle *battle) {
 const struct battle_type battle_type_fission={
   .name="fission",
   .objlen=sizeof(struct battle_fission),
-  .id=NS_battle_fission,
+  .id=72,
   .strix_name=269,
   .no_article=0,
   .no_contest=0,

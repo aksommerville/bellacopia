@@ -1,7 +1,7 @@
 /* battle_regex.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define TERM_COLC 40
@@ -180,7 +180,7 @@ static int _regex_init(struct battle *battle) {
   
   const char *prompt;
   int promptc=text_get_string(&prompt,RID_strings_battle,64);
-  BATTLE->prompt_texid=font_render_to_texture(0,g.font,prompt,promptc,FBW,FBH,0xffffffff);
+  BATTLE->prompt_texid=font_render_to_texture(0,g_font,prompt,promptc,FBW,FBH,0xffffffff);
   egg_texture_get_size(&BATTLE->promptw,&BATTLE->prompth,BATTLE->prompt_texid);
   
   return 0;
@@ -231,13 +231,13 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
 static void player_move(struct battle *battle,struct player *player,int d) {
   player->cursorp+=d;
   if (player->cursorp<0) {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     player->cursorp=0;
   } else if (player->cursorp>=TERM_COLC) {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     player->cursorp=TERM_COLC-1;
   } else {
-    bm_sound(RID_sound_uimotion);
+    bm_sound_pan(RID_sound_uimotion,0.0);
   }
 }
 
@@ -259,10 +259,10 @@ static void player_update_common(struct battle *battle,struct player *player,dou
   }
   if (player->activate) {
     if (player->cursorp==BATTLE->errorp) {
-      bm_sound(RID_sound_treasure);
+      bm_sound_pan(RID_sound_treasure,0.0);
       battle->outcome=player->who?-1:1;
     } else {
-      bm_sound(RID_sound_reject);
+      bm_sound_pan(RID_sound_reject,0.0);
       battle->outcome=player->who?1:-1;
     }
   }
@@ -280,7 +280,7 @@ static void _regex_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
     if (battle->outcome>-2) return;
@@ -291,7 +291,7 @@ static void _regex_update(struct battle *battle,double elapsed) {
  */
  
 static void _regex_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x202820ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x202820ff);
   
   // Determine terminal bounds and fill it in.
   const int glyphw=6;
@@ -301,25 +301,25 @@ static void _regex_render(struct battle *battle) {
   int termh=(term_border*2)+TERM_ROWC*glyphh;
   int termx=(FBW>>1)-(termw>>1);
   int termy=(FBH>>1)-(termh>>1);
-  graf_fill_rect(&g.graf,termx,termy,termw,termh,0x101410ff);
+  graf_fill_rect(g_graf,termx,termy,termw,termh,0x101410ff);
   
   // Animated cursor for each player.
   int fy=3;
   int ap=BATTLE->playerv[0].cursorp;
   int bp=BATTLE->playerv[1].cursorp;
   if (ap==bp) { // When on the same place, their 'a' colors alternate.
-    uint32_t color=(g.framec&16)?BATTLE->playerv[0].colora:BATTLE->playerv[1].colora;
-    graf_fill_rect(&g.graf,termx+term_border+ap*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
+    uint32_t color=(g_framec&16)?BATTLE->playerv[0].colora:BATTLE->playerv[1].colora;
+    graf_fill_rect(g_graf,termx+term_border+ap*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
   } else {
-    uint32_t color=(g.framec&16)?BATTLE->playerv[0].colora:BATTLE->playerv[0].colorb;
-    graf_fill_rect(&g.graf,termx+term_border+ap*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
-    color=(g.framec&16)?BATTLE->playerv[1].colora:BATTLE->playerv[1].colorb;
-    graf_fill_rect(&g.graf,termx+term_border+bp*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
+    uint32_t color=(g_framec&16)?BATTLE->playerv[0].colora:BATTLE->playerv[0].colorb;
+    graf_fill_rect(g_graf,termx+term_border+ap*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
+    color=(g_framec&16)?BATTLE->playerv[1].colora:BATTLE->playerv[1].colorb;
+    graf_fill_rect(g_graf,termx+term_border+bp*glyphw,termy+term_border+fy*glyphh,glyphw,glyphh,color);
   }
   
   // Print the text.
-  graf_set_image(&g.graf,RID_image_termfont);
-  graf_set_tint(&g.graf,0xffff80ff);
+  graf_set_image(g_graf,RID_image_termfont);
+  graf_set_tint(g_graf,0xffff80ff);
   const char *src=BATTLE->term;
   int y=termy+term_border+(glyphh>>1);
   int yi=TERM_ROWC;
@@ -328,14 +328,14 @@ static void _regex_render(struct battle *battle) {
     int xi=TERM_COLC;
     for (;xi-->0;x+=glyphw,src++) {
       if ((unsigned char)(*src)<=0x20) continue;
-      graf_tile(&g.graf,x,y,*src,0);
+      graf_tile(g_graf,x,y,*src,0);
     }
   }
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0);
   
   // Static prompt above the terminal.
-  graf_set_input(&g.graf,BATTLE->prompt_texid);
-  graf_decal(&g.graf,(FBW>>1)-(BATTLE->promptw>>1),termy-BATTLE->prompth-2,0,0,BATTLE->promptw,BATTLE->prompth);
+  graf_set_input(g_graf,BATTLE->prompt_texid);
+  graf_decal(g_graf,(FBW>>1)-(BATTLE->promptw>>1),termy-BATTLE->prompth-2,0,0,BATTLE->promptw,BATTLE->prompth);
 }
 
 /* Type definition.
@@ -344,7 +344,7 @@ static void _regex_render(struct battle *battle) {
 const struct battle_type battle_type_regex={
   .name="regex",
   .objlen=sizeof(struct battle_regex),
-  .id=NS_battle_regex,
+  .id=12,
   .strix_name=51,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_sonar.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 /* Column and row refer to the spaces between walls.
  * Walls are the infinitely thin space between columns and rows, where physics happens.
@@ -683,7 +683,7 @@ static void _sonar_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -727,7 +727,7 @@ static inline void sonar_fill_column(uint32_t *v,int stride,int h,uint32_t color
  */
  
 static void _sonar_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
   int fldw=COLC*CELLSIZE;
   int fldh=ROWC*CELLSIZE;
   int fldx=(FBW>>1)-(fldw>>1);
@@ -741,12 +741,12 @@ static void _sonar_render(struct battle *battle) {
     if (alpha<=0) continue;
     if (alpha>0xff) alpha=0xff;
     uint32_t color=0xffffff00|alpha;
-    graf_line(&g.graf,lum->ax,lum->ay,color,lum->bx,lum->by,color);
+    graf_line(g_graf,lum->ax,lum->ay,color,lum->bx,lum->by,color);
   }
   
   // Goal.
-  graf_set_image(&g.graf,RID_image_battle_underground);
-  graf_tile(&g.graf,fldx+(int)(BATTLE->goalx*CELLSIZE),fldy+(int)(BATTLE->goaly*CELLSIZE),0x06,0);
+  graf_set_image(g_graf,RID_image_battle_underground);
+  graf_tile(g_graf,fldx+(int)(BATTLE->goalx*CELLSIZE),fldy+(int)(BATTLE->goaly*CELLSIZE),0x06,0);
   
   // Players.
   struct player *l=BATTLE->playerv;
@@ -763,11 +763,11 @@ static void _sonar_render(struct battle *battle) {
     case 3: rtile+=2; break;
   }
   if (l->y<=r->y) {
-    graf_tile(&g.graf,(int)(fldx+l->x*CELLSIZE),(int)(fldy+l->y*CELLSIZE),ltile,l->xform);
-    graf_tile(&g.graf,(int)(fldx+r->x*CELLSIZE),(int)(fldy+r->y*CELLSIZE),rtile,r->xform);
+    graf_tile(g_graf,(int)(fldx+l->x*CELLSIZE),(int)(fldy+l->y*CELLSIZE),ltile,l->xform);
+    graf_tile(g_graf,(int)(fldx+r->x*CELLSIZE),(int)(fldy+r->y*CELLSIZE),rtile,r->xform);
   } else {
-    graf_tile(&g.graf,(int)(fldx+r->x*CELLSIZE),(int)(fldy+r->y*CELLSIZE),rtile,r->xform);
-    graf_tile(&g.graf,(int)(fldx+l->x*CELLSIZE),(int)(fldy+l->y*CELLSIZE),ltile,l->xform);
+    graf_tile(g_graf,(int)(fldx+r->x*CELLSIZE),(int)(fldy+r->y*CELLSIZE),rtile,r->xform);
+    graf_tile(g_graf,(int)(fldx+l->x*CELLSIZE),(int)(fldy+l->y*CELLSIZE),ltile,l->xform);
   }
 }
 
@@ -777,7 +777,7 @@ static void _sonar_render(struct battle *battle) {
 const struct battle_type battle_type_sonar={
   .name="sonar",
   .objlen=sizeof(struct battle_sonar),
-  .id=NS_battle_sonar,
+  .id=78,
   .strix_name=282,
   .no_article=0,
   .no_contest=0,

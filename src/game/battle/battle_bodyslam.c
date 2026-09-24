@@ -1,7 +1,7 @@
 /* battle_bodyslam.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define BGVTX_LIMIT 170
 #define GRIDY 4 /* Start the grid a little below the top of the screen, so it fits exactly 20x11 tiles. */
@@ -363,7 +363,7 @@ static void _bodyslam_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -398,16 +398,16 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->jumping) tileid+=1;
   else if (player->gravity>0.0) tileid+=2;
   else if (player->slamming) tileid+=3+player->animframe;
-  graf_tile(&g.graf,x,y,tileid,player->xform);
+  graf_tile(g_graf,x,y,tileid,player->xform);
 }
 
 /* Render.
  */
  
 static void _bodyslam_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_set_image(&g.graf,RID_image_battle_tundra);
-  graf_tile_batch(&g.graf,BATTLE->bgvtxv,BATTLE->bgvtxc);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_set_image(g_graf,RID_image_battle_tundra);
+  graf_tile_batch(g_graf,BATTLE->bgvtxv,BATTLE->bgvtxc);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -424,7 +424,7 @@ static const struct battle_input _bodyslam_input[]={
 const struct battle_type battle_type_bodyslam={
   .name="bodyslam",
   .objlen=sizeof(struct battle_bodyslam),
-  .id=NS_battle_bodyslam,
+  .id=99,
   .strix_name=326,
   .no_article=0,
   .no_contest=0,

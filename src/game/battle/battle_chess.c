@@ -3,7 +3,7 @@
  * Our concern is just setup and presentation, mostly.
  */
  
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/chess/chess.h"
 
 #define CLOCK_EASY 45.0
@@ -154,7 +154,7 @@ static struct label *chess_add_label(struct battle *battle,int strix,uint32_t co
   struct label *label=BATTLE->labelv+BATTLE->labelc++;
   const char *src=0;
   int srcc=text_get_string(&src,RID_strings_battle,strix);
-  label->texid=font_render_to_texture(0,g.font,src,srcc,FBW,FBH,color);
+  label->texid=font_render_to_texture(0,g_font,src,srcc,FBW,FBH,color);
   egg_texture_get_size(&label->w,&label->h,label->texid);
   label->strix=strix;
   label->x=0;
@@ -248,7 +248,7 @@ static void chess_confirm_stalemate(struct battle *battle,int who) {
  */
  
 static void chess_dismiss_dialogue(struct battle *battle) {
-  bm_sound(RID_sound_uicancel);
+  bm_sound_pan(RID_sound_uicancel,0.0);
   while (BATTLE->labelc>0) {
     BATTLE->labelc--;
     egg_texture_del(BATTLE->labelv[BATTLE->labelc].texid);
@@ -259,7 +259,7 @@ static void chess_dismiss_dialogue(struct battle *battle) {
  */
  
 static void chess_move_dialogue(struct battle *battle,int d) {
-  bm_sound(RID_sound_uimotion);
+  bm_sound_pan(RID_sound_uimotion,0.0);
   int panic=BATTLE->labelc;
   while (panic-->=0) {
     BATTLE->labelp+=d;
@@ -275,7 +275,7 @@ static void chess_move_dialogue(struct battle *battle,int d) {
  
 static void chess_activate_dialogue(struct battle *battle) {
   if ((BATTLE->labelp<0)||(BATTLE->labelp>=BATTLE->labelc)) return;
-  bm_sound(RID_sound_uiactivate);
+  bm_sound_pan(RID_sound_uiactivate,0.0);
   int strix=BATTLE->labelv[BATTLE->labelp].strix;
   while (BATTLE->labelc>0) {
     BATTLE->labelc--;
@@ -302,8 +302,8 @@ static void chess_activate_dialogue(struct battle *battle) {
  */
  
 static void chess_update_dialogue(struct battle *battle,double elapsed) {
-  int input=g.input[BATTLE->dboxhuman];
-  int pvinput=g.pvinput[BATTLE->dboxhuman];
+  int input=g_input[BATTLE->dboxhuman];
+  int pvinput=g_pvinput[BATTLE->dboxhuman];
   
   // WEST or AUX1 again to dismiss.
   if (
@@ -423,18 +423,18 @@ static void chess_advance_princess(struct battle *battle,struct player *player) 
   int ady=(dy<0)?-dy:dy;
   if (adx>ady) {
     chess_game_move(&BATTLE->chess_game,(dx<0)?-1:1,0);
-    bm_sound(RID_sound_uimotion);
+    bm_sound_pan(RID_sound_uimotion,0.0);
   } else if (ady) {
     chess_game_move(&BATTLE->chess_game,0,(dy<0)?-1:1);
-    bm_sound(RID_sound_uimotion);
+    bm_sound_pan(RID_sound_uimotion,0.0);
   } else {
     int err=chess_game_activate(&BATTLE->chess_game);
     if (err<0) {
       fprintf(stderr,"%s:%d: Princess's move activation failed!\n",__FILE__,__LINE__);
       battle->outcome=player->who?1:-1;
     } else {
-      if (err>0) bm_sound(RID_sound_collect);
-      else bm_sound(RID_sound_uiactivate);
+      if (err>0) bm_sound_pan(RID_sound_collect,0.0);
+      else bm_sound_pan(RID_sound_uiactivate,0.0);
       if (tofinish) {
         chess_check_promotion(battle);
         BATTLE->playerv[0].cpumove=0;
@@ -450,8 +450,8 @@ static void chess_advance_princess(struct battle *battle,struct player *player) 
  
 static void chess_update_player(struct battle *battle,struct player *player,double elapsed) {
   if (player->human) {
-    int input=g.input[player->human];
-    int pvinput=g.pvinput[player->human];
+    int input=g_input[player->human];
+    int pvinput=g_pvinput[player->human];
     
     // Motion.
     int dx=0,dy=0;
@@ -461,18 +461,18 @@ static void chess_update_player(struct battle *battle,struct player *player,doub
     else if ((input&EGG_BTN_DOWN)&&!(pvinput&EGG_BTN_DOWN)) dy=1;
     if (dx||dy) {
       if (chess_game_move(&BATTLE->chess_game,dx,dy)<0) {
-        bm_sound(RID_sound_reject);
+        bm_sound_pan(RID_sound_reject,0.0);
       } else {
-        bm_sound(RID_sound_uimotion);
+        bm_sound_pan(RID_sound_uimotion,0.0);
       }
     }
     
     // Cancellation.
     if ((input&EGG_BTN_WEST)&&!(pvinput&EGG_BTN_WEST)) {
       if (chess_game_cancel(&BATTLE->chess_game)<0) {
-        bm_sound(RID_sound_reject);
+        bm_sound_pan(RID_sound_reject,0.0);
       } else {
-        bm_sound(RID_sound_uicancel);
+        bm_sound_pan(RID_sound_uicancel,0.0);
       }
     }
     
@@ -480,10 +480,10 @@ static void chess_update_player(struct battle *battle,struct player *player,doub
     if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) {
       int err=chess_game_activate(&BATTLE->chess_game);
       if (err<0) {
-        bm_sound(RID_sound_reject);
+        bm_sound_pan(RID_sound_reject,0.0);
       } else {
-        if (err>0) bm_sound(RID_sound_collect);
-        else bm_sound(RID_sound_uiactivate);
+        if (err>0) bm_sound_pan(RID_sound_collect,0.0);
+        else bm_sound_pan(RID_sound_uiactivate,0.0);
         chess_check_promotion(battle);
         BATTLE->playerv[0].cpumove=0;
         BATTLE->playerv[1].cpumove=0;
@@ -586,7 +586,7 @@ static void _chess_render(struct battle *battle) {
   /* Background.
    * If the clock is in play, blink at the last 5 seconds.
    */
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x304060ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x304060ff);
   int sec=0;
   if (BATTLE->use_clock&&(BATTLE->clock>0.0)) {
     int ms=(int)(BATTLE->clock*1000.0);
@@ -597,11 +597,11 @@ static void _chess_render(struct battle *battle) {
       if (ms>750) {
         int alpha=ms-750;
         uint32_t rgb=(sec==1)?0xff000000:0xe0a00000;
-        graf_fill_rect(&g.graf,0,0,FBW,FBH,rgb|alpha);
+        graf_fill_rect(g_graf,0,0,FBW,FBH,rgb|alpha);
       }
     }
   }
-  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
+  graf_set_image(g_graf,RID_image_battle_labyrinth2);
   
   // The 8x8 board.
   int boardw=NS_sys_tilesize*8;
@@ -616,20 +616,20 @@ static void _chess_render(struct battle *battle) {
     dstx=dstx0;
     int xi=8;
     for (;xi-->0;dstx+=NS_sys_tilesize) {
-      graf_tile(&g.graf,dstx,dsty,((xi&1)==(yi&1))?0x00:0x01,0);
+      graf_tile(g_graf,dstx,dsty,((xi&1)==(yi&1))?0x00:0x01,0);
     }
   }
   
   // A tasteful boarder.
-  graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty0-NS_sys_tilesize,0x10,0);
-  graf_tile(&g.graf,dstx0+boardw         ,dsty0-NS_sys_tilesize,0x12,0);
-  graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty0+boardh         ,0x30,0);
-  graf_tile(&g.graf,dstx0+boardw         ,dsty0+boardh         ,0x32,0);
+  graf_tile(g_graf,dstx0-NS_sys_tilesize,dsty0-NS_sys_tilesize,0x10,0);
+  graf_tile(g_graf,dstx0+boardw         ,dsty0-NS_sys_tilesize,0x12,0);
+  graf_tile(g_graf,dstx0-NS_sys_tilesize,dsty0+boardh         ,0x30,0);
+  graf_tile(g_graf,dstx0+boardw         ,dsty0+boardh         ,0x32,0);
   for (yi=8,dstx=dstx0,dsty=dsty0;yi-->0;dstx+=NS_sys_tilesize,dsty+=NS_sys_tilesize) {
-    graf_tile(&g.graf,dstx,dsty0-NS_sys_tilesize,0x11,0);
-    graf_tile(&g.graf,dstx,dsty0+boardh         ,0x31,0);
-    graf_tile(&g.graf,dstx0-NS_sys_tilesize,dsty,0x20,0);
-    graf_tile(&g.graf,dstx0+boardw         ,dsty,0x22,0);
+    graf_tile(g_graf,dstx,dsty0-NS_sys_tilesize,0x11,0);
+    graf_tile(g_graf,dstx,dsty0+boardh         ,0x31,0);
+    graf_tile(g_graf,dstx0-NS_sys_tilesize,dsty,0x20,0);
+    graf_tile(g_graf,dstx0+boardw         ,dsty,0x22,0);
   }
   
   // Pieces. Not interleaved with the board, because those are tiles and these are fancies.
@@ -668,7 +668,7 @@ static void _chess_render(struct battle *battle) {
           }
         }
         uint32_t color=((*boardp)&PIECE_WHITE)?BATTLE->playerv[0].color:BATTLE->playerv[1].color;
-        graf_fancy(&g.graf,dstx,dsty+dy,tileid,xform,0,NS_sys_tilesize,0,color);
+        graf_fancy(g_graf,dstx,dsty+dy,tileid,xform,0,NS_sys_tilesize,0,color);
       }
     }
   }
@@ -684,16 +684,16 @@ static void _chess_render(struct battle *battle) {
     int ddiag=(int)(radius*t*HALF_ROOT_TWO);
     uint8_t tileid=PIECE_KING+1;
     uint32_t color=BATTLE->playerv[1].color;
-    if (g.framec&1) {
-      graf_fancy(&g.graf,warpx      ,warpy-dcard,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx      ,warpy+dcard,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx-dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx+dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
+    if (g_framec&1) {
+      graf_fancy(g_graf,warpx      ,warpy-dcard,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx      ,warpy+dcard,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx-dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx+dcard,warpy      ,tileid,0,0,NS_sys_tilesize,0,color);
     } else {
-      graf_fancy(&g.graf,warpx-ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx+ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx-ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,warpx+ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx-ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx+ddiag,warpy-ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx-ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,warpx+ddiag,warpy+ddiag,tileid,0,0,NS_sys_tilesize,0,color);
     }
   }
   
@@ -711,7 +711,7 @@ static void _chess_render(struct battle *battle) {
         x=BATTLE->chess_game.wx;
         y=BATTLE->chess_game.wy;
       }
-      graf_fancy(&g.graf,
+      graf_fancy(g_graf,
         dstx0+x*NS_sys_tilesize,dsty0+y*NS_sys_tilesize,
         0x08+BATTLE->animframe,0,
         0,NS_sys_tilesize,0,player->color
@@ -728,7 +728,7 @@ static void _chess_render(struct battle *battle) {
       int y=CHESS_MOVE_TO_ROW(*move);
       x=dstx0+x*NS_sys_tilesize;
       y=dsty0+y*NS_sys_tilesize;
-      graf_tile(&g.graf,x,y,0x0a,0);
+      graf_tile(g_graf,x,y,0x0a,0);
     }
   }
   
@@ -736,26 +736,26 @@ static void _chess_render(struct battle *battle) {
   if (sec>0) {
     int cx=(FBW>>1)-4;
     int cy=dsty0-20;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    if (sec>=10) graf_tile(&g.graf,cx,cy,'0'+sec/10,0); cx+=8;
-    graf_tile(&g.graf,cx,cy,'0'+sec%10,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    if (sec>=10) graf_tile(g_graf,cx,cy,'0'+sec/10,0); cx+=8;
+    graf_tile(g_graf,cx,cy,'0'+sec%10,0);
   }
   
   // Dialogue box.
   if (BATTLE->labelc) {
-    graf_fill_rect(&g.graf,BATTLE->dboxx,BATTLE->dboxy,BATTLE->dboxw,BATTLE->dboxh,BATTLE->dboxcolor);
-    graf_fill_rect(&g.graf,BATTLE->dboxx,BATTLE->dboxy,1,BATTLE->dboxh,0x000000ff);
-    graf_fill_rect(&g.graf,BATTLE->dboxx,BATTLE->dboxy,BATTLE->dboxw,1,0x000000ff);
-    graf_fill_rect(&g.graf,BATTLE->dboxx+BATTLE->dboxw,BATTLE->dboxy,1,BATTLE->dboxh,0x000000ff);
-    graf_fill_rect(&g.graf,BATTLE->dboxx,BATTLE->dboxy+BATTLE->dboxh,BATTLE->dboxw,1,0x000000ff);
+    graf_fill_rect(g_graf,BATTLE->dboxx,BATTLE->dboxy,BATTLE->dboxw,BATTLE->dboxh,BATTLE->dboxcolor);
+    graf_fill_rect(g_graf,BATTLE->dboxx,BATTLE->dboxy,1,BATTLE->dboxh,0x000000ff);
+    graf_fill_rect(g_graf,BATTLE->dboxx,BATTLE->dboxy,BATTLE->dboxw,1,0x000000ff);
+    graf_fill_rect(g_graf,BATTLE->dboxx+BATTLE->dboxw,BATTLE->dboxy,1,BATTLE->dboxh,0x000000ff);
+    graf_fill_rect(g_graf,BATTLE->dboxx,BATTLE->dboxy+BATTLE->dboxh,BATTLE->dboxw,1,0x000000ff);
     struct label *label=BATTLE->labelv;
     int i=BATTLE->labelc,p=0;
     for (;i-->0;label++,p++) {
-      graf_set_input(&g.graf,label->texid);
-      graf_decal(&g.graf,label->x,label->y,0,0,label->w,label->h);
+      graf_set_input(g_graf,label->texid);
+      graf_decal(g_graf,label->x,label->y,0,0,label->w,label->h);
       if (p==BATTLE->labelp) {
-        graf_set_image(&g.graf,RID_image_battle_labyrinth2);
-        graf_tile(&g.graf,label->x-10,label->y+(label->h>>1),BATTLE->dboxtileid,0);
+        graf_set_image(g_graf,RID_image_battle_labyrinth2);
+        graf_tile(g_graf,label->x-10,label->y+(label->h>>1),BATTLE->dboxtileid,0);
       }
     }
   }
@@ -767,7 +767,7 @@ static void _chess_render(struct battle *battle) {
 const struct battle_type battle_type_chess={
   .name="chess",
   .objlen=sizeof(struct battle_chess),
-  .id=NS_battle_chess,
+  .id=54,
   .strix_name=180,
   .no_article=0,
   .no_contest=0,

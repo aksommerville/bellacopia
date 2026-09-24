@@ -1,7 +1,7 @@
 /* battle_erudition.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define PICW 128
@@ -162,8 +162,8 @@ static void erudition_generate_text(struct battle *battle,int strix) {
    * We have a mono G0 font with 3x5 glyphs starting at (208,224).
    */
   {
-    graf_set_output(&g.graf,BATTLE->speech_texid);
-    graf_set_image(&g.graf,RID_image_battle_erudition);
+    graf_set_output(g_graf,BATTLE->speech_texid);
+    graf_set_image(g_graf,RID_image_battle_erudition);
     struct word *word=BATTLE->wordv;
     int i=BATTLE->wordc;
     for (;i-->0;word++) {
@@ -174,10 +174,10 @@ static void erudition_generate_text(struct battle *battle,int strix) {
       for (;srci-->0;src++,x+=4) {
         int srcx=208+((*src)&15)*3;
         int srcy=224+((*src-0x20)>>4)*5;
-        graf_decal(&g.graf,x,y,srcx,srcy,3,5);
+        graf_decal(g_graf,x,y,srcx,srcy,3,5);
       }
     }
-    graf_set_output(&g.graf,1);
+    graf_set_output(g_graf,1);
   }
 }
 
@@ -270,7 +270,7 @@ static void _erudition_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     if (battle->outcome>-2) return;
   }
@@ -282,21 +282,21 @@ static void _erudition_update(struct battle *battle,double elapsed) {
  
 static void render_frame(int x,int y,int w,int h) {
   const int ht=NS_sys_tilesize>>1;
-  graf_tile(&g.graf,x+ht,y+ht,0xc0,0);
-  graf_tile(&g.graf,x+w-ht,y+ht,0xc0,EGG_XFORM_SWAP|EGG_XFORM_YREV);
-  graf_tile(&g.graf,x+ht,y+h-ht,0xc0,EGG_XFORM_SWAP|EGG_XFORM_XREV);
-  graf_tile(&g.graf,x+w-ht,y+h-ht,0xc0,EGG_XFORM_XREV|EGG_XFORM_YREV);
+  graf_tile(g_graf,x+ht,y+ht,0xc0,0);
+  graf_tile(g_graf,x+w-ht,y+ht,0xc0,EGG_XFORM_SWAP|EGG_XFORM_YREV);
+  graf_tile(g_graf,x+ht,y+h-ht,0xc0,EGG_XFORM_SWAP|EGG_XFORM_XREV);
+  graf_tile(g_graf,x+w-ht,y+h-ht,0xc0,EGG_XFORM_XREV|EGG_XFORM_YREV);
   int tx=x+ht+NS_sys_tilesize;
   int end=x+w-NS_sys_tilesize;
   for (;tx<end;tx+=NS_sys_tilesize) {
-    graf_tile(&g.graf,tx,y+ht,0xc1,0);
-    graf_tile(&g.graf,tx,y+h-ht,0xc1,EGG_XFORM_XREV|EGG_XFORM_YREV);
+    graf_tile(g_graf,tx,y+ht,0xc1,0);
+    graf_tile(g_graf,tx,y+h-ht,0xc1,EGG_XFORM_XREV|EGG_XFORM_YREV);
   }
   int ty=y+ht+NS_sys_tilesize;
   end=y+h-NS_sys_tilesize;
   for (;ty<end;ty+=NS_sys_tilesize) {
-    graf_tile(&g.graf,x+ht,ty,0xc1,EGG_XFORM_SWAP|EGG_XFORM_XREV);
-    graf_tile(&g.graf,x+w-ht,ty,0xc1,EGG_XFORM_SWAP|EGG_XFORM_YREV);
+    graf_tile(g_graf,x+ht,ty,0xc1,EGG_XFORM_SWAP|EGG_XFORM_XREV);
+    graf_tile(g_graf,x+w-ht,ty,0xc1,EGG_XFORM_SWAP|EGG_XFORM_YREV);
   }
 }
 
@@ -331,25 +331,25 @@ static void bubble_render(int *dstx,int *dsty,struct battle *battle,int speakerx
   }
   
   // Bunch of decals for the body.
-  graf_decal(&g.graf,outerx,outery,208,192,bdr,bdr);
-  graf_decal(&g.graf,outerx+outerw-bdr,outery,240-bdr,192,bdr,bdr);
-  graf_decal(&g.graf,outerx,outery+outerh-bdr,208,224-bdr,bdr,bdr);
-  graf_decal(&g.graf,outerx+outerw-bdr,outery+outerh-bdr,240-bdr,224-bdr,bdr,bdr);
+  graf_decal(g_graf,outerx,outery,208,192,bdr,bdr);
+  graf_decal(g_graf,outerx+outerw-bdr,outery,240-bdr,192,bdr,bdr);
+  graf_decal(g_graf,outerx,outery+outerh-bdr,208,224-bdr,bdr,bdr);
+  graf_decal(g_graf,outerx+outerw-bdr,outery+outerh-bdr,240-bdr,224-bdr,bdr,bdr);
   int x=outerx+bdr;
   int stop=outerx+outerw-bdr;
   for (;;) {
     int w=stop-x;
     if (w<1) break;
     if (w>inr) w=inr;
-    graf_decal(&g.graf,x,outery,208+bdr,192,w,bdr);
-    graf_decal(&g.graf,x,outery+outerh-bdr,208+bdr,224-bdr,w,bdr);
+    graf_decal(g_graf,x,outery,208+bdr,192,w,bdr);
+    graf_decal(g_graf,x,outery+outerh-bdr,208+bdr,224-bdr,w,bdr);
     int y=outery+bdr;
     int stopy=outery+outerh-bdr;
     for (;;) {
       int h=stopy-y;
       if (h<1) break;
       if (h>inr) h=inr;
-      graf_decal(&g.graf,x,y,208+bdr,192+bdr,w,h);
+      graf_decal(g_graf,x,y,208+bdr,192+bdr,w,h);
       y+=h;
     }
     x+=w;
@@ -360,13 +360,13 @@ static void bubble_render(int *dstx,int *dsty,struct battle *battle,int speakerx
     int h=stop-y;
     if (h<1) break;
     if (h>inr) h=inr;
-    graf_decal(&g.graf,outerx,y,208,192+bdr,bdr,h);
-    graf_decal(&g.graf,outerx+outerw-bdr,y,240-bdr,192+bdr,bdr,h);
+    graf_decal(g_graf,outerx,y,208,192+bdr,bdr,h);
+    graf_decal(g_graf,outerx+outerw-bdr,y,240-bdr,192+bdr,bdr,h);
     y+=h;
   }
   
   // And a tile for the stem.
-  graf_tile(&g.graf,speakerx,outery+outerh-1,0xcf,0);
+  graf_tile(g_graf,speakerx,outery+outerh-1,0xcf,0);
   
   *dstx=outerx+4;
   *dsty=outery+4;
@@ -384,17 +384,17 @@ static void player_render(struct battle *battle,struct player *player) {
     dstx=FBW-dstx-w;
     xform=EGG_XFORM_XREV;
   }
-  graf_decal_xform(&g.graf,dstx,dsty,player->srcx+player->mouth*32,player->srcy,w,h,xform);
+  graf_decal_xform(g_graf,dstx,dsty,player->srcx+player->mouth*32,player->srcy,w,h,xform);
   
   if (player->wordc>0) {
     const struct word *lastword=BATTLE->wordv+player->wordc-1;
     int wordw=lastword->c*4-1;
     int wx,wy;
     bubble_render(&wx,&wy,battle,dstx+(w>>1),dsty,BATTLE->speechw,lastword->y+5);
-    graf_set_input(&g.graf,BATTLE->speech_texid);
-    graf_decal(&g.graf,wx,wy,0,0,BATTLE->speechw,lastword->y);
-    graf_decal(&g.graf,wx,wy+lastword->y,0,lastword->y,lastword->x+wordw,5);
-    graf_set_image(&g.graf,RID_image_battle_erudition);
+    graf_set_input(g_graf,BATTLE->speech_texid);
+    graf_decal(g_graf,wx,wy,0,0,BATTLE->speechw,lastword->y);
+    graf_decal(g_graf,wx,wy+lastword->y,0,lastword->y,lastword->x+wordw,5);
+    graf_set_image(g_graf,RID_image_battle_erudition);
   }
 }
 
@@ -407,19 +407,19 @@ static void _erudition_render(struct battle *battle) {
    * With a cool perspective effect on the floor.
    */
   const int horizon=150;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0xf8f0e0ff);
-  graf_fill_rect(&g.graf,0,horizon,FBW,FBH-horizon,0x603010ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0xf8f0e0ff);
+  graf_fill_rect(g_graf,0,horizon,FBW,FBH-horizon,0x603010ff);
   int x=0; for (;x<FBW;x+=20) {
     int nx=(x-(FBW>>1))*2+(FBW>>1);
-    graf_line(&g.graf,x,horizon,0x502008ff,nx,FBH,0x502008ff);
+    graf_line(g_graf,x,horizon,0x502008ff,nx,FBH,0x502008ff);
   }
-  graf_fill_rect(&g.graf,0,horizon,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,horizon,FBW,1,0x000000ff);
   
   // Picture and frame.
   int picx=(FBW>>1)-(PICW>>1);
   int picy=20;
-  graf_set_image(&g.graf,RID_image_battle_erudition);
-  graf_decal(&g.graf,picx,picy,BATTLE->picsrcx,BATTLE->picsrcy,PICW,PICH);
+  graf_set_image(g_graf,RID_image_battle_erudition);
+  graf_decal(g_graf,picx,picy,BATTLE->picsrcx,BATTLE->picsrcy,PICW,PICH);
   render_frame(picx-8,picy-8,FRAMEW,FRAMEH);
   
   // Players.
@@ -428,10 +428,10 @@ static void _erudition_render(struct battle *battle) {
   
   // Frog.
   if (battle->outcome&&(battle->outcome>-2)) {
-    graf_tile(&g.graf,FBW>>1,144,0xdf,0);
-    graf_tile(&g.graf,FBW>>1,160,(g.framec&16)?0xc3:0xc4,(battle->outcome>0)?EGG_XFORM_XREV:0);
+    graf_tile(g_graf,FBW>>1,144,0xdf,0);
+    graf_tile(g_graf,FBW>>1,160,(g_framec&16)?0xc3:0xc4,(battle->outcome>0)?EGG_XFORM_XREV:0);
   } else {
-    graf_tile(&g.graf,FBW>>1,160,0xc2,0);
+    graf_tile(g_graf,FBW>>1,160,0xc2,0);
   }
 }
 
@@ -441,7 +441,7 @@ static void _erudition_render(struct battle *battle) {
 const struct battle_type battle_type_erudition={
   .name="erudition",
   .objlen=sizeof(struct battle_erudition),
-  .id=NS_battle_erudition,
+  .id=17,
   .strix_name=55,
   .no_article=0,
   .no_contest=0,

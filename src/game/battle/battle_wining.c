@@ -1,7 +1,7 @@
 /* battle_wining.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
 
 #define SPRITEID_L 1
@@ -140,7 +140,7 @@ static void player_update(struct batsup_sprite *sprite,double elapsed) {
     SPRITE->indx=0;
     SPRITE->injump=0;
   } else if (SPRITE->ctl) {
-    player_update_man(sprite,elapsed,g.input[SPRITE->ctl],g.pvinput[SPRITE->ctl]);
+    player_update_man(sprite,elapsed,g_input[SPRITE->ctl],g_pvinput[SPRITE->ctl]);
   } else {
     player_update_cpu(sprite,elapsed);
   }
@@ -229,7 +229,7 @@ static void player_update(struct batsup_sprite *sprite,double elapsed) {
 static void player_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct sprite_player *SPRITE=(void*)sprite;
   struct battle *battle=sprite->world->battle;
-  graf_set_image(&g.graf,RID_image_battle_forest2);
+  graf_set_image(g_graf,RID_image_battle_forest2);
   uint8_t tileid;
   switch (SPRITE->face) {
     case NS_face_dot: tileid=0xd4; break;
@@ -240,7 +240,7 @@ static void player_render(struct batsup_sprite *sprite,int dstx,int dsty) {
     case 1: tileid+=1; break;
     case 3: tileid+=2; break;
   }
-  graf_tile(&g.graf,dstx,dsty,tileid,sprite->xform);
+  graf_tile(g_graf,dstx,dsty,tileid,sprite->xform);
 }
 
 /* Spawn player.
@@ -298,12 +298,12 @@ static void _bottle_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct sprite_bottle *SPRITE=(void*)sprite;
   struct battle *battle=sprite->world->battle;
   // (dstx,dsty) is my top left corner.
-  graf_set_image(&g.graf,RID_image_battle_forest2);
-  graf_decal(&g.graf,dstx,dsty,0,144,32,96);
+  graf_set_image(g_graf,RID_image_battle_forest2);
+  graf_decal(g_graf,dstx,dsty,0,144,32,96);
   int fillh=(int)(SPRITE->fill*96.0);
   if (fillh>0) {
     if (fillh>96) fillh=96;
-    graf_decal(&g.graf,dstx,dsty+96-fillh,32,144+96-fillh,32,fillh);
+    graf_decal(g_graf,dstx,dsty+96-fillh,32,144+96-fillh,32,fillh);
   }
 }
 
@@ -663,7 +663,7 @@ static void _wining_render(struct battle *battle) {
 const struct battle_type battle_type_wining={
   .name="wining",
   .objlen=sizeof(struct battle_wining),
-  .id=NS_battle_wining,
+  .id=104,
   .strix_name=338,
   .no_article=0,
   .no_contest=0,

@@ -2,7 +2,7 @@
  * Use your psychic power to tip the bottle of Old Janx Spirit into your opponent's glass.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 160
 
@@ -217,7 +217,7 @@ static void _telekinesis_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -267,13 +267,13 @@ static void player_render(struct battle *battle,struct player *player) {
     armby+=armd;
     armfy-=armd;
   }
-  graf_decal_xform(&g.graf,armbx,armby,player->srcx,player->srcy+48,32,16,player->xform);
+  graf_decal_xform(g_graf,armbx,armby,player->srcx,player->srcy+48,32,16,player->xform);
   
   // Body.
-  graf_decal_xform(&g.graf,player->x,player->y,player->srcx,player->srcy,32,48,player->xform);
+  graf_decal_xform(g_graf,player->x,player->y,player->srcx,player->srcy,32,48,player->xform);
   
   // Front arm.
-  graf_decal_xform(&g.graf,armfx,armfy,player->srcx,player->srcy+48,32,16,player->xform);
+  graf_decal_xform(g_graf,armfx,armfy,player->srcx,player->srcy+48,32,16,player->xform);
 }
 
 /* Render one player's target wheel and input state.
@@ -297,7 +297,7 @@ static void zodiac_render(struct battle *battle,struct player *player) {
       if (alpha<0) alpha=0; else if (alpha>0xff) alpha=0xff;
       tint|=alpha;
     }
-    graf_fancy(&g.graf,sign->x,sign->y,sign->tileid,0,0,NS_sys_tilesize,tint,0x808080ff);
+    graf_fancy(g_graf,sign->x,sign->y,sign->tileid,0,0,NS_sys_tilesize,tint,0x808080ff);
   }
   
   // Star indicating input state.
@@ -319,7 +319,7 @@ static void zodiac_render(struct battle *battle,struct player *player) {
     } else {
       tint=0xff0000ff;
     }
-    graf_fancy(&g.graf,starx,stary,startile,0,0,NS_sys_tilesize,0,tint);
+    graf_fancy(g_graf,starx,stary,startile,0,0,NS_sys_tilesize,0,tint);
   }
 }
 
@@ -327,20 +327,20 @@ static void zodiac_render(struct battle *battle,struct player *player) {
  */
  
 static void _telekinesis_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth4);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_labyrinth4);
   
   int midx=FBW>>1;
-  graf_decal(&g.graf,midx-24,GROUNDY-18,96,220,48,19);
+  graf_decal(g_graf,midx-24,GROUNDY-18,96,220,48,19);
   
   if (battle->outcome==1) {
-    graf_tile(&g.graf,midx,GROUNDY-25,0xf7,0);
+    graf_tile(g_graf,midx,GROUNDY-25,0xf7,0);
   } else if (battle->outcome==-1) {
-    graf_tile(&g.graf,midx,GROUNDY-25,0xf7,EGG_XFORM_XREV);
+    graf_tile(g_graf,midx,GROUNDY-25,0xf7,EGG_XFORM_XREV);
   } else if (battle->outcome==0) {
-    graf_tile(&g.graf,midx,GROUNDY-25,0xf6,0);
+    graf_tile(g_graf,midx,GROUNDY-25,0xf6,0);
   } else {
     int rot=(int)(BATTLE->wobble*20.0);
     double scsum=BATTLE->playerv[0].score+BATTLE->playerv[1].score;
@@ -348,14 +348,14 @@ static void _telekinesis_render(struct battle *battle) {
       double tip=(BATTLE->playerv[0].score-BATTLE->playerv[1].score)/scsum;
       rot+=(int)(tip*20.0);
     }
-    graf_fancy(&g.graf,midx,GROUNDY-25,0xf6,0,(int8_t)rot,NS_sys_tilesize,0,0x808080ff);
+    graf_fancy(g_graf,midx,GROUNDY-25,0xf6,0,(int8_t)rot,NS_sys_tilesize,0,0x808080ff);
   }
   
   uint8_t cupl=0xf8,cupr=0xf8;
   if (battle->outcome==1) cupr+=1;
   else if (battle->outcome==-1) cupl+=1;
-  graf_tile(&g.graf,midx-10,GROUNDY-25,cupl,0);
-  graf_tile(&g.graf,midx+10,GROUNDY-25,cupr,0);
+  graf_tile(g_graf,midx-10,GROUNDY-25,cupl,0);
+  graf_tile(g_graf,midx+10,GROUNDY-25,cupr,0);
   
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -367,10 +367,10 @@ static void _telekinesis_render(struct battle *battle) {
   
   // A scale in the middle showing preview.
   int dy=lround(BATTLE->preview*11.0);
-  graf_tile(&g.graf,(FBW>>1)-9,42+dy,0xd9,0);
-  graf_tile(&g.graf,(FBW>>1)+9,42-dy,0xd9,EGG_XFORM_XREV);
-  graf_tile(&g.graf,FBW>>1,30,0xca,0);
-  graf_tile(&g.graf,FBW>>1,46,0xda,0);
+  graf_tile(g_graf,(FBW>>1)-9,42+dy,0xd9,0);
+  graf_tile(g_graf,(FBW>>1)+9,42-dy,0xd9,EGG_XFORM_XREV);
+  graf_tile(g_graf,FBW>>1,30,0xca,0);
+  graf_tile(g_graf,FBW>>1,46,0xda,0);
 }
 
 /* Type definition.
@@ -379,7 +379,7 @@ static void _telekinesis_render(struct battle *battle) {
 const struct battle_type battle_type_telekinesis={
   .name="telekinesis",
   .objlen=sizeof(struct battle_telekinesis),
-  .id=NS_battle_telekinesis,
+  .id=47,
   .strix_name=173,
   .no_article=0,
   .no_contest=0,

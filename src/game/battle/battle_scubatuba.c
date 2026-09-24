@@ -1,7 +1,7 @@
 /* battle_scubatuba.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 // How far the player can dive, in framebuffer pixels.
 #define TOP_LIMIT 30.0
@@ -317,7 +317,7 @@ static void _scubatuba_update(struct battle *battle,double elapsed) {
   
   struct player *player=BATTLE->playerv;
   for (i=2;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -355,12 +355,12 @@ static void player_render(struct battle *battle,struct player *player) {
   int legy=y1+4;
   uint8_t tileid=0x14;
   if (player->bubble>0.0) tileid+=2;
-  graf_fancy(&g.graf,midx-legd,legy,0x34,EGG_XFORM_XREV,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,midx+legd,legy,0x34,0,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,x0,y0,tileid+0x00,player->xform,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,x1,y0,tileid+0x01,player->xform,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,x0,y1,tileid+0x10,player->xform,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,x1,y1,tileid+0x11,player->xform,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,midx-legd,legy,0x34,EGG_XFORM_XREV,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,midx+legd,legy,0x34,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,x0,y0,tileid+0x00,player->xform,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,x1,y0,tileid+0x01,player->xform,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,x0,y1,tileid+0x10,player->xform,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,x1,y1,tileid+0x11,player->xform,0,NS_sys_tilesize,0,player->color);
   if (player->bubble>0.0) {
     int bubx=x1;
     if (player->xform) bubx-=8;
@@ -372,7 +372,7 @@ static void player_render(struct battle *battle,struct player *player) {
     else if (player->bubble>=0.450) bubtileid+=3;
     else if (player->bubble>=0.300) bubtileid+=2;
     else if (player->bubble>=0.150) bubtileid+=1;
-    graf_fancy(&g.graf,bubx,buby,bubtileid,0,0,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,bubx,buby,bubtileid,0,0,NS_sys_tilesize,0,player->color);
   }
 }
 
@@ -382,14 +382,14 @@ static void player_render(struct battle *battle,struct player *player) {
 static void render_int(int x,int y,int v) {
   if (v<0) v=0; else if (v>999) v=999;
   if (v>=100) {
-    graf_tile(&g.graf,x-8,y,'0'+v/100,0);
-    graf_tile(&g.graf,x,y,'0'+(v/10)%10,0);
-    graf_tile(&g.graf,x+8,y,'0'+v%10,0);
+    graf_tile(g_graf,x-8,y,'0'+v/100,0);
+    graf_tile(g_graf,x,y,'0'+(v/10)%10,0);
+    graf_tile(g_graf,x+8,y,'0'+v%10,0);
   } else if (v>=10) {
-    graf_tile(&g.graf,x-4,y,'0'+v/10,0);
-    graf_tile(&g.graf,x+4,y,'0'+v%10,0);
+    graf_tile(g_graf,x-4,y,'0'+v/10,0);
+    graf_tile(g_graf,x+4,y,'0'+v%10,0);
   } else {
-    graf_tile(&g.graf,x,y,'0'+v,0);
+    graf_tile(g_graf,x,y,'0'+v,0);
   }
 }
 
@@ -399,8 +399,8 @@ static void render_int(int x,int y,int v) {
 static void _scubatuba_render(struct battle *battle) {
 
   // Start blue.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x0020e0ff);
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x0020e0ff);
+  graf_set_image(g_graf,RID_image_battle_sea);
   
   // Decorative sand and waves at top and bottom.
   int srcx=NS_sys_tilesize*8;
@@ -409,14 +409,14 @@ static void _scubatuba_render(struct battle *battle) {
   int srch=NS_sys_tilesize*2;
   int dstx=0;
   int dsty=FBH-srch;
-  for (;dstx<FBW;dstx+=srcw) graf_decal(&g.graf,dstx,dsty,srcx,srcy,srcw,srch);
+  for (;dstx<FBW;dstx+=srcw) graf_decal(g_graf,dstx,dsty,srcx,srcy,srcw,srch);
   dstx=0; // Could animate waves if we feel like it, just cheat (dstx) negative here.
   dsty=0;
   srcx=NS_sys_tilesize*11;
   srcy=NS_sys_tilesize*1;
   srcw=NS_sys_tilesize*3;
   srch=NS_sys_tilesize*2;
-  for (;dstx<FBW;dstx+=srcw) graf_decal(&g.graf,dstx,dsty,srcx,srcy,srcw,srch);
+  for (;dstx<FBW;dstx+=srcw) graf_decal(g_graf,dstx,dsty,srcx,srcy,srcw,srch);
   
   // Decorative referee fish.
   uint8_t reftileid=0x3b;
@@ -424,14 +424,14 @@ static void _scubatuba_render(struct battle *battle) {
     case 1: case 3: reftileid+=1; break;
     case 2: reftileid+=2; break;
   }
-  graf_fancy(&g.graf,FBW>>1, 35,reftileid,0,0,NS_sys_tilesize,0,0xff0000ff);
-  graf_fancy(&g.graf,FBW>>1, 85,reftileid,0,0,NS_sys_tilesize,0,0x00c000ff);
-  graf_fancy(&g.graf,FBW>>1,135,reftileid,0,0,NS_sys_tilesize,0,0xff0000ff);
+  graf_fancy(g_graf,FBW>>1, 35,reftileid,0,0,NS_sys_tilesize,0,0xff0000ff);
+  graf_fancy(g_graf,FBW>>1, 85,reftileid,0,0,NS_sys_tilesize,0,0x00c000ff);
+  graf_fancy(g_graf,FBW>>1,135,reftileid,0,0,NS_sys_tilesize,0,0xff0000ff);
   
   // Decorative floating bubbles.
   struct bubble *bubble=BATTLE->bubblev;
   int i=BATTLE->bubblec;
-  for (;i-->0;bubble++) graf_fancy(&g.graf,(int)bubble->x,(int)bubble->y,0x3a,0,0,NS_sys_tilesize,0,0x808080ff);
+  for (;i-->0;bubble++) graf_fancy(g_graf,(int)bubble->x,(int)bubble->y,0x3a,0,0,NS_sys_tilesize,0,0x808080ff);
   
   // Players.
   struct player *l=BATTLE->playerv;
@@ -440,13 +440,13 @@ static void _scubatuba_render(struct battle *battle) {
   player_render(battle,r);
   
   // Score toasts, a separate pass because they use a different texture.
-  graf_set_image(&g.graf,RID_image_tinyfonttiles);
-  if (l->rptscore) graf_tile(&g.graf,(int)l->x,(int)l->rptscorey,'0'+l->rptscore,0);
-  if (r->rptscore) graf_tile(&g.graf,(int)r->x,(int)r->rptscorey,'0'+r->rptscore,0);
+  graf_set_image(g_graf,RID_image_tinyfonttiles);
+  if (l->rptscore) graf_tile(g_graf,(int)l->x,(int)l->rptscorey,'0'+l->rptscore,0);
+  if (r->rptscore) graf_tile(g_graf,(int)r->x,(int)r->rptscorey,'0'+r->rptscore,0);
   
   // Clock and scores at the bottom.
   int scorey=FBH-15;
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   if (BATTLE->playclock>0.0) render_int(FBW>>1,scorey,(int)(BATTLE->playclock+0.999));
   render_int(FBW/3,scorey,l->score);
   render_int((FBW*2)/3,scorey,r->score);
@@ -458,7 +458,7 @@ static void _scubatuba_render(struct battle *battle) {
 const struct battle_type battle_type_scubatuba={
   .name="scubatuba",
   .objlen=sizeof(struct battle_scubatuba),
-  .id=NS_battle_scubatuba,
+  .id=87,
   .strix_name=301,
   .no_article=0,
   .no_contest=0,

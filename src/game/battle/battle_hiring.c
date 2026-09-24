@@ -5,7 +5,7 @@
  * Also adding a cheesy cpu-vs-cpu mode where the player just picks at random, because this one happens along the Princess's rescue path.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define APPLICANT_LIMIT 6 /* Must not exceed NAME_COUNT. */
@@ -146,29 +146,29 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
   applicant->texid=egg_texture_new();
   egg_texture_load_raw(applicant->texid,RESUMEW,RESUMEH,RESUMEW<<2,0,0);
   egg_texture_clear(applicant->texid);
-  graf_set_output(&g.graf,applicant->texid);
+  graf_set_output(g_graf,applicant->texid);
   
   /* 1 pixel of shadow on the right.
    * Black outline left, top, and right, and white interior.
    * No outline on the bottom.
    */
-  graf_fill_rect(&g.graf,RESUMEW-1,2,1,RESUMEH,0x000000c0);
-  graf_fill_rect(&g.graf,0,0,RESUMEW-1,RESUMEH,0x000000ff);
-  graf_fill_rect(&g.graf,1,1,RESUMEW-3,RESUMEH-1,0xffffffff);
+  graf_fill_rect(g_graf,RESUMEW-1,2,1,RESUMEH,0x000000c0);
+  graf_fill_rect(g_graf,0,0,RESUMEW-1,RESUMEH,0x000000ff);
+  graf_fill_rect(g_graf,1,1,RESUMEW-3,RESUMEH-1,0xffffffff);
   
   int y=3,srcw,srch;
   #define GETSTR(strix) { \
-    graf_flush(&g.graf); /* We're about to overwrite a texture that might be queued for render. */ \
+    graf_flush(g_graf); /* We're about to overwrite a texture that might be queued for render. */ \
     const char *src=0; \
     int srcc=text_get_string(&src,RID_strings_battle,strix); \
-    font_render_to_texture(BATTLE->texid_scratch,g.font,src,srcc,RESUMEW-5,FBH,0x000000ff); \
+    font_render_to_texture(BATTLE->texid_scratch,g_font,src,srcc,RESUMEW-5,FBH,0x000000ff); \
     egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch); \
   }
   
   // Name centered at the top.
   GETSTR(applicant->name)
-  graf_set_input(&g.graf,BATTLE->texid_scratch);
-  graf_decal(&g.graf,(RESUMEW>>1)-(srcw>>1),y,0,0,srcw,srch);
+  graf_set_input(g_graf,BATTLE->texid_scratch);
+  graf_decal(g_graf,(RESUMEW>>1)-(srcw>>1),y,0,0,srcw,srch);
   y+=srch;
   
   /* Contact details just below that, aligned either left or right.
@@ -189,23 +189,23 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
       }
     }
     if (spacep>=0) { // One space, so we'll split it left/right.
-      graf_flush(&g.graf);
-      font_render_to_texture(BATTLE->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
+      graf_flush(g_graf);
+      font_render_to_texture(BATTLE->texid_scratch,g_font,src,spacep,RESUMEW-5,FBH,0x404040ff);
       egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
-      graf_set_input(&g.graf,BATTLE->texid_scratch);
-      graf_decal(&g.graf,3,y,0,0,srcw,srch);
-      graf_flush(&g.graf);
-      font_render_to_texture(BATTLE->texid_scratch,g.font,src+spacep+1,srcc-spacep-1,RESUMEW-5,FBH,0x404040ff);
+      graf_set_input(g_graf,BATTLE->texid_scratch);
+      graf_decal(g_graf,3,y,0,0,srcw,srch);
+      graf_flush(g_graf);
+      font_render_to_texture(BATTLE->texid_scratch,g_font,src+spacep+1,srcc-spacep-1,RESUMEW-5,FBH,0x404040ff);
       egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
-      graf_set_input(&g.graf,BATTLE->texid_scratch);
-      graf_decal(&g.graf,RESUMEW-4-srcw,y,0,0,srcw,srch);
+      graf_set_input(g_graf,BATTLE->texid_scratch);
+      graf_decal(g_graf,RESUMEW-4-srcw,y,0,0,srcw,srch);
     } else { // Render as-is, random alignment.
-      graf_flush(&g.graf);
-      font_render_to_texture(BATTLE->texid_scratch,g.font,src,spacep,RESUMEW-5,FBH,0x404040ff);
+      graf_flush(g_graf);
+      font_render_to_texture(BATTLE->texid_scratch,g_font,src,spacep,RESUMEW-5,FBH,0x404040ff);
       egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
-      graf_set_input(&g.graf,BATTLE->texid_scratch);
+      graf_set_input(g_graf,BATTLE->texid_scratch);
       int dstx=(rand()&1)?3:(RESUMEW-4-srcw);
-      graf_decal(&g.graf,dstx,y,0,0,srcw,srch);
+      graf_decal(g_graf,dstx,y,0,0,srcw,srch);
     }
     y+=srch;
   }
@@ -213,11 +213,11 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
   // A tasteful horizontal line under the contact details, optionally.
   switch (rand()%5) {
     case 0: case 1: {
-        graf_fill_rect(&g.graf,3,y+1,RESUMEW-7,1,0x000000ff);
+        graf_fill_rect(g_graf,3,y+1,RESUMEW-7,1,0x000000ff);
         y+=3;
       } break;
     case 2: {
-        graf_fill_rect(&g.graf,3,y+1,RESUMEW-7,1,0x1010a0ff);
+        graf_fill_rect(g_graf,3,y+1,RESUMEW-7,1,0x1010a0ff);
         y+=3;
       } break;
   }
@@ -226,8 +226,8 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
   y+=8;
   int hdrstrix=105+rand()%4;
   GETSTR(hdrstrix)
-  graf_set_input(&g.graf,BATTLE->texid_scratch);
-  graf_decal(&g.graf,5,y,0,0,srcw,srch);
+  graf_set_input(g_graf,BATTLE->texid_scratch);
+  graf_decal(g_graf,5,y,0,0,srcw,srch);
   y+=srch;
   
   // Put all the possible properties in a random order.
@@ -271,16 +271,16 @@ static void applicant_generate_resume(struct battle *battle,struct applicant *ap
       src=tmp;
       srcc+=2;
     }
-    graf_flush(&g.graf);
-    font_render_to_texture(BATTLE->texid_scratch,g.font,src,srcc,RESUMEW-8,FBH,0x000000ff);
+    graf_flush(g_graf);
+    font_render_to_texture(BATTLE->texid_scratch,g_font,src,srcc,RESUMEW-8,FBH,0x000000ff);
     egg_texture_get_size(&srcw,&srch,BATTLE->texid_scratch);
-    graf_set_input(&g.graf,BATTLE->texid_scratch);
-    graf_decal(&g.graf,5,y,0,0,srcw,srch);
+    graf_set_input(g_graf,BATTLE->texid_scratch);
+    graf_decal(g_graf,5,y,0,0,srcw,srch);
     y+=srch;
   }
   
   #undef GETSTR
-  graf_set_output(&g.graf,1);
+  graf_set_output(g_graf,1);
 }
 
 /* New.
@@ -328,7 +328,7 @@ static int _hiring_init(struct battle *battle) {
   // Generate the prompt.
   const char *src=0;
   int srcc=text_get_string(&src,RID_strings_battle,80);
-  BATTLE->texid_prompt=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),0xffffffff);
+  BATTLE->texid_prompt=font_render_to_texture(0,g_font,src,srcc,FBW,font_get_line_height(g_font),0xffffffff);
   egg_texture_get_size(&BATTLE->promptw,&BATTLE->prompth,BATTLE->texid_prompt);
   
   // Time limit is important! Since we are entirely user-driven, without this they could wait for the timeout.
@@ -350,10 +350,10 @@ static int _hiring_init(struct battle *battle) {
 static void hiring_activate(struct battle *battle) {
   if ((BATTLE->cursor<0)||(BATTLE->cursor>=BATTLE->applicantc)) return;
   if (BATTLE->cursor==BATTLE->liarp) {
-    bm_sound(RID_sound_treasure);
+    bm_sound_pan(RID_sound_treasure,0.0);
     battle->outcome=1;
   } else {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     battle->outcome=-1;
   }
 }
@@ -365,7 +365,7 @@ static void hiring_move(struct battle *battle,int d) {
   BATTLE->cursor+=d;
   if (BATTLE->cursor<0) BATTLE->cursor=BATTLE->applicantc-1;
   else if (BATTLE->cursor>=BATTLE->applicantc) BATTLE->cursor=0;
-  bm_sound(RID_sound_uimotion);
+  bm_sound_pan(RID_sound_uimotion,0.0);
 }
 
 /* Advance the resume sliding transition, or start it if selection changed.
@@ -458,9 +458,9 @@ static void _hiring_update(struct battle *battle,double elapsed) {
    * So it's fair for us to read input[0].
    */
   if (battle->args.lctl==1) {
-    if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) hiring_move(battle,-1);
-    if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) hiring_move(battle,1);
-    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) hiring_activate(battle);
+    if ((g_input[0]&EGG_BTN_LEFT)&&!(g_pvinput[0]&EGG_BTN_LEFT)) hiring_move(battle,-1);
+    if ((g_input[0]&EGG_BTN_RIGHT)&&!(g_pvinput[0]&EGG_BTN_RIGHT)) hiring_move(battle,1);
+    if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) hiring_activate(battle);
   // ...but we do have a Princess mode:
   } else {
     hiring_update_princess(battle,elapsed);
@@ -480,38 +480,38 @@ static void applicant_render(struct battle *battle,struct applicant *applicant) 
    * It's one of two tiles, in the lower-left quadrant.
    */
   tileid=(applicant->props&PROP_FORKED)?0x35:0x34;
-  graf_fancy(&g.graf,applicant->dstx-ht,dsty+ht,tileid,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx-ht,dsty+ht,tileid,0,0,ts,0,applicant->skin_color);
   
   /* Then the body.
    * Similar to tail, but it's four tiles, one in each quadrant.
    */
   tileid=(applicant->props&PROP_FAT)?0x22:0x20;
-  graf_fancy(&g.graf,applicant->dstx-ht,dsty-ht,tileid+0x00,0,0,ts,0,applicant->skin_color);
-  graf_fancy(&g.graf,applicant->dstx+ht,dsty-ht,tileid+0x01,0,0,ts,0,applicant->skin_color);
-  graf_fancy(&g.graf,applicant->dstx-ht,dsty+ht,tileid+0x10,0,0,ts,0,applicant->skin_color);
-  graf_fancy(&g.graf,applicant->dstx+ht,dsty+ht,tileid+0x11,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx-ht,dsty-ht,tileid+0x00,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx+ht,dsty-ht,tileid+0x01,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx-ht,dsty+ht,tileid+0x10,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx+ht,dsty+ht,tileid+0x11,0,0,ts,0,applicant->skin_color);
   
   /* If we wear glasses, they overlay the top half.
    * These don't use a primary color, but keep using fancy in order to batch them.
    */
   if (applicant->props&PROP_GLASSES) {
-    graf_fancy(&g.graf,applicant->dstx-ht,dsty-ht,0x24,0,0,ts,0,applicant->skin_color);
-    graf_fancy(&g.graf,applicant->dstx+ht,dsty-ht,0x25,0,0,ts,0,applicant->skin_color);
+    graf_fancy(g_graf,applicant->dstx-ht,dsty-ht,0x24,0,0,ts,0,applicant->skin_color);
+    graf_fancy(g_graf,applicant->dstx+ht,dsty-ht,0x25,0,0,ts,0,applicant->skin_color);
   }
   
   /* Choice of teeth, also overlaying the top half.
    */
   tileid=(applicant->props&PROP_TEETH)?0x36:0x26;
-  graf_fancy(&g.graf,applicant->dstx-ht,dsty-ht,tileid,0,0,ts,0,applicant->skin_color);
-  graf_fancy(&g.graf,applicant->dstx+ht,dsty-ht,tileid+1,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx-ht,dsty-ht,tileid,0,0,ts,0,applicant->skin_color);
+  graf_fancy(g_graf,applicant->dstx+ht,dsty-ht,tileid+1,0,0,ts,0,applicant->skin_color);
   
   /* Necktie if applicable, overlaying all four.
    */
   if (applicant->props&PROP_NECKTIE) {
-    graf_fancy(&g.graf,applicant->dstx-ht,dsty-ht,0x28,0,0,ts,0,applicant->tie_color);
-    graf_fancy(&g.graf,applicant->dstx+ht,dsty-ht,0x29,0,0,ts,0,applicant->tie_color);
-    graf_fancy(&g.graf,applicant->dstx-ht,dsty+ht,0x38,0,0,ts,0,applicant->tie_color);
-    graf_fancy(&g.graf,applicant->dstx+ht,dsty+ht,0x39,0,0,ts,0,applicant->tie_color);
+    graf_fancy(g_graf,applicant->dstx-ht,dsty-ht,0x28,0,0,ts,0,applicant->tie_color);
+    graf_fancy(g_graf,applicant->dstx+ht,dsty-ht,0x29,0,0,ts,0,applicant->tie_color);
+    graf_fancy(g_graf,applicant->dstx-ht,dsty+ht,0x38,0,0,ts,0,applicant->tie_color);
+    graf_fancy(g_graf,applicant->dstx+ht,dsty+ht,0x39,0,0,ts,0,applicant->tie_color);
   }
   
   /* Hat if applicable, one tile but not aligned to the grid.
@@ -520,7 +520,7 @@ static void applicant_render(struct battle *battle,struct applicant *applicant) 
     int x=applicant->dstx-2;
     int y=dsty-20;
     tileid=0x2a+(applicant->hat_choice&1)+((applicant->hat_choice&2)?0x10:0);
-    graf_fancy(&g.graf,x,y,tileid,0,0,ts,0,applicant->hat_color);
+    graf_fancy(g_graf,x,y,tileid,0,0,ts,0,applicant->hat_color);
   }
 }
 
@@ -538,14 +538,14 @@ static void _hiring_render(struct battle *battle) {
   uint32_t dark=0x3e5362ff;
   uint32_t lite=0x628197ff;
   int ly=40;
-  graf_gradient_rect(&g.graf,0,0,FBW,ly,dark,dark,lite,lite);
-  graf_gradient_rect(&g.graf,0,ly,FBW,FBH-ly,lite,lite,dark,dark);
-  if ((sec<=3)&&(ms>=800)) graf_fill_rect(&g.graf,0,0,FBW,FBH,0xff000040);
-  graf_set_input(&g.graf,BATTLE->texid_prompt);
-  graf_decal(&g.graf,(FBW>>1)-(BATTLE->promptw>>1),5,0,0,BATTLE->promptw,BATTLE->prompth);
+  graf_gradient_rect(g_graf,0,0,FBW,ly,dark,dark,lite,lite);
+  graf_gradient_rect(g_graf,0,ly,FBW,FBH-ly,lite,lite,dark,dark);
+  if ((sec<=3)&&(ms>=800)) graf_fill_rect(g_graf,0,0,FBW,FBH,0xff000040);
+  graf_set_input(g_graf,BATTLE->texid_prompt);
+  graf_decal(g_graf,(FBW>>1)-(BATTLE->promptw>>1),5,0,0,BATTLE->promptw,BATTLE->prompth);
   
   // Applicants.
-  graf_set_image(&g.graf,RID_image_cave_sprites);
+  graf_set_image(g_graf,RID_image_cave_sprites);
   struct applicant *applicant=BATTLE->applicantv;
   int i=BATTLE->applicantc;
   for (;i-->0;applicant++) {
@@ -555,25 +555,25 @@ static void _hiring_render(struct battle *battle) {
   // Point at one applicant. Use a fancy tho tile would work; we can piggyback on the applicants' fancy batch.
   if ((ms||sec)&&(BATTLE->cursor>=0)&&(BATTLE->cursor<BATTLE->applicantc)) {
     applicant=BATTLE->applicantv+BATTLE->cursor;
-    graf_fancy(&g.graf,applicant->dstx-NS_sys_tilesize,ly,0x17,0,0,NS_sys_tilesize,0,0);
+    graf_fancy(g_graf,applicant->dstx-NS_sys_tilesize,ly,0x17,0,0,NS_sys_tilesize,0,0);
   }
   
   // Resume.
   if (BATTLE->resume) {
-    graf_set_input(&g.graf,BATTLE->resume->texid);
-    graf_decal(&g.graf,(FBW>>1)-(RESUMEW>>1),(int)BATTLE->resumey,0,0,RESUMEW,RESUMEH);
+    graf_set_input(g_graf,BATTLE->resume->texid);
+    graf_decal(g_graf,(FBW>>1)-(RESUMEW>>1),(int)BATTLE->resumey,0,0,RESUMEW,RESUMEH);
   }
   
   // Clock.
   if (ms||sec) {
     if (sec<=3) {
-      graf_fill_rect(&g.graf,FBW-23,FBH-17,23,17,(ms>=800)?0x800000ff:0x000000ff);
+      graf_fill_rect(g_graf,FBW-23,FBH-17,23,17,(ms>=800)?0x800000ff:0x000000ff);
     } else {
-      graf_fill_rect(&g.graf,FBW-23,FBH-17,23,17,0x000000ff);
+      graf_fill_rect(g_graf,FBW-23,FBH-17,23,17,0x000000ff);
     }
-    graf_set_image(&g.graf,RID_image_cave_sprites);
-    graf_tile(&g.graf,FBW-17,FBH-9,(sec<10)?0x4a:(0x40+sec/10),0);
-    graf_tile(&g.graf,FBW-6,FBH-9,0x40+sec%10,0);
+    graf_set_image(g_graf,RID_image_cave_sprites);
+    graf_tile(g_graf,FBW-17,FBH-9,(sec<10)?0x4a:(0x40+sec/10),0);
+    graf_tile(g_graf,FBW-6,FBH-9,0x40+sec%10,0);
   }
 }
 
@@ -583,7 +583,7 @@ static void _hiring_render(struct battle *battle) {
 const struct battle_type battle_type_hiring={
   .name="hiring",
   .objlen=sizeof(struct battle_hiring),
-  .id=NS_battle_hiring,
+  .id=15,
   .strix_name=54,
   .no_article=0,
   .no_contest=0,

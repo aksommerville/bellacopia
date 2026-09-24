@@ -1,7 +1,7 @@
 /* battle_tictactoe.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define CELL_NONE 0
 #define CELL_X    1
@@ -156,10 +156,10 @@ static void player_activate(struct battle *battle,struct player *player) {
   if ((BATTLE->selx<0)||(BATTLE->selx>=3)||(BATTLE->sely<0)||(BATTLE->sely>=3)) return;
   int p=BATTLE->sely*3+BATTLE->selx;
   if (BATTLE->fld[p]!=CELL_NONE) {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     return;
   }
-  bm_sound(RID_sound_uiactivate);
+  bm_sound_pan(RID_sound_uiactivate,0.0);
   BATTLE->fld[p]=player->cell;
   tictactoe_change_turn(battle);
 }
@@ -174,7 +174,7 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
   BATTLE->sely+=dy;
   if (BATTLE->sely<0) BATTLE->sely=2;
   else if (BATTLE->sely>=3) BATTLE->sely=0;
-  bm_sound(RID_sound_uimotion);
+  bm_sound_pan(RID_sound_uimotion,0.0);
 }
 
 /* Update human player.
@@ -298,7 +298,7 @@ static void _tictactoe_update(struct battle *battle,double elapsed) {
    */
   if ((BATTLE->nowplaying>=0)&&(BATTLE->nowplaying<2)) {
     struct player *player=BATTLE->playerv+BATTLE->nowplaying;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
   }
 }
@@ -320,14 +320,14 @@ static void _tictactoe_render(struct battle *battle) {
   const uint32_t linecolor=0xffffffff;
   
   // Background and grid lines.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,bgcolor);
-  graf_fill_rect(&g.graf,fldx+cellw,fldy,sepw,fldh,linecolor);
-  graf_fill_rect(&g.graf,fldx+cellw*2+sepw,fldy,sepw,fldh,linecolor);
-  graf_fill_rect(&g.graf,fldx,fldy+cellh,fldw,seph,linecolor);
-  graf_fill_rect(&g.graf,fldx,fldy+cellh*2+seph,fldw,seph,linecolor);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,bgcolor);
+  graf_fill_rect(g_graf,fldx+cellw,fldy,sepw,fldh,linecolor);
+  graf_fill_rect(g_graf,fldx+cellw*2+sepw,fldy,sepw,fldh,linecolor);
+  graf_fill_rect(g_graf,fldx,fldy+cellh,fldw,seph,linecolor);
+  graf_fill_rect(g_graf,fldx,fldy+cellh*2+seph,fldw,seph,linecolor);
   
   // Played pieces.
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   int y=fldy+(NS_sys_tilesize>>1);
   int x0=fldx+(NS_sys_tilesize>>1);
   const uint8_t *p=BATTLE->fld;
@@ -341,12 +341,12 @@ static void _tictactoe_render(struct battle *battle) {
         case CELL_O: tileid=0x12; break;
       }
       if (tileid) {
-        if ((i==BATTLE->hlt[0])||(i==BATTLE->hlt[1])||(i==BATTLE->hlt[2])) graf_set_tint(&g.graf,0x80ff80ff);
-        graf_tile(&g.graf,x,y,tileid,0);
-        graf_tile(&g.graf,x+NS_sys_tilesize,y,tileid+0x01,0);
-        graf_tile(&g.graf,x,y+NS_sys_tilesize,tileid+0x10,0);
-        graf_tile(&g.graf,x+NS_sys_tilesize,y+NS_sys_tilesize,tileid+0x11,0);
-        graf_set_tint(&g.graf,0);
+        if ((i==BATTLE->hlt[0])||(i==BATTLE->hlt[1])||(i==BATTLE->hlt[2])) graf_set_tint(g_graf,0x80ff80ff);
+        graf_tile(g_graf,x,y,tileid,0);
+        graf_tile(g_graf,x+NS_sys_tilesize,y,tileid+0x01,0);
+        graf_tile(g_graf,x,y+NS_sys_tilesize,tileid+0x10,0);
+        graf_tile(g_graf,x+NS_sys_tilesize,y+NS_sys_tilesize,tileid+0x11,0);
+        graf_set_tint(g_graf,0);
       }
     }
   }
@@ -354,13 +354,13 @@ static void _tictactoe_render(struct battle *battle) {
   // Cursor.
   if (BATTLE->nowplaying>=0) {
     struct player *player=BATTLE->playerv+BATTLE->nowplaying;
-    if (g.framec&16) graf_set_alpha(&g.graf,0x80);
-    graf_tile(&g.graf,
+    if (g_framec&16) graf_set_alpha(g_graf,0x80);
+    graf_tile(g_graf,
       fldx+BATTLE->selx*(cellw+sepw)+(cellw>>1),
       fldy+BATTLE->sely*(cellh+seph)+(cellh>>1),
       player->tileid,player->xform
     );
-    graf_set_alpha(&g.graf,0xff);
+    graf_set_alpha(g_graf,0xff);
   }
 }
 
@@ -370,7 +370,7 @@ static void _tictactoe_render(struct battle *battle) {
 const struct battle_type battle_type_tictactoe={
   .name="tictactoe",
   .objlen=sizeof(struct battle_tictactoe),
-  .id=NS_battle_tictactoe,
+  .id=70,
   .strix_name=265,
   .no_article=1,
   .no_contest=1,

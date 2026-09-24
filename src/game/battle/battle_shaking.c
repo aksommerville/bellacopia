@@ -2,7 +2,7 @@
  * U/D to shake the bottle until time runs out.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 150
 #define GRAVITY 200.0
@@ -171,7 +171,7 @@ static void _shaking_update(struct battle *battle,double elapsed) {
   
   if (BATTLE->clock>0.0) {
     if ((BATTLE->clock-=elapsed)<=0.0) {
-      bm_sound(RID_sound_pop);
+      bm_sound_pan(RID_sound_pop,0.0);
       pop_cork(battle,BATTLE->playerv+0);
       pop_cork(battle,BATTLE->playerv+1);
     }
@@ -181,7 +181,7 @@ static void _shaking_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (BATTLE->clock>0.0) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
       player_update_common(battle,player,elapsed);
     } else {
@@ -211,11 +211,11 @@ static void player_render(struct battle *battle,struct player *player) {
   int army=y+ht+3+player->arm;
   uint8_t armtile=player->tileid+0x0e; // 0x0f after popped
   if (BATTLE->clock<=0.0) armtile+=1;
-  graf_tile(&g.graf,armx,army,armtile,player->xform);
-  graf_tile(&g.graf,x,y,player->tileid,player->xform);
-  graf_tile(&g.graf,x,y+NS_sys_tilesize,player->tileid+0x10,player->xform);
+  graf_tile(g_graf,armx,army,armtile,player->xform);
+  graf_tile(g_graf,x,y,player->tileid,player->xform);
+  graf_tile(g_graf,x,y+NS_sys_tilesize,player->tileid+0x10,player->xform);
   if (BATTLE->clock<=0.0) { // Cork.
-    graf_tile(&g.graf,(int)player->cx,(int)player->cy,0xa7,0);
+    graf_tile(g_graf,(int)player->cx,(int)player->cy,0xa7,0);
   }
   int finger=(int)player->peak;
   if (finger>army) finger=army;
@@ -223,22 +223,22 @@ static void player_render(struct battle *battle,struct player *player) {
   uint8_t fingxform=0;
   if (player->who) fingx+=8;
   else { fingx-=8; fingxform=EGG_XFORM_XREV; }
-  graf_tile(&g.graf,fingx,finger,0xa9,fingxform);
+  graf_tile(g_graf,fingx,finger,0xa9,fingxform);
 }
 
 /* Render.
  */
  
 static void _shaking_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   // Ruler down the middle.
   int y=GROUNDY-(NS_sys_tilesize>>1);
   for (;y>=-8;y-=NS_sys_tilesize) {
-    graf_tile(&g.graf,FBW>>1,y,0xa8,0);
+    graf_tile(g_graf,FBW>>1,y,0xa8,0);
   }
   
   // Players, including cork.
@@ -249,8 +249,8 @@ static void _shaking_render(struct battle *battle) {
   if (BATTLE->clock>0) {
     int sec=(int)(BATTLE->clock)+1;
     if (sec>9) sec=9; else if (sec<0) sec=0;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,GROUNDY+20,'0'+sec,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,GROUNDY+20,'0'+sec,0);
   }
 }
 
@@ -260,7 +260,7 @@ static void _shaking_render(struct battle *battle) {
 const struct battle_type battle_type_shaking={
   .name="shaking",
   .objlen=sizeof(struct battle_shaking),
-  .id=NS_battle_shaking,
+  .id=26,
   .strix_name=153,
   .no_article=0,
   .no_contest=0,

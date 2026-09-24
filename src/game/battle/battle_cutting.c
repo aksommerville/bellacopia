@@ -1,7 +1,7 @@
 /* battle_cutting.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SAMPLE_LIMIT 64
 
@@ -503,7 +503,7 @@ static void _cutting_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player->done) continue;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -529,14 +529,14 @@ static void _cutting_update(struct battle *battle,double elapsed) {
 static void render_uint(int x,int y,int v) {
   if (v<0) v=0; else if (v>999) v=999;
   if (v>=100) {
-    graf_tile(&g.graf,x-8,y,'0'+v/100,0);
-    graf_tile(&g.graf,x,y,'0'+(v/10)%10,0);
-    graf_tile(&g.graf,x+8,y,'0'+v%10,0);
+    graf_tile(g_graf,x-8,y,'0'+v/100,0);
+    graf_tile(g_graf,x,y,'0'+(v/10)%10,0);
+    graf_tile(g_graf,x+8,y,'0'+v%10,0);
   } else if (v>=10) {
-    graf_tile(&g.graf,x-4,y,'0'+v/10,0);
-    graf_tile(&g.graf,x+4,y,'0'+v%10,0);
+    graf_tile(g_graf,x-4,y,'0'+v/10,0);
+    graf_tile(g_graf,x+4,y,'0'+v%10,0);
   } else {
-    graf_tile(&g.graf,x,y,'0'+v,0);
+    graf_tile(g_graf,x,y,'0'+v,0);
   }
 }
 
@@ -551,27 +551,27 @@ static void player_render(struct battle *battle,struct player *player) {
   const int dsth=128;
   int dstx=player->who?((FBW>>1)+10):((FBW>>1)-10-dstw);
   int dsty=(FBH>>1)-(dsth>>1);
-  graf_fill_rect(&g.graf,dstx,dsty,dstw,dsth,0xe0e0e0ff);
+  graf_fill_rect(g_graf,dstx,dsty,dstw,dsth,0xe0e0e0ff);
   
   /* Render pattern.
    */
-  graf_set_image(&g.graf,RID_image_battle_cutting);
+  graf_set_image(g_graf,RID_image_battle_cutting);
   const struct ipt *ipt=player->pattern;
   int i=player->patternc;
-  for (;i-->0;ipt++) graf_tile(&g.graf,dstx+ipt->x,dsty+ipt->y,0x84,0);
+  for (;i-->0;ipt++) graf_tile(g_graf,dstx+ipt->x,dsty+ipt->y,0x84,0);
   
   /* The line.
    */
   if (player->samplec>=1) {
-    graf_set_input(&g.graf,0);
-    graf_line_strip_begin(&g.graf,dstx+player->samplev[0].x,dsty+player->samplev[0].y,player->color);
+    graf_set_input(g_graf,0);
+    graf_line_strip_begin(g_graf,dstx+player->samplev[0].x,dsty+player->samplev[0].y,player->color);
     const struct ipt *sample=player->samplev+1;
     for (i=player->samplec-1;i-->0;sample++) {
-      graf_line_strip_more(&g.graf,dstx+sample->x,dsty+sample->y,player->color);
+      graf_line_strip_more(g_graf,dstx+sample->x,dsty+sample->y,player->color);
     }
     // And one last segment to the focus, if we're cutting.
     if (player->incut) {
-      graf_line_strip_more(&g.graf,dstx+lround(player->x),dsty+lround(player->y),player->color);
+      graf_line_strip_more(g_graf,dstx+lround(player->x),dsty+lround(player->y),player->color);
     }
   }
   
@@ -586,8 +586,8 @@ static void player_render(struct battle *battle,struct player *player) {
     int ay=dsty+(int)player->y;
     int bx=dstx+(int)(player->x+sin(player->t)*radius);
     int by=dsty+(int)(player->y-cos(player->t)*radius);
-    graf_set_input(&g.graf,0);
-    graf_line(&g.graf,ax,ay,player->color,bx,by,player->color);
+    graf_set_input(g_graf,0);
+    graf_line(g_graf,ax,ay,player->color,bx,by,player->color);
   }
   
   /* Scissors.
@@ -595,24 +595,24 @@ static void player_render(struct battle *battle,struct player *player) {
   int px=dstx+(int)player->x;
   int py=dsty+(int)player->y;
   uint8_t tileid=player->tileid+player->animframe;
-  graf_set_image(&g.graf,RID_image_battle_cutting);
-  graf_set_filter(&g.graf,1);
-  graf_fancy(&g.graf,px,py,tileid,0,player->rot,NS_sys_tilesize,0,player->color);
-  graf_set_filter(&g.graf,0);
+  graf_set_image(g_graf,RID_image_battle_cutting);
+  graf_set_filter(g_graf,1);
+  graf_fancy(g_graf,px,py,tileid,0,player->rot,NS_sys_tilesize,0,player->color);
+  graf_set_filter(g_graf,0);
 }
 
 /* Render.
  */
  
 static void _cutting_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   player_render(battle,l);
   player_render(battle,r);
   
   if (battle->outcome==-2) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1;
     render_uint(FBW>>1,20,s);
@@ -625,7 +625,7 @@ static void _cutting_render(struct battle *battle) {
 const struct battle_type battle_type_cutting={
   .name="cutting",
   .objlen=sizeof(struct battle_cutting),
-  .id=NS_battle_cutting,
+  .id=89,
   .strix_name=306,
   .no_article=0,
   .no_contest=0,

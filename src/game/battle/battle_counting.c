@@ -2,7 +2,7 @@
  * Noninteractive scene with lots of moving things and you have to count one class of them.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define ANIMAL_LIMIT 40
 #define ANIMALC_MIN 5
@@ -215,7 +215,7 @@ static int _counting_init(struct battle *battle) {
   char tmp[64];
   int tmpc=text_format_res(tmp,sizeof(tmp),RID_strings_battle,190,insv,2);
   if ((tmpc<1)||(tmpc>sizeof(tmp))) tmpc=0;
-  BATTLE->prompt_texid=font_render_to_texture(0,g.font,tmp,tmpc,FBW,FBH,0xffffffff);
+  BATTLE->prompt_texid=font_render_to_texture(0,g_font,tmp,tmpc,FBW,FBH,0xffffffff);
   egg_texture_get_size(&BATTLE->promptw,&BATTLE->prompth,BATTLE->prompt_texid);
 
   // Initialize players.
@@ -319,7 +319,7 @@ static void _counting_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
   }
   struct player *l=BATTLE->playerv;
@@ -386,8 +386,8 @@ static void sort_animals(struct animal *animalv,int animalc) {
  
 static void _counting_render(struct battle *battle) {
   const int ht=NS_sys_tilesize>>1;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x406080ff);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x406080ff);
+  graf_set_image(g_graf,RID_image_battle_labyrinth2);
   
   sort_animals(BATTLE->animalv,BATTLE->animalc);
   
@@ -401,7 +401,7 @@ static void _counting_render(struct battle *battle) {
       case 1: tileid+=1; break;
       case 3: tileid+=2; break;
     }
-    graf_fancy(&g.graf,(int)animal->x,(int)animal->y,tileid,animal->xform,0,NS_sys_tilesize,0,animal->color);
+    graf_fancy(g_graf,(int)animal->x,(int)animal->y,tileid,animal->xform,0,NS_sys_tilesize,0,animal->color);
     if ((battle->outcome>-2)&&(indicatorc<16)) {
       if ((animal->colorname==BATTLE->targetcolor)&&(animal->tileid==BATTLE->targettile)) {
         indicatorv[indicatorc++]=(struct indicator){(int)animal->x,(int)animal->y};
@@ -411,7 +411,7 @@ static void _counting_render(struct battle *battle) {
   
   struct indicator *indicator=indicatorv;
   for (i=indicatorc;i-->0;indicator++) {
-    graf_tile(&g.graf,indicator->x,indicator->y-NS_sys_tilesize,0x0e,0);
+    graf_tile(g_graf,indicator->x,indicator->y-NS_sys_tilesize,0x0e,0);
   }
   
   struct digit { int x,y; uint8_t tileid; } digitv[2];
@@ -425,10 +425,10 @@ static void _counting_render(struct battle *battle) {
       tl++;
       tr--;
     }
-    graf_tile(&g.graf,player->dstx+ht                ,FBH-24,tl+0x00,player->xform);
-    graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize,FBH-24,tr+0x00,player->xform);
-    graf_tile(&g.graf,player->dstx+ht                ,FBH- 8,tl+0x10,player->xform);
-    graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize,FBH- 8,tr+0x10,player->xform);
+    graf_tile(g_graf,player->dstx+ht                ,FBH-24,tl+0x00,player->xform);
+    graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize,FBH-24,tr+0x00,player->xform);
+    graf_tile(g_graf,player->dstx+ht                ,FBH- 8,tl+0x10,player->xform);
+    graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize,FBH- 8,tr+0x10,player->xform);
     if (!player->phony) {
       uint8_t bubbletile=0x1d;
       int ndx=53,ndy=5;
@@ -441,41 +441,41 @@ static void _counting_render(struct battle *battle) {
       if (player->xform) {
         tl++;
         tr--;
-        graf_tile(&g.graf,player->dstx-ht-NS_sys_tilesize*1+2,FBH-32,tl+0x00,player->xform);
-        graf_tile(&g.graf,player->dstx-ht-NS_sys_tilesize*0+2,FBH-32,tr+0x00,player->xform);
-        graf_tile(&g.graf,player->dstx-ht-NS_sys_tilesize*1+2,FBH-16,tl+0x10,player->xform);
-        graf_tile(&g.graf,player->dstx-ht-NS_sys_tilesize*0+2,FBH-16,tr+0x10,player->xform);
+        graf_tile(g_graf,player->dstx-ht-NS_sys_tilesize*1+2,FBH-32,tl+0x00,player->xform);
+        graf_tile(g_graf,player->dstx-ht-NS_sys_tilesize*0+2,FBH-32,tr+0x00,player->xform);
+        graf_tile(g_graf,player->dstx-ht-NS_sys_tilesize*1+2,FBH-16,tl+0x10,player->xform);
+        graf_tile(g_graf,player->dstx-ht-NS_sys_tilesize*0+2,FBH-16,tr+0x10,player->xform);
         digitv[digitc++]=(struct digit){player->dstx-72+ndx,FBH-32+ndy,'0'+player->guess};
       } else {
-        graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize*2,FBH-32,tl+0x00,player->xform);
-        graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize*3,FBH-32,tr+0x00,player->xform);
-        graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize*2,FBH-16,tl+0x10,player->xform);
-        graf_tile(&g.graf,player->dstx+ht+NS_sys_tilesize*3,FBH-16,tr+0x10,player->xform);
+        graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize*2,FBH-32,tl+0x00,player->xform);
+        graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize*3,FBH-32,tr+0x00,player->xform);
+        graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize*2,FBH-16,tl+0x10,player->xform);
+        graf_tile(g_graf,player->dstx+ht+NS_sys_tilesize*3,FBH-16,tr+0x10,player->xform);
         digitv[digitc++]=(struct digit){player->dstx+ndx,FBH-32+ndy,'0'+player->guess};
       }
     }
   }
   
   if (digitc) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_set_tint(&g.graf,0x000040ff);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_set_tint(g_graf,0x000040ff);
     struct digit *digit=digitv;
     for (i=digitc;i-->0;digit++) {
-      graf_tile(&g.graf,digit->x,digit->y,digit->tileid,0);
+      graf_tile(g_graf,digit->x,digit->y,digit->tileid,0);
     }
-    graf_set_tint(&g.graf,0);
+    graf_set_tint(g_graf,0);
   }
   
   if (BATTLE->useclock&&(BATTLE->clock>0.0)) {
     int ms=(int)(BATTLE->clock*1000.0);
     int sec=ms/1000+1;
     if (sec<1) sec=1; else if (sec>9) sec=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,FBH-20,'0'+sec,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,FBH-20,'0'+sec,0);
   }
   
-  graf_set_input(&g.graf,BATTLE->prompt_texid);
-  graf_decal(&g.graf,(FBW>>1)-(BATTLE->promptw>>1),10,0,0,BATTLE->promptw,BATTLE->prompth);
+  graf_set_input(g_graf,BATTLE->prompt_texid);
+  graf_decal(g_graf,(FBW>>1)-(BATTLE->promptw>>1),10,0,0,BATTLE->promptw,BATTLE->prompth);
 }
 
 /* Type definition.
@@ -484,7 +484,7 @@ static void _counting_render(struct battle *battle) {
 const struct battle_type battle_type_counting={
   .name="counting",
   .objlen=sizeof(struct battle_counting),
-  .id=NS_battle_counting,
+  .id=53,
   .strix_name=179,
   .no_article=0,
   .no_contest=0,

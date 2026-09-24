@@ -3,7 +3,7 @@
  * Three-card monte, but he's cheating, so you can only win by slapping him first.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define STAGE_WELCOME 1
 #define STAGE_SHUFFLE 2
@@ -134,7 +134,7 @@ static int _cheating_init(struct battle *battle) {
  
 static void cheating_slappable(struct battle *battle) {
   if (battle->args.lctl) {
-    if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+    if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) {
       BATTLE->stage=STAGE_SLAP;
       BATTLE->stageclock=0.0;
     }
@@ -199,7 +199,7 @@ static void cheating_update_SHUFFLE(struct battle *battle,double elapsed) {
  */
  
 static void cheating_begin_reveal(struct battle *battle) {
-  bm_sound(RID_sound_reject);
+  bm_sound_pan(RID_sound_reject,0.0);
   BATTLE->stage=STAGE_REVEAL;
   BATTLE->stageclock=0.0;
   BATTLE->acornp=-1; // ...now you don't
@@ -231,15 +231,15 @@ static void cheating_update_QUERY_cpu(struct battle *battle,double elapsed) {
   if (nstep==BATTLE->cpuquerystep) return;
   switch (BATTLE->cpuquerystep=nstep) {
     case 1: {
-        bm_sound(RID_sound_uimotion);
+        bm_sound_pan(RID_sound_uimotion,0.0);
         BATTLE->cursorp=0;
       } break;
     case 2: {
-        bm_sound(RID_sound_uimotion);
+        bm_sound_pan(RID_sound_uimotion,0.0);
         BATTLE->cursorp=1;
       } break;
     case 3: {
-        bm_sound(RID_sound_uimotion);
+        bm_sound_pan(RID_sound_uimotion,0.0);
         BATTLE->cursorp=2;
       } break;
     case 4: {
@@ -252,13 +252,13 @@ static void cheating_update_QUERY_cpu(struct battle *battle,double elapsed) {
  */
  
 static void cheating_update_QUERY_man(struct battle *battle,double elapsed) {
-  if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)&&(BATTLE->cursorp>0)) {
-    bm_sound(RID_sound_uimotion);
+  if ((g_input[0]&EGG_BTN_LEFT)&&!(g_pvinput[0]&EGG_BTN_LEFT)&&(BATTLE->cursorp>0)) {
+    bm_sound_pan(RID_sound_uimotion,0.0);
     BATTLE->cursorp--;
-  } else if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)&&(BATTLE->cursorp<3)) {
-    bm_sound(RID_sound_uimotion);
+  } else if ((g_input[0]&EGG_BTN_RIGHT)&&!(g_pvinput[0]&EGG_BTN_RIGHT)&&(BATTLE->cursorp<3)) {
+    bm_sound_pan(RID_sound_uimotion,0.0);
     BATTLE->cursorp++;
-  } else if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) {
+  } else if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) {
     if (BATTLE->cursorp==3) {
       BATTLE->stage=STAGE_SLAP;
       BATTLE->stageclock=0.0;
@@ -311,7 +311,7 @@ static void cheating_update_SLAP(struct battle *battle,double elapsed) {
   if (BATTLE->stageclock>=0.500) {
     BATTLE->slapx=1.0;
     BATTLE->slapclock=0.500;
-    bm_sound(RID_sound_whack);
+    bm_sound_pan(RID_sound_whack,0.0);
     return;
   }
   
@@ -381,8 +381,8 @@ static uint32_t slap_starbust_color(double n) {
  */
  
 static void _cheating_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   /* Start with some measurements.
    * Table goes in the middle, player on the left, and hustler on the right.
@@ -399,10 +399,10 @@ static void _cheating_render(struct battle *battle) {
   if (BATTLE->slapclock>0.0) {
     uint32_t color=slap_starbust_color(1.0-BATTLE->slapclock/0.500);
     const int ht=NS_sys_tilesize>>1;
-    graf_fancy(&g.graf,hx-ht,tby-NS_sys_tilesize-ht,0x29,0,0,NS_sys_tilesize,0,color);
-    graf_fancy(&g.graf,hx+ht,tby-NS_sys_tilesize-ht,0x2a,0,0,NS_sys_tilesize,0,color);
-    graf_fancy(&g.graf,hx-ht,tby-NS_sys_tilesize+ht,0x39,0,0,NS_sys_tilesize,0,color);
-    graf_fancy(&g.graf,hx+ht,tby-NS_sys_tilesize+ht,0x3a,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,hx-ht,tby-NS_sys_tilesize-ht,0x29,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,hx+ht,tby-NS_sys_tilesize-ht,0x2a,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,hx-ht,tby-NS_sys_tilesize+ht,0x39,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,hx+ht,tby-NS_sys_tilesize+ht,0x3a,0,0,NS_sys_tilesize,0,color);
   }
   
   /* Hero on the left.
@@ -414,26 +414,26 @@ static void _cheating_render(struct battle *battle) {
     px+=(int)(BATTLE->slapx*26.0);
     if (BATTLE->slapclock>0.200) {
       ptileid+=2;
-      graf_tile(&g.graf,px+NS_sys_tilesize,tby-NS_sys_tilesize,ptileid+0x01,0);
-      graf_tile(&g.graf,px+NS_sys_tilesize,tby,ptileid+0x11,0);
+      graf_tile(g_graf,px+NS_sys_tilesize,tby-NS_sys_tilesize,ptileid+0x01,0);
+      graf_tile(g_graf,px+NS_sys_tilesize,tby,ptileid+0x11,0);
     }
   }
-  graf_tile(&g.graf,px,tby-NS_sys_tilesize,ptileid,0);
-  graf_tile(&g.graf,px,tby,ptileid+0x10,0);
+  graf_tile(g_graf,px,tby-NS_sys_tilesize,ptileid,0);
+  graf_tile(g_graf,px,tby,ptileid+0x10,0);
   
   /* Hustler on the right.
    */
   uint8_t htileid=0x09;
   if (BATTLE->slapclock>0.0) htileid=0x0a;
-  graf_tile(&g.graf,hx,tby-NS_sys_tilesize,htileid,0);
-  graf_tile(&g.graf,hx,tby,htileid+0x10,0);
+  graf_tile(g_graf,hx,tby-NS_sys_tilesize,htileid,0);
+  graf_tile(g_graf,hx,tby,htileid+0x10,0);
   
   /* Table in the middle.
    * (tby) is the center of the tile, image is oriented low in its tiles.
    * (tbx) is the junction of the two table tiles.
    */
-  graf_tile(&g.graf,tbx-(NS_sys_tilesize>>1),tby,0x45,0);
-  graf_tile(&g.graf,tbx+(NS_sys_tilesize>>1),tby,0x46,0);
+  graf_tile(g_graf,tbx-(NS_sys_tilesize>>1),tby,0x45,0);
+  graf_tile(g_graf,tbx+(NS_sys_tilesize>>1),tby,0x46,0);
   
   /* Acorn, if it's exposed.
    */
@@ -441,7 +441,7 @@ static void _cheating_render(struct battle *battle) {
     struct cup *cup=BATTLE->cupv+BATTLE->acornp;
     if (cup->y>0.0) {
       int x=tbx+(int)(cup->x*cupxmax);
-      graf_tile(&g.graf,x,tby,0x48,0);
+      graf_tile(g_graf,x,tby,0x48,0);
     }
   }
   
@@ -452,7 +452,7 @@ static void _cheating_render(struct battle *battle) {
   for (;i-->0;cup++) {
     int x=tbx+(int)(cup->x*cupxmax);
     int y=tby-(int)(cup->y*cupymax);
-    graf_tile(&g.graf,x,y,0x47,0);
+    graf_tile(g_graf,x,y,0x47,0);
   }
   
   /* Cursor, in QUERY stage.
@@ -462,7 +462,7 @@ static void _cheating_render(struct battle *battle) {
     int x=tbx+(int)(n*cupxmax);
     int y=tby-NS_sys_tilesize;
     if (BATTLE->cursorp==3) y-=12;
-    graf_tile(&g.graf,x,y,BATTLE->ptileid-1,0);
+    graf_tile(g_graf,x,y,BATTLE->ptileid-1,0);
   }
 }
 
@@ -472,7 +472,7 @@ static void _cheating_render(struct battle *battle) {
 const struct battle_type battle_type_cheating={
   .name="cheating",
   .objlen=sizeof(struct battle_cheating),
-  .id=NS_battle_cheating,
+  .id=42,
   .strix_name=168,
   .no_article=0,
   .no_contest=0,

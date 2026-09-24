@@ -2,7 +2,7 @@
  * Karate chop contest skinned as arm wrestling against a Minotaur.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define STROKEMIN_WORST 0.280
 #define STROKEMIN_BEST  0.280
@@ -129,7 +129,7 @@ static void _armwrestling_update(struct battle *battle,double elapsed) {
   for (;i-->0;player++) {
     player->strokeclock+=elapsed;
     if ((player->power-=player->decay*elapsed)<0.0) player->power=0.0;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -148,12 +148,12 @@ static void _armwrestling_update(struct battle *battle,double elapsed) {
  */
  
 static void render2x3(int x,int y,uint8_t tileid) {
-  graf_tile(&g.graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*0,tileid+0x00,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*0,tileid+0x01,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*1,tileid+0x10,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*1,tileid+0x11,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*2,tileid+0x20,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*2,tileid+0x21,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*0,tileid+0x00,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*0,tileid+0x01,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*1,tileid+0x10,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*1,tileid+0x11,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*0,y+NS_sys_tilesize*2,tileid+0x20,0);
+  graf_tile(g_graf,x+NS_sys_tilesize*1,y+NS_sys_tilesize*2,tileid+0x21,0);
 }
 
 /* Power meter.
@@ -161,8 +161,8 @@ static void render2x3(int x,int y,uint8_t tileid) {
  
 static void render_meter(int x,int y,double v) {
   const int ht=NS_sys_tilesize>>1;
-  graf_tile(&g.graf,x-ht,y,0x2d,0);
-  graf_tile(&g.graf,x+ht,y,0x2e,0);
+  graf_tile(g_graf,x-ht,y,0x2d,0);
+  graf_tile(g_graf,x+ht,y,0x2e,0);
   uint8_t bicep=0x2a;
        if (v>=1.000) { v=1.0; bicep=0x2c; }
   else if (v>=0.666) bicep=0x2c;
@@ -170,7 +170,7 @@ static void render_meter(int x,int y,double v) {
   else if (v>=0.000) bicep=0x2a;
   else { v=0.0; bicep=0x2a; }
   if (v<=0.0) {
-    graf_tile(&g.graf,x-ht+1,y+ht,0x29,0);
+    graf_tile(g_graf,x-ht+1,y+ht,0x29,0);
   } else {
     const double tmax=M_PI*0.750;
     const double radius=NS_sys_tilesize*0.5-1.0;
@@ -178,17 +178,17 @@ static void render_meter(int x,int y,double v) {
     int8_t rotate=(int8_t)((t*128.0)/M_PI);
     int fax=lround(x-cos(t)*radius);
     int fay=lround(y+ht-sin(t)*radius);
-    graf_fancy(&g.graf,fax,fay,0x29,0,rotate,NS_sys_tilesize,0,0x808080ff);
+    graf_fancy(g_graf,fax,fay,0x29,0,rotate,NS_sys_tilesize,0,0x808080ff);
   }
-  graf_tile(&g.graf,x+ht,y+ht,bicep,0);
+  graf_tile(g_graf,x+ht,y+ht,bicep,0);
 }
 
 /* Render.
  */
  
 static void _armwrestling_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_labyrinth);
   
   /* The action happens in a 5x3 grid.
    * Two columns left and right are static, from the players.
@@ -218,8 +218,8 @@ static void _armwrestling_render(struct battle *battle) {
   }
   render2x3(actionx,actiony,ltile);
   render2x3(actionx+NS_sys_tilesize*3,actiony,rtile);
-  graf_tile(&g.graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize,armtile,0);
-  graf_tile(&g.graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize*2,0x16,0);
+  graf_tile(g_graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize,armtile,0);
+  graf_tile(g_graf,actionx+NS_sys_tilesize*2,actiony+NS_sys_tilesize*2,0x16,0);
   
   // Power meters.
   render_meter(lx,ty-10,BATTLE->playerv[0].power);
@@ -232,7 +232,7 @@ static void _armwrestling_render(struct battle *battle) {
 const struct battle_type battle_type_armwrestling={
   .name="armwrestling",
   .objlen=sizeof(struct battle_armwrestling),
-  .id=NS_battle_armwrestling,
+  .id=56,
   .strix_name=182,
   .no_article=0,
   .no_contest=0,

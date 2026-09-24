@@ -2,7 +2,7 @@
  * Indoor golf. One stroke, and the ball bounces off walls and ceilings. Try to get it closest to the flag.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define WALL_L 70
 #define WALL_R 250
@@ -172,30 +172,30 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     if (player->ballx<WALL_L) {
       player->ballx=WALL_L;
       if (player->balldx<0.0) {
-        if (player->balldx<-5.0) bm_sound(RID_sound_bounce);
+        if (player->balldx<-5.0) bm_sound_pan(RID_sound_bounce,0.0);
         player->balldx=-player->balldx;
       }
       player_decay(battle,player);
     } else if (player->ballx>WALL_R) {
       player->ballx=WALL_R;
       if (player->balldx>0.0) {
-        if (player->balldx>5.0) bm_sound(RID_sound_bounce);
+        if (player->balldx>5.0) bm_sound_pan(RID_sound_bounce,0.0);
         player->balldx=-player->balldx;
-        bm_sound(RID_sound_bounce);
+        bm_sound_pan(RID_sound_bounce,0.0);
       }
       player_decay(battle,player);
     }
     if (player->bally<WALL_T) {
       player->bally=WALL_T;
       if (player->balldy<0.0) {
-        if (player->balldy<-5.0) bm_sound(RID_sound_bounce);
+        if (player->balldy<-5.0) bm_sound_pan(RID_sound_bounce,0.0);
         player->balldy=-player->balldy;
       }
       player_decay(battle,player);
     } else if (player->bally>WALL_B) {
       player->bally=WALL_B;
       if (player->balldy>0.0) {
-        if (player->balldy>5.0) bm_sound(RID_sound_bounce);
+        if (player->balldy>5.0) bm_sound_pan(RID_sound_bounce,0.0);
         player->balldy=-player->balldy;
       }
       player_decay(battle,player);
@@ -218,7 +218,7 @@ static void _golf_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -246,8 +246,8 @@ static void player_render(struct battle *battle,struct player *player) {
   } else {
     rot=(int8_t)((player->clubt*128.0)/M_PI);
   }
-  graf_fancy(&g.graf,player->x,player->y,0x0f,player->xform,rot,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,lround(player->ballx),lround(player->bally),0x1f,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,player->x,player->y,0x0f,player->xform,rot,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,lround(player->ballx),lround(player->bally),0x1f,0,0,NS_sys_tilesize,0,player->color);
 }
 
 /* Render.
@@ -256,14 +256,14 @@ static void player_render(struct battle *battle,struct player *player) {
 static void _golf_render(struct battle *battle) {
 
   const uint32_t wallcolor=battle->ctab[BATTLE_COLOR_GROUND];
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,WALL_L-1,WALL_T-1,WALL_R-WALL_L+2,WALL_B-WALL_T+2,0x000000ff);
-  graf_fill_rect(&g.graf,WALL_L,WALL_T,WALL_R-WALL_L,WALL_B-WALL_T,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,WALL_L-1,WALL_T-1,WALL_R-WALL_L+2,WALL_B-WALL_T+2,0x000000ff);
+  graf_fill_rect(g_graf,WALL_L,WALL_T,WALL_R-WALL_L,WALL_B-WALL_T,battle->ctab[BATTLE_COLOR_SKY]);
   
-  graf_set_image(&g.graf,RID_image_battle_labyrinth2);
+  graf_set_image(g_graf,RID_image_battle_labyrinth2);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
-  graf_tile(&g.graf,(WALL_L+WALL_R)>>1,WALL_B-(NS_sys_tilesize>>1),0x2f,0);
+  graf_tile(g_graf,(WALL_L+WALL_R)>>1,WALL_B-(NS_sys_tilesize>>1),0x2f,0);
 }
 
 /* Type definition.
@@ -272,7 +272,7 @@ static void _golf_render(struct battle *battle) {
 const struct battle_type battle_type_golf={
   .name="golf",
   .objlen=sizeof(struct battle_golf),
-  .id=NS_battle_golf,
+  .id=52,
   .strix_name=178,
   .no_article=0,
   .no_contest=0,

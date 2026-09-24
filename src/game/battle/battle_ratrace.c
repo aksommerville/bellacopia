@@ -1,7 +1,7 @@
 /* battle_ratrace.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define EDGE_LIMIT 40
 
@@ -303,7 +303,7 @@ static void _ratrace_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player->done) continue;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -356,7 +356,7 @@ static void player_render(struct battle *battle,struct player *player) {
     case 1: tileid+=1; break;
     case 3: tileid+=2; break;
   }
-  graf_fancy(&g.graf,dstx,dsty,tileid,0,rot,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx,dsty,tileid,0,rot,NS_sys_tilesize,0,player->color);
 }
 
 /* Render.
@@ -366,19 +366,19 @@ static void _ratrace_render(struct battle *battle) {
 
   /* Background.
    */
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
   uint32_t edgecolor=battle->ctab[BATTLE_COLOR_GROUND_TEXT];
   struct edge *edge=BATTLE->edgev;
   int i=BATTLE->edgec;
-  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ox,(int)BATTLE->edgev[BATTLE->edgec-1].oy,edgecolor);
+  graf_line_strip_begin(g_graf,(int)BATTLE->edgev[BATTLE->edgec-1].ox,(int)BATTLE->edgev[BATTLE->edgec-1].oy,edgecolor);
   for (;i-->0;edge++) {
-    graf_line_strip_more(&g.graf,(int)edge->ox,(int)edge->oy,edgecolor);
+    graf_line_strip_more(g_graf,(int)edge->ox,(int)edge->oy,edgecolor);
   }
-  graf_line_strip_begin(&g.graf,(int)BATTLE->edgev[BATTLE->edgec-1].ix,(int)BATTLE->edgev[BATTLE->edgec-1].iy,edgecolor);
+  graf_line_strip_begin(g_graf,(int)BATTLE->edgev[BATTLE->edgec-1].ix,(int)BATTLE->edgev[BATTLE->edgec-1].iy,edgecolor);
   for (edge=BATTLE->edgev,i=BATTLE->edgec;i-->0;edge++) {
-    graf_line_strip_more(&g.graf,(int)edge->ix,(int)edge->iy,edgecolor);
+    graf_line_strip_more(g_graf,(int)edge->ix,(int)edge->iy,edgecolor);
   }
-  graf_line(&g.graf,
+  graf_line(g_graf,
     (int)BATTLE->edgev[0].ix,(int)BATTLE->edgev[0].iy,edgecolor,
     (int)BATTLE->edgev[0].ox,(int)BATTLE->edgev[0].oy,edgecolor
   );
@@ -387,7 +387,7 @@ static void _ratrace_render(struct battle *battle) {
    */
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   player_render(battle,l);
   player_render(battle,r);
   
@@ -401,26 +401,26 @@ static void _ratrace_render(struct battle *battle) {
   int rtx=rdx-6;
   int topy=(FBH>>1)-3;
   int btmy=topy+9;
-  graf_fancy(&g.graf,ldx,topy,l->done?0x61:0x26,l->midway?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,l->midway?0xff0000ff:0x00ff00ff);
-  graf_fancy(&g.graf,rdx,topy,r->done?0x61:0x26,r->midway?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,r->midway?0xff0000ff:0x00ff00ff);
-  graf_fancy(&g.graf,lfx,topy,l->tileid+3,0,0,NS_sys_tilesize,0,0x808080ff);
-  graf_fancy(&g.graf,rfx,topy,r->tileid+3,EGG_XFORM_XREV,0,NS_sys_tilesize,0,0x808080ff);
-  graf_fancy(&g.graf,ltx,btmy,0x60,0,0,NS_sys_tilesize,0,0x808080ff);
-  graf_fancy(&g.graf,rtx,btmy,0x60,0,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,ldx,topy,l->done?0x61:0x26,l->midway?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,l->midway?0xff0000ff:0x00ff00ff);
+  graf_fancy(g_graf,rdx,topy,r->done?0x61:0x26,r->midway?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,r->midway?0xff0000ff:0x00ff00ff);
+  graf_fancy(g_graf,lfx,topy,l->tileid+3,0,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,rfx,topy,r->tileid+3,EGG_XFORM_XREV,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,ltx,btmy,0x60,0,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,rtx,btmy,0x60,0,0,NS_sys_tilesize,0,0x808080ff);
   
   /* Times on the scoreboard.
    */
-  graf_set_image(&g.graf,RID_image_cave_sprites);
+  graf_set_image(g_graf,RID_image_cave_sprites);
   int lds=(int)(l->raceclock*10.0);
   if (lds<0) lds=0; else if (lds>999) lds=999;
-  graf_tile(&g.graf,ltx-1,btmy,0x51+lds/100,0);
-  graf_tile(&g.graf,ltx+3,btmy,0x51+(lds/10)%10,0);
-  graf_tile(&g.graf,ltx+9,btmy,0x51+lds%10,0);
+  graf_tile(g_graf,ltx-1,btmy,0x51+lds/100,0);
+  graf_tile(g_graf,ltx+3,btmy,0x51+(lds/10)%10,0);
+  graf_tile(g_graf,ltx+9,btmy,0x51+lds%10,0);
   int rds=(int)(r->raceclock*10.0);
   if (rds<0) rds=0; else if (rds>999) rds=999;
-  graf_tile(&g.graf,rtx-1,btmy,0x51+rds/100,0);
-  graf_tile(&g.graf,rtx+3,btmy,0x51+(rds/10)%10,0);
-  graf_tile(&g.graf,rtx+9,btmy,0x51+rds%10,0);
+  graf_tile(g_graf,rtx-1,btmy,0x51+rds/100,0);
+  graf_tile(g_graf,rtx+3,btmy,0x51+(rds/10)%10,0);
+  graf_tile(g_graf,rtx+9,btmy,0x51+rds%10,0);
 }
 
 /* Type definition.
@@ -429,7 +429,7 @@ static void _ratrace_render(struct battle *battle) {
 const struct battle_type battle_type_ratrace={
   .name="ratrace",
   .objlen=sizeof(struct battle_ratrace),
-  .id=NS_battle_ratrace,
+  .id=93,
   .strix_name=314,
   .no_article=0,
   .no_contest=1,

@@ -1,7 +1,7 @@
 /* battle_cobbling.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define STAGE_LIMIT 16 /* If you want to win, you'll always stage exactly two things. But for silliness's sake, you can go much higher. */
@@ -92,11 +92,11 @@ static int _cobbling_init(struct battle *battle) {
  
 static void player_add_stage(struct battle *battle,struct player *player,uint8_t tileid) {
   if (player->stagec>=STAGE_LIMIT) {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     return;
   }
   player->stagev[player->stagec++]=tileid;
-  bm_sound(RID_sound_collect);
+  bm_sound_pan(RID_sound_collect,0.0);
 }
 
 /* Whack the stage.
@@ -117,10 +117,10 @@ static void player_whack(struct battle *battle,struct player *player) {
   }
   player->stagec=0;
   if (valid) {
-    bm_sound(RID_sound_whack);
+    bm_sound_pan(RID_sound_whack,0.0);
     player->shoec++;
   } else {
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     //TODO visual rejection
   }
   player->hammerclock=player->hammertime;
@@ -166,7 +166,7 @@ static void _cobbling_update(struct battle *battle,double elapsed) {
       player->hammerclock-=elapsed;
       continue;
     }
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
   }
   
@@ -187,12 +187,12 @@ static void _cobbling_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
   if (player->hammerclock>0.0) {
-    graf_tile(&g.graf,player->x,player->y,player->tileid+1,player->xform);
+    graf_tile(g_graf,player->x,player->y,player->tileid+1,player->xform);
     int hx=player->x;
     if (player->xform) hx-=NS_sys_tilesize; else hx+=NS_sys_tilesize;
-    graf_tile(&g.graf,hx,player->y,0xb2,player->xform);
+    graf_tile(g_graf,hx,player->y,0xb2,player->xform);
   } else {
-    graf_tile(&g.graf,player->x,player->y,player->tileid,player->xform);
+    graf_tile(g_graf,player->x,player->y,player->tileid,player->xform);
   }
   
   const int stagespacing=3;
@@ -200,12 +200,12 @@ static void player_render(struct battle *battle,struct player *player) {
   int stagey=player->y;
   uint8_t *stagetile=player->stagev;
   int i=player->stagec;
-  for (;i-->0;stagetile++,stagey-=stagespacing) graf_tile(&g.graf,stagex,stagey,*stagetile,0);
+  for (;i-->0;stagetile++,stagey-=stagespacing) graf_tile(g_graf,stagex,stagey,*stagetile,0);
   
   int dx=player->xform?-12:12;
   int shoex=stagex+(player->xform?-NS_sys_tilesize:NS_sys_tilesize);
   int shoey=player->y;
-  for (i=player->shoec;i-->0;shoex+=dx) graf_tile(&g.graf,shoex,shoey,0xc2,player->xform);
+  for (i=player->shoec;i-->0;shoex+=dx) graf_tile(g_graf,shoex,shoey,0xc2,player->xform);
 }
 
 /* Render.
@@ -217,10 +217,10 @@ static void _cobbling_render(struct battle *battle) {
   const uint32_t light=0xa09080ff;
   const uint32_t dark= 0x402010ff;
   const int horizon=FBH>>1;
-  graf_gradient_rect(&g.graf,0,0,FBW,horizon,dark,dark,light,light);
-  graf_gradient_rect(&g.graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
+  graf_gradient_rect(g_graf,0,0,FBW,horizon,dark,dark,light,light);
+  graf_gradient_rect(g_graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
   
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
@@ -242,7 +242,7 @@ const struct battle_input cobbling_input[]={
 const struct battle_type battle_type_cobbling={
   .name="cobbling",
   .objlen=sizeof(struct battle_cobbling),
-  .id=NS_battle_cobbling,
+  .id=19,
   .strix_name=57,
   .no_article=0,
   .no_contest=0,

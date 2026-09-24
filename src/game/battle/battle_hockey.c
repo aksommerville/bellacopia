@@ -2,7 +2,7 @@
  * Fire one puck at a time until somebody scores 3.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define CPU_PENALTY 0.750
 
@@ -215,7 +215,7 @@ static void _hockey_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -244,42 +244,42 @@ static void _hockey_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render(struct battle *battle,struct player *player) {
-  graf_fancy(&g.graf,(int)player->puckx,(int)player->pucky,0x0b,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,(int)player->puckx,(int)player->pucky,0x0b,0,0,NS_sys_tilesize,0,player->color);
   
   double sint=sin(player->t);
   double cost=cos(player->t);
   int playerx=(int)(player->x-cost*10.0);
   int playery=(int)(player->y-sint*10.0);
   uint8_t rotation=(int8_t)((player->t*128.0)/M_PI);
-  graf_fancy(&g.graf,playerx,playery,player->tileid,0,rotation,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,playerx,playery,player->tileid,0,rotation,NS_sys_tilesize,0,player->color);
   
   int stickx=(int)(player->x-cost*7.0);
   int sticky=(int)(player->y-sint*7.0);
   double stickt=player->t+player->power*M_PI;
   uint8_t stickrotation=(int8_t)((stickt*128.0)/M_PI);
-  graf_fancy(&g.graf,stickx,sticky,0x0c,0,stickrotation,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,stickx,sticky,0x0c,0,stickrotation,NS_sys_tilesize,0,player->color);
 }
 
 /* Render.
  */
  
 static void _hockey_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0xd0e5ecff);
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0xd0e5ecff);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
   
   // Goal.
   int goalx=(int)BATTLE->goalx;
   int goaly=(int)BATTLE->goaly;
-  graf_tile(&g.graf,goalx-(NS_sys_tilesize>>1),goaly,0x0d,0);
-  graf_tile(&g.graf,goalx+(NS_sys_tilesize>>1),goaly,0x0e,0);
+  graf_tile(g_graf,goalx-(NS_sys_tilesize>>1),goaly,0x0d,0);
+  graf_tile(g_graf,goalx+(NS_sys_tilesize>>1),goaly,0x0e,0);
   
   // Players.
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   player_render(battle,l);
   player_render(battle,r);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
   // Scoreboard.
   int dstx=(FBW>>1)-32;
@@ -289,15 +289,15 @@ static void _hockey_render(struct battle *battle) {
     uint32_t color=0x808080ff;
     if (i<l->score) color=l->color;
     else if (i>=5-r->score) color=r->color;
-    graf_fancy(&g.graf,dstx,dsty,0x08,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,dstx,dsty,0x08,0,0,NS_sys_tilesize,0,color);
   }
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   int s=(int)(BATTLE->playclock+0.999);
   if (s<0) s=0; else if (s>99) s=99;
-  graf_set_tint(&g.graf,0x000000ff);
-  if (s>=10) graf_tile(&g.graf,(FBW>>1)-4,FBH-24,'0'+s/10,0);
-  graf_tile(&g.graf,(FBW>>1)+4,FBH-24,'0'+s%10,0);
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0x000000ff);
+  if (s>=10) graf_tile(g_graf,(FBW>>1)-4,FBH-24,'0'+s/10,0);
+  graf_tile(g_graf,(FBW>>1)+4,FBH-24,'0'+s%10,0);
+  graf_set_tint(g_graf,0);
 }
 
 /* Type definition.
@@ -306,7 +306,7 @@ static void _hockey_render(struct battle *battle) {
 const struct battle_type battle_type_hockey={
   .name="hockey",
   .objlen=sizeof(struct battle_hockey),
-  .id=NS_battle_hockey,
+  .id=64,
   .strix_name=232,
   .no_article=0,
   .no_contest=0,

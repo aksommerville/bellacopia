@@ -1,7 +1,7 @@
 /* battle_remembering.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 // The grid has to be 3x3; we have exactly nine tiles to put on the cards.
 #define COLC 3
@@ -147,7 +147,7 @@ static int _remembering_init(struct battle *battle) {
   
   const char *src=0;
   int srcc=text_get_string(&src,RID_strings_battle,221);
-  BATTLE->texid_remember=font_render_to_texture(0,g.font,src,srcc,FBW,FBH,0x000000ff);
+  BATTLE->texid_remember=font_render_to_texture(0,g_font,src,srcc,FBW,FBH,0x000000ff);
   egg_texture_get_size(&BATTLE->remw,&BATTLE->remh,BATTLE->texid_remember);
   
   return 0;
@@ -252,7 +252,7 @@ static void _remembering_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if ((BATTLE->prepareclock<=0.0)&&!player->win&&(player->guessc<player->guesslimit)) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
   }
@@ -277,10 +277,10 @@ static void player_render(struct battle *battle,struct player *player,int midx,i
   int ry=-1; for (;ry<=1;ry++) {
     int rx=-1; for (;rx<=1;rx++,src++,expose>>=1) {
       if ((BATTLE->prepareclock>0.0)||(expose&1)) {
-        graf_tile(&g.graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,0x06,0);
-        graf_tile(&g.graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,*src,0);
+        graf_tile(g_graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,0x06,0);
+        graf_tile(g_graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,*src,0);
       } else {
-        graf_tile(&g.graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,0x05,0);
+        graf_tile(g_graf,midx+rx*NS_sys_tilesize,midy+ry*NS_sys_tilesize,0x05,0);
       }
     }
   }
@@ -293,12 +293,12 @@ static void player_render(struct battle *battle,struct player *player,int midx,i
     uint8_t tileid=0x16;
     if ((i==player->guessc-1)&&player->win) tileid=0x18;
     else if (i<player->guessc) tileid=0x17;
-    graf_tile(&g.graf,gx,gy,tileid,0);
+    graf_tile(g_graf,gx,gy,tileid,0);
   }
   
   // Hand.
   if ((BATTLE->prepareclock<=0.0)&&(battle->outcome==-2)&&(player->guessc<player->guesslimit)) {
-    graf_tile(&g.graf,midx+(player->selx-1)*NS_sys_tilesize+1,midy+(player->sely-1)*NS_sys_tilesize+5,player->tileid,0);
+    graf_tile(g_graf,midx+(player->selx-1)*NS_sys_tilesize+1,midy+(player->sely-1)*NS_sys_tilesize+5,player->tileid,0);
   }
   
   // The "Remember!" label comes later, because it's a different texture.
@@ -308,26 +308,26 @@ static void player_render(struct battle *battle,struct player *player,int midx,i
  */
  
 static void _remembering_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   
-  graf_set_image(&g.graf,RID_image_battle_desert);
+  graf_set_image(g_graf,RID_image_battle_desert);
   player_render(battle,l,FBW/3,FBH>>1);
   player_render(battle,r,(FBW*2)/3,FBH>>1);
   
   if (BATTLE->prepareclock>0.0) {
-    graf_tile(&g.graf,FBW>>1,FBH>>2,0x05,0);
+    graf_tile(g_graf,FBW>>1,FBH>>2,0x05,0);
   } else {
-    graf_tile(&g.graf,FBW>>1,FBH>>2,0x06,0);
-    graf_tile(&g.graf,FBW>>1,FBH>>2,BATTLE->targettile,0);
+    graf_tile(g_graf,FBW>>1,FBH>>2,0x06,0);
+    graf_tile(g_graf,FBW>>1,FBH>>2,BATTLE->targettile,0);
   }
   
   // At the start, show "Remember!" above each grid.
   if (BATTLE->prepareclock>0.0) {
-    graf_set_input(&g.graf,BATTLE->texid_remember);
-    graf_decal(&g.graf,(FBW/3)-(BATTLE->remw>>1),(FBH>>1)-NS_sys_tilesize*2-BATTLE->remh,0,0,BATTLE->remw,BATTLE->remh);
-    graf_decal(&g.graf,((FBW*2)/3)-(BATTLE->remw>>1),(FBH>>1)-NS_sys_tilesize*2-BATTLE->remh,0,0,BATTLE->remw,BATTLE->remh);
+    graf_set_input(g_graf,BATTLE->texid_remember);
+    graf_decal(g_graf,(FBW/3)-(BATTLE->remw>>1),(FBH>>1)-NS_sys_tilesize*2-BATTLE->remh,0,0,BATTLE->remw,BATTLE->remh);
+    graf_decal(g_graf,((FBW*2)/3)-(BATTLE->remw>>1),(FBH>>1)-NS_sys_tilesize*2-BATTLE->remh,0,0,BATTLE->remw,BATTLE->remh);
   }
 }
 
@@ -337,7 +337,7 @@ static void _remembering_render(struct battle *battle) {
 const struct battle_type battle_type_remembering={
   .name="remembering",
   .objlen=sizeof(struct battle_remembering),
-  .id=NS_battle_remembering,
+  .id=102,
   .strix_name=332,
   .no_article=0,
   .no_contest=0,

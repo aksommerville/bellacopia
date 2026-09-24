@@ -1,7 +1,7 @@
 /* battle_apples.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define GROUNDY 110
@@ -167,7 +167,7 @@ static void player_check_apples(struct battle *battle,struct player *player) {
     apple->distress=player;
     player->bobclock=GRAB_TIME;
     player->eating=1;
-    bm_sound(RID_sound_collect);
+    bm_sound_pan(RID_sound_collect,0.0);
     player->eatclock=player->eattime;
     player->score++;
     return;
@@ -252,7 +252,7 @@ static void _apples_update(struct battle *battle,double elapsed) {
     } else if (player->eatclock>0.0) {
       player->eatclock-=elapsed;
     } else {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
   }
@@ -283,7 +283,7 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->bobclock>0.0) {
     int dstx=player->dstx;
     if (player->xform) dstx-=32; else dstx-=16;
-    graf_decal_xform(&g.graf,dstx,topy+16,player->bsrcx,player->bsrcy,48,24,player->xform);
+    graf_decal_xform(g_graf,dstx,topy+16,player->bsrcx,player->bsrcy,48,24,player->xform);
   } else {
     int topsrcx=player->gbsrcx;
     int topsrcy=player->gbsrcy;
@@ -294,8 +294,8 @@ static void player_render(struct battle *battle,struct player *player) {
       int frame=((int)(player->eatclock*5.0))&1;
       if (frame) topsrcy+=24;
     }
-    graf_decal_xform(&g.graf,player->dstx-16,topy,topsrcx,topsrcy,32,24,player->xform);
-    graf_decal_xform(&g.graf,player->dstx-16,topy+24,btmsrcx,btmsrcy,32,24,player->xform);
+    graf_decal_xform(g_graf,player->dstx-16,topy,topsrcx,topsrcy,32,24,player->xform);
+    graf_decal_xform(g_graf,player->dstx-16,topy+24,btmsrcx,btmsrcy,32,24,player->xform);
   }
 }
 
@@ -313,7 +313,7 @@ static void apple_render(struct battle *battle,struct apple *apple) {
     case 2: tileid=0xe0; break;
     case 3: tileid=0xf1; break;
   }
-  graf_tile(&g.graf,(int)apple->x,GROUNDY-4,tileid,xform);
+  graf_tile(g_graf,(int)apple->x,GROUNDY-4,tileid,xform);
 }
 
 /* Render.
@@ -322,12 +322,12 @@ static void apple_render(struct battle *battle,struct apple *apple) {
 static void _apples_render(struct battle *battle) {
 
   // Background.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,SKY_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // Sprites.
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   struct apple *apple=BATTLE->applev;
@@ -343,7 +343,7 @@ static void _apples_render(struct battle *battle) {
     uint32_t color=0x808080ff;
     if (i<BATTLE->playerv[0].score) color=BATTLE->playerv[0].color;
     else if (i>=7-BATTLE->playerv[1].score) color=BATTLE->playerv[1].color;
-    graf_fancy(&g.graf,lightsx,lighty,0xd2,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,lightsx,lighty,0xd2,0,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -353,7 +353,7 @@ static void _apples_render(struct battle *battle) {
 const struct battle_type battle_type_apples={
   .name="apples",
   .objlen=sizeof(struct battle_apples),
-  .id=NS_battle_apples,
+  .id=20,
   .strix_name=58,
   .no_article=0,
   .no_contest=0,

@@ -4,7 +4,8 @@
  * Looking for an example for battle design, look somewhere else.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
+#include "game/game.h" /* struct prize */
 
 #define BASKET_LEVEL 120 /* Fish get caught only on the frame that they cross this. */
 #define GROUND_LEVEL 140
@@ -26,6 +27,10 @@
 
 #define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
 #define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
+
+#define NS_itemid_greenfish 15
+#define NS_itemid_bluefish 16
+#define NS_itemid_redfish 17
 
 struct battle_fishing {
   struct battle hdr;
@@ -298,7 +303,7 @@ static void fish_update(struct battle *battle,struct fish *fish,double elapsed) 
     return;
   }
   if ((yia<BASKET_LEVEL)&&(yiz>=BASKET_LEVEL)) {
-    bm_sound(RID_sound_collect); // Tempting to pan based on (fish->col), but there will always be two collects at the same moment, it's pointless.
+    bm_sound_pan(RID_sound_collect,0.0); // Tempting to pan based on (fish->col), but there will always be two collects at the same moment, it's pointless.
     switch (fish->col) {
       case 0: if (BATTLE->dot_xform&EGG_XFORM_XREV) {
           BATTLE->dot_mass+=fish->mass;
@@ -401,9 +406,9 @@ static void _fishing_update(struct battle *battle,double elapsed) {
     }
   }
   
-  if (battle->args.lctl) fishing_update_manual(battle,&BATTLE->dot_xform,g.input[battle->args.lctl],g.pvinput[battle->args.lctl]);
+  if (battle->args.lctl) fishing_update_manual(battle,&BATTLE->dot_xform,g_input[battle->args.lctl],g_pvinput[battle->args.lctl]);
   else fishing_update_auto(battle,&BATTLE->dot_xform,0,1);
-  if (battle->args.rctl) fishing_update_manual(battle,&BATTLE->cat_xform,g.input[battle->args.rctl],g.pvinput[battle->args.rctl]);
+  if (battle->args.rctl) fishing_update_manual(battle,&BATTLE->cat_xform,g_input[battle->args.rctl],g_pvinput[battle->args.rctl]);
   else fishing_update_auto(battle,&BATTLE->cat_xform,2,3);
 }
 
@@ -413,28 +418,28 @@ static void _fishing_update(struct battle *battle,double elapsed) {
  
 static void fishing_render_scale(int dstx,int dsty,int mass) {
   if (mass<0) mass=0; else if (mass>999) mass=999;
-  graf_decal(&g.graf,dstx,dsty,96,16,32,32);
-  graf_tile(&g.graf,dstx+ 6,dsty+15,0x30+(mass/100)%10,0);
-  graf_tile(&g.graf,dstx+12,dsty+15,0x30+(mass/ 10)%10,0);
-  graf_tile(&g.graf,dstx+18,dsty+15,0x30+(mass    )%10,0);
+  graf_decal(g_graf,dstx,dsty,96,16,32,32);
+  graf_tile(g_graf,dstx+ 6,dsty+15,0x30+(mass/100)%10,0);
+  graf_tile(g_graf,dstx+12,dsty+15,0x30+(mass/ 10)%10,0);
+  graf_tile(g_graf,dstx+18,dsty+15,0x30+(mass    )%10,0);
 }
 
 /* Render.
  */
  
 static void _fishing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_fill_rect(g_graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
+  graf_fill_rect(g_graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fishing);
   if (BATTLE->dot_mass_disp<BATTLE->dot_mass) BATTLE->dot_mass_disp++;
   if (BATTLE->cat_mass_disp<BATTLE->cat_mass) BATTLE->cat_mass_disp++;
   fishing_render_scale(DOT_X-32-32,GROUND_LEVEL-32,BATTLE->dot_mass_disp);
   fishing_render_scale(CAT_X+48+32,GROUND_LEVEL-32,BATTLE->cat_mass_disp);
   const int playerw=48;
   const int playerh=48;
-  graf_decal_xform(&g.graf,DOT_X,GROUND_LEVEL-playerh,BATTLE->dot_srcx,BATTLE->dot_srcy,playerw,playerh,BATTLE->dot_xform);
-  graf_decal_xform(&g.graf,CAT_X,GROUND_LEVEL-playerh,BATTLE->cat_srcx,BATTLE->cat_srcy,playerw,playerh,BATTLE->cat_xform);
+  graf_decal_xform(g_graf,DOT_X,GROUND_LEVEL-playerh,BATTLE->dot_srcx,BATTLE->dot_srcy,playerw,playerh,BATTLE->dot_xform);
+  graf_decal_xform(g_graf,CAT_X,GROUND_LEVEL-playerh,BATTLE->cat_srcx,BATTLE->cat_srcy,playerw,playerh,BATTLE->cat_xform);
   struct fish *fish=BATTLE->fishv;
   int i=BATTLE->fishc;
   const uint32_t plain_fish_color=0xacb1bcff;
@@ -442,7 +447,7 @@ static void _fishing_render(struct battle *battle) {
     if (!fish->tileid) continue;
     uint32_t color=fish->color;
     if (!color) color=plain_fish_color;
-    graf_fancy(&g.graf,fish->x,(int)fish->y,fish->tileid,fish->xform,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,fish->x,(int)fish->y,fish->tileid,fish->xform,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -466,7 +471,7 @@ static int _fishing_get_prizes(struct prize *v,int a,struct battle *battle) {
 const struct battle_type battle_type_fishing={
   .name="fishing",
   .objlen=sizeof(struct battle_fishing),
-  .id=NS_battle_fishing,
+  .id=1,
   .strix_name=13,
   .no_article=0,
   .no_contest=0,

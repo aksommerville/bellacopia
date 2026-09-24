@@ -2,7 +2,7 @@
  * Stand in one of four quadrants of an intersection to pass two of four lanes of traffic.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 // Unlike our general 16-pixel tiles, this game uses 12-pixel tiles.
 #define TILESIZE 12
@@ -419,7 +419,7 @@ static void _traffic_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -441,17 +441,17 @@ static void _traffic_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
 
-  graf_set_output(&g.graf,BATTLE->texid);
-  graf_set_image(&g.graf,RID_image_battle_traffic);
+  graf_set_output(g_graf,BATTLE->texid);
+  graf_set_image(g_graf,RID_image_battle_traffic);
   
-  graf_decal(&g.graf,0,0,0,0,COLC*TILESIZE,ROWC*TILESIZE);
+  graf_decal(g_graf,0,0,0,0,COLC*TILESIZE,ROWC*TILESIZE);
 
   const int col0=(COLC>>1)-1;
   const int row0=(ROWC>>1)-1;
   int x,y;
   x=(player->col+col0)*TILESIZE+(TILESIZE>>1);
   y=(player->row+row0)*TILESIZE+(TILESIZE>>1);
-  graf_fancy(&g.graf,x,y,player->tileid,0,0,TILESIZE,0,0x808080ff);
+  graf_fancy(g_graf,x,y,player->tileid,0,0,TILESIZE,0,0x808080ff);
   
   struct car *car=player->carv;
   int i=player->carc;
@@ -459,7 +459,7 @@ static void player_render(struct battle *battle,struct player *player) {
     if (car->defunct) continue;
     x=(int)car->x;
     y=(int)car->y;
-    graf_fancy(&g.graf,x,y,car->tileid,car->xform,0,TILESIZE,0,car->color);
+    graf_fancy(g_graf,x,y,car->tileid,car->xform,0,TILESIZE,0,car->color);
     if (car->brakeclock>0.0) {
       int bx=x,by=y;
       switch (car->xform) {
@@ -468,7 +468,7 @@ static void player_render(struct battle *battle,struct player *player) {
         case EGG_XFORM_YREV|EGG_XFORM_SWAP: bx+=6; break;
         case EGG_XFORM_XREV|EGG_XFORM_YREV: by+=6; break;
       }
-      graf_fancy(&g.graf,bx,by,car->tileid+1,car->xform,0,TILESIZE,0,0x808080ff);
+      graf_fancy(g_graf,bx,by,car->tileid+1,car->xform,0,TILESIZE,0,0x808080ff);
     }
     if (car->headlightclock>0.0) {
       int bx=x,by=y;
@@ -478,33 +478,33 @@ static void player_render(struct battle *battle,struct player *player) {
         case EGG_XFORM_YREV|EGG_XFORM_SWAP: bx-=6; break;
         case EGG_XFORM_XREV|EGG_XFORM_YREV: by-=6; break;
       }
-      graf_fancy(&g.graf,bx,by,car->tileid+2,car->xform,0,TILESIZE,0,0x808080ff);
+      graf_fancy(g_graf,bx,by,car->tileid+2,car->xform,0,TILESIZE,0,0x808080ff);
     }
   }
   
-  graf_set_output(&g.graf,1);
-  graf_set_input(&g.graf,BATTLE->texid);
-  if (battle->outcome>-2) graf_set_tint(&g.graf,0x00000080);
-  graf_decal(&g.graf,player->dstx,player->dsty,0,0,COLC*TILESIZE,ROWC*TILESIZE);
-  graf_set_tint(&g.graf,0);
+  graf_set_output(g_graf,1);
+  graf_set_input(g_graf,BATTLE->texid);
+  if (battle->outcome>-2) graf_set_tint(g_graf,0x00000080);
+  graf_decal(g_graf,player->dstx,player->dsty,0,0,COLC*TILESIZE,ROWC*TILESIZE);
+  graf_set_tint(g_graf,0);
   
-  graf_set_image(&g.graf,RID_image_battle_traffic);
+  graf_set_image(g_graf,RID_image_battle_traffic);
   y=player->dsty-8;
-  graf_tile(&g.graf,player->dstx+20,y,0x0f,0);
-  graf_tile(&g.graf,player->dstx+80,y,0x1f,0);
+  graf_tile(g_graf,player->dstx+20,y,0x0f,0);
+  graf_tile(g_graf,player->dstx+80,y,0x1f,0);
   
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_set_tint(&g.graf,0xff0000ff);
+  graf_set_image(g_graf,RID_image_fonttiles);
+  graf_set_tint(g_graf,0xff0000ff);
   x=player->dstx+33;
-  if (player->honkc>=100) { graf_tile(&g.graf,x,y,'0'+(player->honkc/100)%10,0); x+=8; }
-  if (player->honkc>=10) { graf_tile(&g.graf,x,y,'0'+(player->honkc/10)%10,0); x+=8; }
-  graf_tile(&g.graf,x,y,'0'+player->honkc%10,0);
-  graf_set_tint(&g.graf,0x008000ff);
+  if (player->honkc>=100) { graf_tile(g_graf,x,y,'0'+(player->honkc/100)%10,0); x+=8; }
+  if (player->honkc>=10) { graf_tile(g_graf,x,y,'0'+(player->honkc/10)%10,0); x+=8; }
+  graf_tile(g_graf,x,y,'0'+player->honkc%10,0);
+  graf_set_tint(g_graf,0x008000ff);
   x=player->dstx+93;
-  if (player->passc>=100) { graf_tile(&g.graf,x,y,'0'+(player->passc/100)%10,0); x+=8; }
-  if (player->passc>=10) { graf_tile(&g.graf,x,y,'0'+(player->passc/10)%10,0); x+=8; }
-  graf_tile(&g.graf,x,y,'0'+player->passc%10,0);
-  graf_set_tint(&g.graf,0);
+  if (player->passc>=100) { graf_tile(g_graf,x,y,'0'+(player->passc/100)%10,0); x+=8; }
+  if (player->passc>=10) { graf_tile(g_graf,x,y,'0'+(player->passc/10)%10,0); x+=8; }
+  graf_tile(g_graf,x,y,'0'+player->passc%10,0);
+  graf_set_tint(g_graf,0);
   
   if (battle->outcome>-2) {
     const int fldw=COLC*TILESIZE;
@@ -515,9 +515,9 @@ static void player_render(struct battle *battle,struct player *player) {
     else digitc=1;
     x=player->dstx+(fldw>>1)-(digitc*4)+4;
     y=player->dsty+(fldh>>1);
-    if (player->score>=100) { graf_tile(&g.graf,x,y,'0'+(player->score/100)%10,0); x+=8; }
-    if (player->score>=10) { graf_tile(&g.graf,x,y,'0'+(player->score/10)%10,0); x+=8; }
-    graf_tile(&g.graf,x,y,'0'+player->score%10,0);
+    if (player->score>=100) { graf_tile(g_graf,x,y,'0'+(player->score/100)%10,0); x+=8; }
+    if (player->score>=10) { graf_tile(g_graf,x,y,'0'+(player->score/10)%10,0); x+=8; }
+    graf_tile(g_graf,x,y,'0'+player->score%10,0);
   }
 }
 
@@ -525,8 +525,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _traffic_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_traffic);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_traffic);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -537,7 +537,7 @@ static void _traffic_render(struct battle *battle) {
 const struct battle_type battle_type_traffic={
   .name="traffic",
   .objlen=sizeof(struct battle_traffic),
-  .id=NS_battle_traffic,
+  .id=28,
   .strix_name=183,
   .no_article=0,
   .no_contest=0,

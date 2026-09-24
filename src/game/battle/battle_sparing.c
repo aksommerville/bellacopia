@@ -1,7 +1,7 @@
 /* battle_sparing.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include <stdarg.h>
 
 #define PIN_LIMIT 10
@@ -397,8 +397,8 @@ static void player_update(struct battle *battle,struct player *player,double ela
    */
   if (player->human) {
     if (player->blackout) {
-      if (!(g.input[player->human]&EGG_BTN_SOUTH)) player->blackout=0;
-    } else if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(g.pvinput[player->human]&EGG_BTN_SOUTH)) {
+      if (!(g_input[player->human]&EGG_BTN_SOUTH)) player->blackout=0;
+    } else if ((g_input[player->human]&EGG_BTN_SOUTH)&&!(g_pvinput[player->human]&EGG_BTN_SOUTH)) {
       bm_sound_pan(RID_sound_uimotion,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->datav[player->datac++]=player->preview;
       if (player->datac>=3) player_ready(battle,player);
@@ -468,16 +468,16 @@ static void _sparing_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render_bg(struct battle *battle,struct player *player) {
-  graf_fill_rect(&g.graf,player->fldx,player->fldy,player->fldw,player->fldh,0x9c8255ff);
+  graf_fill_rect(g_graf,player->fldx,player->fldy,player->fldw,player->fldh,0x9c8255ff);
   int x=4;
   for (;x<player->fldw;x+=3) {
-    graf_line(&g.graf,player->fldx+x,player->fldy,0x856f47ff,player->fldx+x,player->fldy+player->fldh,0x856f47ff);
+    graf_line(g_graf,player->fldx+x,player->fldy,0x856f47ff,player->fldx+x,player->fldy+player->fldh,0x856f47ff);
   }
 }
 
 static void player_render_fg(struct battle *battle,struct player *player) {
-  graf_set_image(&g.graf,RID_image_battle_desert);
-  graf_set_filter(&g.graf,1);
+  graf_set_image(g_graf,RID_image_battle_desert);
+  graf_set_filter(g_graf,1);
   
   // Pins.
   const struct pin *pin=player->pinv;
@@ -489,7 +489,7 @@ static void player_render_fg(struct battle *battle,struct player *player) {
       tileid=0x02;
       rot=(int8_t)((pin->t*128.0)/M_PI);
     }
-    graf_fancy(&g.graf,player->fldx+(int)pin->x,player->fldy+(int)pin->y,tileid,0,rot,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,player->fldx+(int)pin->x,player->fldy+(int)pin->y,tileid,0,rot,NS_sys_tilesize,0,player->color);
   }
   
   // Ball. Either in flight or in the preview space. Or don't render, if it crossed the end of the lane.
@@ -506,12 +506,12 @@ static void player_render_fg(struct battle *battle,struct player *player) {
       bally=player->fldy+player->fldh;
     }
     if (player->explode>0.0) {
-      graf_set_image(&g.graf,RID_image_hero);
-      graf_decal(&g.graf,ballx-16,bally-16,160,160,32,32);
-      graf_decal(&g.graf,ballx-16,bally-16,192,160,32,32);
-      graf_set_image(&g.graf,RID_image_battle_desert);
+      graf_set_image(g_graf,RID_image_hero);
+      graf_decal(g_graf,ballx-16,bally-16,160,160,32,32);
+      graf_decal(g_graf,ballx-16,bally-16,192,160,32,32);
+      graf_set_image(g_graf,RID_image_battle_desert);
     } else {
-      graf_fancy(&g.graf,ballx,bally,0x00,0,0,NS_sys_tilesize,0,player->color);
+      graf_fancy(g_graf,ballx,bally,0x00,0,0,NS_sys_tilesize,0,player->color);
     }
   }
   
@@ -522,9 +522,9 @@ static void player_render_fg(struct battle *battle,struct player *player) {
     int ax=ballx+lround(sin(t)*8.0);
     int ay=bally+lround(cos(t)*-8.0);
     uint8_t rot=(int8_t)((t*128.0)/M_PI);
-    graf_fancy(&g.graf,ax,ay,0x03,0,rot,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,ax,ay,0x03,0,rot,NS_sys_tilesize,0,player->color);
   }
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
   // Power input indicator.
   if (player->datac==2) {
@@ -532,12 +532,12 @@ static void player_render_fg(struct battle *battle,struct player *player) {
     int boxh=30;
     int boxx=ballx-(boxw>>1);
     int boxy=bally-10-boxh;
-    graf_fill_rect(&g.graf,boxx-1,boxy-1,boxw+2,boxh+2,0x000000ff);
+    graf_fill_rect(g_graf,boxx-1,boxy-1,boxw+2,boxh+2,0x000000ff);
     int fillh=(int)(player->preview*boxh);
     if (fillh>0) {
       if (fillh>boxh) fillh=boxh;
       uint32_t color=0xff0000ff;//TODO Maybe a gradient green..red?
-      graf_fill_rect(&g.graf,boxx,boxy+boxh-fillh,boxw,fillh,color);
+      graf_fill_rect(g_graf,boxx,boxy+boxh-fillh,boxw,fillh,color);
     }
   }
   
@@ -545,8 +545,8 @@ static void player_render_fg(struct battle *battle,struct player *player) {
   if ((player->datac<3)&&(player->ttl>0.0)&&(player->ttl<5.0)) {
     int s=(int)(player->ttl+0.999);
     if (s<1) s=1; else if (s>9) s=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,player->fldx+(player->fldw>>1),player->fldy+player->fldh+12,'0'+s,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,player->fldx+(player->fldw>>1),player->fldy+player->fldh+12,'0'+s,0);
   }
 }
 
@@ -554,7 +554,7 @@ static void player_render_fg(struct battle *battle,struct player *player) {
  */
  
 static void _sparing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
   
   /* Do both backgrounds then both foregrounds.
    * So a wild pin that enters the opponent's airspace is always visible over their lane. Maybe under their sprites, meh.
@@ -569,11 +569,11 @@ static void _sparing_render(struct battle *battle) {
   /* Once either player has committed, show who committed first.
    */
   if ((l->datac>=3)||(r->datac>=3)) {
-    graf_set_image(&g.graf,RID_image_battle_desert);
+    graf_set_image(g_graf,RID_image_battle_desert);
     if (l->dithertime<r->dithertime) {
-      graf_tile(&g.graf,FBW>>1,FBH>>1,0x04,EGG_XFORM_XREV);
+      graf_tile(g_graf,FBW>>1,FBH>>1,0x04,EGG_XFORM_XREV);
     } else if (l->dithertime>r->dithertime) {
-      graf_tile(&g.graf,FBW>>1,FBH>>1,0x04,0);
+      graf_tile(g_graf,FBW>>1,FBH>>1,0x04,0);
     }
   }
 }
@@ -584,7 +584,7 @@ static void _sparing_render(struct battle *battle) {
 const struct battle_type battle_type_sparing={
   .name="sparing",
   .objlen=sizeof(struct battle_sparing),
-  .id=NS_battle_sparing,
+  .id=80,
   .strix_name=286,
   .no_article=0,
   .no_contest=0,

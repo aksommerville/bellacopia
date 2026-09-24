@@ -2,7 +2,7 @@
  * Foxfire burns and burns!
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 130
 
@@ -165,7 +165,7 @@ static void _fire_update(struct battle *battle,double elapsed) {
     struct player *player=BATTLE->playerv;
     int i=2;
     for (;i-->0;player++) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
       player_update_common(battle,player,elapsed);
     }
@@ -199,7 +199,7 @@ static void _fire_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render(struct battle *battle,struct player *player) {
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   
   // Take some measurements and pick my body tiles.
   int xa=player->x-(NS_sys_tilesize>>1);
@@ -222,10 +222,10 @@ static void player_render(struct battle *battle,struct player *player) {
   }
   
   // Body tiles.
-  graf_tile(&g.graf,xa,ya,tileid+0x00,player->xform);
-  graf_tile(&g.graf,xb,ya,tileid+0x01,player->xform);
-  graf_tile(&g.graf,xa,yb,tileid+0x10,player->xform);
-  graf_tile(&g.graf,xb,yb,tileid+0x11,player->xform);
+  graf_tile(g_graf,xa,ya,tileid+0x00,player->xform);
+  graf_tile(g_graf,xb,ya,tileid+0x01,player->xform);
+  graf_tile(g_graf,xa,yb,tileid+0x10,player->xform);
+  graf_tile(g_graf,xb,yb,tileid+0x11,player->xform);
   
   // Stick.
   if (draw_stick) {
@@ -238,14 +238,14 @@ static void player_render(struct battle *battle,struct player *player) {
       x=xb+1+dx;
     }
     int y=yb-5;
-    graf_tile(&g.graf,x,y,player->tileid+4,player->xform);
+    graf_tile(g_graf,x,y,player->tileid+4,player->xform);
   }
   
   // Power meter.
   if (battle->outcome==-2) {
     int y=ya-NS_sys_tilesize;
-    graf_tile(&g.graf,xa,y,0x68,player->xform);
-    graf_tile(&g.graf,xb,y,0x69,player->xform);
+    graf_tile(g_graf,xa,y,0x68,player->xform);
+    graf_tile(g_graf,xb,y,0x69,player->xform);
     int darkx,lightx;
     int barw=19,barh=4;
     int bary=y-2;
@@ -259,8 +259,8 @@ static void player_render(struct battle *battle,struct player *player) {
       lightx=xa+4;
       darkx=lightx+lightw;
     }
-    if (darkw>0) graf_fill_rect(&g.graf,darkx,bary,darkw,barh,0x5a3e16ff);
-    if (lightw>0) graf_fill_rect(&g.graf,lightx,bary,lightw,barh,0xf10b0bff);
+    if (darkw>0) graf_fill_rect(g_graf,darkx,bary,darkw,barh,0x5a3e16ff);
+    if (lightw>0) graf_fill_rect(g_graf,lightx,bary,lightw,barh,0xf10b0bff);
   }
 }
 
@@ -269,9 +269,9 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _fire_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // The fire. 2x2 tiles.
   {
@@ -281,11 +281,11 @@ static void _fire_render(struct battle *battle) {
     int xb=xa+NS_sys_tilesize;
     int ya=dsty+(NS_sys_tilesize>>1);
     int yb=ya+NS_sys_tilesize;
-    graf_set_image(&g.graf,RID_image_battle_forest);
-    graf_tile(&g.graf,xa,ya,0x60,0);
-    graf_tile(&g.graf,xb,ya,0x61,0);
-    graf_tile(&g.graf,xa,yb,0x70,0);
-    graf_tile(&g.graf,xb,yb,0x71,0);
+    graf_set_image(g_graf,RID_image_battle_forest);
+    graf_tile(g_graf,xa,ya,0x60,0);
+    graf_tile(g_graf,xb,ya,0x61,0);
+    graf_tile(g_graf,xa,yb,0x70,0);
+    graf_tile(g_graf,xb,yb,0x71,0);
     if (BATTLE->burning) {
       int plan=BATTLE->burnframe;
       int n;
@@ -304,10 +304,10 @@ static void _fire_render(struct battle *battle) {
       if (tileid>2) tileid=0;
       tileid<<=1;
       tileid+=0x62;
-      graf_fancy(&g.graf,xa,ya,tileid+0x00,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
-      graf_fancy(&g.graf,xb,ya,tileid+0x01,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
-      graf_fancy(&g.graf,xa,yb,tileid+0x10,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
-      graf_fancy(&g.graf,xb,yb,tileid+0x11,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
+      graf_fancy(g_graf,xa,ya,tileid+0x00,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
+      graf_fancy(g_graf,xb,ya,tileid+0x01,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
+      graf_fancy(g_graf,xa,yb,tileid+0x10,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
+      graf_fancy(g_graf,xb,yb,tileid+0x11,xform,0,NS_sys_tilesize,0,BATTLE->burncolor);
     }
   }
   
@@ -322,7 +322,7 @@ static void _fire_render(struct battle *battle) {
 const struct battle_type battle_type_fire={
   .name="fire",
   .objlen=sizeof(struct battle_fire),
-  .id=NS_battle_fire,
+  .id=71,
   .strix_name=267,
   .no_article=0,
   .no_contest=0,

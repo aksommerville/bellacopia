@@ -1,7 +1,7 @@
 /* battle_dodging.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GUN_LIMIT 32
 #define BULLET_LIMIT 128
@@ -482,7 +482,7 @@ static int gun_update(struct battle *battle,struct gun *gun,double elapsed) {
       } break;
     case GUN_STAGE_MENACE: {
         if (gun->tileid==0xf1) { // Laser.
-          bm_sound(RID_sound_laser); // Don't pan; laser blasts happen everywhere at once.
+          bm_sound_pan(RID_sound_laser,0.0); // Don't pan; laser blasts happen everywhere at once.
           gun->stage=GUN_STAGE_LASER;
           gun->clock=0.666;
         } else { // Rifle.
@@ -525,7 +525,7 @@ static void _dodging_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -579,12 +579,12 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->dead) return;
   int x=lround(player->x);
   int y=lround(player->y);
-  graf_tile(&g.graf,x,y,player->tileid+player->animframe,player->xform);
+  graf_tile(g_graf,x,y,player->tileid+player->animframe,player->xform);
 }
 
 static void soulballs_render(struct battle *battle,struct player *player) {
   if (!player->dead) return;
-  graf_set_image(&g.graf,RID_image_hero);
+  graf_set_image(g_graf,RID_image_hero);
   uint8_t tileid=0xa6;
   switch (player->soulballframe) {
     case 1: tileid+=1; break;
@@ -600,7 +600,7 @@ static void soulballs_render(struct battle *battle,struct player *player) {
   for (;i-->0;t+=dt) {
     int x=(int)(player->x+player->soulballradius*sin(t));
     int y=(int)(player->y-player->soulballradius*cos(t));
-    graf_tile(&g.graf,x,y,tileid,0);
+    graf_tile(g_graf,x,y,tileid,0);
   }
 }
 
@@ -612,21 +612,21 @@ static void gun_render(struct battle *battle,struct gun *gun) {
   int y=lround(adjy);
   double adjt=gun->t*gun->presence+gun->t0*(1.0-gun->presence);
   uint8_t rot=(int8_t)((adjt*128.0)/M_PI);
-  graf_fancy(&g.graf,x,y,gun->tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,x,y,gun->tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
 }
 
 static void bullet_render(struct battle *battle,struct bullet *bullet) {
   int x=lround(bullet->x);
   int y=lround(bullet->y);
-  graf_fancy(&g.graf,x,y,0xf2,0,bullet->rot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,x,y,0xf2,0,bullet->rot,NS_sys_tilesize,0,0x808080ff);
 }
 
 /* Render.
  */
  
 static void _dodging_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_set_image(&g.graf,RID_image_meadow_sprites);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_set_image(g_graf,RID_image_meadow_sprites);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   int i;
@@ -645,7 +645,7 @@ static void _dodging_render(struct battle *battle) {
   /* Lasers.
    * Also for all guns, show a warning line a split second before they fire.
    */
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   for (gun=BATTLE->gunv,i=BATTLE->gunc;i-->0;gun++) {
     uint32_t color=0;
     switch (gun->stage) {
@@ -663,12 +663,12 @@ static void _dodging_render(struct battle *battle) {
     if (!color) continue;
     int x=lround(gun->x);
     int y=lround(gun->y);
-    graf_line(&g.graf,x,y,color,gun->lx,gun->ly,color);
+    graf_line(g_graf,x,y,color,gun->lx,gun->ly,color);
   }
-  graf_set_image(&g.graf,RID_image_meadow_sprites);
+  graf_set_image(g_graf,RID_image_meadow_sprites);
   
   // Guns.
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   for (gun=BATTLE->gunv,i=BATTLE->gunc;i-->0;gun++) {
     gun_render(battle,gun);
   }
@@ -677,7 +677,7 @@ static void _dodging_render(struct battle *battle) {
   for (bullet=BATTLE->bulletv,i=BATTLE->bulletc;i-->0;bullet++) {
     bullet_render(battle,bullet);
   }
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
   // Smoke.
   //TODO
@@ -693,7 +693,7 @@ static void _dodging_render(struct battle *battle) {
 const struct battle_type battle_type_dodging={
   .name="dodging",
   .objlen=sizeof(struct battle_dodging),
-  .id=NS_battle_dodging,
+  .id=96,
   .strix_name=320,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_mixing.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_mixing {
   struct battle hdr;
@@ -279,7 +279,7 @@ static void _mixing_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (!player->spill) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -307,7 +307,7 @@ static void player_render(struct battle *battle,struct player *player) {
   
   /* The mix, behind the glass, and the pouring color if applicable.
    */
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   if (player->pouring) {
     int x=midx-NS_sys_tilesize+player->handp*NS_sys_tilesize-2;
     int y=midy-NS_sys_tilesize;
@@ -317,64 +317,64 @@ static void player_render(struct battle *battle,struct player *player) {
       case 1: color=0x00ff00ff; break;
       case 2: color=0x0000ffff; break;
     }
-    graf_fill_rect(&g.graf,x,y,3,53,color);
+    graf_fill_rect(g_graf,x,y,3,53,color);
   }
   if (player->mixh>0) {
     int x=midx-NS_sys_tilesize-(NS_sys_tilesize>>1)+1;
     int y=midy-(NS_sys_tilesize>>1)+45-player->mixh;
-    graf_fill_rect(&g.graf,x,y,46,player->mixh,player->mixcolor);
+    graf_fill_rect(g_graf,x,y,46,player->mixh,player->mixcolor);
   }
   
   /* The glass, 9 tiles.
    */
-  graf_set_image(&g.graf,RID_image_battle_underground);
-  graf_tile(&g.graf,midx-NS_sys_tilesize,midy,0x07,0);
-  graf_tile(&g.graf,midx                ,midy,0x08,0);
-  graf_tile(&g.graf,midx+NS_sys_tilesize,midy,0x09,0);
-  graf_tile(&g.graf,midx-NS_sys_tilesize,midy+NS_sys_tilesize,0x17,0);
-  graf_tile(&g.graf,midx                ,midy+NS_sys_tilesize,0x18,0);
-  graf_tile(&g.graf,midx+NS_sys_tilesize,midy+NS_sys_tilesize,0x19,0);
-  graf_tile(&g.graf,midx-NS_sys_tilesize,midy+NS_sys_tilesize*2,0x27,0);
-  graf_tile(&g.graf,midx                ,midy+NS_sys_tilesize*2,0x28,0);
-  graf_tile(&g.graf,midx+NS_sys_tilesize,midy+NS_sys_tilesize*2,0x29,0);
+  graf_set_image(g_graf,RID_image_battle_underground);
+  graf_tile(g_graf,midx-NS_sys_tilesize,midy,0x07,0);
+  graf_tile(g_graf,midx                ,midy,0x08,0);
+  graf_tile(g_graf,midx+NS_sys_tilesize,midy,0x09,0);
+  graf_tile(g_graf,midx-NS_sys_tilesize,midy+NS_sys_tilesize,0x17,0);
+  graf_tile(g_graf,midx                ,midy+NS_sys_tilesize,0x18,0);
+  graf_tile(g_graf,midx+NS_sys_tilesize,midy+NS_sys_tilesize,0x19,0);
+  graf_tile(g_graf,midx-NS_sys_tilesize,midy+NS_sys_tilesize*2,0x27,0);
+  graf_tile(g_graf,midx                ,midy+NS_sys_tilesize*2,0x28,0);
+  graf_tile(g_graf,midx+NS_sys_tilesize,midy+NS_sys_tilesize*2,0x29,0);
   
   /* Hand or spill indicator. If spilled, the hand has hid itself in shame.
    */
   if (player->spill) {
     int x=midx;
     if (player->who) x+=NS_sys_tilesize*2; else x-=NS_sys_tilesize*2;
-    graf_tile(&g.graf,x,midy-(NS_sys_tilesize>>1),0x03,0);
+    graf_tile(g_graf,x,midy-(NS_sys_tilesize>>1),0x03,0);
   } else {
-    graf_tile(&g.graf,midx-NS_sys_tilesize+player->handp*NS_sys_tilesize,midy-NS_sys_tilesize*2,player->tileid,0);
+    graf_tile(g_graf,midx-NS_sys_tilesize+player->handp*NS_sys_tilesize,midy-NS_sys_tilesize*2,player->tileid,0);
   }
   
   /* The bottles.
    */
-  graf_fancy(&g.graf,midx-NS_sys_tilesize,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==0))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0xff0000ff);
-  graf_fancy(&g.graf,midx                ,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==1))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0x00ff00ff);
-  graf_fancy(&g.graf,midx+NS_sys_tilesize,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==2))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0x0000ffff);
+  graf_fancy(g_graf,midx-NS_sys_tilesize,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==0))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0xff0000ff);
+  graf_fancy(g_graf,midx                ,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==1))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0x00ff00ff);
+  graf_fancy(g_graf,midx+NS_sys_tilesize,midy-NS_sys_tilesize-2,0x16,(player->pouring&&(player->handp==2))?EGG_XFORM_YREV:0,0,NS_sys_tilesize,0,0x0000ffff);
 }
 
 /* Render.
  */
  
 static void _mixing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
-  graf_fill_rect(&g.graf,(FBW>>1)-NS_sys_tilesize+2,(FBH>>1)-NS_sys_tilesize+2,(NS_sys_tilesize<<1)-4,(NS_sys_tilesize<<1)-4,BATTLE->target);
-  graf_set_image(&g.graf,RID_image_battle_underground);
-  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1),0x0a,0);
-  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1),0x0b,0);
-  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1),0x1a,0);
-  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1),0x1b,0);
+  graf_fill_rect(g_graf,(FBW>>1)-NS_sys_tilesize+2,(FBH>>1)-NS_sys_tilesize+2,(NS_sys_tilesize<<1)-4,(NS_sys_tilesize<<1)-4,BATTLE->target);
+  graf_set_image(g_graf,RID_image_battle_underground);
+  graf_tile(g_graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1),0x0a,0);
+  graf_tile(g_graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1),0x0b,0);
+  graf_tile(g_graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1),0x1a,0);
+  graf_tile(g_graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1),0x1b,0);
   
   if (BATTLE->playclock>0.0) {
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1; else if (s>9) s=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,60,'0'+s,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,60,'0'+s,0);
   }
 }
 
@@ -384,7 +384,7 @@ static void _mixing_render(struct battle *battle) {
 const struct battle_type battle_type_mixing={
   .name="mixing",
   .objlen=sizeof(struct battle_mixing),
-  .id=NS_battle_mixing,
+  .id=83,
   .strix_name=292,
   .no_article=0,
   .no_contest=0,

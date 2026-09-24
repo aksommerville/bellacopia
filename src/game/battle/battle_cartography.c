@@ -1,7 +1,7 @@
 /* battle_cartography.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define MAPW 133
 #define MAPH 88
@@ -632,7 +632,7 @@ static void _cartography_update(struct battle *battle,double elapsed) {
   for (;i-->0;player++) {
     if (player->ctabp<=REGIONC) {
       player->runtime+=elapsed;
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
   }
@@ -664,28 +664,28 @@ static void player_render(struct battle *battle,struct player *player) {
   int dstx=player->who?((FBW*3)>>2):(FBW>>2);
   dstx-=MAPW>>1;
   int dsty=(FBH>>1)-(MAPH>>1);
-  graf_set_input(&g.graf,player->texid);
-  graf_decal(&g.graf,dstx,dsty,0,0,MAPW,MAPH);
+  graf_set_input(g_graf,player->texid);
+  graf_decal(g_graf,dstx,dsty,0,0,MAPW,MAPH);
   
   // Error indicators.
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   if (battle->outcome>-2) {
     int i=1; for (;i<=REGIONC;i++) {
       if (!player->errorv[i]) continue;
-      graf_fancy(&g.graf,dstx+BATTLE->focusv[i].x,dsty+BATTLE->focusv[i].y,0x5f,0,0,NS_sys_tilesize,0,0x808080ff);
+      graf_fancy(g_graf,dstx+BATTLE->focusv[i].x,dsty+BATTLE->focusv[i].y,0x5f,0,0,NS_sys_tilesize,0,0x808080ff);
     }
   }
   
   // Four paint buckets.
-  graf_fancy(&g.graf,dstx+20,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[0]);
-  graf_fancy(&g.graf,dstx+50,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[1]);
-  graf_fancy(&g.graf,dstx+80,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[2]);
-  graf_fancy(&g.graf,dstx+110,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[3]);
+  graf_fancy(g_graf,dstx+20,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[0]);
+  graf_fancy(g_graf,dstx+50,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[1]);
+  graf_fancy(g_graf,dstx+80,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[2]);
+  graf_fancy(g_graf,dstx+110,dsty+MAPH+10,0x5e,0,0,NS_sys_tilesize,0,palette[3]);
   
   // Two fingers. Use fancies to share the paint buckets' batch.
   if ((player->ctabp<=REGIONC)&&(BATTLE->playclock>0.0)) {
-    graf_fancy(&g.graf,dstx+20+player->handp*30,dsty+MAPH+25,player->tileid,0,0,NS_sys_tilesize,0,0x808080ff);
-    graf_fancy(&g.graf,dstx+BATTLE->focusv[player->ctabp].x+1,dsty+BATTLE->focusv[player->ctabp].y+9,player->tileid,0,0,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,dstx+20+player->handp*30,dsty+MAPH+25,player->tileid,0,0,NS_sys_tilesize,0,0x808080ff);
+    graf_fancy(g_graf,dstx+BATTLE->focusv[player->ctabp].x+1,dsty+BATTLE->focusv[player->ctabp].y+9,player->tileid,0,0,NS_sys_tilesize,0,player->color);
   }
 }
 
@@ -693,23 +693,23 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _cartography_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x6f6053ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x6f6053ff);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
   if (BATTLE->playclock>0.0) {
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1; else if (s>99) s=99;
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     if (s>=10) {
-      graf_tile(&g.graf,(FBW>>1)-4,22,'0'+s/10,0);
-      graf_tile(&g.graf,(FBW>>1)+4,22,'0'+s%10,0);
+      graf_tile(g_graf,(FBW>>1)-4,22,'0'+s/10,0);
+      graf_tile(g_graf,(FBW>>1)+4,22,'0'+s%10,0);
     } else {
-      graf_tile(&g.graf,FBW>>1,22,'0'+s,0);
+      graf_tile(g_graf,FBW>>1,22,'0'+s,0);
     }
-    if ((BATTLE->playclock<5.0)&&!(g.framec&0x10)) {
-      graf_tile(&g.graf,(FBW>>1)-12,22,'!',0);
-      graf_tile(&g.graf,(FBW>>1)+12,22,'!',0);
+    if ((BATTLE->playclock<5.0)&&!(g_framec&0x10)) {
+      graf_tile(g_graf,(FBW>>1)-12,22,'!',0);
+      graf_tile(g_graf,(FBW>>1)+12,22,'!',0);
     }
   }
 }
@@ -720,7 +720,7 @@ static void _cartography_render(struct battle *battle) {
 const struct battle_type battle_type_cartography={
   .name="cartography",
   .objlen=sizeof(struct battle_cartography),
-  .id=NS_battle_cartography,
+  .id=85,
   .strix_name=296,
   .no_article=0,
   .no_contest=0,

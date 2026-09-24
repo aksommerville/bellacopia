@@ -2,7 +2,7 @@
  * Not a real battle; just a cutscene showing Dot getting eaten by the sea monster.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 160 /* >16 off the framebuffer's bottom. */
 #define TENTACLE_COUNT 5
@@ -94,10 +94,10 @@ static void _seamonster_render(struct battle *battle) {
 
   // Sky, earth, and horizon. Then everything comes off RID_image_battle_fishing.
   // Using the same colors as regular fishing battles. Maybe we want something more Labyrinth-appropriate?
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,SKY_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fishing);
   
   // Dot, always using the lose frame.
   if (!BATTLE->dot_eaten) {
@@ -105,7 +105,7 @@ static void _seamonster_render(struct battle *battle) {
     int dotdsty=GROUNDY-47;
     int dotsrcx=96;
     int dotsrcy=64;
-    graf_decal_xform(&g.graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,0);
+    graf_decal_xform(g_graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,0);
   }
   
   // Tentacles.
@@ -120,7 +120,7 @@ static void _seamonster_render(struct battle *battle) {
   for (;i-->0;tentacle++) {
     uint8_t xform=0;
     if (tentacle->animframe==1) xform=EGG_XFORM_XREV;
-    graf_decal_xform(&g.graf,tentacle->x-16,tenty,tentsrcx,tentsrcy,tentw,tenth,xform);
+    graf_decal_xform(g_graf,tentacle->x-16,tenty,tentsrcx,tentsrcy,tentw,tenth,xform);
   }
   
   // Sea Monster.
@@ -128,7 +128,7 @@ static void _seamonster_render(struct battle *battle) {
   int smsrcy=176;
   int smw=160;
   int smh=80;
-  graf_decal(&g.graf,(FBW>>1)-(smw>>1),smdsty,smsrcx,smsrcy,smw,smh);
+  graf_decal(g_graf,(FBW>>1)-(smw>>1),smdsty,smsrcx,smsrcy,smw,smh);
   
   // Animated row of water at the bottom.
   uint8_t watertileid=0x3a;
@@ -141,7 +141,7 @@ static void _seamonster_render(struct battle *battle) {
   }
   int waterx=NS_sys_tilesize>>1;
   int watery=FBH-(NS_sys_tilesize>>1);
-  for (;waterx<FBW;waterx+=NS_sys_tilesize) graf_tile(&g.graf,waterx,watery,watertileid,0);
+  for (;waterx<FBW;waterx+=NS_sys_tilesize) graf_tile(g_graf,waterx,watery,watertileid,0);
 }
 
 /* Type definition.
@@ -150,7 +150,7 @@ static void _seamonster_render(struct battle *battle) {
 const struct battle_type battle_type_seamonster={
   .name="seamonster",
   .objlen=sizeof(struct battle_seamonster),
-  .id=NS_battle_seamonster,
+  .id=57,
   .strix_name=20,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_stirring.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define REMARK_LIMIT 32
 
@@ -182,7 +182,7 @@ static void _stirring_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (battle->outcome==-2) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -227,17 +227,17 @@ static void player_render(struct battle *battle,struct player *player,int ground
     case 0x02: army+=2; break;
   }
   
-  graf_tile(&g.graf,x2,y2,0x19,0);
-  graf_tile(&g.graf,armx,army,player->tileid_arm,player->xform);
-  graf_tile(&g.graf,x0,y0,player->tileid_body+0x00,player->xform);
-  graf_tile(&g.graf,x1,y0,player->tileid_body+0x01,player->xform);
-  graf_tile(&g.graf,x0,y1,player->tileid_body+0x10,player->xform);
-  graf_tile(&g.graf,x1,y1,player->tileid_body+0x11,player->xform);
+  graf_tile(g_graf,x2,y2,0x19,0);
+  graf_tile(g_graf,armx,army,player->tileid_arm,player->xform);
+  graf_tile(g_graf,x0,y0,player->tileid_body+0x00,player->xform);
+  graf_tile(g_graf,x1,y0,player->tileid_body+0x01,player->xform);
+  graf_tile(g_graf,x0,y1,player->tileid_body+0x10,player->xform);
+  graf_tile(g_graf,x1,y1,player->tileid_body+0x11,player->xform);
   
   struct remark *remark=player->remarkv;
   int i=player->remarkc;
   for (;i-->0;remark++) {
-    graf_tile(&g.graf,(int)remark->x,(int)remark->y,remark->tileid,0);
+    graf_tile(g_graf,(int)remark->x,(int)remark->y,remark->tileid,0);
   }
 }
 
@@ -247,19 +247,19 @@ static void player_render(struct battle *battle,struct player *player,int ground
 static void _stirring_render(struct battle *battle) {
 
   const int groundy=130;
-  graf_fill_rect(&g.graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,groundy,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
   
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   player_render(battle,l,groundy);
   player_render(battle,r,groundy);
   
   // Score bars.
-  if (l->score>0) graf_fill_rect(&g.graf,(FBW>>1)-8,groundy-l->score,6,l->score,l->color);
-  if (r->score>0) graf_fill_rect(&g.graf,(FBW>>1)+2,groundy-r->score,6,r->score,r->color);
+  if (l->score>0) graf_fill_rect(g_graf,(FBW>>1)-8,groundy-l->score,6,l->score,l->color);
+  if (r->score>0) graf_fill_rect(g_graf,(FBW>>1)+2,groundy-r->score,6,r->score,r->color);
 }
 
 /* Type definition.
@@ -268,7 +268,7 @@ static void _stirring_render(struct battle *battle) {
 const struct battle_type battle_type_stirring={
   .name="stirring",
   .objlen=sizeof(struct battle_stirring),
-  .id=NS_battle_stirring,
+  .id=84,
   .strix_name=294,
   .no_article=0,
   .no_contest=0,

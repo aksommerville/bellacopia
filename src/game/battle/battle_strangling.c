@@ -1,4 +1,4 @@
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define GROUNDY 150
@@ -89,7 +89,7 @@ static void strangling_set_label(struct battle *battle,int labelid,int strix) {
   int srcc=text_get_string(&src,RID_strings_battle,strix);
   egg_texture_del(label->texid);
   if (srcc>0) {
-    label->texid=font_render_to_texture(0,g.font,src,srcc,FBW,font_get_line_height(g.font),battle->ctab[BATTLE_COLOR_SKY_TEXT]);
+    label->texid=font_render_to_texture(0,g_font,src,srcc,FBW,font_get_line_height(g_font),battle->ctab[BATTLE_COLOR_SKY_TEXT]);
     egg_texture_get_size(&label->w,&label->h,label->texid);
   } else {
     label->texid=0;
@@ -261,8 +261,8 @@ static void _strangling_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   for (i=2;i-->0;player++) {
     if (player->human) {
-      player->input=g.input[player->human];
-      player->pvinput=g.pvinput[player->human];
+      player->input=g_input[player->human];
+      player->pvinput=g_pvinput[player->human];
     } else {
       strangling_update_player_cpu(battle,player,elapsed);
     }
@@ -320,8 +320,8 @@ static void strangling_render_meter(struct battle *battle,int x,int y,int w,int 
   int ph=(int)(h*power);
   if (ph<0) ph=0;
   else if (ph>h) ph=h;
-  if (ph<h) graf_fill_rect(&g.graf,x,y,w,h,0x808080ff);
-  if (ph>0) graf_fill_rect(&g.graf,x,y+h-ph,w,ph,0xff0000ff);
+  if (ph<h) graf_fill_rect(g_graf,x,y,w,h,0x808080ff);
+  if (ph>0) graf_fill_rect(g_graf,x,y+h-ph,w,ph,0xff0000ff);
 }
 
 /* Render.
@@ -330,9 +330,9 @@ static void strangling_render_meter(struct battle *battle,int x,int y,int w,int 
 static void _strangling_render(struct battle *battle) {
 
   // Background.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   // Labels.
   if (battle->outcome==-2) {
@@ -340,8 +340,8 @@ static void _strangling_render(struct battle *battle) {
     int i=BATTLE->labelc;
     for (;i-->0;label++) {
       if (!label->texid) continue;
-      graf_set_input(&g.graf,label->texid);
-      graf_decal(&g.graf,label->x,label->y,0,0,label->w,label->h);
+      graf_set_input(g_graf,label->texid);
+      graf_decal(g_graf,label->x,label->y,0,0,label->w,label->h);
     }
   }
   
@@ -361,9 +361,9 @@ static void _strangling_render(struct battle *battle) {
     srcx=srcw*BATTLE->animframe;
     srcy=srch*BATTLE->state;
   }
-  graf_set_image(&g.graf,RID_image_battle_strangling);
-  graf_decal(&g.graf,(FBW>>1)-48,GROUNDY-5,0,320,96,16); // roots and dirt
-  graf_decal(&g.graf,(FBW>>1)-(srcw>>1),GROUNDY-srch+1,srcx,srcy,srcw,srch);
+  graf_set_image(g_graf,RID_image_battle_strangling);
+  graf_decal(g_graf,(FBW>>1)-48,GROUNDY-5,0,320,96,16); // roots and dirt
+  graf_decal(g_graf,(FBW>>1)-(srcw>>1),GROUNDY-srch+1,srcx,srcy,srcw,srch);
   
   // Power meters left and right.
   int barw=10,barh=80;
@@ -377,7 +377,7 @@ static void _strangling_render(struct battle *battle) {
 const struct battle_type battle_type_strangling={
   .name="strangling",
   .objlen=sizeof(struct battle_strangling),
-  .id=NS_battle_strangling,
+  .id=5,
   .strix_name=19,
   .no_article=0,
   .no_contest=0,

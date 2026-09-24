@@ -2,7 +2,7 @@
  * Rhythm game with one button.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 /* With these parameters, you can revive the patient in a bar or two less than the song's length.
  */
@@ -257,7 +257,7 @@ static void _cpr_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -289,35 +289,35 @@ static void player_render_tiles(struct battle *battle,struct player *player) {
   // The hero.
   uint8_t tileid=player->tileid;
   if (player->thump>0.0) tileid+=2;
-  graf_tile(&g.graf,x-ht,y-ht,tileid+0x00,0);
-  graf_tile(&g.graf,x+ht,y-ht,tileid+0x01,0);
-  graf_tile(&g.graf,x-ht,y+ht,tileid+0x10,0);
-  graf_tile(&g.graf,x+ht,y+ht,tileid+0x11,0);
+  graf_tile(g_graf,x-ht,y-ht,tileid+0x00,0);
+  graf_tile(g_graf,x+ht,y-ht,tileid+0x01,0);
+  graf_tile(g_graf,x-ht,y+ht,tileid+0x10,0);
+  graf_tile(g_graf,x+ht,y+ht,tileid+0x11,0);
   
   // The patient.
   tileid=(player->score>=1.0)?0x94:(player->thump>0.0)?0x92:0x90;
-  graf_tile(&g.graf,x-ht-3,y+ht,tileid,0);
-  graf_tile(&g.graf,x+ht-3,y+ht,tileid+1,0);
+  graf_tile(g_graf,x-ht-3,y+ht,tileid,0);
+  graf_tile(g_graf,x+ht-3,y+ht,tileid+1,0);
   
   // 3x3 metronome above the hero. Just its static background.
   int my=y-NS_sys_tilesize*3;
-  graf_tile(&g.graf,x-NS_sys_tilesize,my-NS_sys_tilesize,0x5d,0);
-  graf_tile(&g.graf,x                ,my-NS_sys_tilesize,0x5e,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize,my-NS_sys_tilesize,0x5f,0);
-  graf_tile(&g.graf,x-NS_sys_tilesize,my                ,0x6d,0);
-  graf_tile(&g.graf,x                ,my                ,0x6e,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize,my                ,0x6f,0);
-  graf_tile(&g.graf,x-NS_sys_tilesize,my+NS_sys_tilesize,0x7d,0);
-  graf_tile(&g.graf,x                ,my+NS_sys_tilesize,0x7e,0);
-  graf_tile(&g.graf,x+NS_sys_tilesize,my+NS_sys_tilesize,0x7f,0);
+  graf_tile(g_graf,x-NS_sys_tilesize,my-NS_sys_tilesize,0x5d,0);
+  graf_tile(g_graf,x                ,my-NS_sys_tilesize,0x5e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my-NS_sys_tilesize,0x5f,0);
+  graf_tile(g_graf,x-NS_sys_tilesize,my                ,0x6d,0);
+  graf_tile(g_graf,x                ,my                ,0x6e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my                ,0x6f,0);
+  graf_tile(g_graf,x-NS_sys_tilesize,my+NS_sys_tilesize,0x7d,0);
+  graf_tile(g_graf,x                ,my+NS_sys_tilesize,0x7e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my+NS_sys_tilesize,0x7f,0);
   
   // 1x3 corostat inward of the metronome. Just its static background.
   int cx=x;
   if (player->who) cx-=ht*5;
   else cx+=ht*5;
-  graf_tile(&g.graf,cx,my-NS_sys_tilesize,0x8f,0);
-  graf_tile(&g.graf,cx,my                ,0x9f,0);
-  graf_tile(&g.graf,cx,my+NS_sys_tilesize,0xaf,0);
+  graf_tile(g_graf,cx,my-NS_sys_tilesize,0x8f,0);
+  graf_tile(g_graf,cx,my                ,0x9f,0);
+  graf_tile(g_graf,cx,my+NS_sys_tilesize,0xaf,0);
   
   // Corostat indicators.
   int notec=0,heart=0;
@@ -336,12 +336,12 @@ static void player_render_tiles(struct battle *battle,struct player *player) {
   }
   int dstx=cx-1;
   int dsty=my-NS_sys_tilesize-1;
-  if (heart) graf_tile(&g.graf,dstx,dsty,0x8e,0); dsty+=10;
+  if (heart) graf_tile(g_graf,dstx,dsty,0x8e,0); dsty+=10;
   int i=3; for (;i-->0;dsty+=10) {
     if (i<notec) {
-      if (i==notec-1) graf_set_alpha(&g.graf,top_note_alpha);
-      graf_tile(&g.graf,dstx,dsty,0x9e,0);
-      graf_set_alpha(&g.graf,0xff);
+      if (i==notec-1) graf_set_alpha(g_graf,top_note_alpha);
+      graf_tile(g_graf,dstx,dsty,0x9e,0);
+      graf_set_alpha(g_graf,0xff);
     }
   }
 }
@@ -357,26 +357,26 @@ static void player_render_over(struct battle *battle,struct player *player) {
   int notexv[8];
   int notexc=0;
   
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   int dstx=sx;
   int i=0,stripc=0;
   for (;i<METRONOME_W;i++,dstx++) {
     if (i==player->metronomep) {
-      graf_line(&g.graf,dstx,sy,0xffffffff,dstx,sy+sh,0xffffffff);
+      graf_line(g_graf,dstx,sy,0xffffffff,dstx,sy+sh,0xffffffff);
       stripc=0;
     } else {
       if ((notexc<8)&&player->metronome[i].beat) notexv[notexc++]=dstx;
       int dsty=sy+28-(int)(player->metronome[i].displacement*9.0);
       if (!stripc) {
-        graf_line_strip_begin(&g.graf,dstx,dsty,0xffff00ff);
+        graf_line_strip_begin(g_graf,dstx,dsty,0xffff00ff);
       }
-      graf_line_strip_more(&g.graf,dstx,dsty,0xffff00ff);
+      graf_line_strip_more(g_graf,dstx,dsty,0xffff00ff);
       stripc++;
     }
   }
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   while (notexc-->0) {
-    graf_tile(&g.graf,notexv[notexc],sy+10,0x5c,0);
+    graf_tile(g_graf,notexv[notexc],sy+10,0x5c,0);
   }
 }
 
@@ -384,8 +384,8 @@ static void player_render_over(struct battle *battle,struct player *player) {
  */
  
 static void _cpr_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   player_render_tiles(battle,BATTLE->playerv+0);
   player_render_tiles(battle,BATTLE->playerv+1);
   player_render_over(battle,BATTLE->playerv+0);
@@ -404,7 +404,7 @@ static const struct battle_input cpr_input[]={
 const struct battle_type battle_type_cpr={
   .name="cpr",
   .objlen=sizeof(struct battle_cpr),
-  .id=NS_battle_cpr,
+  .id=37,
   .strix_name=163,
   .no_article=0,
   .no_contest=0,

@@ -1,7 +1,7 @@
 /* battle_breaching.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_breaching {
   struct battle hdr;
@@ -252,7 +252,7 @@ static void _breaching_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -280,7 +280,7 @@ static void player_render(struct battle *battle,struct player *player) {
   int w=NS_sys_tilesize*2;
   double sint=sin(player->t);
   double cost=cos(player->t);
-  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y,srcx,srcy,w,sint,cost,1.0);
+  graf_decal_rotate(g_graf,(int)player->x,(int)player->y,srcx,srcy,w,sint,cost,1.0);
 }
 
 /* Render.
@@ -290,8 +290,8 @@ static void _breaching_render(struct battle *battle) {
 
   /* Fill with sea blue, then tile a bunch of 3x1 tile decals for the sky, waves, and floor.
    */
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x0020e0ff);
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x0020e0ff);
+  graf_set_image(g_graf,RID_image_battle_sea);
   {
     int srcx_floor=128;
     int srcy_floor=16;
@@ -305,11 +305,11 @@ static void _breaching_render(struct battle *battle) {
     int y_floor=FBH-h;
     int y_waves=60;
     for (;x<FBW;x+=w) {
-      graf_decal(&g.graf,x,y_floor,srcx_floor,srcy_floor,w,h);
-      graf_decal(&g.graf,x,y_waves,srcx_waves,srcy_waves,w,h);
+      graf_decal(g_graf,x,y_floor,srcx_floor,srcy_floor,w,h);
+      graf_decal(g_graf,x,y_waves,srcx_waves,srcy_waves,w,h);
       int y=y_waves-h;
       for (;y>=-h;y-=h) {
-        graf_decal(&g.graf,x,y,srcx_sky,srcy_sky,w,h);
+        graf_decal(g_graf,x,y,srcx_sky,srcy_sky,w,h);
       }
     }
   }
@@ -318,24 +318,24 @@ static void _breaching_render(struct battle *battle) {
    */
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   player_render(battle,l);
   player_render(battle,r);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
   /* A bird for each player.
    */
-  uint8_t birdtile=(g.framec&16)?0x0d:0x0e;
-  graf_fancy(&g.graf,(int)l->birdx,(int)l->birdy,birdtile,l->birdxform,0,NS_sys_tilesize,0,l->color);
-  graf_fancy(&g.graf,(int)r->birdx,(int)r->birdy,birdtile,r->birdxform,0,NS_sys_tilesize,0,r->color);
+  uint8_t birdtile=(g_framec&16)?0x0d:0x0e;
+  graf_fancy(g_graf,(int)l->birdx,(int)l->birdy,birdtile,l->birdxform,0,NS_sys_tilesize,0,l->color);
+  graf_fancy(g_graf,(int)r->birdx,(int)r->birdy,birdtile,r->birdxform,0,NS_sys_tilesize,0,r->color);
   
   /* Clock.
    */
   if (battle->outcome==-2) {
     int sec=(int)(BATTLE->playtime+0.999);
     if (sec<1) sec=1; else if (sec>9) sec=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,FBH-10,'0'+sec,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,FBH-10,'0'+sec,0);
   }
 }
 
@@ -345,7 +345,7 @@ static void _breaching_render(struct battle *battle) {
 const struct battle_type battle_type_breaching={
   .name="breaching",
   .objlen=sizeof(struct battle_breaching),
-  .id=NS_battle_breaching,
+  .id=90,
   .strix_name=308,
   .no_article=0,
   .no_contest=0,

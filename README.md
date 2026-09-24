@@ -35,6 +35,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
+- [ ] Try spawning kidnappers on all four edges, not just the back edge.
+- [ ] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
+- [ ] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -56,6 +60,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We could spawn monsters periodically that enter from behind you.
 - - [x] Basically working so far, but I think the monsters need to be made more aggressive.
 - - [x] Also need a bit more limit on the spawning, say only spawn if there's below some count of monsters globally?
+- [ ] Cartographer hints for the Fractia Password House.
+- [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
+- [ ] Do sprites and battles really need `shared_symbols.h`? If we give them a narrower header, we'd get much faster builds. That's currently 159 files we could usually skip rebuilding.
+- - More than half of our C files are battle or sprite.
+- - A clean build today takes 11.681 seconds.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -335,6 +344,7 @@ Record everything that someone might object to on moral grounds, so we can decla
 - Election rigging.
 - Shaking Contest (champagne).
 - Telekinesis Contest (drinking game).
+- Wining Contest (wine).
 - Casino.
 - Strangling Contest.
 - Dead babies splattered on the sidewalk: Rescuing Contest.
@@ -368,3 +378,4 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Adding things to `shared_symbols.h`, which one does a lot, forces a full rebuild. This needs a solution from the eggdev end, and I'm not sure what that will look like.
 - Some items should only interact from within the pause menu (eg Phonograph). Not worth changing Bellacopia, but keep that in mind next time around. Three kinds of item: Equippable, passive, modal.
 - Capturing `sprite->arg` by reference is a hazard, it keeps shooting me in the ass. Smarter to copy args, and have a separate dedicated "reference to rom" field.
+- (from younap, not bellacopia) Really need song tooling that a dev can share with a composer. Musicians can't run eggdev, and would be lost in its interface even if they could.

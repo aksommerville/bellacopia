@@ -1,7 +1,7 @@
 /* battle_figureskating.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define EVENT_LIMIT 16
 
@@ -277,7 +277,7 @@ static void _figureskating_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -291,19 +291,19 @@ static void figureskating_render_scoreboard(struct battle *battle,struct player 
   const int barh=6;
   const int smin=0; // Scores outside 0..150 are unlikely but possible -- must clamp.
   const int smax=150;
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   int barx=midx-(barw>>1);
   int bary=midy-(barh>>1);
   int score=(int)player->score;
   int thumbw=((score-smin)*barw)/(smax-smin+1);
   if (thumbw<0) thumbw=0;
   else if (thumbw>barw) thumbw=barw;
-  graf_fill_rect(&g.graf,barx,bary,barw,barh,0x808080ff);
-  graf_fill_rect(&g.graf,barx,bary,thumbw,barh,player->color);
-  graf_fill_rect(&g.graf,barx,bary,barw+1,1,0x000000ff);
-  graf_fill_rect(&g.graf,barx,bary+barh,barw+1,1,0x000000ff);
-  graf_fill_rect(&g.graf,barx,bary,1,barh+1,0x000000ff);
-  graf_fill_rect(&g.graf,barx+barw,bary,1,barh+1,0x000000ff);
+  graf_fill_rect(g_graf,barx,bary,barw,barh,0x808080ff);
+  graf_fill_rect(g_graf,barx,bary,thumbw,barh,player->color);
+  graf_fill_rect(g_graf,barx,bary,barw+1,1,0x000000ff);
+  graf_fill_rect(g_graf,barx,bary+barh,barw+1,1,0x000000ff);
+  graf_fill_rect(g_graf,barx,bary,1,barh+1,0x000000ff);
+  graf_fill_rect(g_graf,barx+barw,bary,1,barh+1,0x000000ff);
 }
 
 /* Render.
@@ -313,15 +313,15 @@ static void _figureskating_render(struct battle *battle) {
   const uint32_t icecolor=0xf0f8ffff;
   const uint32_t edgecolor=0x001040ff;
   const int fadeh=20;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,icecolor);
-  graf_gradient_rect(&g.graf,0,0,FBW,fadeh,edgecolor,edgecolor,icecolor,icecolor);
-  graf_gradient_rect(&g.graf,0,FBH-fadeh,FBW,fadeh,icecolor,icecolor,edgecolor,edgecolor);
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,icecolor);
+  graf_gradient_rect(g_graf,0,0,FBW,fadeh,edgecolor,edgecolor,icecolor,icecolor);
+  graf_gradient_rect(g_graf,0,FBH-fadeh,FBW,fadeh,icecolor,icecolor,edgecolor,edgecolor);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
   
   // Walrus high in the middle.
   uint8_t walrustile=BATTLE->guidenow?0x3e:0x36;
   uint8_t walrusxform=(BATTLE->guidedir<0)?EGG_XFORM_XREV:0;
-  graf_tile(&g.graf,FBW>>1,FBH/3,walrustile,walrusxform);
+  graf_tile(g_graf,FBW>>1,FBH/3,walrustile,walrusxform);
   
   // Players.
   struct player *player=BATTLE->playerv;
@@ -329,7 +329,7 @@ static void _figureskating_render(struct battle *battle) {
   for (;i-->0;player++) {
     uint8_t tileid=player->tileid;
     if (player->animframe) tileid+=1;
-    graf_tile(&g.graf,(int)player->x,FBH>>1,tileid,player->xform);
+    graf_tile(g_graf,(int)player->x,FBH>>1,tileid,player->xform);
   }
   
   /* Scoreboard.
@@ -346,7 +346,7 @@ static void _figureskating_render(struct battle *battle) {
 const struct battle_type battle_type_figureskating={
   .name="figureskating",
   .objlen=sizeof(struct battle_figureskating),
-  .id=NS_battle_figureskating,
+  .id=61,
   .strix_name=229,
   .no_article=0,
   .no_contest=0,

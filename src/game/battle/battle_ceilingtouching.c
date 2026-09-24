@@ -1,7 +1,7 @@
 /* battle_ceilingtouching.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define CEILINGY 56
 #define GROUNDY 120
@@ -378,7 +378,7 @@ static void _ceilingtouching_update(struct battle *battle,double elapsed) {
     struct player *player=BATTLE->playerv;
     int i=2;
     for (;i-->0;player++) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
       else player_update_cpu(battle,player,elapsed);
       player_update_common(battle,player,elapsed);
     }
@@ -425,14 +425,14 @@ static void player_render(struct battle *battle,struct player *player) {
     case 1: dt=2; break;
     case 3: dt=4; break;
   }
-  graf_tile(&g.graf,x0,y0,player->tileid+dt+dtl,player->xform);
-  graf_tile(&g.graf,x1,y0,player->tileid+dt+dtr,player->xform);
-  graf_tile(&g.graf,x0,y0+NS_sys_tilesize,player->tileid+0x10+dt+dtl,player->xform);
-  graf_tile(&g.graf,x1,y0+NS_sys_tilesize,player->tileid+0x10+dt+dtr,player->xform);
-  graf_tile(&g.graf,x0,y0+NS_sys_tilesize*2,player->leg_tileid+dt+dtl,player->xform);
-  graf_tile(&g.graf,x1,y0+NS_sys_tilesize*2,player->leg_tileid+dt+dtr,player->xform);
-  graf_tile(&g.graf,x0,y0+NS_sys_tilesize*3,player->leg_tileid+0x10+dt+dtl,player->xform);
-  graf_tile(&g.graf,x1,y0+NS_sys_tilesize*3,player->leg_tileid+0x10+dt+dtr,player->xform);
+  graf_tile(g_graf,x0,y0,player->tileid+dt+dtl,player->xform);
+  graf_tile(g_graf,x1,y0,player->tileid+dt+dtr,player->xform);
+  graf_tile(g_graf,x0,y0+NS_sys_tilesize,player->tileid+0x10+dt+dtl,player->xform);
+  graf_tile(g_graf,x1,y0+NS_sys_tilesize,player->tileid+0x10+dt+dtr,player->xform);
+  graf_tile(g_graf,x0,y0+NS_sys_tilesize*2,player->leg_tileid+dt+dtl,player->xform);
+  graf_tile(g_graf,x1,y0+NS_sys_tilesize*2,player->leg_tileid+dt+dtr,player->xform);
+  graf_tile(g_graf,x0,y0+NS_sys_tilesize*3,player->leg_tileid+0x10+dt+dtl,player->xform);
+  graf_tile(g_graf,x1,y0+NS_sys_tilesize*3,player->leg_tileid+0x10+dt+dtr,player->xform);
 }
 
 /* Render.
@@ -440,11 +440,11 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _ceilingtouching_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,0,FBW,CEILINGY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,CEILINGY,FBW,1,0x000000ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,0,FBW,CEILINGY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,CEILINGY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   /* Highlight touched regions along the top.
    */
@@ -460,7 +460,7 @@ static void _ceilingtouching_render(struct battle *battle) {
     int w=1;
     p++;
     while ((x+w<FBW)&&(*p==owner)) { w++; p++; }
-    graf_fill_rect(&g.graf,x,CEILINGY-5,w,5,BATTLE->playerv[owner-1].color);
+    graf_fill_rect(g_graf,x,CEILINGY-5,w,5,BATTLE->playerv[owner-1].color);
     x+=w;
   }
   
@@ -469,29 +469,29 @@ static void _ceilingtouching_render(struct battle *battle) {
    */
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_fill_rect(&g.graf,0,GROUNDY+9,FBW,7,0x000000ff);
-  graf_fill_rect(&g.graf,FBW>>1,GROUNDY+9,1,7,0xffffffff);
-  if (l->dispscore>0) graf_fill_rect(&g.graf,0,GROUNDY+10,l->dispscore,5,l->color);
-  if (r->dispscore>0) graf_fill_rect(&g.graf,FBW-r->dispscore,GROUNDY+10,r->dispscore,5,r->color);
+  graf_fill_rect(g_graf,0,GROUNDY+9,FBW,7,0x000000ff);
+  graf_fill_rect(g_graf,FBW>>1,GROUNDY+9,1,7,0xffffffff);
+  if (l->dispscore>0) graf_fill_rect(g_graf,0,GROUNDY+10,l->dispscore,5,l->color);
+  if (r->dispscore>0) graf_fill_rect(g_graf,FBW-r->dispscore,GROUNDY+10,r->dispscore,5,r->color);
   
   // Players.
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   player_render(battle,l);
   player_render(battle,r);
   
   // Clock at the top.
   int s=(int)(BATTLE->playclock+0.999);
   if (s>0) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_set_tint(g_graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
     if (s>=10) {
       if (s>99) s=99;
-      graf_tile(&g.graf,(FBW>>1)-4,20,'0'+s/10,0);
-      graf_tile(&g.graf,(FBW>>1)+4,20,'0'+s%10,0);
+      graf_tile(g_graf,(FBW>>1)-4,20,'0'+s/10,0);
+      graf_tile(g_graf,(FBW>>1)+4,20,'0'+s%10,0);
     } else {
-      graf_tile(&g.graf,FBW>>1,20,'0'+s,0);
+      graf_tile(g_graf,FBW>>1,20,'0'+s,0);
     }
-    graf_set_tint(&g.graf,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -501,7 +501,7 @@ static void _ceilingtouching_render(struct battle *battle) {
 const struct battle_type battle_type_ceilingtouching={
   .name="ceilingtouching",
   .objlen=sizeof(struct battle_ceilingtouching),
-  .id=NS_battle_ceilingtouching,
+  .id=97,
   .strix_name=322,
   .no_article=0,
   .no_contest=0,

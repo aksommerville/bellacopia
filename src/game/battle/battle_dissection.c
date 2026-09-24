@@ -3,7 +3,7 @@
  * Sever the blood vessels but don't touch the organs.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define FLDW 150
 #define FLDH 150
@@ -373,7 +373,7 @@ static void _dissection_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -405,9 +405,9 @@ static void player_render(struct battle *battle,struct player *player) {
   int fldx=(FBW>>2)-(FLDW>>1);
   if (player->who) fldx+=FBW>>1;
   int fldy=(FBH>>1)-(FLDH>>1);
-  graf_fill_rect(&g.graf,fldx,fldy,FLDW,FLDH,0x8fcec3ff);
+  graf_fill_rect(g_graf,fldx,fldy,FLDW,FLDH,0x8fcec3ff);
   
-  graf_set_image(&g.graf,RID_image_battle_fractia2);
+  graf_set_image(g_graf,RID_image_battle_fractia2);
   
   /* Turn animclock into three discrete frame indicators.
    * If the heart is cut, nothing animates.
@@ -420,13 +420,13 @@ static void player_render(struct battle *battle,struct player *player) {
   
   /* Render organs in vertical order so they can overlap each other.
    */
-  graf_decal(&g.graf,
+  graf_decal(g_graf,
     fldx+(int)player->nwx-16,
     fldy+(int)player->nwy-16,
     (engorge_extremities&&!(player->cutted&(CUTTED_NW|CUTTED_NWORG)))?128:96,
     144,32,32
   );
-  graf_decal(&g.graf,
+  graf_decal(g_graf,
     fldx+(int)player->nex-16,
     fldy+(int)player->ney-16,
     (engorge_extremities&&!(player->cutted&(CUTTED_NE|CUTTED_NEORG)))?128:96,
@@ -449,10 +449,10 @@ static void player_render(struct battle *battle,struct player *player) {
     else if (i==0) tidr=0xb6;
     else if (engorge_vessels&&!(player->cutted&CUTTED_NE)) tidr=0xb9;
     else tidr=0xb8;
-    graf_tile(&g.graf,ax,y,tidl,0);
-    graf_tile(&g.graf,bx,y,tidr,EGG_XFORM_XREV);
+    graf_tile(g_graf,ax,y,tidl,0);
+    graf_tile(g_graf,bx,y,tidr,EGG_XFORM_XREV);
   }
-  graf_decal(&g.graf,
+  graf_decal(g_graf,
     fldx+(int)player->hx-24,
     fldy+(int)player->hy-24,
     engorge_heart?48:0,
@@ -474,16 +474,16 @@ static void player_render(struct battle *battle,struct player *player) {
     else if (i==0) tidr=0xb6;
     else if (engorge_vessels&&!(player->cutted&CUTTED_SE)) tidr=0xb9;
     else tidr=0xb8;
-    graf_tile(&g.graf,ax,y,tidl,EGG_XFORM_XREV);
-    graf_tile(&g.graf,bx,y,tidr,0);
+    graf_tile(g_graf,ax,y,tidl,EGG_XFORM_XREV);
+    graf_tile(g_graf,bx,y,tidr,0);
   }
-  graf_decal(&g.graf,
+  graf_decal(g_graf,
     fldx+(int)player->swx-16,
     fldy+(int)player->swy-16,
     (engorge_extremities&&!(player->cutted&(CUTTED_SW|CUTTED_SWORG)))?128:96,
     144,32,32
   );
-  graf_decal(&g.graf,
+  graf_decal(g_graf,
     fldx+(int)player->sex-16,
     fldy+(int)player->sey-16,
     (engorge_extremities&&!(player->cutted&(CUTTED_SE|CUTTED_SEORG)))?128:96,
@@ -492,18 +492,18 @@ static void player_render(struct battle *battle,struct player *player) {
   
   /* Below the scapel, a guide showing the rotation limits.
    */
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   int sx=fldx+lround(player->x);
   int sy=fldy+lround(player->y);
   double guidet=(player->tlo+player->thi)*0.5;
   int8_t rot=(int8_t)((guidet*128.0)/M_PI); // NB signed, important for wasm and arm.
-  graf_fancy(&g.graf,sx,sy,0x0f,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,sx,sy,0x0f,0,rot,NS_sys_tilesize,0,0x808080ff);
   
   /* The scapel.
    */
   rot=(int8_t)((player->t*128.0)/M_PI);
-  graf_fancy(&g.graf,sx,sy,0x0e,0,rot,NS_sys_tilesize,0,0x808080ff);
-  graf_set_filter(&g.graf,0);
+  graf_fancy(g_graf,sx,sy,0x0e,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_set_filter(g_graf,0);
   
   /* If an organ has been touched, render the bloody mess.
    */
@@ -524,7 +524,7 @@ static void player_render(struct battle *battle,struct player *player) {
         case 6: tileid=0x2d; break;
         case 7: tileid=0x1f; break;
       }
-      graf_tile(&g.graf,x,y,tileid,0);
+      graf_tile(g_graf,x,y,tileid,0);
     }
   }
 }
@@ -533,7 +533,7 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _dissection_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x404040ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x404040ff);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -544,7 +544,7 @@ static void _dissection_render(struct battle *battle) {
 const struct battle_type battle_type_dissection={
   .name="dissection",
   .objlen=sizeof(struct battle_dissection),
-  .id=NS_battle_dissection,
+  .id=36,
   .strix_name=162,
   .no_article=0,
   .no_contest=0,

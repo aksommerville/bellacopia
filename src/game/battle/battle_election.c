@@ -220,7 +220,7 @@ static void player_throw(struct battle *battle,struct player *player) {
   // Humans are subject to a spinner.
   if (player->human>0) {
     if ((player->spinnert<player->spinnerrange*-0.5)||(player->spinnert>player->spinnerrange*0.5)) {
-      bm_sound(RID_sound_reject);
+      bm_sound_pan(RID_sound_reject,0.0);
       return;
     }
     bm_sound_pan(RID_sound_throw,player->who?PLAYER_PAN:-PLAYER_PAN);
@@ -295,7 +295,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  
 static int ballot_update(struct battle *battle,struct ballot *ballot,double elapsed) {
   if ((ballot->ttl-=elapsed)<=0.0) {
-    bm_sound(RID_sound_vote);
+    bm_sound_pan(RID_sound_vote,0.0);
     if ((ballot->party>=0)&&(ballot->party<2)) {
       BATTLE->scorev[ballot->party]++;
     }
@@ -462,7 +462,7 @@ static void _election_render(struct battle *battle) {
 const struct battle_type battle_type_election={
   .name="election",
   .objlen=sizeof(struct battle_election),
-  .id=NS_battle_election,
+  .id=21,
   .strix_name=112,
   .no_article=0,
   .no_contest=1,

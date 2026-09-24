@@ -1,4 +1,4 @@
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 160 /* >16 off the framebuffer's bottom. */
 #define END_COOLDOWN 1.5
@@ -128,7 +128,7 @@ static void _greenfish_update(struct battle *battle,double elapsed) {
   if (battle->outcome!=-2) return;
   
   // Dot's motion.
-  switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: greenfish_walk(battle,elapsed,-1); break;
     case EGG_BTN_RIGHT: greenfish_walk(battle,elapsed,1); break;
     default: greenfish_walk_none(battle,elapsed); break;
@@ -142,7 +142,7 @@ static void _greenfish_update(struct battle *battle,double elapsed) {
   if (battle->outcome!=-2) {
     BATTLE->cooldown=END_COOLDOWN;
     if (battle->outcome>0) {
-      bm_sound(RID_sound_collect);
+      bm_sound_pan(RID_sound_collect,0.0);
       BATTLE->dotframe=3;
       BATTLE->fishx=BATTLE->dotx;
       BATTLE->fishy=GROUNDY-14.0;
@@ -166,22 +166,22 @@ static void _greenfish_update(struct battle *battle,double elapsed) {
 static void _greenfish_render(struct battle *battle) {
 
   // Sky, earth, and horizon. Then everything comes off RID_image_battle_fishing.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fishing);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,SKY_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fishing);
   
   // Dot.
   int dotdstx=(int)BATTLE->dotx-24;
   int dotdsty=GROUNDY-47;
   int dotsrcx=48*BATTLE->dotframe;
   int dotsrcy=64;
-  graf_decal_xform(&g.graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,BATTLE->dotxform);
+  graf_decal_xform(g_graf,dotdstx,dotdsty,dotsrcx,dotsrcy,48,48,BATTLE->dotxform);
   
   // Fish.
   int fishdstx=(int)BATTLE->fishx;
   int fishdsty=(int)BATTLE->fishy;
-  graf_tile(&g.graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
+  graf_tile(g_graf,fishdstx,fishdsty,BATTLE->fishtileid,BATTLE->fishxform);
   
   // Animated row of water at the bottom.
   uint8_t watertileid=0x3a;
@@ -194,7 +194,7 @@ static void _greenfish_render(struct battle *battle) {
   }
   int waterx=NS_sys_tilesize>>1;
   int watery=FBH-(NS_sys_tilesize>>1);
-  for (;waterx<FBW;waterx+=NS_sys_tilesize) graf_tile(&g.graf,waterx,watery,watertileid,0);
+  for (;waterx<FBW;waterx+=NS_sys_tilesize) graf_tile(g_graf,waterx,watery,watertileid,0);
 }
 
 /* Type definition.
@@ -203,7 +203,7 @@ static void _greenfish_render(struct battle *battle) {
 const struct battle_type battle_type_greenfish={
   .name="greenfish",
   .objlen=sizeof(struct battle_greenfish),
-  .id=NS_battle_greenfish,
+  .id=6,
   .strix_name=0,
   .no_article=0,
   .no_contest=0,

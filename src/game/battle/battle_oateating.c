@@ -1,7 +1,7 @@
 /* battle_oateating.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SCORE_LIMIT 8
 
@@ -147,7 +147,7 @@ static void _oateating_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -192,17 +192,17 @@ static void player_render(struct battle *battle,struct player *player,int midx,i
     armtile+=0x10;
   }
   
-  graf_tile(&g.graf,frontx,midy-NS_sys_tilesize,tileid+1,xform);
-  graf_tile(&g.graf,frontx,midy,tileid+0x11,xform);
-  graf_tile(&g.graf,backx,midy-NS_sys_tilesize,tileid,xform);
-  graf_tile(&g.graf,backx,midy,tileid+0x10,xform);
-  graf_tile(&g.graf,armx,midy-7,armtile,xform);
+  graf_tile(g_graf,frontx,midy-NS_sys_tilesize,tileid+1,xform);
+  graf_tile(g_graf,frontx,midy,tileid+0x11,xform);
+  graf_tile(g_graf,backx,midy-NS_sys_tilesize,tileid,xform);
+  graf_tile(g_graf,backx,midy,tileid+0x10,xform);
+  graf_tile(g_graf,armx,midy-7,armtile,xform);
   
   /* Then a scoreboard above the rest.
    */
   int y=midy-NS_sys_tilesize*2;
   int i=0; for (;i<SCORE_LIMIT;i++,y-=10) {
-    graf_tile(&g.graf,scorex,y,player->scoretilev[i]>>8,player->scoretilev[i]&0xff);
+    graf_tile(g_graf,scorex,y,player->scoretilev[i]>>8,player->scoretilev[i]&0xff);
   }
 }
 
@@ -214,13 +214,13 @@ static void _oateating_render(struct battle *battle) {
   int midx=FBW>>1; // Position of the sack's lower tile.
   int midy=groundy-6;
   
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
   
-  graf_set_image(&g.graf,RID_image_battle_skeleton);
-  graf_tile(&g.graf,midx,midy,0xe0,0);
-  graf_tile(&g.graf,midx,midy-NS_sys_tilesize,0xd0,0);
+  graf_set_image(g_graf,RID_image_battle_skeleton);
+  graf_tile(g_graf,midx,midy,0xe0,0);
+  graf_tile(g_graf,midx,midy-NS_sys_tilesize,0xd0,0);
   
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
@@ -234,7 +234,7 @@ static void _oateating_render(struct battle *battle) {
 const struct battle_type battle_type_oateating={
   .name="oateating",
   .objlen=sizeof(struct battle_oateating),
-  .id=NS_battle_oateating,
+  .id=101,
   .strix_name=330,
   .no_article=0,
   .no_contest=0,

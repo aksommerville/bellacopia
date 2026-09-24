@@ -1,7 +1,7 @@
 /* battle_curling.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define MIDX 160
 #define MIDY  45
@@ -337,7 +337,7 @@ static void _curling_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -385,11 +385,11 @@ static void player_render(struct battle *battle,struct player *player) {
     pxform=EGG_XFORM_XREV;
   }
   if (player->throwstate==THROWSTATE_DONE) tileid+=1;
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
-  graf_fancy(&g.graf,px,py,tileid,pxform,0,NS_sys_tilesize,0,player->color);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
+  graf_fancy(g_graf,px,py,tileid,pxform,0,NS_sys_tilesize,0,player->color);
   
   if (player->throwstate==THROWSTATE_DONE) {
-    graf_fancy(&g.graf,player->stonex,player->stoney,0x08,0,0,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,player->stonex,player->stoney,0x08,0,0,NS_sys_tilesize,0,player->color);
   }
   
   // Draw a guideline if collecting angle or speed.
@@ -400,8 +400,8 @@ static void player_render(struct battle *battle,struct player *player) {
         const double r2=30.0;
         double sint=sin(t);
         double cost=cos(t);
-        graf_set_input(&g.graf,0);
-        graf_line(&g.graf,
+        graf_set_input(g_graf,0);
+        graf_line(g_graf,
           (int)(player->x+sint*r1),
           (int)(player->y-cost*r1),
           0xff0000ff,
@@ -414,8 +414,8 @@ static void player_render(struct battle *battle,struct player *player) {
         double n=curling_normal_speed_from_input(player->selectt);
         const double r1=10.0;
         double r2=r1+n*20.0;
-        graf_set_input(&g.graf,0);
-        graf_line(&g.graf,
+        graf_set_input(g_graf,0);
+        graf_line(g_graf,
           (int)(player->x+player->dx*r1),
           (int)(player->y+player->dy*r1),
           0xff0000ff,
@@ -431,8 +431,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _curling_render(struct battle *battle) {
-  graf_set_image(&g.graf,RID_image_curling);
-  graf_decal(&g.graf,0,0,0,0,FBW,FBH);
+  graf_set_image(g_graf,RID_image_curling);
+  graf_decal(g_graf,0,0,0,0,FBW,FBH);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -443,7 +443,7 @@ static void _curling_render(struct battle *battle) {
 const struct battle_type battle_type_curling={
   .name="curling",
   .objlen=sizeof(struct battle_curling),
-  .id=NS_battle_curling,
+  .id=60,
   .strix_name=228,
   .no_article=0,
   .no_contest=0,

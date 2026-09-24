@@ -1,7 +1,7 @@
 /* battle_flapping.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_flapping {
   struct battle hdr;
@@ -171,7 +171,7 @@ static void _flapping_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -195,10 +195,10 @@ static void player_render(struct battle *battle,struct player *player) {
   const int ht=NS_sys_tilesize>>1;
   uint8_t tileid=player->tileid;
   if (player->flapclock>0.0) tileid+=2;
-  graf_tile(&g.graf,x-ht,player->y-ht,tileid+0x00,0);
-  graf_tile(&g.graf,x+ht,player->y-ht,tileid+0x01,0);
-  graf_tile(&g.graf,x-ht,player->y+ht,tileid+0x10,0);
-  graf_tile(&g.graf,x+ht,player->y+ht,tileid+0x11,0);
+  graf_tile(g_graf,x-ht,player->y-ht,tileid+0x00,0);
+  graf_tile(g_graf,x+ht,player->y-ht,tileid+0x01,0);
+  graf_tile(g_graf,x-ht,player->y+ht,tileid+0x10,0);
+  graf_tile(g_graf,x+ht,player->y+ht,tileid+0x11,0);
   
   int bobble=6-(int)((player->bobbleeffect+1.0)*3.0);
   if (bobble<1) bobble=1; else if (bobble>6) bobble=6;
@@ -209,7 +209,7 @@ static void player_render(struct battle *battle,struct player *player) {
   int bsrcy=NS_sys_tilesize*4;
   if (player->wind>=40.0) bsrcy+=NS_sys_tilesize*4;
   else if (player->wind>=10.0) bsrcy+=NS_sys_tilesize*2;
-  graf_decal(&g.graf,bx,by,bsrcx,bsrcy,NS_sys_tilesize*2,bh);
+  graf_decal(g_graf,bx,by,bsrcx,bsrcy,NS_sys_tilesize*2,bh);
 }
 
 static void render_time(struct battle *battle,struct player *player) {
@@ -221,12 +221,12 @@ static void render_time(struct battle *battle,struct player *player) {
     ms=999;
   }
   int x=275;
-  if (sec>=10) graf_tile(&g.graf,x,player->y,'0'+sec/10,0); x+=8;
-  graf_tile(&g.graf,x,player->y,'0'+sec%10,0); x+=8;
-  graf_tile(&g.graf,x,player->y,'.',0); x+=8;
-  graf_tile(&g.graf,x,player->y,'0'+ms/100,0); x+=8;
-  graf_tile(&g.graf,x,player->y,'0'+(ms/10)%10,0); x+=8;
-  graf_tile(&g.graf,x,player->y,'0'+ms%10,0);
+  if (sec>=10) graf_tile(g_graf,x,player->y,'0'+sec/10,0); x+=8;
+  graf_tile(g_graf,x,player->y,'0'+sec%10,0); x+=8;
+  graf_tile(g_graf,x,player->y,'.',0); x+=8;
+  graf_tile(g_graf,x,player->y,'0'+ms/100,0); x+=8;
+  graf_tile(g_graf,x,player->y,'0'+(ms/10)%10,0); x+=8;
+  graf_tile(g_graf,x,player->y,'0'+ms%10,0);
 }
 
 /* Render.
@@ -235,28 +235,28 @@ static void render_time(struct battle *battle,struct player *player) {
 static void _flapping_render(struct battle *battle) {
   const int HORIZONY=40;
   const int SHOREW=60;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,HORIZONY,SHOREW,FBH-HORIZONY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,FBW-SHOREW,HORIZONY,SHOREW,FBH-HORIZONY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,SHOREW,HORIZONY+4,FBW-(SHOREW<<1),FBH-HORIZONY,0x3060ffff);
-  graf_fill_rect(&g.graf,0,HORIZONY,SHOREW,1,0x000000ff);
-  graf_fill_rect(&g.graf,SHOREW,HORIZONY+4,FBW-(SHOREW<<1),1,0x000000ff);
-  graf_fill_rect(&g.graf,FBW-SHOREW,HORIZONY,SHOREW,1,0x000000ff);
-  graf_fill_rect(&g.graf,SHOREW,HORIZONY,1,FBH-HORIZONY,0x000000ff);
-  graf_fill_rect(&g.graf,FBW-SHOREW,HORIZONY,1,FBH-HORIZONY,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,HORIZONY,SHOREW,FBH-HORIZONY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,FBW-SHOREW,HORIZONY,SHOREW,FBH-HORIZONY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,SHOREW,HORIZONY+4,FBW-(SHOREW<<1),FBH-HORIZONY,0x3060ffff);
+  graf_fill_rect(g_graf,0,HORIZONY,SHOREW,1,0x000000ff);
+  graf_fill_rect(g_graf,SHOREW,HORIZONY+4,FBW-(SHOREW<<1),1,0x000000ff);
+  graf_fill_rect(g_graf,FBW-SHOREW,HORIZONY,SHOREW,1,0x000000ff);
+  graf_fill_rect(g_graf,SHOREW,HORIZONY,1,FBH-HORIZONY,0x000000ff);
+  graf_fill_rect(g_graf,FBW-SHOREW,HORIZONY,1,FBH-HORIZONY,0x000000ff);
   
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_set_image(g_graf,RID_image_battle_sea);
   player_render(battle,l);
   player_render(battle,r);
   
   // Show times for finished players.
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
+  graf_set_image(g_graf,RID_image_fonttiles);
+  graf_set_tint(g_graf,battle->ctab[BATTLE_COLOR_GROUND_TEXT]);
   if (l->done) render_time(battle,l);
   if (r->done) render_time(battle,r);
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0);
 }
 
 /* Type definition.
@@ -265,7 +265,7 @@ static void _flapping_render(struct battle *battle) {
 const struct battle_type battle_type_flapping={
   .name="flapping",
   .objlen=sizeof(struct battle_flapping),
-  .id=NS_battle_flapping,
+  .id=73,
   .strix_name=272,
   .no_article=0,
   .no_contest=0,

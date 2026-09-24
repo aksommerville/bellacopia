@@ -2,8 +2,10 @@
  * Look at the knights to turn them into stone.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
+
+#define CMD_map_battlemark      0x4a /* u16:pos u16:id ; Generic marker for battle maps. */
 
 #define SPRITEID_LEFT 1
 #define SPRITEID_RIGHT 2
@@ -230,7 +232,7 @@ static void petrifying_player_dpad(struct batsup_sprite *sprite,double elapsed,i
   if (victim&&(victimdistance<blockdistance)) {
     struct sprite_knight *VICTIM=(struct sprite_knight*)victim;
     VICTIM->petrified=1;
-    bm_sound(RID_sound_pop);
+    bm_sound_pan(RID_sound_pop,0.0);
     struct battle *battle=sprite->world->battle;
     if (SPRITE->who) {
       BATTLE->rscore++;
@@ -258,11 +260,11 @@ static void petrifying_player_dpad(struct batsup_sprite *sprite,double elapsed,i
 static void petrifying_update_player_man(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
   int ndx=0,ndy=0;
-  switch (g.input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: ndx=-1; break;
     case EGG_BTN_RIGHT: ndx=1; break;
   }
-  switch (g.input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
     case EGG_BTN_UP: ndy=-1; break;
     case EGG_BTN_DOWN: ndy=1; break;
   }
@@ -720,7 +722,7 @@ static void _petrifying_render(struct battle *battle) {
   batsup_world_render(BATTLE->world);
   
   if (BATTLE->scoreboardx>=0) {
-    graf_set_image(&g.graf,RID_image_battle_labyrinth3);
+    graf_set_image(g_graf,RID_image_battle_labyrinth3);
     uint8_t tile0=0x35; // Left score.
     uint8_t tile1=0x45; // Time tens.
     uint8_t tile2=0x45; // Time ones.
@@ -735,13 +737,13 @@ static void _petrifying_render(struct battle *battle) {
     int dsty=((FBH>>1)-((NS_sys_tilesize*NS_sys_maph)>>1))+(NS_sys_tilesize>>1);
     dstx+=BATTLE->scoreboardx*NS_sys_tilesize;
     dsty+=BATTLE->scoreboardy*NS_sys_tilesize;
-    graf_tile(&g.graf,dstx,dsty,tile0,0);
-    if (tile1) graf_tile(&g.graf,dstx,dsty,tile1,0);
-    graf_tile(&g.graf,dstx+ 4,dsty,tile2,0);
-    graf_tile(&g.graf,dstx+17,dsty,tile3,0);
+    graf_tile(g_graf,dstx,dsty,tile0,0);
+    if (tile1) graf_tile(g_graf,dstx,dsty,tile1,0);
+    graf_tile(g_graf,dstx+ 4,dsty,tile2,0);
+    graf_tile(g_graf,dstx+17,dsty,tile3,0);
   }
   
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   struct highlight *highlight=BATTLE->highlightv;
   int i=BATTLE->highlightc;
   for (;i-->0;highlight++) {
@@ -749,7 +751,7 @@ static void _petrifying_render(struct battle *battle) {
     int alpha=(int)((highlight->ttl*255.0)/HIGHLIGHT_TIME);
     if (alpha<0) alpha=0; else if (alpha>0xff) alpha=0xff;
     rgba|=alpha;
-    graf_line(&g.graf,highlight->ax,highlight->ay,rgba,highlight->bx,highlight->by,rgba);
+    graf_line(g_graf,highlight->ax,highlight->ay,rgba,highlight->bx,highlight->by,rgba);
   }
 }
 
@@ -759,7 +761,7 @@ static void _petrifying_render(struct battle *battle) {
 const struct battle_type battle_type_petrifying={
   .name="petrifying",
   .objlen=sizeof(struct battle_petrifying),
-  .id=NS_battle_petrifying,
+  .id=50,
   .strix_name=176,
   .no_article=0,
   .no_contest=0,

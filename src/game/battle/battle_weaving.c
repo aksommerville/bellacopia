@@ -1,7 +1,7 @@
 /* battle_weaving.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define WARPCLO 5
 #define WARPCHI 7
@@ -400,7 +400,7 @@ static void _weaving_update(struct battle *battle,double elapsed) {
     int lok=player_score_warp(battle,l,BATTLE->termp);
     int rok=player_score_warp(battle,r,BATTLE->termp);
     if (lok||rok) {
-      bm_sound(RID_sound_uimotion);
+      bm_sound_pan(RID_sound_uimotion,0.0);
       BATTLE->termp++;
     } else {
     
@@ -423,7 +423,7 @@ static void _weaving_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player->term) continue;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -443,39 +443,39 @@ static void _weaving_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player,int top) {
 
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   int y=top+(FBH>>2);
   int i=player->warpc;
   int rates_present=0;
   while (i-->0) {
-    graf_tile(&g.graf,player->warpxv[i],y,0x01,0);
+    graf_tile(g_graf,player->warpxv[i],y,0x01,0);
     if (player->ratev[i]) rates_present=1;
   }
   
   if (player->samplec>=2) {
-    graf_set_input(&g.graf,0);
+    graf_set_input(g_graf,0);
     const struct sample *sample=player->samplev;
-    graf_line_strip_begin(&g.graf,sample->ix,top+sample->iy,player->color);
+    graf_line_strip_begin(g_graf,sample->ix,top+sample->iy,player->color);
     sample++;
     for (i=player->samplec-1;i-->0;sample++) {
-      graf_line_strip_more(&g.graf,sample->ix,top+sample->iy,player->color);
+      graf_line_strip_more(g_graf,sample->ix,top+sample->iy,player->color);
     }
   }
 
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   int x=(int)player->needlex;
   y=top+(int)player->needley;
   uint8_t rot=(int8_t)((player->needlet*128.0)/M_PI);
-  graf_set_filter(&g.graf,1);
-  graf_fancy(&g.graf,x,y,0x00,0,rot,NS_sys_tilesize,0,0x808080ff);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,1);
+  graf_fancy(g_graf,x,y,0x00,0,rot,NS_sys_tilesize,0,0x808080ff);
+  graf_set_filter(g_graf,0);
   
   // Show rates on top if we have any.
   if (rates_present) {
     y=top+(FBH>>2)-8;
     for (i=player->warpc;i-->0;) {
       if (player->ratev[i]) {
-        graf_tile(&g.graf,player->warpxv[i],y,(player->ratev[i]>0)?0x02:0x03,0);
+        graf_tile(g_graf,player->warpxv[i],y,(player->ratev[i]>0)?0x02:0x03,0);
       }
     }
   }
@@ -493,13 +493,13 @@ static void player_render(struct battle *battle,struct player *player,int top) {
       sec=99;
       ms=999;
     }
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    if (sec>=10) graf_tile(&g.graf,x,y,'0'+sec/10,0); x+=8;
-    graf_tile(&g.graf,x,y,'0'+sec%10,0); x+=8;
-    graf_tile(&g.graf,x,y,'.',0); x+=8;
-    graf_tile(&g.graf,x,y,'0'+ms/100,0); x+=8;
-    graf_tile(&g.graf,x,y,'0'+(ms/10)%10,0); x+=8;
-    graf_tile(&g.graf,x,y,'0'+ms%10,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    if (sec>=10) graf_tile(g_graf,x,y,'0'+sec/10,0); x+=8;
+    graf_tile(g_graf,x,y,'0'+sec%10,0); x+=8;
+    graf_tile(g_graf,x,y,'.',0); x+=8;
+    graf_tile(g_graf,x,y,'0'+ms/100,0); x+=8;
+    graf_tile(g_graf,x,y,'0'+(ms/10)%10,0); x+=8;
+    graf_tile(g_graf,x,y,'0'+ms%10,0);
   }
 }
 
@@ -507,16 +507,16 @@ static void player_render(struct battle *battle,struct player *player,int top) {
  */
  
 static void _weaving_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   player_render(battle,BATTLE->playerv+0,0);
   player_render(battle,BATTLE->playerv+1,FBH>>1);
   
   if (BATTLE->countdown>0.0) {
     int s=(int)(BATTLE->countdown+0.999);
     if (s<1) s=1; else if (s>9) s=9;
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x10080480);
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,FBH>>1,'0'+s,0);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,0x10080480);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,FBH>>1,'0'+s,0);
   }
 }
 
@@ -526,7 +526,7 @@ static void _weaving_render(struct battle *battle) {
 const struct battle_type battle_type_weaving={
   .name="weaving",
   .objlen=sizeof(struct battle_weaving),
-  .id=NS_battle_weaving,
+  .id=69,
   .strix_name=263,
   .no_article=0,
   .no_contest=0,

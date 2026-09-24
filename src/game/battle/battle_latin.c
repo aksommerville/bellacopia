@@ -18,7 +18,7 @@
  *  - Mushroom:     Agaricus bisporus (The White Button Mushroom, same species as Portobello and Cremini)
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_visbits.h"
 
 #define STAR_LIMIT 5
@@ -557,11 +557,11 @@ static void player_move(struct battle *battle,struct player *player,int d) {
  */
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed) {
-  if (g.input[player->human]!=player->pvinput) {
-    if ((g.input[player->human]&EGG_BTN_UP)&&!(player->pvinput&EGG_BTN_UP)) player_move(battle,player,-1);
-    else if ((g.input[player->human]&EGG_BTN_DOWN)&&!(player->pvinput&EGG_BTN_DOWN)) player_move(battle,player,1);
-    if ((g.input[player->human]&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_activate(battle,player);
-    player->pvinput=g.input[player->human];
+  if (g_input[player->human]!=player->pvinput) {
+    if ((g_input[player->human]&EGG_BTN_UP)&&!(player->pvinput&EGG_BTN_UP)) player_move(battle,player,-1);
+    else if ((g_input[player->human]&EGG_BTN_DOWN)&&!(player->pvinput&EGG_BTN_DOWN)) player_move(battle,player,1);
+    if ((g_input[player->human]&EGG_BTN_SOUTH)&&!(player->pvinput&EGG_BTN_SOUTH)) player_activate(battle,player);
+    player->pvinput=g_input[player->human];
   }
 }
 
@@ -661,9 +661,9 @@ static void _latin_update(struct battle *battle,double elapsed) {
  */
  
 static void _latin_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_latin);
-  graf_tile_batch(&g.graf,BATTLE->vtxv,BATTLE->vtxc);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_latin);
+  graf_tile_batch(g_graf,BATTLE->vtxv,BATTLE->vtxc);
   if (BATTLE->timerk>0.0) batsup_render_hourglass(FBW>>1,FBH>>1,BATTLE->timer,BATTLE->timerk);
 }
 
@@ -673,7 +673,7 @@ static void _latin_render(struct battle *battle) {
 const struct battle_type battle_type_latin={
   .name="latin",
   .objlen=sizeof(struct battle_latin),
-  .id=NS_battle_latin,
+  .id=30,
   .strix_name=156,
   .no_article=0,
   .no_contest=0,

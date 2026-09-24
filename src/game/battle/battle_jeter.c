@@ -2,7 +2,7 @@
  * Spin the ballerina then throw her into the pillows; try not to throw her into the briar patch.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SWING_RATE 6.000 /* rad/sec */
 #define MAG_PENALTY   0.500
@@ -239,7 +239,7 @@ static void _jeter_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (battle->outcome==-2) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -267,9 +267,9 @@ static void _jeter_update(struct battle *battle,double elapsed) {
 static void player_render_bg(struct battle *battle,struct player *player,int fldy) {
   const int fldh=FBH>>1;
   const int groundy=75;
-  graf_fill_rect(&g.graf,0,fldy,FBW,fldh,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,fldy+groundy,FBW,fldh-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,fldy+groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,fldy,FBW,fldh,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,fldy+groundy,FBW,fldh-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,fldy+groundy,FBW,1,0x000000ff);
 }
  
 static void player_render_fg(struct battle *battle,struct player *player,int fldy) {
@@ -279,7 +279,7 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
   int srcy=(player->tileid_body>>4)*NS_sys_tilesize;
   int scrollx=0;
   scrollx-=(int)player->xscroll;
-  graf_decal(&g.graf,scrollx+40,fldy+groundy-47,srcx,srcy,32,48);
+  graf_decal(g_graf,scrollx+40,fldy+groundy-47,srcx,srcy,32,48);
   
   // Once heft, the arms are static, upwardish, and the ballerina flies on her own.
   int armlx=scrollx;
@@ -301,10 +301,10 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
   int armsrcy=(player->tileid_arm>>4)*NS_sys_tilesize;
   if (player->heft) {
     const double ROOT_TWO_OVER_TWO=0.7071067811865476;
-    graf_set_filter(&g.graf,1);
-    graf_decal_rotate(&g.graf,armlx,armly,armsrcx,armsrcy,NS_sys_tilesize*2,ROOT_TWO_OVER_TWO,-ROOT_TWO_OVER_TWO,1.0);
-    graf_decal_rotate(&g.graf,armrx,armry,armsrcx,armsrcy,NS_sys_tilesize*2,-ROOT_TWO_OVER_TWO,-ROOT_TWO_OVER_TWO,1.0);
-    graf_set_filter(&g.graf,0);
+    graf_set_filter(g_graf,1);
+    graf_decal_rotate(g_graf,armlx,armly,armsrcx,armsrcy,NS_sys_tilesize*2,ROOT_TWO_OVER_TWO,-ROOT_TWO_OVER_TWO,1.0);
+    graf_decal_rotate(g_graf,armrx,armry,armsrcx,armsrcy,NS_sys_tilesize*2,-ROOT_TWO_OVER_TWO,-ROOT_TWO_OVER_TWO,1.0);
+    graf_set_filter(g_graf,0);
     if (player->landed) {
       if (player->distance<=-1000) {
         srcx=0;
@@ -322,9 +322,9 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
     if (!srcx) { // Angry face in the briar patch. Single column.
       dstx+=NS_sys_tilesize>>1;
       dsty-=11;
-      graf_decal(&g.graf,dstx,dsty,srcx,srcy,16,32);
+      graf_decal(g_graf,dstx,dsty,srcx,srcy,16,32);
     } else { // Normal 2x2 faces.
-      graf_decal(&g.graf,dstx,dsty,srcx,srcy,32,32);
+      graf_decal(g_graf,dstx,dsty,srcx,srcy,32,32);
     }
   
   } else {
@@ -333,16 +333,16 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
     double bradius=10.0;
     int dstx,dsty;
     // Arms:
-    graf_set_filter(&g.graf,1);
-    graf_decal_rotate(&g.graf,armlx,armly,armsrcx,armsrcy,NS_sys_tilesize*2,sint,cost,1.0);
-    graf_decal_rotate(&g.graf,armrx,armry,armsrcx,armsrcy,NS_sys_tilesize*2,sint,cost,1.0);
-    graf_set_filter(&g.graf,0);
+    graf_set_filter(g_graf,1);
+    graf_decal_rotate(g_graf,armlx,armly,armsrcx,armsrcy,NS_sys_tilesize*2,sint,cost,1.0);
+    graf_decal_rotate(g_graf,armrx,armry,armsrcx,armsrcy,NS_sys_tilesize*2,sint,cost,1.0);
+    graf_set_filter(g_graf,0);
     // Ballerina, always the same frame:
     srcx=5*NS_sys_tilesize;
     srcy=14*NS_sys_tilesize;
     dstx=scrollx+56-(int)(sint*bradius);
     dsty=fldy+groundy-16+(int)(cost*bradius);
-    graf_decal(&g.graf,dstx-16,dsty-16,srcx,srcy,32,32);
+    graf_decal(g_graf,dstx-16,dsty-16,srcx,srcy,32,32);
   }
   
   // Briar patch, if we've scrolled left.
@@ -351,7 +351,7 @@ static void player_render_fg(struct battle *battle,struct player *player,int fld
     int dstx=scrollx-10;
     uint8_t tileid=0xd6;
     for (;dstx>=-8;dstx-=NS_sys_tilesize) {
-      graf_tile(&g.graf,dstx,dsty,tileid,0);
+      graf_tile(g_graf,dstx,dsty,tileid,0);
       tileid=0xd5;
     }
   }
@@ -365,14 +365,14 @@ static void player_render_distance(struct battle *battle,struct player *player,i
   int positive=1;
   if (mm<0) { positive=0; mm=-mm; }
   if (mm>99999) mm=99999;
-  graf_tile(&g.graf,dstx,dsty,'m',0); dstx-=16;
-  graf_tile(&g.graf,dstx,dsty,'0'+(mm%10),0); dstx-=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+((mm/10)%10),0); dstx-=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+((mm/100)%10),0); dstx-=8;
-  graf_tile(&g.graf,dstx,dsty,'.',0); dstx-=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+((mm/1000)%10),0); dstx-=8;
-  if (mm>=10000) { graf_tile(&g.graf,dstx,dsty,'0'+((mm/10000)%10),0); dstx-=8; }
-  if (!positive) graf_tile(&g.graf,dstx,dsty,'-',0);
+  graf_tile(g_graf,dstx,dsty,'m',0); dstx-=16;
+  graf_tile(g_graf,dstx,dsty,'0'+(mm%10),0); dstx-=8;
+  graf_tile(g_graf,dstx,dsty,'0'+((mm/10)%10),0); dstx-=8;
+  graf_tile(g_graf,dstx,dsty,'0'+((mm/100)%10),0); dstx-=8;
+  graf_tile(g_graf,dstx,dsty,'.',0); dstx-=8;
+  graf_tile(g_graf,dstx,dsty,'0'+((mm/1000)%10),0); dstx-=8;
+  if (mm>=10000) { graf_tile(g_graf,dstx,dsty,'0'+((mm/10000)%10),0); dstx-=8; }
+  if (!positive) graf_tile(g_graf,dstx,dsty,'-',0);
 }
 
 /* Render.
@@ -385,16 +385,16 @@ static void _jeter_render(struct battle *battle) {
    * Do bg and fg for the bottom player first, since ballerinas can exceed the top edge.
    */
   player_render_bg(battle,r,FBH>>1);
-  graf_set_image(&g.graf,RID_image_battle_athletes);
+  graf_set_image(g_graf,RID_image_battle_athletes);
   player_render_fg(battle,r,FBH>>1);
-  graf_set_input(&g.graf,0);
+  graf_set_input(g_graf,0);
   player_render_bg(battle,l,0);
-  graf_set_image(&g.graf,RID_image_battle_athletes);
+  graf_set_image(g_graf,RID_image_battle_athletes);
   player_render_fg(battle,l,0);
   /* Distance for any player that heaved.
    */
   if (l->heft||r->heft) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     if (l->heft) player_render_distance(battle,l,0);
     if (r->heft) player_render_distance(battle,r,FBH>>1);
   }
@@ -405,8 +405,8 @@ static void _jeter_render(struct battle *battle) {
   if ((!l->heft||!r->heft)&&(BATTLE->playclock>0.0)) {
     int s=(int)(BATTLE->playclock+1.0);
     if (s<1) s=1; else if (s>9) s=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,FBH>>1,'0'+s,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,FBH>>1,'0'+s,0);
   }
 }
 
@@ -416,7 +416,7 @@ static void _jeter_render(struct battle *battle) {
 const struct battle_type battle_type_jeter={
   .name="jeter",
   .objlen=sizeof(struct battle_jeter),
-  .id=NS_battle_jeter,
+  .id=34,
   .strix_name=160,
   .no_article=0,
   .no_contest=0,

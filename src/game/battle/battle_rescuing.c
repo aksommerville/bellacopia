@@ -2,7 +2,7 @@
  * Mom throws her babies out the window of her burning building, and you trampoline them to safety.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define BGCOLC 20
 #define BGROWC 12
@@ -435,7 +435,7 @@ static void _rescuing_update(struct battle *battle,double elapsed) {
   // Do update players even after finished, why not.
   struct player *player=BATTLE->playerv;
   for (i=2;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -479,9 +479,9 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->bounceclock>0.0) tramptile+=2;
   uint8_t herotile=player->tileid;
   if (player->animframe) herotile+=1;
-  graf_tile(&g.graf,xtoe,y,tramptile+1,player->xform);
-  graf_tile(&g.graf,xmid,y,tramptile,player->xform);
-  graf_tile(&g.graf,xhero,y,herotile,player->xform);
+  graf_tile(g_graf,xtoe,y,tramptile+1,player->xform);
+  graf_tile(g_graf,xmid,y,tramptile,player->xform);
+  graf_tile(g_graf,xhero,y,herotile,player->xform);
 }
 
 /* Render window.
@@ -497,25 +497,25 @@ static void window_render(struct battle *battle,struct window *window) {
     case 2: firexform=EGG_XFORM_XREV; break;
     case 3: firexform=EGG_XFORM_XREV; firetile++; break;
   }
-  graf_tile(&g.graf,x,y,firetile,firexform);
+  graf_tile(g_graf,x,y,firetile,firexform);
   if (window->opened) {
-    graf_tile(&g.graf,x,y,0x12,0); // Full frame.
+    graf_tile(g_graf,x,y,0x12,0); // Full frame.
     if (window->mamaclock>0.0) {
       uint8_t mt=0x14;
       if (((int)(window->mamaclock*6.0))&1) mt+=2;
       if (window->xform&EGG_XFORM_XREV) {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,mt+1,EGG_XFORM_XREV);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,mt,EGG_XFORM_XREV);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,mt+1,EGG_XFORM_XREV);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,mt,EGG_XFORM_XREV);
       } else {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,mt,0);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,mt+1,0);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,mt,0);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,mt+1,0);
       }
     } else if (window->armclock>0.0) {
-      graf_tile(&g.graf,x,y,0x18,window->xform);
+      graf_tile(g_graf,x,y,0x18,window->xform);
     }
-    graf_tile(&g.graf,x,y,0x13,0); // Frame foreground.
+    graf_tile(g_graf,x,y,0x13,0); // Frame foreground.
   } else {
-    graf_tile(&g.graf,x,y,0x11,0);
+    graf_tile(g_graf,x,y,0x11,0);
   }
 }
 
@@ -531,34 +531,34 @@ static void baby_render(struct battle *battle,struct baby *baby) {
   if (baby->adult) {
     uint8_t xform=baby->who?EGG_XFORM_XREV:0;
     if (baby->outcome>0) { // Mom, standing upright. (x,y) is the center of her lower tile.
-      graf_tile(&g.graf,x,y,0x1d,xform);
-      graf_tile(&g.graf,x,y-NS_sys_tilesize,0x0d,xform);
+      graf_tile(g_graf,x,y,0x1d,xform);
+      graf_tile(g_graf,x,y-NS_sys_tilesize,0x0d,xform);
     } else if (baby->outcome<0) { // Mom, kersplatted.
       if (xform) {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,0x0c,xform);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,0x0b,xform);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,0x0c,xform);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,0x0b,xform);
       } else {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,0x0b,0);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,0x0c,0);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,0x0b,0);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,0x0c,0);
       }
     } else { // Mom, falling.
       uint8_t tileid=0x07;
       if (baby->animframe) tileid+=2;
       if (xform) {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,tileid+1,xform);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,tileid,xform);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,tileid+1,xform);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,tileid,xform);
       } else {
-        graf_tile(&g.graf,x-(NS_sys_tilesize>>1),y,tileid,0);
-        graf_tile(&g.graf,x+(NS_sys_tilesize>>1),y,tileid+1,0);
+        graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,tileid,0);
+        graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,tileid+1,0);
       }
     }
   } else { // The real babies are close enough to symmetric, don't bother with (xform).
     if (baby->outcome>0) { // Baby, rescued.
-      graf_tile(&g.graf,x,y,0x1b,0);
+      graf_tile(g_graf,x,y,0x1b,0);
     } else if (baby->outcome<0) { // Baby, kersplatted.
-      graf_tile(&g.graf,x,y,0x1c,0);
+      graf_tile(g_graf,x,y,0x1c,0);
     } else { // Baby, falling.
-      graf_tile(&g.graf,x,y,0x19+baby->animframe,0);
+      graf_tile(g_graf,x,y,0x19+baby->animframe,0);
     }
   }
 }
@@ -567,8 +567,8 @@ static void baby_render(struct battle *battle,struct baby *baby) {
  */
  
 static void _rescuing_render(struct battle *battle) {
-  graf_set_image(&g.graf,RID_image_battle_fractia2);
-  graf_tile_batch(&g.graf,BATTLE->bgvtxv,BGCOLC*BGROWC);
+  graf_set_image(g_graf,RID_image_battle_fractia2);
+  graf_tile_batch(g_graf,BATTLE->bgvtxv,BGCOLC*BGROWC);
   
   struct window *window=BATTLE->windowv;
   int i=BATTLE->windowc;
@@ -593,11 +593,11 @@ static void _rescuing_render(struct battle *battle) {
   
   // If the outcome is established, print each player's score above their head.
   if (battle->outcome>-2) {
-    graf_set_image(&g.graf,RID_image_fonttiles);
+    graf_set_image(g_graf,RID_image_fonttiles);
     struct player *l=BATTLE->playerv;
     struct player *r=l+1;
-    graf_tile(&g.graf,(int)l->x+24,FBH-30,'0'+l->score,0);
-    graf_tile(&g.graf,(int)r->x-24,FBH-30,'0'+r->score,0);
+    graf_tile(g_graf,(int)l->x+24,FBH-30,'0'+l->score,0);
+    graf_tile(g_graf,(int)r->x-24,FBH-30,'0'+r->score,0);
   }
 }
 
@@ -607,7 +607,7 @@ static void _rescuing_render(struct battle *battle) {
 const struct battle_type battle_type_rescuing={
   .name="rescuing",
   .objlen=sizeof(struct battle_rescuing),
-  .id=NS_battle_rescuing,
+  .id=31,
   .strix_name=157,
   .no_article=0,
   .no_contest=0,

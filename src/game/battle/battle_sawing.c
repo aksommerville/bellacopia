@@ -2,7 +2,7 @@
  * L/R to saw the log, with some obscure optimal rhythm.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define PLAN_LIMIT 10
 
@@ -129,7 +129,7 @@ static int _sawing_init(struct battle *battle) {
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   int ndir=0;
-  switch (g.input[player->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[player->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: ndir=-1; break;
     case EGG_BTN_RIGHT: ndir=1; break;
   }
@@ -242,7 +242,7 @@ static void _sawing_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -298,16 +298,16 @@ static void player_render(struct battle *battle,struct player *player) {
     else sawx-=d;
   }
   
-  graf_decal(&g.graf,topx,topy,0,96,64,80);
-  graf_decal_xform(&g.graf,sawx,sawy,0,48,144,48,sawxform);
-  graf_decal(&g.graf,btmx,btmy,0,176,64,64);
+  graf_decal(g_graf,topx,topy,0,96,64,80);
+  graf_decal_xform(g_graf,sawx,sawy,0,48,144,48,sawxform);
+  graf_decal(g_graf,btmx,btmy,0,176,64,64);
   
   if (player->penalty>0.0) {
     int penx=topx+16;
     int peny=topy-16;
     if (player->phase<0.0) penx+=32;
     else penx-=32;
-    graf_decal(&g.graf,penx,peny,(g.framec&8)?144:176,64,32,32);
+    graf_decal(g_graf,penx,peny,(g_framec&8)?144:176,64,32,32);
   }
 }
 
@@ -315,8 +315,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _sawing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_labor);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_labor);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -327,7 +327,7 @@ static void _sawing_render(struct battle *battle) {
 const struct battle_type battle_type_sawing={
   .name="sawing",
   .objlen=sizeof(struct battle_sawing),
-  .id=NS_battle_sawing,
+  .id=45,
   .strix_name=171,
   .no_article=0,
   .no_contest=0,

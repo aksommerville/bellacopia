@@ -1,7 +1,7 @@
 /* battle_snowboard.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define TREE_LIMIT 128
 #define TREE_RADIUS 6.0
@@ -385,7 +385,7 @@ static void _snowboard_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -428,7 +428,7 @@ static inline void snowboard_tile(
   if ((dsty<-ht)||(dsty>=camh>ht)) return;
   dstx+=camx;
   dsty+=camy;
-  graf_tile(&g.graf,dstx,dsty,tileid,xform);
+  graf_tile(g_graf,dstx,dsty,tileid,xform);
 }
 
 #define TILE(worldx,worldy,tileid,xform) snowboard_tile(battle,camx,camy,camw,camh,scrollx,scrolly,worldx,worldy,tileid,xform);
@@ -457,7 +457,7 @@ static void snowboard_render_scene(
     int dstx=camx-NS_sys_tilesize;
     dstx-=scrollx%NS_sys_tilesize;
     for (;dstx<=camx+camw+(NS_sys_tilesize>>1);dstx+=NS_sys_tilesize) {
-      if (dstx>=camx-(NS_sys_tilesize>>1)) graf_tile(&g.graf,dstx,finy,0x4c,0);
+      if (dstx>=camx-(NS_sys_tilesize>>1)) graf_tile(g_graf,dstx,finy,0x4c,0);
     }
   }
   
@@ -473,25 +473,25 @@ static void snowboard_render_scene(
     struct player *other=(player==BATTLE->playerv)?(BATTLE->playerv+1):(BATTLE->playerv+0);
     if (other->hurtclock>0.0) {
       int alpha=0x40+(int)((other->hurtclock*128.0)/other->hurt_time);
-      graf_set_tint(&g.graf,0xff000000|alpha);
+      graf_set_tint(g_graf,0xff000000|alpha);
     }
     uint8_t tileid=other->tileid;
     if (other->turn>0) tileid+=1;
     else if (other->turn<0) tileid+=2;
     TILE(other->x,other->y,tileid,0);
-    if (other->hurtclock>0.0) graf_set_tint(&g.graf,0);
+    if (other->hurtclock>0.0) graf_set_tint(g_graf,0);
   }
 
   // Hero.
   if (player->hurtclock>0.0) {
     int alpha=0x40+(int)((player->hurtclock*128.0)/player->hurt_time);
-    graf_set_tint(&g.graf,0xff000000|alpha);
+    graf_set_tint(g_graf,0xff000000|alpha);
   }
   uint8_t tileid=player->tileid;
   if (player->turn>0) tileid+=1;
   else if (player->turn<0) tileid+=2;
   TILE(player->x,player->y,tileid,0)
-  if (player->hurtclock>0.0) graf_set_tint(&g.graf,0);
+  if (player->hurtclock>0.0) graf_set_tint(g_graf,0);
 }
 
 #undef TILE
@@ -513,7 +513,7 @@ static void snowboard_render_bar(
   int offset=(int)((player->y*availh)/COURSE_H);
   if (offset<0) offset=0;
   else if (offset>availh) offset=availh;
-  graf_fill_rect(&g.graf,dstx+margin,dsty+margin+offset,thumbw,thumbw,player->color);
+  graf_fill_rect(g_graf,dstx+margin,dsty+margin+offset,thumbw,thumbw,player->color);
 }
 
 /* Render runtime for one scene.
@@ -535,14 +535,14 @@ static void snowboard_render_runtime(
     sec=99;
     ms=999;
   }
-  graf_tile(&g.graf,dstx,dsty,'0'+min,0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,':',0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+sec/10,0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+sec%10,0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'.',0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+ms/100,0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+(ms/10)%10,0); dstx+=8;
-  graf_tile(&g.graf,dstx,dsty,'0'+ms%10,0);
+  graf_tile(g_graf,dstx,dsty,'0'+min,0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,':',0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'0'+sec/10,0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'0'+sec%10,0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'.',0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'0'+ms/100,0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'0'+(ms/10)%10,0); dstx+=8;
+  graf_tile(g_graf,dstx,dsty,'0'+ms%10,0);
 }
 
 /* Render.
@@ -550,7 +550,7 @@ static void snowboard_render_runtime(
  
 static void _snowboard_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0xffffffff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0xffffffff);
   
   /* Player scenes.
    * Two bars must be at least a tile, ie min 8 here.
@@ -558,25 +558,25 @@ static void _snowboard_render(struct battle *battle) {
    */
   const int barw=8;
   const int camw=(FBW>>1)-barw;
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
   snowboard_render_scene(battle,BATTLE->playerv+0,0,0,camw,FBH);
   snowboard_render_scene(battle,BATTLE->playerv+1,camw+(barw<<1),0,camw,FBH);
   
   /* Vertical progress bars.
    * These show progress and separate the cameras, but they also secretly serve to cover errant tile edges.
    */
-  graf_set_input(&g.graf,0);
-  graf_fill_rect(&g.graf,camw,0,barw<<1,FBH,0x000000ff);
+  graf_set_input(g_graf,0);
+  graf_fill_rect(g_graf,camw,0,barw<<1,FBH,0x000000ff);
   snowboard_render_bar(battle,BATTLE->playerv+0,camw,0,barw,FBH);
   snowboard_render_bar(battle,BATTLE->playerv+1,camw+barw,0,barw,FBH);
   
   /* Runtime at the bottom of each scene.
    */
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_set_tint(&g.graf,0x000000ff);
+  graf_set_image(g_graf,RID_image_fonttiles);
+  graf_set_tint(g_graf,0x000000ff);
   snowboard_render_runtime(battle,BATTLE->playerv+0,0,0,camw,FBH);
   snowboard_render_runtime(battle,BATTLE->playerv+1,camw+(barw<<1),0,camw,FBH);
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0);
 }
 
 /* Type definition.
@@ -585,7 +585,7 @@ static void _snowboard_render(struct battle *battle) {
 const struct battle_type battle_type_snowboard={
   .name="snowboard",
   .objlen=sizeof(struct battle_snowboard),
-  .id=NS_battle_snowboard,
+  .id=63,
   .strix_name=231,
   .no_article=0,
   .no_contest=0,

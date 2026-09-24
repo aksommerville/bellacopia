@@ -2,7 +2,7 @@
  * Mini Pipe Dream.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define COLC 8
 #define ROWC 8
@@ -311,7 +311,7 @@ static void player_move(struct battle *battle,struct player *player,int dx,int d
  */
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
-  int press=(g.input[player->human]&~g.pvinput[player->human])&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH);
+  int press=(g_input[player->human]&~g_pvinput[player->human])&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH);
   if ((press&EGG_BTN_SOUTH)&&(player->delete_cooldown<=0.0)) {
     press&=~EGG_BTN_SOUTH;
     player_press(battle,player);
@@ -550,7 +550,7 @@ static void _plumbing_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
     if (battle->outcome>-2) break; // If we establish completion, don't let the next guy try.
@@ -599,7 +599,7 @@ static void player_render(struct battle *battle,struct player *player,int fldx,i
   
   /* Cursor.
    */
-  graf_fancy(&g.graf,
+  graf_fancy(g_graf,
     fldx+NS_sys_tilesize*player->x+(NS_sys_tilesize>>1),
     fldy+NS_sys_tilesize*player->y+(NS_sys_tilesize>>1),
     0x63+player->animframe,0,0,NS_sys_tilesize,0,player->color
@@ -614,12 +614,12 @@ static void player_render(struct battle *battle,struct player *player,int fldx,i
   if (player->who) spx=fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1);
   else spx=fldx-(NS_sys_tilesize>>1);
   int spy=fldy+player->outputy*NS_sys_tilesize+(NS_sys_tilesize>>1);
-  graf_tile(&g.graf,spx,spy,spigottile,0);
+  graf_tile(g_graf,spx,spy,spigottile,0);
   if (player->who) spx-=3; else spx+=3;
   spy+=8;
-  graf_tile(&g.graf,spx,spy,player->tileid+(player->flow?2:1),player->who?EGG_XFORM_XREV:0);
+  graf_tile(g_graf,spx,spy,player->tileid+(player->flow?2:1),player->who?EGG_XFORM_XREV:0);
   if (player->who) spx+=NS_sys_tilesize; else spx-=NS_sys_tilesize;
-  graf_tile(&g.graf,spx,spy,player->tileid,player->who?EGG_XFORM_XREV:0);
+  graf_tile(g_graf,spx,spy,player->tileid,player->who?EGG_XFORM_XREV:0);
   
   /* Up next.
    * The tile at (upnextp) is the next one to go out, and they proceed upward, wrapping around.
@@ -638,7 +638,7 @@ static void player_render(struct battle *battle,struct player *player,int fldx,i
     if (p>=UPNEXT_SIZE) p=0;
     uint8_t tileid,xform;
     tile_for_cell(&tileid,&xform,player->upnext[p]);
-    graf_tile(&g.graf,unx,fldy+NS_sys_tilesize,tileid,xform);
+    graf_tile(g_graf,unx,fldy+NS_sys_tilesize,tileid,xform);
   }
   
   /* Deletion game.
@@ -646,10 +646,10 @@ static void player_render(struct battle *battle,struct player *player,int fldx,i
   if (player->delete>0.0) {
     int midx=fldx+NS_sys_tilesize*player->x+(NS_sys_tilesize>>1);
     int midy=fldy+NS_sys_tilesize*player->y-(NS_sys_tilesize>>1);
-    graf_tile(&g.graf,midx-(NS_sys_tilesize>>1),midy,0x8e,0);
-    graf_tile(&g.graf,midx+(NS_sys_tilesize>>1),midy,0x8f,0);
+    graf_tile(g_graf,midx-(NS_sys_tilesize>>1),midy,0x8e,0);
+    graf_tile(g_graf,midx+(NS_sys_tilesize>>1),midy,0x8f,0);
     int8_t rot=(int8_t)((player->delete-0.5)*128.0);
-    graf_fancy(&g.graf,midx,midy+4,0x7e,0,rot,NS_sys_tilesize,0,player->color);
+    graf_fancy(g_graf,midx,midy+4,0x7e,0,rot,NS_sys_tilesize,0,player->color);
   }
 }
 
@@ -657,8 +657,8 @@ static void player_render(struct battle *battle,struct player *player,int fldx,i
  */
  
 static void _plumbing_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia2);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_fractia2);
   
   /* Take some measurements and draw the main grid.
    */
@@ -673,11 +673,11 @@ static void _plumbing_render(struct battle *battle) {
   for (;yi-->0;y+=NS_sys_tilesize) {
     int x=x0,xi=COLC;
     for (;xi-->0;x+=NS_sys_tilesize,src++) {
-      graf_tile(&g.graf,x,y,0x71,0);
+      graf_tile(g_graf,x,y,0x71,0);
       if (*src) {
         uint8_t tileid,xform;
         tile_for_cell(&tileid,&xform,*src);
-        graf_tile(&g.graf,x,y,tileid,xform);
+        graf_tile(g_graf,x,y,tileid,xform);
       }
     }
   }
@@ -685,18 +685,18 @@ static void _plumbing_render(struct battle *battle) {
   /* Border around the main grid.
    */
   for (yi=ROWC,y=fldy+(NS_sys_tilesize>>1);yi-->0;y+=NS_sys_tilesize) {
-    graf_tile(&g.graf,fldx-(NS_sys_tilesize>>1),y,0x70,0);
-    graf_tile(&g.graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),y,0x72,0);
+    graf_tile(g_graf,fldx-(NS_sys_tilesize>>1),y,0x70,0);
+    graf_tile(g_graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),y,0x72,0);
   }
   int x=x0,xi=COLC;
   for (;xi-->0;x+=NS_sys_tilesize) {
-    graf_tile(&g.graf,x,fldy-(NS_sys_tilesize>>1),0x61,0);
-    graf_tile(&g.graf,x,fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x81,0);
+    graf_tile(g_graf,x,fldy-(NS_sys_tilesize>>1),0x61,0);
+    graf_tile(g_graf,x,fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x81,0);
   }
-  graf_tile(&g.graf,fldx-(NS_sys_tilesize>>1),fldy-(NS_sys_tilesize>>1),0x60,0);
-  graf_tile(&g.graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),fldy-(NS_sys_tilesize>>1),0x62,0);
-  graf_tile(&g.graf,fldx-(NS_sys_tilesize>>1),fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x80,0);
-  graf_tile(&g.graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x82,0);
+  graf_tile(g_graf,fldx-(NS_sys_tilesize>>1),fldy-(NS_sys_tilesize>>1),0x60,0);
+  graf_tile(g_graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),fldy-(NS_sys_tilesize>>1),0x62,0);
+  graf_tile(g_graf,fldx-(NS_sys_tilesize>>1),fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x80,0);
+  graf_tile(g_graf,fldx+COLC*NS_sys_tilesize+(NS_sys_tilesize>>1),fldy+ROWC*NS_sys_tilesize+(NS_sys_tilesize>>1),0x82,0);
   
   /* Cistern's lower edge extending out from the border's top.
    */
@@ -704,8 +704,8 @@ static void _plumbing_render(struct battle *battle) {
   int xl=fldx-NS_sys_tilesize-(NS_sys_tilesize>>1);
   int xr=fldx+(COLC+1)*NS_sys_tilesize+(NS_sys_tilesize>>1);
   for (;(xl>0)||(xr<FBW);xl-=NS_sys_tilesize,xr+=NS_sys_tilesize) {
-    graf_tile(&g.graf,xl,y,0x61,0);
-    graf_tile(&g.graf,xr,y,0x61,0);
+    graf_tile(g_graf,xl,y,0x61,0);
+    graf_tile(g_graf,xr,y,0x61,0);
   }
   
   /* Animated water at the cistern's top.
@@ -714,7 +714,7 @@ static void _plumbing_render(struct battle *battle) {
   uint8_t tileid=0x67+BATTLE->wateranimframe;
   y-=NS_sys_tilesize;
   for (x=NS_sys_tilesize>>1;x<=FBW;x+=NS_sys_tilesize) {
-    graf_tile(&g.graf,x,y,tileid,0);
+    graf_tile(g_graf,x,y,tileid,0);
   }
   
   /* Intakes along the grid's top edge.
@@ -723,7 +723,7 @@ static void _plumbing_render(struct battle *battle) {
   int i=BATTLE->intakec;
   for (;i-->0;intake++) {
     uint8_t tileid=intake->flow?0x84:0x83;
-    graf_tile(&g.graf,fldx+(NS_sys_tilesize>>1)+intake->x*NS_sys_tilesize,fldy-(NS_sys_tilesize>>1),tileid,0);
+    graf_tile(g_graf,fldx+(NS_sys_tilesize>>1)+intake->x*NS_sys_tilesize,fldy-(NS_sys_tilesize>>1),tileid,0);
   }
   
   /* Players and their associated bits.
@@ -740,7 +740,7 @@ static void _plumbing_render(struct battle *battle) {
 const struct battle_type battle_type_plumbing={
   .name="plumbing",
   .objlen=sizeof(struct battle_plumbing),
-  .id=NS_battle_plumbing,
+  .id=43,
   .strix_name=169,
   .no_article=0,
   .no_contest=0,

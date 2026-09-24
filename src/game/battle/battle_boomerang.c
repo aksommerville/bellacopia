@@ -1,4 +1,4 @@
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
 #define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
@@ -232,7 +232,7 @@ static void player_jump_no(struct player *player,double elapsed) {
   if ((player->el+=player->gravity*elapsed)>=0.0) {
     player->el=0.0;
     player->gravity=0.0;
-    if (player->human&&(g.input[player->human]&EGG_BTN_SOUTH)) player->jumpok=0;
+    if (player->human&&(g_input[player->human]&EGG_BTN_SOUTH)) player->jumpok=0;
     else player->jumpok=1;
   } else {
     player->jumpok=0;
@@ -282,7 +282,7 @@ static void player_duck_yes(struct player *player,double elapsed) {
  */
  
 static void player_update_human(struct battle *battle,struct player *player,double elapsed) {
-  int input=g.input[player->human];
+  int input=g_input[player->human];
   if (BATTLE->input_blackout[player->human]) {
     if (!(input&(EGG_BTN_SOUTH|EGG_BTN_DOWN))) BATTLE->input_blackout[player->human]=0;
     player_jump_no(player,elapsed);
@@ -454,11 +454,11 @@ static void rang_render(struct rang *rang) {
     rangxform|=EGG_XFORM_YREV;
   }
   if (rang->grabbed) {
-    graf_tile(&g.graf,rangdstx,rangdsty,0x5c,rangxform);
+    graf_tile(g_graf,rangdstx,rangdsty,0x5c,rangxform);
   } else if (rang->dead) {
     int rx=rangdstx+rang->side*(int)rang->x;
     int ry=(int)rang->deady;
-    graf_tile(&g.graf,rx,ry,0x5c,rangxform);
+    graf_tile(g_graf,rx,ry,0x5c,rangxform);
   } else {
     uint8_t rot=(uint8_t)(int)((rang->t*256.0)/(M_PI*2.0));
     int rx=rangdstx+rang->side*(int)rang->x;
@@ -466,14 +466,14 @@ static void rang_render(struct rang *rang) {
     if (rang->yclock>0.0) {
       ry-=rang->row*(int)(rang->yclock*31.0);
     }
-    graf_fancy(&g.graf,rx,ry,0x5c,rangxform,rot,16,0,0x808080ff);
+    graf_fancy(g_graf,rx,ry,0x5c,rangxform,rot,16,0,0x808080ff);
   }
-  graf_decal_xform(&g.graf,armdstx,armdsty,armsrcx,armsrcy,16,24,armxform);
+  graf_decal_xform(g_graf,armdstx,armdsty,armsrcx,armsrcy,16,24,armxform);
 }
 
 static void player_render(struct player *player) {
   int dsty=GROUND_LEVEL-48+(int)player->el;
-  graf_decal_xform(&g.graf,player->dstx,dsty,player->srcx,player->srcy,48,48,player->xform);
+  graf_decal_xform(g_graf,player->dstx,dsty,player->srcx,player->srcy,48,48,player->xform);
 }
 
 /* Render.
@@ -481,24 +481,24 @@ static void player_render(struct player *player) {
  
 static void _boomerang_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
+  graf_fill_rect(g_graf,0,0,FBW,GROUND_LEVEL,SKY_COLOR);
   if (battle->outcome>-2) { // Draw a big "Kapow" starburst where the rang struck. Behind the ground.
     struct rang *rang=BATTLE->rangv;
     if (!rang->dead) rang++; // If it's not the first, must be the second.
     int hitx=(rang->side<0)?((FBW>>1)-24-(int)rang->x):((FBW>>1)+24+(int)rang->x);
     int hity=(rang->row<0)?(GROUND_LEVEL-40):(GROUND_LEVEL-9);
-    graf_set_image(&g.graf,RID_image_battle_early);
-    graf_decal(&g.graf,hitx-24,hity-24,80,112,48,48);
+    graf_set_image(g_graf,RID_image_battle_early);
+    graf_decal(g_graf,hitx-24,hity-24,80,112,48,48);
   }
-  graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,GROUND_LEVEL,FBW,FBH-GROUND_LEVEL,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUND_LEVEL,FBW,1,0x000000ff);
   
-  graf_set_image(&g.graf,RID_image_battle_early);
+  graf_set_image(g_graf,RID_image_battle_early);
   player_render(BATTLE->playerv+0);
   player_render(BATTLE->playerv+1);
   
   // Kangaroo in the middle.
-  graf_decal(&g.graf,(FBW>>1)-24,GROUND_LEVEL-48,0,112,48,48);
+  graf_decal(g_graf,(FBW>>1)-24,GROUND_LEVEL-48,0,112,48,48);
   rang_render(BATTLE->rangv+0);
   rang_render(BATTLE->rangv+1);
 }
@@ -514,7 +514,7 @@ const struct battle_input boomerang_input[]={
 const struct battle_type battle_type_boomerang={
   .name="boomerang",
   .objlen=sizeof(struct battle_boomerang),
-  .id=NS_battle_boomerang,
+  .id=4,
   .strix_name=11,
   .no_article=0,
   .no_contest=0,

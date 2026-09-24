@@ -4,7 +4,7 @@
  * Big velocity penalty for hitting the wall.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_bobsleigh {
   struct battle hdr;
@@ -544,7 +544,7 @@ static void _bobsleigh_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -587,20 +587,20 @@ static void player_render(struct battle *battle,struct player *player) {
     nx=lround(fnx*nose_radius);
     ny=lround(fny*nose_radius);
   }
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
-  graf_set_filter(&g.graf,1);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
+  graf_set_filter(g_graf,1);
   double t=atan2(dx,-dy);
   uint8_t rotation=(int8_t)((t*128.0)/M_PI);
-  graf_fancy(&g.graf,dstx,dsty,0x1e,0,rotation,NS_sys_tilesize,0,player->color);
-  graf_set_filter(&g.graf,0);
+  graf_fancy(g_graf,dstx,dsty,0x1e,0,rotation,NS_sys_tilesize,0,player->color);
+  graf_set_filter(g_graf,0);
 }
 
 /* Render clock.
  */
  
 static void bobsleigh_render_clock(int x,int y,int align,double fs,uint32_t color) {
-  graf_set_tint(&g.graf,color);
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_tint(g_graf,color);
+  graf_set_image(g_graf,RID_image_fonttiles);
   char text[8]={'0',':','0','0','.','0','0','0'}; // Include leading "0:" as a hint that it's a time. We actually stop after 20 seconds.
   int ms=(int)(fs*1000.0);
   if (ms<0) ms=0;
@@ -625,37 +625,37 @@ static void bobsleigh_render_clock(int x,int y,int align,double fs,uint32_t colo
     dx=-8;
   }
   int i=8; for (;i-->0;textp+=textdp,x+=dx) {
-    graf_tile(&g.graf,x,y,text[textp],0);
+    graf_tile(g_graf,x,y,text[textp],0);
   }
-  graf_set_tint(&g.graf,0);
+  graf_set_tint(g_graf,0);
 }
 
 /* Render.
  */
  
 static void _bobsleigh_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x000000ff);
   
   /* Start and finish lines.
    */
   if (BATTLE->legc>=3) {
     struct leg *leg=BATTLE->legv+1;
-    graf_line(&g.graf,(int)leg->lx,(int)leg->ly,0x003090ff,(int)leg->rx,(int)leg->ry,0x003090ff);
+    graf_line(g_graf,(int)leg->lx,(int)leg->ly,0x003090ff,(int)leg->rx,(int)leg->ry,0x003090ff);
     leg=BATTLE->legv+BATTLE->legc-2;
-    graf_line(&g.graf,(int)leg->lx,(int)leg->ly,0xc0c0c0ff,(int)leg->rx,(int)leg->ry,0xc0c0c0ff);
+    graf_line(g_graf,(int)leg->lx,(int)leg->ly,0xc0c0c0ff,(int)leg->rx,(int)leg->ry,0xc0c0c0ff);
   }
   
   /* Trace the walls.
    */
   if (BATTLE->legc>0) {
-    graf_line_strip_begin(&g.graf,(int)BATTLE->legv[0].lx,(int)BATTLE->legv[0].ly,0xffffffff);
+    graf_line_strip_begin(g_graf,(int)BATTLE->legv[0].lx,(int)BATTLE->legv[0].ly,0xffffffff);
     struct leg *leg=BATTLE->legv+1;
     int i=BATTLE->legc-1;
     for (;i-->0;leg++) {
-      graf_line_strip_more(&g.graf,(int)leg->lx,(int)leg->ly,0xffffffff);
+      graf_line_strip_more(g_graf,(int)leg->lx,(int)leg->ly,0xffffffff);
     }
     for (i=BATTLE->legc,leg=BATTLE->legv+BATTLE->legc-1;i-->0;leg--) {
-      graf_line_strip_more(&g.graf,(int)leg->rx,(int)leg->ry,0xffffffff);
+      graf_line_strip_more(g_graf,(int)leg->rx,(int)leg->ry,0xffffffff);
     }
   }
   
@@ -676,7 +676,7 @@ static void _bobsleigh_render(struct battle *battle) {
 const struct battle_type battle_type_bobsleigh={
   .name="bobsleigh",
   .objlen=sizeof(struct battle_bobsleigh),
-  .id=NS_battle_bobsleigh,
+  .id=62,
   .strix_name=230,
   .no_article=0,
   .no_contest=0,

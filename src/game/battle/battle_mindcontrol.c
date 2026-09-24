@@ -3,8 +3,13 @@
  * Push a piece of candy thru the hazards.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
+
+#define CMD_map_battlemark      0x4a /* u16:pos u16:id ; Generic marker for battle maps. */
+#define NS_physics_vacant 0
+#define NS_physics_solid 1
+#define NS_physics_safe 4
 
 /* Our sprite ids are also arguments to "battlemark" poi in the map.
  */
@@ -124,14 +129,14 @@ static void sprite_update_man(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_man *SPRITE=(struct sprite_man*)sprite;
   sprite_man_update_charge(sprite,elapsed);
   
-  if ((g.input[SPRITE->human]&EGG_BTN_SOUTH)&&!(g.pvinput[SPRITE->human]&EGG_BTN_SOUTH)) sprite_man_stroke(sprite,EGG_BTN_SOUTH);
-  if ((g.input[SPRITE->human]&EGG_BTN_WEST)&&!(g.pvinput[SPRITE->human]&EGG_BTN_WEST)) sprite_man_stroke(sprite,EGG_BTN_WEST);
+  if ((g_input[SPRITE->human]&EGG_BTN_SOUTH)&&!(g_pvinput[SPRITE->human]&EGG_BTN_SOUTH)) sprite_man_stroke(sprite,EGG_BTN_SOUTH);
+  if ((g_input[SPRITE->human]&EGG_BTN_WEST)&&!(g_pvinput[SPRITE->human]&EGG_BTN_WEST)) sprite_man_stroke(sprite,EGG_BTN_WEST);
   int dx=0,dy=0;
-  switch (g.input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: dx=-1; break;
     case EGG_BTN_RIGHT: dx=1; break;
   }
-  switch (g.input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
     case EGG_BTN_UP: dy=-1; break;
     case EGG_BTN_DOWN: dy=1; break;
   }
@@ -241,21 +246,21 @@ static void sprite_update_cpu(struct batsup_sprite *sprite,double elapsed) {
  
 static void sprite_render_man(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct sprite_man *SPRITE=(struct sprite_man*)sprite;
-  graf_set_image(&g.graf,sprite->imageid);
+  graf_set_image(g_graf,sprite->imageid);
   
   int metery=dsty-NS_sys_tilesize;
   if (SPRITE->charge>=1.0) {
     int haty=dsty-12;
-    if (g.framec&16) haty--;
-    graf_tile(&g.graf,dstx,dsty,sprite->tileid+1,sprite->xform);
-    graf_tile(&g.graf,dstx,haty,sprite->tileid+2,sprite->xform);
-    graf_tile(&g.graf,dstx,metery,(g.framec&8)?0xa7:0xa8,0);
+    if (g_framec&16) haty--;
+    graf_tile(g_graf,dstx,dsty,sprite->tileid+1,sprite->xform);
+    graf_tile(g_graf,dstx,haty,sprite->tileid+2,sprite->xform);
+    graf_tile(g_graf,dstx,metery,(g_framec&8)?0xa7:0xa8,0);
   } else {
-    graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+    graf_tile(g_graf,dstx,dsty,sprite->tileid,sprite->xform);
     uint8_t metertile=0xa3+(int)(SPRITE->charge*4.0);
     if (metertile<0xa3) metertile=0xa3;
     else if (metertile>0xa6) metertile=0xa6;
-    graf_tile(&g.graf,dstx,metery,metertile,0);
+    graf_tile(g_graf,dstx,metery,metertile,0);
   }
 }
 
@@ -307,7 +312,7 @@ static void sprite_update_cat(struct batsup_sprite *sprite,double elapsed) {
       if (dx<0.0) dx=-dx;
       if (dy<0.0) dy=-dy;
       if ((dx<1.250)&&(dy<1.250)) {
-        bm_sound(RID_sound_treasure);
+        bm_sound_pan(RID_sound_treasure,0.0);
         SPRITE->has_apple=0;
         if (sprite->id==SPRITEID_LCAT) battle->outcome=1;
         else battle->outcome=-1;
@@ -315,7 +320,7 @@ static void sprite_update_cat(struct batsup_sprite *sprite,double elapsed) {
     }
   } else if (SPRITE->mindcontrolled) {
     if ((sprite->x>=BATTLE->treex)&&(sprite->y>=BATTLE->treey)&&(sprite->x<BATTLE->treex+BATTLE->treew)&&(sprite->y<BATTLE->treey+BATTLE->treeh)) {
-      bm_sound(RID_sound_collect);
+      bm_sound_pan(RID_sound_collect,0.0);
       SPRITE->has_apple=1;
     }
   }
@@ -327,10 +332,10 @@ static void sprite_update_cat(struct batsup_sprite *sprite,double elapsed) {
  
 static void sprite_render_cat(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct sprite_cat *SPRITE=(struct sprite_cat*)sprite;
-  graf_set_image(&g.graf,sprite->imageid);
-  graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
+  graf_set_image(g_graf,sprite->imageid);
+  graf_tile(g_graf,dstx,dsty,sprite->tileid,sprite->xform);
   if (SPRITE->has_apple) {
-    graf_tile(&g.graf,dstx,dsty,0xb6,sprite->xform);
+    graf_tile(g_graf,dstx,dsty,0xb6,sprite->xform);
   }
 }
 
@@ -678,7 +683,7 @@ static const struct battle_input mindcontrol_input[]={
 const struct battle_type battle_type_mindcontrol={
   .name="mindcontrol",
   .objlen=sizeof(struct battle_mindcontrol),
-  .id=NS_battle_mindcontrol,
+  .id=51,
   .strix_name=177,
   .no_article=0,
   .no_contest=0,

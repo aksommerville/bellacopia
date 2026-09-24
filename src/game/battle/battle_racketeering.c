@@ -2,7 +2,7 @@
  * 3D racquetball.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define ZLIMIT FBH /* All three axes are measured in pixels. Pick a depth agreeable to the framebuffer. Positive Z is far, zero is the viewer. */
 #define SPEED_MIN  80.0 /* px/s, MIN is at the least favorable handicap. */
@@ -202,7 +202,7 @@ static void racketeering_swing(struct battle *battle,struct player *player) {
   player->blackout=1;
   
   if (player==BATTLE->serving) {
-    bm_sound(RID_sound_tennis_serve);
+    bm_sound_pan(RID_sound_tennis_serve,0.0);
     ball_align_to_player(battle,&BATTLE->ball,player);
     ball_random_serve(battle,&BATTLE->ball);
     BATTLE->volley=other_player(battle,BATTLE->serving);
@@ -211,10 +211,10 @@ static void racketeering_swing(struct battle *battle,struct player *player) {
     racketeering_reset_throws(battle);
     
   } else if (BATTLE->serving) {
-    bm_sound(RID_sound_swing_racket);
+    bm_sound_pan(RID_sound_swing_racket,0.0);
     
   } else {
-    bm_sound(RID_sound_swing_racket);
+    bm_sound_pan(RID_sound_swing_racket,0.0);
     if (BATTLE->ball.dz>0.0) {
     } else {
       double dx=BATTLE->ball.x-player->x;
@@ -410,13 +410,13 @@ static void ball_update(struct battle *battle,struct ball *ball,double elapsed) 
   if (ball->x<0.0) {
     ball->x=0.0;
     if (ball->dx<0.0) {
-      bm_sound(RID_sound_bounce);
+      bm_sound_pan(RID_sound_bounce,0.0);
       ball->dx=-ball->dx;
     }
   } else if (ball->x>FBW) {
     ball->x=FBW;
     if (ball->dx>0.0) {
-      bm_sound(RID_sound_bounce);
+      bm_sound_pan(RID_sound_bounce,0.0);
       ball->dx=-ball->dx;
     }
   }
@@ -427,11 +427,11 @@ static void ball_update(struct battle *battle,struct ball *ball,double elapsed) 
         racketeering_breach(battle); \
         return; \
       } else { \
-        bm_sound(RID_sound_bounce); \
+        bm_sound_pan(RID_sound_bounce,0.0); \
         if (ball->d##tag<0.0) ball->d##tag=-ball->d##tag; \
       } \
     } else if (ball->tag>limit) { \
-      bm_sound(RID_sound_bounce); \
+      bm_sound_pan(RID_sound_bounce,0.0); \
       if (ball->d##tag>0.0) ball->d##tag=-ball->d##tag; \
     } \
   }
@@ -453,7 +453,7 @@ static void _racketeering_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -495,7 +495,7 @@ static void ball_render(struct battle *battle,struct ball *ball) {
   double nz=ball->z/ZLIMIT;
   int size=(int)(nz*(NS_sys_tilesize>>1)+(1.0-nz)*NS_sys_tilesize);
   int x,y;
-  graf_set_filter(&g.graf,1);
+  graf_set_filter(g_graf,1);
   
   // Cast a shadow on all five walls. Yes, I know, this is not how light works.
   #define SHADOW(sx,sy,sz) { \
@@ -508,7 +508,7 @@ static void ball_render(struct battle *battle,struct ball *ball) {
     bcolor=(int)(128.0*distance+16.0*(1.0-distance)); \
     if (bcolor<0) bcolor=0; else if (bcolor>255) bcolor=255; \
     bcolor=(bcolor<<24)|(bcolor<<16)|(bcolor<<8)|0xff; \
-    graf_fancy(&g.graf,x,y,0x29,0,0,bsize,bcolor,0x808080c0); \
+    graf_fancy(g_graf,x,y,0x29,0,0,bsize,bcolor,0x808080c0); \
   }
   SHADOW(0.0,ball->y,ball->z)
   SHADOW(FBW,ball->y,ball->z)
@@ -523,8 +523,8 @@ static void ball_render(struct battle *battle,struct ball *ball) {
     tint=0x00ff0080;
   }
   racketeering_project_point(&x,&y,battle,ball->x,ball->y,ball->z);
-  graf_fancy(&g.graf,x,y,0x29,0,0,size,tint,0);
-  graf_set_filter(&g.graf,0);
+  graf_fancy(g_graf,x,y,0x29,0,0,size,tint,0);
+  graf_set_filter(g_graf,0);
 }
 
 /* Render player.
@@ -541,7 +541,7 @@ static void player_render(struct battle *battle,struct player *player) {
     if (BATTLE->volley!=player) alpha=0x40;
   }
   if (player->swing>0.0) tileid=0x19;
-  graf_fancy(&g.graf,x,y,tileid,0,0,NS_sys_tilesize,0,(player->color&0xffffff00)|alpha);
+  graf_fancy(g_graf,x,y,tileid,0,0,NS_sys_tilesize,0,(player->color&0xffffff00)|alpha);
 }
 
 /* Render.
@@ -554,22 +554,22 @@ static void _racketeering_render(struct battle *battle) {
    * Actually we shouldn't even need to project that; it's constant.
    * But this way ensures the room and ball project the same way, if I tweak the parameters or something.
    */
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   uint32_t near_color=0x404040ff,far_color=0x000000ff;
   int cornerx,cornery;
   racketeering_project_point(&cornerx,&cornery,battle,0.0,0.0,ZLIMIT);
-  graf_line(&g.graf,0,0,near_color,cornerx,cornery,far_color);
-  graf_line(&g.graf,FBW,0,near_color,FBW-cornerx,cornery,far_color);
-  graf_line(&g.graf,0,FBH,near_color,cornerx,FBH-cornery,far_color);
-  graf_line(&g.graf,FBW,FBH,near_color,FBW-cornerx,FBH-cornery,far_color);
-  graf_line(&g.graf,cornerx,cornery,far_color,FBW-cornerx,cornery,far_color);
-  graf_line(&g.graf,FBW-cornerx,cornery,far_color,FBW-cornerx,FBH-cornery,far_color);
-  graf_line(&g.graf,FBW-cornerx,FBH-cornery,far_color,cornerx,FBH-cornery,far_color);
-  graf_line(&g.graf,cornerx,FBH-cornery,far_color,cornerx,cornery,far_color);
+  graf_line(g_graf,0,0,near_color,cornerx,cornery,far_color);
+  graf_line(g_graf,FBW,0,near_color,FBW-cornerx,cornery,far_color);
+  graf_line(g_graf,0,FBH,near_color,cornerx,FBH-cornery,far_color);
+  graf_line(g_graf,FBW,FBH,near_color,FBW-cornerx,FBH-cornery,far_color);
+  graf_line(g_graf,cornerx,cornery,far_color,FBW-cornerx,cornery,far_color);
+  graf_line(g_graf,FBW-cornerx,cornery,far_color,FBW-cornerx,FBH-cornery,far_color);
+  graf_line(g_graf,FBW-cornerx,FBH-cornery,far_color,cornerx,FBH-cornery,far_color);
+  graf_line(g_graf,cornerx,FBH-cornery,far_color,cornerx,cornery,far_color);
   
   // Scoreboard.
   // Before sprites. It's meant to look fastened to the rear wall.
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   int lighty=55;
   int lightxv[3]={
     (FBW>>1)-NS_sys_tilesize,
@@ -582,7 +582,7 @@ static void _racketeering_render(struct battle *battle) {
     uint32_t color=0x808080ff;
     if (i<BATTLE->playerv[0].score) color=BATTLE->playerv[0].color;
     else if (i>=3-BATTLE->playerv[1].score) color=BATTLE->playerv[1].color;
-    graf_fancy(&g.graf,lightx,lighty,0x08,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,lightx,lighty,0x08,0,0,NS_sys_tilesize,0,color);
   }
   
   // Sprites. Ball goes on top if it's breached.
@@ -603,7 +603,7 @@ static void _racketeering_render(struct battle *battle) {
 const struct battle_type battle_type_racketeering={
   .name="racketeering",
   .objlen=sizeof(struct battle_racketeering),
-  .id=NS_battle_racketeering,
+  .id=13,
   .strix_name=52,
   .no_article=0,
   .no_contest=0,

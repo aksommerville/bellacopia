@@ -4,8 +4,12 @@
  * Our sprites are not solid. Physics are tied closely to the game model, so they happen at grid level, not in continuous space.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
+
+#define NS_physics_vacant 0
+#define NS_physics_solid 1
+#define CMD_map_battlemark      0x4a /* u16:pos u16:id ; Generic marker for battle maps. */
 
 #define SPRITEID_LEFT 1
 #define SPRITEID_RIGHT 2
@@ -128,7 +132,7 @@ static int pushing_deliver_push(struct battle *battle,int x,int y,int dx,int dy)
   PUMPKIN->cx+=dx;
   PUMPKIN->cy+=dy;
   PUMPKIN->stilltime=0.0;
-  bm_sound(RID_sound_push);
+  bm_sound_pan(RID_sound_push,0.0);
   return 1;
 }
 
@@ -248,12 +252,12 @@ static void pushing_update_player_common(struct batsup_sprite *sprite,double ela
 static void pushing_update_player_man(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
   struct battle *battle=sprite->world->battle;
-  switch (g.input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: SPRITE->indx=-1; break;
     case EGG_BTN_RIGHT: SPRITE->indx=1; break;
     default: SPRITE->indx=0; break;
   }
-  switch (g.input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
     case EGG_BTN_UP: SPRITE->indy=-1; break;
     case EGG_BTN_DOWN: SPRITE->indy=1; break;
     default: SPRITE->indy=0; break;
@@ -472,7 +476,7 @@ static void pushing_render_player(struct batsup_sprite *sprite,int dstx,int dsty
   if (SPRITE->facedx<0) { tileid+=2; xform=EGG_XFORM_XREV; }
   else if (SPRITE->facedx>0) tileid+=2;
   else if (SPRITE->facedy<0) tileid+=1;
-  graf_tile(&g.graf,dstx,dsty,tileid,xform);
+  graf_tile(g_graf,dstx,dsty,tileid,xform);
 }
 
 /* Update statue.
@@ -507,8 +511,8 @@ static void pushing_update_statue(struct batsup_sprite *sprite,double elapsed) {
 static void pushing_render_statue(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
   struct battle *battle=sprite->world->battle;
-  graf_tile(&g.graf,dstx,dsty,sprite->tileid,sprite->xform);
-  graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,sprite->tileid-0x10,sprite->xform);
+  graf_tile(g_graf,dstx,dsty,sprite->tileid,sprite->xform);
+  graf_tile(g_graf,dstx,dsty-NS_sys_tilesize,sprite->tileid-0x10,sprite->xform);
 }
 
 /* Spawn player.
@@ -740,9 +744,9 @@ static void _pushing_render(struct battle *battle) {
    */
   int sec=(int)(BATTLE->timer+0.999);
   if (sec>99) sec=99; else if (sec<0) sec=0;
-  graf_set_image(&g.graf,RID_image_fonttiles);
-  graf_tile(&g.graf,(FBW>>1)-4,6,'0'+sec/10,0);
-  graf_tile(&g.graf,(FBW>>1)+4,6,'0'+sec%10,0);
+  graf_set_image(g_graf,RID_image_fonttiles);
+  graf_tile(g_graf,(FBW>>1)-4,6,'0'+sec/10,0);
+  graf_tile(g_graf,(FBW>>1)+4,6,'0'+sec%10,0);
 }
 
 /* Type definition.
@@ -751,7 +755,7 @@ static void _pushing_render(struct battle *battle) {
 const struct battle_type battle_type_pushing={
   .name="pushing",
   .objlen=sizeof(struct battle_pushing),
-  .id=NS_battle_pushing,
+  .id=49,
   .strix_name=175,
   .no_article=0,
   .no_contest=0,

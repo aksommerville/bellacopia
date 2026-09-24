@@ -3,8 +3,11 @@
  * The CPU player is awful, especially towards the end when the grass gets sparse.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
+
+#define NS_physics_vacant 0
+#define NS_physics_solid 1
 
 #define SPRITEID_LEFT 1
 #define SPRITEID_RIGHT 2
@@ -46,7 +49,7 @@ struct sprite_player {
 static void player_update_man(struct batsup_sprite *sprite,double elapsed) {
   struct battle *battle=sprite->world->battle;
   struct sprite_player *SPRITE=(struct sprite_player*)sprite;
-  switch (g.input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
+  switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT|EGG_BTN_UP|EGG_BTN_DOWN)) {
     case EGG_BTN_LEFT: SPRITE->facedx=-1; SPRITE->facedy=0; break;
     case EGG_BTN_RIGHT: SPRITE->facedx=1; SPRITE->facedy=0; break;
     case EGG_BTN_UP: SPRITE->facedx=0; SPRITE->facedy=-1; break;
@@ -213,7 +216,7 @@ static void player_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   else if (SPRITE->facedy<0) xform=EGG_XFORM_SWAP|EGG_XFORM_XREV;
   else xform=EGG_XFORM_SWAP|EGG_XFORM_YREV;
   
-  graf_fancy(&g.graf,dstx,dsty,tileid,xform,0,NS_sys_tilesize,0,SPRITE->color);
+  graf_fancy(g_graf,dstx,dsty,tileid,xform,0,NS_sys_tilesize,0,SPRITE->color);
 }
 
 static struct batsup_sprite *player_init(struct battle *battle,int id,int ctl,int face,double skill) {
@@ -381,9 +384,9 @@ static void lawnmowing_render_score(struct battle *battle,int spriteid) {
   scy-=NS_sys_tilesize;
   if (score>=100) scx-=8;
   else if (score>=10) scx-=4;
-  if (score>=100) { graf_fancy(&g.graf,scx,scy,0x20+score/100,0,0,NS_sys_tilesize,0,0x808080ff); scx+=8; }
-  if (score>=10) { graf_fancy(&g.graf,scx,scy,0x20+(score/10)%10,0,0,NS_sys_tilesize,0,0x808080ff); scx+=8; }
-  graf_fancy(&g.graf,scx,scy,0x20+score%10,0,0,NS_sys_tilesize,0,0x808080ff);
+  if (score>=100) { graf_fancy(g_graf,scx,scy,0x20+score/100,0,0,NS_sys_tilesize,0,0x808080ff); scx+=8; }
+  if (score>=10) { graf_fancy(g_graf,scx,scy,0x20+(score/10)%10,0,0,NS_sys_tilesize,0,0x808080ff); scx+=8; }
+  graf_fancy(g_graf,scx,scy,0x20+score%10,0,0,NS_sys_tilesize,0,0x808080ff);
 }
  
 static void _lawnmowing_render(struct battle *battle) {
@@ -400,8 +403,8 @@ static void _lawnmowing_render(struct battle *battle) {
    */
   int sec=(int)(BATTLE->timer+0.999);
   if (sec<0) sec=0;
-  if (sec>=10) graf_fancy(&g.graf,(FBW>>1)-4,10,0x20+(sec/10)%10,0,0,NS_sys_tilesize,0,0x808080ff);
-  graf_fancy(&g.graf,(FBW>>1)+4,10,0x20+sec%10,0,0,NS_sys_tilesize,0,0x808080ff);
+  if (sec>=10) graf_fancy(g_graf,(FBW>>1)-4,10,0x20+(sec/10)%10,0,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,(FBW>>1)+4,10,0x20+sec%10,0,0,NS_sys_tilesize,0,0x808080ff);
 }
 
 /* Type definition.
@@ -410,7 +413,7 @@ static void _lawnmowing_render(struct battle *battle) {
 const struct battle_type battle_type_lawnmowing={
   .name="lawnmowing",
   .objlen=sizeof(struct battle_lawnmowing),
-  .id=NS_battle_lawnmowing,
+  .id=46,
   .strix_name=172,
   .no_article=0,
   .no_contest=0,

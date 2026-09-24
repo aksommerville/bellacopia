@@ -2,7 +2,7 @@
  * Hold A to pour ketchup on a giant moving hotdog.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 // We need lots of dribble slots. They remain discrete objects even when bound to the dog.
 #define DRIBBLE_LIMIT 256
@@ -235,7 +235,7 @@ static void _topping_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -296,11 +296,11 @@ static void player_render(struct battle *battle,struct player *player) {
   int ht=NS_sys_tilesize>>1;
   uint8_t tileid=0xa0;
   if (player->dribbling) tileid+=1;
-  graf_fancy(&g.graf,player->x,player->y-ht,tileid,0,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,player->x,player->y+ht,tileid+0x10,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,player->x,player->y-ht,tileid,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,player->x,player->y+ht,tileid+0x10,0,0,NS_sys_tilesize,0,player->color);
   
-  graf_fancy(&g.graf,player->x-ht,player->y-NS_sys_tilesize*2,0xb5,0,0,NS_sys_tilesize,0,player->color); // bottle
-  graf_fancy(&g.graf,player->x-ht,player->y-NS_sys_tilesize*3-1,0xb4,0,0,NS_sys_tilesize,0,player->color); // waste
+  graf_fancy(g_graf,player->x-ht,player->y-NS_sys_tilesize*2,0xb5,0,0,NS_sys_tilesize,0,player->color); // bottle
+  graf_fancy(g_graf,player->x-ht,player->y-NS_sys_tilesize*3-1,0xb4,0,0,NS_sys_tilesize,0,player->color); // waste
 }
 
 static void player_render_score(struct battle *battle,struct player *player) {
@@ -310,9 +310,9 @@ static void player_render_score(struct battle *battle,struct player *player) {
   #define DECUINT(n) { \
     v=(n); \
     x=x0; \
-    if (v>=100) { graf_tile(&g.graf,x,y,0x30+(v/100)%10,0); x+=8; } \
-    if (v>=10) { graf_tile(&g.graf,x,y,0x30+(v/10)%10,0); x+=8; } \
-    graf_tile(&g.graf,x,y,0x30+v%10,0); \
+    if (v>=100) { graf_tile(g_graf,x,y,0x30+(v/100)%10,0); x+=8; } \
+    if (v>=10) { graf_tile(g_graf,x,y,0x30+(v/10)%10,0); x+=8; } \
+    graf_tile(g_graf,x,y,0x30+v%10,0); \
   }
   DECUINT(player->topc)
   y-=NS_sys_tilesize+1;
@@ -342,24 +342,24 @@ static void _topping_render(struct battle *battle) {
 
   // Background. Blink at the last three seconds.
   if (BATTLE->clock<=0.0) {
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x204028ff);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,0x204028ff);
   } else {
-    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x105020ff);
+    graf_fill_rect(g_graf,0,0,FBW,FBH,0x105020ff);
     if ((BATTLE->clock<=3.0)&&(BATTLE->clock>0.0)) {
       int ms=(int)(BATTLE->clock*1000.0)%1000;
       if (ms>750) {
         int alpha=ms-750; // 250 vs 255, close enough, just go with it.
-        graf_fill_rect(&g.graf,0,0,FBW,FBH,0x40802000|alpha);
+        graf_fill_rect(g_graf,0,0,FBW,FBH,0x40802000|alpha);
       }
     }
   }
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   // Hot dog.
   int dogx=(int)BATTLE->dogx;
-  graf_tile(&g.graf,dogx-NS_sys_tilesize,DOGY,0xa4,0);
-  graf_tile(&g.graf,dogx,DOGY,0xa5,0);
-  graf_tile(&g.graf,dogx+NS_sys_tilesize,DOGY,0xa6,0);
+  graf_tile(g_graf,dogx-NS_sys_tilesize,DOGY,0xa4,0);
+  graf_tile(g_graf,dogx,DOGY,0xa5,0);
+  graf_tile(g_graf,dogx+NS_sys_tilesize,DOGY,0xa6,0);
   
   // Dribbles.
   struct dribble *dribble=BATTLE->dribblev;
@@ -371,7 +371,7 @@ static void _topping_render(struct battle *battle) {
       x+=dogx;
       y+=DOGY;
     }
-    graf_fancy(&g.graf,x,y,dribble->tileid,dribble->xform,0,NS_sys_tilesize,0,dribble->color);
+    graf_fancy(g_graf,x,y,dribble->tileid,dribble->xform,0,NS_sys_tilesize,0,dribble->color);
   }
   
   // Bottles and scoreboard framing.
@@ -379,7 +379,7 @@ static void _topping_render(struct battle *battle) {
   player_render(battle,BATTLE->playerv+1);
   
   // Scoreboard.
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   player_render_score(battle,BATTLE->playerv+0);
   player_render_score(battle,BATTLE->playerv+1);
 }
@@ -390,7 +390,7 @@ static void _topping_render(struct battle *battle) {
 const struct battle_type battle_type_topping={
   .name="topping",
   .objlen=sizeof(struct battle_topping),
-  .id=NS_battle_topping,
+  .id=24,
   .strix_name=151,
   .no_article=0,
   .no_contest=0,

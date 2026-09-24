@@ -1,7 +1,7 @@
 /* battle_wrapping.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define QUEUE_SIZE 5
 #define WR_LIMIT 4 /* Might be possible to have multiple, if you're fast. */
@@ -400,7 +400,7 @@ static void _wrapping_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (battle->outcome==-2) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     } else {
       player->indx=player->indy=0;
@@ -437,8 +437,8 @@ static void player_render(struct battle *battle,struct player *player,int fullx,
    * Before the gifts being wrapped, I think. Let them be a funny distraction.
    */
   if (battle->outcome==-2) {
-    graf_set_input(&g.graf,0);
-    graf_fill_rect(&g.graf,fullx+player->px,fully+player->py,player->pw,player->ph,paperwhite);
+    graf_set_input(g_graf,0);
+    graf_fill_rect(g_graf,fullx+player->px,fully+player->py,player->pw,player->ph,paperwhite);
   }
   
   /* Outgoing gifts, wrapping and departing.
@@ -446,8 +446,8 @@ static void player_render(struct battle *battle,struct player *player,int fullx,
   const struct wr *wr=player->wrv;
   for (i=player->wrc;i-->0;wr++) {
     if (wr->sealp>=1.0) { // Sealed, departing.
-      graf_set_image(&g.graf,RID_image_battle_tundra);
-      graf_tile(&g.graf,fullx+(int)wr->x,fully+(int)wr->y,wr->tileid,0);
+      graf_set_image(g_graf,RID_image_battle_tundra);
+      graf_tile(g_graf,fullx+(int)wr->x,fully+(int)wr->y,wr->tileid,0);
     } else { // Sealing.
       /* The outer bounds collapse from (px,py,pw,ph) to a 16x16 square around the gift.
        * As they collapse, a pink border grows around the edge. From 0 to 8 pixels per edge, proportionate again to (sealp).
@@ -458,14 +458,14 @@ static void player_render(struct battle *battle,struct player *player,int fullx,
       int r=wr->px+wr->pw-(int)(wr->r*wr->sealp);
       int b=wr->py+wr->ph-(int)(wr->b*wr->sealp);
       int border=lround(wr->sealp*8.0);
-      graf_fill_rect(&g.graf,fullx+l,fully+t,r-l,b-t,paperwhite);
-      graf_set_image(&g.graf,RID_image_battle_tundra);
-      graf_tile(&g.graf,fullx+(int)wr->x,(int)wr->y,wr->tileid,0);
+      graf_fill_rect(g_graf,fullx+l,fully+t,r-l,b-t,paperwhite);
+      graf_set_image(g_graf,RID_image_battle_tundra);
+      graf_tile(g_graf,fullx+(int)wr->x,(int)wr->y,wr->tileid,0);
       if (border>0) {
-        graf_fill_rect(&g.graf,fullx+l,fully+t,border,b-t,paperpink);
-        graf_fill_rect(&g.graf,fullx+l,fully+t,r-l,border,paperpink);
-        graf_fill_rect(&g.graf,fullx+r-border,fully+t,border,b-t,paperpink);
-        graf_fill_rect(&g.graf,fullx+l,fully+b-border,r-l,border,paperpink);
+        graf_fill_rect(g_graf,fullx+l,fully+t,border,b-t,paperpink);
+        graf_fill_rect(g_graf,fullx+l,fully+t,r-l,border,paperpink);
+        graf_fill_rect(g_graf,fullx+r-border,fully+t,border,b-t,paperpink);
+        graf_fill_rect(g_graf,fullx+l,fully+b-border,r-l,border,paperpink);
       }
     }
   }
@@ -476,13 +476,13 @@ static void player_render(struct battle *battle,struct player *player,int fullx,
   /* Queue of pending gifts.
    */
   const int queue_spacing=17;
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   x=(FBW>>1)+(fullx?10:-10);
   y=QUEUE_SIZE*queue_spacing-10;
   y-=(int)(player->queueoffset*queue_spacing);
   const uint8_t *qv=player->queuev;
   for (i=QUEUE_SIZE;i-->0;qv++,y-=queue_spacing) {
-    graf_tile(&g.graf,x,y,*qv,0);
+    graf_tile(g_graf,x,y,*qv,0);
   }
   
   /* Active gift.
@@ -491,10 +491,10 @@ static void player_render(struct battle *battle,struct player *player,int fullx,
   y=fully+(int)player->y;
   if (player->reject>0.0) {
     int tint=0x40+((player->reject*128.0)/0.500);
-    graf_set_tint(&g.graf,0xff000000|tint);
+    graf_set_tint(g_graf,0xff000000|tint);
   }
-  graf_tile(&g.graf,x,y,player->gift,0);
-  graf_set_tint(&g.graf,0);
+  graf_tile(g_graf,x,y,player->gift,0);
+  graf_set_tint(g_graf,0);
   
   // (scorev) renders in a separate pass.
 }
@@ -526,7 +526,7 @@ static void wrapping_render_score(struct battle *battle,int v,int x,int y,int al
   }
   // Then render it in order.
   const char *textp=text;
-  for (;textc-->0;textp++,x+=dx) graf_tile(&g.graf,x,y,*textp,0);
+  for (;textc-->0;textp++,x+=dx) graf_tile(g_graf,x,y,*textp,0);
 }
 
 /* Render.
@@ -534,7 +534,7 @@ static void wrapping_render_score(struct battle *battle,int v,int x,int y,int al
  
 static void _wrapping_render(struct battle *battle) {
 
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x104020ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x104020ff);
   
   /* Player zones.
    */
@@ -548,41 +548,41 @@ static void _wrapping_render(struct battle *battle) {
    * We clamp per-gift scores to 10..99 so they are always two digits.
    */
   if (l->scorec||r->scorec) {
-    graf_set_image(&g.graf,RID_image_tinyfonttiles);
+    graf_set_image(g_graf,RID_image_tinyfonttiles);
     struct score *score;
     int i;
-    graf_set_tint(&g.graf,0x000000ff);
-    graf_set_alpha(&g.graf,0xc0);
+    graf_set_tint(g_graf,0x000000ff);
+    graf_set_alpha(g_graf,0xc0);
     for (i=l->scorec,score=l->scorev;i-->0;score++) {
-      graf_tile(&g.graf,(int)score->x-3,(int)score->y+1,'0'+score->v/10,0);
-      graf_tile(&g.graf,(int)score->x+3,(int)score->y+1,'0'+score->v%10,0);
+      graf_tile(g_graf,(int)score->x-3,(int)score->y+1,'0'+score->v/10,0);
+      graf_tile(g_graf,(int)score->x+3,(int)score->y+1,'0'+score->v%10,0);
     }
     for (i=r->scorec,score=r->scorev;i-->0;score++) {
-      graf_tile(&g.graf,(FBW>>1)+(int)score->x-3,(int)score->y+1,'0'+score->v/10,0);
-      graf_tile(&g.graf,(FBW>>1)+(int)score->x+3,(int)score->y+1,'0'+score->v%10,0);
+      graf_tile(g_graf,(FBW>>1)+(int)score->x-3,(int)score->y+1,'0'+score->v/10,0);
+      graf_tile(g_graf,(FBW>>1)+(int)score->x+3,(int)score->y+1,'0'+score->v%10,0);
     }
-    graf_set_tint(&g.graf,0);
-    graf_set_alpha(&g.graf,0xff);
+    graf_set_tint(g_graf,0);
+    graf_set_alpha(g_graf,0xff);
     for (i=l->scorec,score=l->scorev;i-->0;score++) {
-      graf_tile(&g.graf,(int)score->x-3,(int)score->y,'0'+score->v/10,0);
-      graf_tile(&g.graf,(int)score->x+3,(int)score->y,'0'+score->v%10,0);
+      graf_tile(g_graf,(int)score->x-3,(int)score->y,'0'+score->v/10,0);
+      graf_tile(g_graf,(int)score->x+3,(int)score->y,'0'+score->v%10,0);
     }
     for (i=r->scorec,score=r->scorev;i-->0;score++) {
-      graf_tile(&g.graf,(FBW>>1)+(int)score->x-3,(int)score->y,'0'+score->v/10,0);
-      graf_tile(&g.graf,(FBW>>1)+(int)score->x+3,(int)score->y,'0'+score->v%10,0);
+      graf_tile(g_graf,(FBW>>1)+(int)score->x-3,(int)score->y,'0'+score->v/10,0);
+      graf_tile(g_graf,(FBW>>1)+(int)score->x+3,(int)score->y,'0'+score->v%10,0);
     }
   }
   
   /* Total scores per player.
    */
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   wrapping_render_score(battle,l->dispscore,(FBW>>1)-8,FBH-10,1);
   wrapping_render_score(battle,r->dispscore,(FBW>>1)+8,FBH-10,-1);
   
   /* Dividing line between the players.
    */
-  graf_set_input(&g.graf,0);
-  graf_line(&g.graf,FBW>>1,0,0x000000ff,FBW>>1,FBH,0x000000ff);
+  graf_set_input(g_graf,0);
+  graf_line(g_graf,FBW>>1,0,0x000000ff,FBW>>1,FBH,0x000000ff);
 }
 
 /* Type definition.
@@ -591,7 +591,7 @@ static void _wrapping_render(struct battle *battle) {
 const struct battle_type battle_type_wrapping={
   .name="wrapping",
   .objlen=sizeof(struct battle_wrapping),
-  .id=NS_battle_wrapping,
+  .id=94,
   .strix_name=316,
   .no_article=0,
   .no_contest=0,

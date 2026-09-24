@@ -2,7 +2,7 @@
  * Drop your guillotine when the flying cheese is under it.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define CHEESE_LIMIT 32
 #define SCORE_LIMIT 5 /* Best 3 of 5. */
@@ -169,9 +169,9 @@ static void check_cut(struct battle *battle,struct player *player) {
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input) {
   if (player->blackout) {
-    if (!(g.input[player->human]&EGG_BTN_SOUTH)) player->blackout=0;
+    if (!(g_input[player->human]&EGG_BTN_SOUTH)) player->blackout=0;
   } else {
-    if (g.input[player->human]&EGG_BTN_SOUTH) player->input=1;
+    if (g_input[player->human]&EGG_BTN_SOUTH) player->input=1;
     else player->input=0;
   }
 }
@@ -351,7 +351,7 @@ static void _cheesecutting_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -430,19 +430,19 @@ static void player_render_lower(struct battle *battle,struct player *player) {
   // Hero.
   uint8_t herotile=player->tileid;
   if ((player->droppage>0.0)&&(player->droppaged>0.0)) herotile+=1;
-  graf_tile(&g.graf,herox,heroy,herotile,xform);
-  graf_tile(&g.graf,herox,heroy+NS_sys_tilesize,herotile+0x10,xform);
+  graf_tile(g_graf,herox,heroy,herotile,xform);
+  graf_tile(g_graf,herox,heroy+NS_sys_tilesize,herotile+0x10,xform);
   
   // Back of guillotine.
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*0,0x64,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*1,0x74,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*2,0x84,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*3,0x94,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*0,0x64,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*1,0x74,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*2,0x84,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*3,0x94,xform);
   
   // Blade.
   int bladey=guily+7;
   bladey+=(int)(player->droppage*30.0);
-  graf_tile(&g.graf,guilx,bladey,0x66,xform);
+  graf_tile(g_graf,guilx,bladey,0x66,xform);
 }
  
 static void player_render_upper(struct battle *battle,struct player *player) {
@@ -458,10 +458,10 @@ static void player_render_upper(struct battle *battle,struct player *player) {
   int guily=100;
   
   // Front of guillotine. Tiles that line up with the rear.
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*0,0x65,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*1,0x75,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*2,0x85,xform);
-  graf_tile(&g.graf,guilx,guily+NS_sys_tilesize*3,0x95,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*0,0x65,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*1,0x75,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*2,0x85,xform);
+  graf_tile(g_graf,guilx,guily+NS_sys_tilesize*3,0x95,xform);
 }
 
 static void cheese_render(struct battle *battle,struct cheese *cheese) {
@@ -480,7 +480,7 @@ static void cheese_render(struct battle *battle,struct cheese *cheese) {
     case 4: tileid+=2; break;
     case 5: tileid+=1; break;
   }
-  graf_tile(&g.graf,(int)cheese->x,(int)cheese->y,tileid,(cheese->dx>0.0)?0:EGG_XFORM_XREV);
+  graf_tile(g_graf,(int)cheese->x,(int)cheese->y,tileid,(cheese->dx>0.0)?0:EGG_XFORM_XREV);
 }
 
 /* Render.
@@ -491,12 +491,12 @@ static void _cheesecutting_render(struct battle *battle) {
   /* Background.
    */
   int horizon=140;
-  graf_gradient_rect(&g.graf,0,0,FBW,horizon,0x102030ff,0x203040ff,0x60a0c0ff,0x60a0c0ff);
-  graf_gradient_rect(&g.graf,0,horizon,FBW,FBH-horizon,0x003000ff,0x003000ff,0x008020ff,0x008020ff);
+  graf_gradient_rect(g_graf,0,0,FBW,horizon,0x102030ff,0x203040ff,0x60a0c0ff,0x60a0c0ff);
+  graf_gradient_rect(g_graf,0,horizon,FBW,FBH-horizon,0x003000ff,0x003000ff,0x008020ff,0x008020ff);
   
   /* Sprites.
    */
-  graf_set_image(&g.graf,RID_image_battle_labor);
+  graf_set_image(g_graf,RID_image_battle_labor);
   player_render_lower(battle,BATTLE->playerv+0);
   player_render_lower(battle,BATTLE->playerv+1);
   struct cheese *cheese=BATTLE->cheesev;
@@ -524,7 +524,7 @@ static void _cheesecutting_render(struct battle *battle) {
     if (lc-->0) color=BATTLE->playerv[0].color;
     else if (grayc-->0) color=0x808080ff;
     else color=BATTLE->playerv[1].color;
-    graf_fancy(&g.graf,scorex,scorey,0x6b,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,scorex,scorey,0x6b,0,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -534,7 +534,7 @@ static void _cheesecutting_render(struct battle *battle) {
 const struct battle_type battle_type_cheesecutting={
   .name="cheesecutting",
   .objlen=sizeof(struct battle_cheesecutting),
-  .id=NS_battle_cheesecutting,
+  .id=29,
   .strix_name=155,
   .no_article=0,
   .no_contest=0,

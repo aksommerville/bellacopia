@@ -1,7 +1,7 @@
 /* battle_skiing.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define FLAG_LIMIT 32
 #define TRAIL_LIMIT 128
@@ -275,7 +275,7 @@ static void _skiing_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -310,15 +310,15 @@ static void player_render(struct battle *battle,struct player *player) {
       x-=1; // Tiles all have odd width visually, so cheat to the left when flopping.
     }
   }
-  graf_tile(&g.graf,x,y,tileid,xform);
+  graf_tile(g_graf,x,y,tileid,xform);
 }
 
 static void flag_render(struct battle *battle,struct flag *flag) {
   int x=(int)flag->x;
   int y=(int)flag->y;
   int space=8;
-  graf_fancy(&g.graf,x-space,y,0x87,0,0,NS_sys_tilesize,0,flag->color);
-  graf_fancy(&g.graf,x+space,y,0x87,EGG_XFORM_XREV,0,NS_sys_tilesize,0,flag->color);
+  graf_fancy(g_graf,x-space,y,0x87,0,0,NS_sys_tilesize,0,flag->color);
+  graf_fancy(g_graf,x+space,y,0x87,EGG_XFORM_XREV,0,NS_sys_tilesize,0,flag->color);
 }
 
 /* Trail.
@@ -328,14 +328,14 @@ static void trail_render(struct battle *battle,struct player *player) {
   if (player->trailc<2) return;
   uint32_t color=0xe0f0ffff;
   struct trail *trail=player->trailv;
-  graf_line_strip_begin(&g.graf,trail->lx,trail->y,color);
+  graf_line_strip_begin(g_graf,trail->lx,trail->y,color);
   trail++;
   int i=player->trailc-1;
-  for (;i-->0;trail++) graf_line_strip_more(&g.graf,trail->lx,trail->y,color);
+  for (;i-->0;trail++) graf_line_strip_more(g_graf,trail->lx,trail->y,color);
   trail=player->trailv;
-  graf_line_strip_begin(&g.graf,trail->rx,trail->y,color);
+  graf_line_strip_begin(g_graf,trail->rx,trail->y,color);
   trail++;
-  for (i=player->trailc-1;i-->0;trail++) graf_line_strip_more(&g.graf,trail->rx,trail->y,color);
+  for (i=player->trailc-1;i-->0;trail++) graf_line_strip_more(g_graf,trail->rx,trail->y,color);
 }
 
 /* Render.
@@ -344,19 +344,19 @@ static void trail_render(struct battle *battle,struct player *player) {
 static void _skiing_render(struct battle *battle) {
 
   // Flat colored background.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,20,FBW,FBH-20,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,20,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,20,FBW,FBH-20,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,20,FBW,1,0x000000ff);
   
   // Trails.
   trail_render(battle,BATTLE->playerv+0);
   trail_render(battle,BATTLE->playerv+1);
   
-  graf_set_image(&g.graf,RID_image_battle_tundra);
+  graf_set_image(g_graf,RID_image_battle_tundra);
   
   // At the bottom show the border with Finland*.
   // [*] The "Finnish Line", get it?
-  graf_tile_batch(&g.graf,BATTLE->finnishline,NS_sys_mapw);
+  graf_tile_batch(g_graf,BATTLE->finnishline,NS_sys_mapw);
   
   struct flag *flag=BATTLE->flagv;
   int i=BATTLE->flagc;
@@ -369,10 +369,10 @@ static void _skiing_render(struct battle *battle) {
   if (BATTLE->helloclock>0.0) {
     int s=(int)(BATTLE->helloclock+0.999);
     if (s<1) s=1; else if (s>9) s=9;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_set_tint(&g.graf,battle->ctab[BATTLE_COLOR_SKY_TEXT]);
-    graf_tile(&g.graf,FBW>>1,10,'0'+s,0);
-    graf_set_tint(&g.graf,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_set_tint(g_graf,battle->ctab[BATTLE_COLOR_SKY_TEXT]);
+    graf_tile(g_graf,FBW>>1,10,'0'+s,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -382,7 +382,7 @@ static void _skiing_render(struct battle *battle) {
 const struct battle_type battle_type_skiing={
   .name="skiing",
   .objlen=sizeof(struct battle_skiing),
-  .id=NS_battle_skiing,
+  .id=82,
   .strix_name=290,
   .no_article=0,
   .no_contest=0,

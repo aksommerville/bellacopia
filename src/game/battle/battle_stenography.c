@@ -2,7 +2,7 @@
  * Tap all the buttons in order, following a sheet.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 // The players' sheets can show 24 glyphs. Limit should be at least that, and no sense going higher.
 #define TEXT_LIMIT 24
@@ -139,7 +139,7 @@ static void _stenography_update(struct battle *battle,double elapsed) {
         else if (r->text[BATTLE->gradep]==BATTLE->text[BATTLE->gradep]) r->score++;
         else r->score--;
         BATTLE->gradep++;
-        if (BATTLE->gradep<BATTLE->textc) bm_sound(RID_sound_uimotion);
+        if (BATTLE->gradep<BATTLE->textc) bm_sound_pan(RID_sound_uimotion,0.0);
       }
     }
   
@@ -149,7 +149,7 @@ static void _stenography_update(struct battle *battle,double elapsed) {
     struct player *player=BATTLE->playerv;
     int i=2;
     for (;i-->0;player++) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     // When the first player completes her sheet, start grading.
@@ -163,11 +163,11 @@ static void _stenography_update(struct battle *battle,double elapsed) {
  */
  
 static void stenography_paper_background(struct battle *battle,int x,int y,int w,int h) {
-  graf_fill_rect(&g.graf,x,y,w,h,0xffffffff);
-  graf_fill_rect(&g.graf,x,y,w,1,0x000000ff);
-  graf_fill_rect(&g.graf,x,y,1,h,0x000000ff);
-  graf_fill_rect(&g.graf,x+w-1,y,1,h,0x000000ff);
-  graf_fill_rect(&g.graf,x,y+h-1,w,1,0x000000ff);
+  graf_fill_rect(g_graf,x,y,w,h,0xffffffff);
+  graf_fill_rect(g_graf,x,y,w,1,0x000000ff);
+  graf_fill_rect(g_graf,x,y,1,h,0x000000ff);
+  graf_fill_rect(g_graf,x+w-1,y,1,h,0x000000ff);
+  graf_fill_rect(g_graf,x,y+h-1,w,1,0x000000ff);
 }
 
 static void stenography_paper_foreground(struct battle *battle,int x,int y,int w,int h,const uint8_t *text,int textc,int with_commentary) {
@@ -183,13 +183,13 @@ static void stenography_paper_foreground(struct battle *battle,int x,int y,int w
       y+=16;
       if (y>yz) break;
     }
-    graf_tile(&g.graf,x,y,*text,0);
+    graf_tile(g_graf,x,y,*text,0);
     if (BATTLE->gradeclock>0.0) {
       if (with_commentary&&(p<=BATTLE->gradep)) {
-        graf_tile(&g.graf,x,y,(*text==BATTLE->text[p])?0x4d:0x4e,0);
+        graf_tile(g_graf,x,y,(*text==BATTLE->text[p])?0x4d:0x4e,0);
       }
       if (p==BATTLE->gradep) {
-        graf_tile(&g.graf,x,y,0x4c,0);
+        graf_tile(g_graf,x,y,0x4c,0);
       }
     }
     x+=16;
@@ -206,13 +206,13 @@ static void player_render(struct battle *battle,struct player *player) {
     int n=player->score;
     if (n<0) n=-n;
     if (n>99) n=99;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,x,y,'0'+n%10,0); x-=8;
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,x,y,'0'+n%10,0); x-=8;
     if (n>=10) {
-      graf_tile(&g.graf,x,y,'0'+n/10,0); x-=8;
+      graf_tile(g_graf,x,y,'0'+n/10,0); x-=8;
     }
     if (player->score<0) {
-      graf_tile(&g.graf,x,y,'-',0); x-=8;
+      graf_tile(g_graf,x,y,'-',0); x-=8;
     }
   }
 }
@@ -231,12 +231,12 @@ static void _stenography_render(struct battle *battle) {
   int lx=(FBW>>1)-pw-10;
   int rx=(FBW>>1)+10;
   int py=FBH-10-ph;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
   stenography_paper_background(battle,refx,refy,refw,refh);
   stenography_paper_background(battle,lx,py,pw,ph);
   stenography_paper_background(battle,rx,py,pw,ph);
   
-  graf_set_image(&g.graf,RID_image_battle_fractia2);
+  graf_set_image(g_graf,RID_image_battle_fractia2);
   stenography_paper_foreground(battle,refx,refy,refw,refh,BATTLE->text,BATTLE->textc,0);
   stenography_paper_foreground(battle,lx,py,pw,ph,BATTLE->playerv[0].text,BATTLE->playerv[0].textc,1);
   stenography_paper_foreground(battle,rx,py,pw,ph,BATTLE->playerv[1].text,BATTLE->playerv[1].textc,1);
@@ -252,7 +252,7 @@ static void _stenography_render(struct battle *battle) {
 const struct battle_type battle_type_stenography={
   .name="stenography",
   .objlen=sizeof(struct battle_stenography),
-  .id=NS_battle_stenography,
+  .id=38,
   .strix_name=164,
   .no_article=0,
   .no_contest=0,

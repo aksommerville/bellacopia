@@ -1,7 +1,7 @@
 /* battle_snaring.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define NOTE_LIMIT 32
 
@@ -338,7 +338,7 @@ static void snaring_update_INTRO(struct battle *battle,double elapsed) {
   } else {
     int metnext=(int)BATTLE->clock;
     if (metnext>BATTLE->metronome) {
-      bm_sound(RID_sound_cowbell);
+      bm_sound_pan(RID_sound_cowbell,0.0);
       BATTLE->metronome=metnext;
     }
   }
@@ -354,12 +354,12 @@ static void snaring_update_INTERLUDE(struct battle *battle,double elapsed) {
     int i=2;
     for (;i-->0;player++) {
       if (!player->human) continue;
-      if (g.input[player->human]&EGG_BTN_SOUTH) player_whack(battle,player);
+      if (g_input[player->human]&EGG_BTN_SOUTH) player_whack(battle,player);
     }
   } else {
     int metnext=(int)BATTLE->clock;
     if (metnext>BATTLE->metronome) {
-      bm_sound(RID_sound_cowbell);
+      bm_sound_pan(RID_sound_cowbell,0.0);
       BATTLE->metronome=metnext;
     }
   }
@@ -376,7 +376,7 @@ static void snaring_update_REF(struct battle *battle,double elapsed) {
   } else {
     if (BATTLE->notep<BATTLE->notec) {
       if (BATTLE->clock>=BATTLE->notev[BATTLE->notep]) {
-        bm_sound(RID_sound_snare);
+        bm_sound_pan(RID_sound_snare,0.0);
         BATTLE->notep++;
         BATTLE->refarm=1.0;
       }
@@ -384,7 +384,7 @@ static void snaring_update_REF(struct battle *battle,double elapsed) {
     // Debatable, but I think a metronome is still helpful during REF.
     int metnext=(int)BATTLE->clock;
     if (metnext>BATTLE->metronome) {
-      bm_sound(RID_sound_cowbell);
+      bm_sound_pan(RID_sound_cowbell,0.0);
       BATTLE->metronome=metnext;
     }
   }
@@ -403,7 +403,7 @@ static void snaring_update_PLAY(struct battle *battle,double elapsed) {
   } else {
     int metnext=(int)BATTLE->clock;
     if (metnext>BATTLE->metronome) {
-      bm_sound(RID_sound_cowbell);
+      bm_sound_pan(RID_sound_cowbell,0.0);
       BATTLE->metronome=metnext;
     }
   }
@@ -434,7 +434,7 @@ static void _snaring_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (BATTLE->stage==STAGE_PLAY) { // Only update controller if it's my turn.
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -462,24 +462,24 @@ static void snaring_render_chart(struct battle *battle,int midx,int midy,double 
   int fullw=(1+4*2+1)*NS_sys_tilesize;
   int xl=midx-(fullw>>1);
   int x=xl+(NS_sys_tilesize>>1);
-  graf_tile(&g.graf,x,midy,0x22,0); x+=NS_sys_tilesize;
+  graf_tile(g_graf,x,midy,0x22,0); x+=NS_sys_tilesize;
   int i=4; while (i-->0) {
-    graf_tile(&g.graf,x,midy,0x23,0); x+=NS_sys_tilesize;
-    graf_tile(&g.graf,x,midy,0x24,0); x+=NS_sys_tilesize;
+    graf_tile(g_graf,x,midy,0x23,0); x+=NS_sys_tilesize;
+    graf_tile(g_graf,x,midy,0x24,0); x+=NS_sys_tilesize;
   }
-  graf_tile(&g.graf,x,midy,0x25,0);
+  graf_tile(g_graf,x,midy,0x25,0);
   int time0x=xl+NS_sys_tilesize+(NS_sys_tilesize>>2); // The extra quarter-tile is because dots don't appear at the measure line, they're offset a bit.
   int timezx=xl+fullw-NS_sys_tilesize;
   // If there's a playhead, it goes between the lines and the dots.
   if ((playhead>=0.0)&&(playhead<=4.0)) {
     int phx=time0x+(int)(playhead*NS_sys_tilesize*2.0);
-    if (phx<timezx) graf_tile(&g.graf,phx,midy,0x27,0);
+    if (phx<timezx) graf_tile(g_graf,phx,midy,0x27,0);
   }
   // Then the notes.
   for (;notec-->0;notev++) {
     if ((*notev<-0.5)||(*notev>4.5)) continue; // A little affordance for early and late notes, they can render off the chart a little.
     int nx=time0x+(int)((*notev)*NS_sys_tilesize*2.0);
-    graf_tile(&g.graf,nx,midy,0x26,0);
+    graf_tile(g_graf,nx,midy,0x26,0);
   }
 }
 
@@ -492,12 +492,12 @@ static void drum_machine_render(struct battle *battle) {
   int armx=x-(NS_sys_tilesize>>1);
   uint8_t tileid=0x31;
   if (BATTLE->refarm>0.600) tileid=0x51;
-  graf_set_image(&g.graf,RID_image_battle_war);
+  graf_set_image(g_graf,RID_image_battle_war);
   int army=y-1;
   army-=(int)((1.0-BATTLE->refarm)*12.0);
-  graf_set_image(&g.graf,RID_image_battle_war);
-  graf_tile(&g.graf,x,y,tileid,0);
-  graf_tile(&g.graf,armx,army,0x71,0);
+  graf_set_image(g_graf,RID_image_battle_war);
+  graf_tile(g_graf,x,y,tileid,0);
+  graf_tile(g_graf,armx,army,0x71,0);
   double playhead=-1.0;
   if (BATTLE->stage==STAGE_REF) playhead=BATTLE->clock;
   snaring_render_chart(battle,x,y+20,playhead,BATTLE->notev,BATTLE->notep);
@@ -521,11 +521,11 @@ static void player_render(struct battle *battle,struct player *player) {
   army-=(int)((1.0-player->arm)*12.0);
   uint8_t drumtile=0x31;
   if (player->arm>0.600) drumtile=0x51;
-  graf_set_image(&g.graf,RID_image_battle_war);
-  graf_tile(&g.graf,drumx,y,drumtile,player->xform);
-  graf_tile(&g.graf,armx,army,player->tileid+0x01,player->xform);
-  graf_tile(&g.graf,player->x,y-NS_sys_tilesize,player->tileid,player->xform);
-  graf_tile(&g.graf,player->x,y,player->tileid+0x10,player->xform);
+  graf_set_image(g_graf,RID_image_battle_war);
+  graf_tile(g_graf,drumx,y,drumtile,player->xform);
+  graf_tile(g_graf,armx,army,player->tileid+0x01,player->xform);
+  graf_tile(g_graf,player->x,y-NS_sys_tilesize,player->tileid,player->xform);
+  graf_tile(g_graf,player->x,y,player->tileid+0x10,player->xform);
   double playhead=-1.0;
   if (BATTLE->stage==STAGE_PLAY) playhead=BATTLE->clock;
   int chartx=(FBW*(player->who?3:1))>>2;
@@ -537,9 +537,9 @@ static void player_render(struct battle *battle,struct player *player) {
  
 static void _snaring_render(struct battle *battle) {
   const int groundy=138;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
   
   // During STAGE_FINAL, animate our scores growing.
   if (BATTLE->stage==STAGE_FINAL) {
@@ -550,8 +550,8 @@ static void _snaring_render(struct battle *battle) {
     int barh=60;
     int lh=(int)(l->score*n*barh);
     int rh=(int)(r->score*n*barh);
-    graf_fill_rect(&g.graf,(FBW>>1)-4,groundy-lh,4,lh,l->color);
-    graf_fill_rect(&g.graf,(FBW>>1),groundy-rh,4,rh,r->color);
+    graf_fill_rect(g_graf,(FBW>>1)-4,groundy-lh,4,lh,l->color);
+    graf_fill_rect(g_graf,(FBW>>1),groundy-rh,4,rh,r->color);
   }
   
   drum_machine_render(battle);
@@ -562,8 +562,8 @@ static void _snaring_render(struct battle *battle) {
   if ((BATTLE->stage==STAGE_INTRO)||(BATTLE->stage==STAGE_INTERLUDE)) {
     int s=(int)(5.0-BATTLE->clock);
     if (s<1) s=1; else if (s>4) s=4;
-    graf_set_image(&g.graf,RID_image_fonttiles);
-    graf_tile(&g.graf,FBW>>1,80,'0'+s,0);
+    graf_set_image(g_graf,RID_image_fonttiles);
+    graf_tile(g_graf,FBW>>1,80,'0'+s,0);
   }
 }
 
@@ -573,7 +573,7 @@ static void _snaring_render(struct battle *battle) {
 const struct battle_type battle_type_snaring={
   .name="snaring",
   .objlen=sizeof(struct battle_snaring),
-  .id=NS_battle_snaring,
+  .id=81,
   .strix_name=288,
   .no_article=0,
   .no_contest=0,

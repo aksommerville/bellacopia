@@ -1,7 +1,7 @@
 /* battle_tempting.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define ROCKC 7
 #define SHIP_LIMIT 10
@@ -550,7 +550,7 @@ static void _tempting_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (battle->outcome==-2) {
-      if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
       else player_update_cpu(battle,player,elapsed);
     }
     player_update_common(battle,player,elapsed);
@@ -594,14 +594,14 @@ static void _tempting_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render(struct battle *battle,struct player *player) {
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_set_image(g_graf,RID_image_battle_sea);
 
   // First draw the rocks with (y<0).
   struct rock *rock=player->rockv;
   int i=ROCKC;
   for (;i-->0;rock++) {
     if (rock->y>=0) continue;
-    graf_tile(&g.graf,player->x+rock->x,player->y+rock->y,rock->tileid,rock->xform);
+    graf_tile(g_graf,player->x+rock->x,player->y+rock->y,rock->tileid,rock->xform);
   }
 
   // Then the player on her big rock.
@@ -613,12 +613,12 @@ static void player_render(struct battle *battle,struct player *player) {
   int dsty=player->y-NS_sys_tilesize;
   int srcx=(tileid&15)*NS_sys_tilesize;
   int srcy=(tileid>>4)*NS_sys_tilesize;
-  graf_decal_xform(&g.graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*2,NS_sys_tilesize*2,player->xform);
+  graf_decal_xform(g_graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*2,NS_sys_tilesize*2,player->xform);
 
   // Then the rocks in front.
   for (rock=player->rockv,i=ROCKC;i-->0;rock++) {
     if (rock->y<0) continue;
-    graf_tile(&g.graf,player->x+rock->x,player->y+rock->y,rock->tileid,rock->xform);
+    graf_tile(g_graf,player->x+rock->x,player->y+rock->y,rock->tileid,rock->xform);
   }
 }
 
@@ -634,14 +634,14 @@ static void ship_render(struct battle *battle,struct ship *ship) {
     int exposure=(int)((1.0-ship->sinking/SINK_TIME)*NS_sys_tilesize);
     if (exposure>0) {
       if (exposure>NS_sys_tilesize) exposure=NS_sys_tilesize;
-      graf_decal(&g.graf,
+      graf_decal(g_graf,
         x-(NS_sys_tilesize>>1),
         y-(NS_sys_tilesize>>1)+NS_sys_tilesize-exposure,
         NS_sys_tilesize*14,
         NS_sys_tilesize*3,
         NS_sys_tilesize,exposure
       );
-      graf_tile(&g.graf,x,y,0x2e,0);
+      graf_tile(g_graf,x,y,0x2e,0);
     }
     return;
   }
@@ -649,7 +649,7 @@ static void ship_render(struct battle *battle,struct ship *ship) {
   uint8_t rot=(int8_t)((ship->t*128.0)/M_PI);
   uint8_t tileid=0x0f;
   int i=10; for (;i-->0;tileid+=0x10,y-=1) {
-    graf_fancy(&g.graf,x,y,tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
+    graf_fancy(g_graf,x,y,tileid,0,rot,NS_sys_tilesize,0,0x808080ff);
   }
   
   if (ship->temptress) {
@@ -661,7 +661,7 @@ static void ship_render(struct battle *battle,struct ship *ship) {
       case 2: tileid+=0x20; break;
       case 3: tileid+=0x10; break;
     }
-    graf_fancy(&g.graf,x,hearty,tileid,0,0,NS_sys_tilesize,0,ship->temptress->color);
+    graf_fancy(g_graf,x,hearty,tileid,0,0,NS_sys_tilesize,0,ship->temptress->color);
   }
 }
 
@@ -677,25 +677,25 @@ static void note_render(struct battle *battle,struct note *note) {
     case 2: tileid+=0x20; break;
     case 3: tileid+=0x10; break;
   }
-  graf_fancy(&g.graf,x,y,tileid,0,0,NS_sys_tilesize,0,note->player->color);
+  graf_fancy(g_graf,x,y,tileid,0,0,NS_sys_tilesize,0,note->player->color);
 }
 
 /* Render.
  */
  
 static void _tempting_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x4b74a5ff);
-  graf_set_image(&g.graf,RID_image_battle_sea);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x4b74a5ff);
+  graf_set_image(g_graf,RID_image_battle_sea);
   
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
   struct ship *ship=BATTLE->shipv;
   int i=BATTLE->shipc;
-  graf_set_image(&g.graf,RID_image_battle_sea);
-  graf_set_filter(&g.graf,0); // debatable
+  graf_set_image(g_graf,RID_image_battle_sea);
+  graf_set_filter(g_graf,0); // debatable
   for (;i-->0;ship++) ship_render(battle,ship);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,0);
   
   struct note *note=BATTLE->notev;
   for (i=BATTLE->notec;i-->0;note++) note_render(battle,note);
@@ -705,7 +705,7 @@ static void _tempting_render(struct battle *battle) {
     int alpha=(BATTLE->planclock*255.0)/BATTLE->beattime;
     if (alpha>0) {
       if (alpha>0xff) alpha=0xff;
-      graf_set_alpha(&g.graf,alpha);
+      graf_set_alpha(g_graf,alpha);
       uint8_t tileid;
       switch (BATTLE->plan[BATTLE->planp]) {
         case EGG_BTN_LEFT: tileid=0x4d; break;
@@ -715,33 +715,33 @@ static void _tempting_render(struct battle *battle) {
         case EGG_BTN_SOUTH: tileid=0x8d; break;
         case EGG_BTN_WEST: tileid=0x9d; break;
       }
-      graf_tile(&g.graf,FBW>>1,22,tileid,0);
-      graf_set_alpha(&g.graf,0xff);
+      graf_tile(g_graf,FBW>>1,22,tileid,0);
+      graf_set_alpha(g_graf,0xff);
     }
   }
   
   /* Clock and scores.
    */
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   if (BATTLE->playclock>0.0) {
     int s=(int)(BATTLE->playclock+0.999);
     if (s<1) s=1; else if (s>99) s=99;
-    if (s>=10) graf_tile(&g.graf,(FBW>>1)-4,8,'0'+s/10,0);
-    graf_tile(&g.graf,(FBW>>1)+4,8,'0'+s%10,0);
+    if (s>=10) graf_tile(g_graf,(FBW>>1)-4,8,'0'+s/10,0);
+    graf_tile(g_graf,(FBW>>1)+4,8,'0'+s%10,0);
   }
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   if (l->score>=10) {
-    graf_tile(&g.graf,(FBW>>1)-40,8,'0'+(l->score/10)%10,0);
-    graf_tile(&g.graf,(FBW>>1)-32,8,'0'+l->score%10,0);
+    graf_tile(g_graf,(FBW>>1)-40,8,'0'+(l->score/10)%10,0);
+    graf_tile(g_graf,(FBW>>1)-32,8,'0'+l->score%10,0);
   } else {
-    graf_tile(&g.graf,(FBW>>1)-36,8,'0'+l->score%10,0);
+    graf_tile(g_graf,(FBW>>1)-36,8,'0'+l->score%10,0);
   }
   if (r->score>=10) {
-    graf_tile(&g.graf,(FBW>>1)+32,8,'0'+(r->score/10)%10,0);
-    graf_tile(&g.graf,(FBW>>1)+40,8,'0'+r->score%10,0);
+    graf_tile(g_graf,(FBW>>1)+32,8,'0'+(r->score/10)%10,0);
+    graf_tile(g_graf,(FBW>>1)+40,8,'0'+r->score%10,0);
   } else {
-    graf_tile(&g.graf,(FBW>>1)+36,8,'0'+r->score%10,0);
+    graf_tile(g_graf,(FBW>>1)+36,8,'0'+r->score%10,0);
   }
 }
 
@@ -751,7 +751,7 @@ static void _tempting_render(struct battle *battle) {
 const struct battle_type battle_type_tempting={
   .name="tempting",
   .objlen=sizeof(struct battle_tempting),
-  .id=NS_battle_tempting,
+  .id=76,
   .strix_name=278,
   .no_article=0,
   .no_contest=0,

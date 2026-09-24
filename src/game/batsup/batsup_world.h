@@ -8,6 +8,8 @@
 #ifndef BATSUP_WORLD_H
 #define BATSUP_WORLD_H
 
+#include "game/map.h"
+
 struct battle;
 
 struct batsup_sprite {

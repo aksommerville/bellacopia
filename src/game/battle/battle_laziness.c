@@ -5,7 +5,7 @@
  * We hedge the randomness a little by multiplying each player's score by some constant established at setup.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SKY_COLOR battle->ctab[BATTLE_COLOR_SKY]
 #define GROUND_COLOR battle->ctab[BATTLE_COLOR_GROUND]
@@ -339,7 +339,7 @@ static void _laziness_update(struct battle *battle,double elapsed) {
   
   struct player *player=BATTLE->playerv;
   int i=2; for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -373,8 +373,8 @@ static void render_player(struct battle *battle,struct player *player) {
   } else {
     if (player->facedx>0) xform=EGG_XFORM_XREV;
   }
-  graf_set_image(&g.graf,player->imageid);
-  graf_tile(&g.graf,x,y,tileid,xform);
+  graf_set_image(g_graf,player->imageid);
+  graf_tile(g_graf,x,y,tileid,xform);
 }
 
 /* Render meter.
@@ -384,12 +384,12 @@ static void render_meter(struct battle *battle,int x,int y,int w,int h,double v,
   const uint32_t bgcolor=0x181010ff;
   int fillw=(int)(w*v);
   if (fillw<=0) {
-    graf_fill_rect(&g.graf,x,y,w,h,bgcolor);
+    graf_fill_rect(g_graf,x,y,w,h,bgcolor);
   } else if (fillw>=w) {
-    graf_fill_rect(&g.graf,x,y,w,h,rgba);
+    graf_fill_rect(g_graf,x,y,w,h,rgba);
   } else {
-    graf_fill_rect(&g.graf,x,y,fillw,h,rgba);
-    graf_fill_rect(&g.graf,x+fillw,y,w-fillw,h,bgcolor);
+    graf_fill_rect(g_graf,x,y,fillw,h,rgba);
+    graf_fill_rect(g_graf,x+fillw,y,w-fillw,h,bgcolor);
   }
 }
 
@@ -398,26 +398,26 @@ static void render_meter(struct battle *battle,int x,int y,int w,int h,double v,
  
 static void _laziness_render(struct battle *battle) {
   // Sky first but no ground.
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,SKY_COLOR);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,SKY_COLOR);
   
   render_player(battle,BATTLE->playerv+0);
   render_player(battle,BATTLE->playerv+1);
   
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   struct hazard *hazard=BATTLE->hazardv;
   int i=BATTLE->hazardc;
   for (;i-->0;hazard++) {
     int y=(int)hazard->y;
-    graf_tile(&g.graf,hazard->x,y,hazard->tileid,0);
+    graf_tile(g_graf,hazard->x,y,hazard->tileid,0);
   }
   
   // Ground after the hazards, so they can fall below the horizon neatly.
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH,GROUND_COLOR);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH,GROUND_COLOR);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
   
   if (BATTLE->collx) {
-    graf_set_image(&g.graf,RID_image_battle_goblins);
-    graf_tile(&g.graf,BATTLE->collx,BATTLE->colly,0x60,0);
+    graf_set_image(g_graf,RID_image_battle_goblins);
+    graf_tile(g_graf,BATTLE->collx,BATTLE->colly,0x60,0);
   }
   
   /* Score meters.
@@ -443,14 +443,14 @@ static void _laziness_render(struct battle *battle) {
   int sec=(ms+999)/1000;
   int x=(FBW>>1)-4;
   int y=10;
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   if (BATTLE->clock<3.0) {
     ms%=1000;
-    graf_set_tint(&g.graf,(ms>=500)?0xff8080ff:0xffff00ff);
+    graf_set_tint(g_graf,(ms>=500)?0xff8080ff:0xffff00ff);
   }
-  if (sec>=10) graf_tile(&g.graf,x,y,'0'+sec/10,0);
-  graf_tile(&g.graf,x+8,y,'0'+sec%10,0);
-  graf_set_tint(&g.graf,0);
+  if (sec>=10) graf_tile(g_graf,x,y,'0'+sec/10,0);
+  graf_tile(g_graf,x+8,y,'0'+sec%10,0);
+  graf_set_tint(g_graf,0);
 }
 
 /* Type definition.
@@ -459,7 +459,7 @@ static void _laziness_render(struct battle *battle) {
 const struct battle_type battle_type_laziness={
   .name="laziness",
   .objlen=sizeof(struct battle_laziness),
-  .id=NS_battle_laziness,
+  .id=14,
   .strix_name=53,
   .no_article=0,
   .no_contest=0,

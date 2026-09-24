@@ -1,6 +1,8 @@
 #include "bellacopia.h"
 
 struct g g={0};
+extern struct font *g_font; // battle_glue.c
+extern int g_framec;
 
 /* Quit.
  */
@@ -28,6 +30,7 @@ int egg_client_init() {
   if (game_init_targets()<0) return -1;
   
   if (!(g.font=font_new())) return -1;
+  g_font=g.font;
   if (font_add_image(g.font,RID_image_font9_0020,0x0020)) return -1;
   
   return 0;
@@ -85,6 +88,7 @@ void egg_client_update(double elapsed) {
  
 void egg_client_render() {
   g.framec++;
+  g_framec=g.framec;
   graf_reset(&g.graf);
   modals_render();
   graf_flush(&g.graf);

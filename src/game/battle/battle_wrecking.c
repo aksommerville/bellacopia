@@ -1,8 +1,11 @@
 /* battle_wrecking.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
+
+#define NS_physics_vacant 0
+#define NS_physics_solid 1
 
 #define SPRITEID_L 1
 #define SPRITEID_R 2
@@ -39,8 +42,8 @@ static void _wreckable_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   if (SPRITE->wrecked) srcx+=NS_sys_tilesize*2;
   dstx-=NS_sys_tilesize;
   dsty-=NS_sys_tilesize;
-  graf_set_image(&g.graf,RID_image_battle_war);
-  graf_decal(&g.graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*2,NS_sys_tilesize*2);
+  graf_set_image(g_graf,RID_image_battle_war);
+  graf_decal(g_graf,dstx,dsty,srcx,srcy,NS_sys_tilesize*2,NS_sys_tilesize*2);
 }
 
 static int wrecking_add_wreckable(struct battle *battle,int seq,int face,double x,double y) {
@@ -121,7 +124,7 @@ struct batsup_sprite_hero {
  
 static void hero_update_man(struct batsup_sprite *sprite,double elapsed) {
   struct batsup_sprite_hero *SPRITE=(void*)sprite;
-  int input=g.input[SPRITE->human];
+  int input=g_input[SPRITE->human];
   switch (input&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: SPRITE->indx=-1; break;
     case EGG_BTN_RIGHT: SPRITE->indx=1; break;
@@ -601,7 +604,7 @@ static void _hero_update(struct batsup_sprite *sprite,double elapsed) {
 
 static void _hero_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   struct batsup_sprite_hero *SPRITE=(void*)sprite;
-  graf_set_image(&g.graf,RID_image_battle_war);
+  graf_set_image(g_graf,RID_image_battle_war);
   
   // Main tile could be regular tile, but using fancy so it can share a batch hopefully.
   uint8_t tileid=sprite->tileid;
@@ -609,7 +612,7 @@ static void _hero_render(struct batsup_sprite *sprite,int dstx,int dsty) {
     case 1: tileid+=1; break;
     case 3: tileid+=2; break;
   }
-  graf_fancy(&g.graf,dstx,dsty,tileid,sprite->xform,0,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,dstx,dsty,tileid,sprite->xform,0,NS_sys_tilesize,0,0x808080ff);
   
   // Hammer.
   double hamx=dstx,hamy=dsty;
@@ -623,7 +626,7 @@ static void _hero_render(struct batsup_sprite *sprite,int dstx,int dsty) {
   int hamix=lround(hamx);
   int hamiy=lround(hamy);
   uint8_t hamrot=(int8_t)((hamt*128.0)/M_PI);
-  graf_fancy(&g.graf,hamix,hamiy,0xf0,0,hamrot,NS_sys_tilesize,0,0x808080ff);
+  graf_fancy(g_graf,hamix,hamiy,0xf0,0,hamrot,NS_sys_tilesize,0,0x808080ff);
 }
 
 /* Initialize both player sprites.
@@ -793,7 +796,7 @@ static void _wrecking_render(struct battle *battle) {
     uint32_t color=0x80808080;
     if (i<lscore) color=l->color;
     else if (i>6-rscore) color=r->color;
-    graf_fancy(&g.graf,x,y,0xf1,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,x,y,0xf1,0,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -803,7 +806,7 @@ static void _wrecking_render(struct battle *battle) {
 const struct battle_type battle_type_wrecking={
   .name="wrecking",
   .objlen=sizeof(struct battle_wrecking),
-  .id=NS_battle_wrecking,
+  .id=68,
   .strix_name=261,
   .no_article=0,
   .no_contest=0,

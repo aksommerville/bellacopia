@@ -1,7 +1,7 @@
 /* battle_distancing.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/batsup_world.h"
 
 #define SPRITEID_L 1
@@ -87,11 +87,11 @@ static void _player_update(struct batsup_sprite *sprite,double elapsed) {
   }
   
   if (SPRITE->human) {
-    switch (g.input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+    switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
       case EGG_BTN_LEFT: sprite->x-=SPRITE->speed*elapsed; sprite->xform=EGG_XFORM_XREV; break;
       case EGG_BTN_RIGHT: sprite->x+=SPRITE->speed*elapsed; sprite->xform=0; break;
     }
-    switch (g.input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
+    switch (g_input[SPRITE->human]&(EGG_BTN_UP|EGG_BTN_DOWN)) {
       case EGG_BTN_UP: sprite->y-=SPRITE->speed*elapsed; break;
       case EGG_BTN_DOWN: sprite->y+=SPRITE->speed*elapsed; break;
     }
@@ -152,7 +152,7 @@ static void _player_render(struct batsup_sprite *sprite,int x,int y) {
   struct sprite_player *SPRITE=(void*)sprite;
   struct battle *battle=sprite->world->battle;
   uint8_t tileid=sprite->tileid+SPRITE->animframe;
-  graf_tile(&g.graf,x,y,tileid,sprite->xform);
+  graf_tile(g_graf,x,y,tileid,sprite->xform);
 }
 
 /* Init player.
@@ -236,10 +236,10 @@ static void _npc_render(struct batsup_sprite *sprite,int x,int y) {
     int alpha=255-(BATTLE->helloclock*255)/HELLO_TIME;
     if (alpha<=0) return;
     if (alpha>0xff) alpha=0xff;
-    graf_set_alpha(&g.graf,alpha);
+    graf_set_alpha(g_graf,alpha);
   }
-  graf_tile(&g.graf,x,y,sprite->tileid+SPRITE->animframe,sprite->xform);
-  graf_set_alpha(&g.graf,0xff);
+  graf_tile(g_graf,x,y,sprite->tileid+SPRITE->animframe,sprite->xform);
+  graf_set_alpha(g_graf,0xff);
 }
 
 static void npc_init(struct battle *battle,struct batsup_sprite *sprite,int walking) {
@@ -368,10 +368,10 @@ static void distancing_render_distance(struct battle *battle,int spriteid) {
   const double radius=10.0;
   x+=lround(SPRITE->nearnx*radius);
   y+=lround(SPRITE->nearny*radius);
-  graf_set_image(&g.graf,RID_image_tinyfonttiles);
-  if (SPRITE->dispdist>=100) graf_tile(&g.graf,x-6,y,'0'+(SPRITE->dispdist/100)%10,0);
-  if (SPRITE->dispdist>=10) graf_tile(&g.graf,x,y,'0'+(SPRITE->dispdist/10)%10,0);
-  graf_tile(&g.graf,x+6,y,'0'+SPRITE->dispdist%10,0);
+  graf_set_image(g_graf,RID_image_tinyfonttiles);
+  if (SPRITE->dispdist>=100) graf_tile(g_graf,x-6,y,'0'+(SPRITE->dispdist/100)%10,0);
+  if (SPRITE->dispdist>=10) graf_tile(g_graf,x,y,'0'+(SPRITE->dispdist/10)%10,0);
+  graf_tile(g_graf,x+6,y,'0'+SPRITE->dispdist%10,0);
 }
  
 static void _distancing_render(struct battle *battle) {
@@ -400,10 +400,10 @@ static void _distancing_render(struct battle *battle) {
     if (rhw<0) rhw=0; else if (rhw>barw) rhw=barw;
     int lbarx=(FBW>>1)-2-barw;
     int rbarx=(FBW>>1)+2;
-    graf_fill_rect(&g.graf,lbarx-1,2,barw+2,4,0x000000ff);
-    graf_fill_rect(&g.graf,rbarx-1,2,barw+2,4,0x000000ff);
-    graf_fill_rect(&g.graf,lbarx,3,lhw,2,L->color);
-    graf_fill_rect(&g.graf,rbarx+barw-rhw,3,rhw,2,R->color);
+    graf_fill_rect(g_graf,lbarx-1,2,barw+2,4,0x000000ff);
+    graf_fill_rect(g_graf,rbarx-1,2,barw+2,4,0x000000ff);
+    graf_fill_rect(g_graf,lbarx,3,lhw,2,L->color);
+    graf_fill_rect(g_graf,rbarx+barw-rhw,3,rhw,2,R->color);
     //fprintf(stderr,"%10.0f %10.0f\n",L->score,R->score);
   }
 }
@@ -414,7 +414,7 @@ static void _distancing_render(struct battle *battle) {
 const struct battle_type battle_type_distancing={
   .name="distancing",
   .objlen=sizeof(struct battle_distancing),
-  .id=NS_battle_distancing,
+  .id=75,
   .strix_name=276,
   .no_article=0,
   .no_contest=0,

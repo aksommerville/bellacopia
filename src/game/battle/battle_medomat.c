@@ -4,7 +4,10 @@
  * A two-field two-player mode wouldn't be super hard to pull off, if we want it.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
+#include "game/game.h" /* struct prize */
+
+#define NS_itemid_heart 18
 
 #define COLW 10
 #define ROWH 10
@@ -292,9 +295,9 @@ static void medomat_fall(struct battle *battle) {
     
     if (medomat_check_elimination(battle)) {
       medomat_update_colorv(battle);
-      bm_sound(RID_sound_treasure);
+      bm_sound_pan(RID_sound_treasure,0.0);
     } else {
-      bm_sound(RID_sound_chopmiss);
+      bm_sound_pan(RID_sound_chopmiss,0.0);
     }
     
     if (BATTLE->reservec>0) {
@@ -315,7 +318,7 @@ static void medomat_fall(struct battle *battle) {
   
   /* No? Cool, fall one row.
    */
-  bm_sound(RID_sound_tick);
+  bm_sound_pan(RID_sound_tick,0.0);
   BATTLE->fally+=1;
 }
 
@@ -335,17 +338,17 @@ static void medomat_move(struct battle *battle,int dx) {
       !medomat_is_solid(battle,ax+dx,ay+1)&&
       !medomat_is_solid(battle,bx+dx,by+1)
     ) {
-      bm_sound(RID_sound_uimotion);
+      bm_sound_pan(RID_sound_uimotion,0.0);
       BATTLE->fallx+=dx;
       BATTLE->fally+=1;
       BATTLE->fallclock=BATTLE->falltime;
       return;
     }
     // OK, nope.
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     return;
   }
-  bm_sound(RID_sound_uimotion);
+  bm_sound_pan(RID_sound_uimotion,0.0);
   BATTLE->fallx+=dx;
 }
 
@@ -384,16 +387,16 @@ static void medomat_rotate(struct battle *battle,int d) {
         BATTLE->fally+=adjust->dy;
         BATTLE->twindx=ndx;
         BATTLE->twindy=ndy;
-        bm_sound(RID_sound_uimotion);
+        bm_sound_pan(RID_sound_uimotion,0.0);
         return;
       }
     }
-    bm_sound(RID_sound_reject);
+    bm_sound_pan(RID_sound_reject,0.0);
     return;
   }
   BATTLE->twindx=ndx;
   BATTLE->twindy=ndy;
-  bm_sound(RID_sound_uimotion);
+  bm_sound_pan(RID_sound_uimotion,0.0);
 }
 
 /* Clear and score eliminations.
@@ -509,7 +512,7 @@ static void _medomat_update(struct battle *battle,double elapsed) {
       if (medomat_drop_disconnected(battle)) {
         BATTLE->pauseclock=0.200;
       } else if (medomat_check_elimination(battle)) {
-        bm_sound(RID_sound_treasure);
+        bm_sound_pan(RID_sound_treasure,0.0);
         medomat_update_colorv(battle);
         if ((BATTLE->pauseclock<=0.0)&&(BATTLE->reservec>0)) {
           BATTLE->reservec--;
@@ -533,7 +536,7 @@ static void _medomat_update(struct battle *battle,double elapsed) {
    * This does continue during pause.
    */
   int indx=0;
-  switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+  switch (g_input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: indx=-1; break;
     case EGG_BTN_RIGHT: indx=1; break;
   }
@@ -554,8 +557,8 @@ static void _medomat_update(struct battle *battle,double elapsed) {
   
   /* Rotation is permitted during pause.
    */
-  if ((g.input[0]&EGG_BTN_SOUTH)&&!(g.pvinput[0]&EGG_BTN_SOUTH)) medomat_rotate(battle,1);
-  else if ((g.input[0]&EGG_BTN_WEST)&&!(g.pvinput[0]&EGG_BTN_WEST)) medomat_rotate(battle,-1);
+  if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) medomat_rotate(battle,1);
+  else if ((g_input[0]&EGG_BTN_WEST)&&!(g_pvinput[0]&EGG_BTN_WEST)) medomat_rotate(battle,-1);
   
   /* Beyond this point is only gravity.
    * Not applicable during pause.
@@ -566,8 +569,8 @@ static void _medomat_update(struct battle *battle,double elapsed) {
    */
   const double turbodrop=0.050;
   if (BATTLE->turbopoison) {
-    if (!(g.input[0]&EGG_BTN_DOWN)) BATTLE->turbopoison=0;
-  } else if ((g.input[0]&EGG_BTN_DOWN)&&(BATTLE->fallclock>turbodrop)) {
+    if (!(g_input[0]&EGG_BTN_DOWN)) BATTLE->turbopoison=0;
+  } else if ((g_input[0]&EGG_BTN_DOWN)&&(BATTLE->fallclock>turbodrop)) {
     BATTLE->fallclock=turbodrop;
   }
   
@@ -605,21 +608,21 @@ static void medomat_tile(int x,int y,uint8_t cell) {
       } break;
     default: return;
   }
-  graf_fancy(&g.graf,x,y,tileid,xform,0,NS_sys_tilesize,0,color);
+  graf_fancy(g_graf,x,y,tileid,xform,0,NS_sys_tilesize,0,color);
 }
  
 static void _medomat_render(struct battle *battle) {
 
   // Background.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x3664beff); // Agree with the tile color in image:fractia_int.
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x3664beff); // Agree with the tile color in image:fractia_int.
   const int fldw=COLC*COLW;
   const int fldh=ROWC*ROWH;
   const int fldx=(FBW>>1)-(fldw>>1);
   const int fldy=(FBH>>1)-(fldh>>1)+6;
-  graf_fill_rect(&g.graf,fldx,fldy,fldw+1,fldh+1,0x000000ff);
+  graf_fill_rect(g_graf,fldx,fldy,fldw+1,fldh+1,0x000000ff);
   
   // Field, fixed bits only.
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   int dsty0=fldy+(ROWH>>1);
   int dstx0=fldx+(COLW>>1);
   int dsty=dsty0;
@@ -636,14 +639,14 @@ static void _medomat_render(struct battle *battle) {
   
   // Flash eliminations.
   if ((BATTLE->pauseclock>0.0)&&(BATTLE->eliminationc>0)) {
-    graf_set_input(&g.graf,0);
+    graf_set_input(g_graf,0);
     const struct elimination *el=BATTLE->eliminationv;
     int i=BATTLE->eliminationc;
     for (;i-->0;el++) {
       int frame=(int)(BATTLE->pauseclock*5.0);
-      graf_fill_rect(&g.graf,fldx+el->x*COLW,fldy+el->y*ROWH,el->w*COLW,el->h*ROWH,(frame&1)?0x00000040:0x000000c0);
+      graf_fill_rect(g_graf,fldx+el->x*COLW,fldy+el->y*ROWH,el->w*COLW,el->h*ROWH,(frame&1)?0x00000040:0x000000c0);
     }
-    graf_set_image(&g.graf,RID_image_battle_fractia);
+    graf_set_image(g_graf,RID_image_battle_fractia);
   }
   
   // The falling pill.
@@ -663,8 +666,8 @@ static void _medomat_render(struct battle *battle) {
   int i=BATTLE->reservec;
   const uint32_t deadpillcolor=0xc0c0c0ff;
   for (;i-->0;dstx+=12) {
-    graf_fancy(&g.graf,dstx,dsty,0x4a,EGG_XFORM_YREV,0,NS_sys_tilesize,0,deadpillcolor);
-    graf_fancy(&g.graf,dstx,dsty-ROWH,0x4a,0,0,NS_sys_tilesize,0,deadpillcolor);
+    graf_fancy(g_graf,dstx,dsty,0x4a,EGG_XFORM_YREV,0,NS_sys_tilesize,0,deadpillcolor);
+    graf_fancy(g_graf,dstx,dsty-ROWH,0x4a,0,0,NS_sys_tilesize,0,deadpillcolor);
   }
   
   // Show collected hearts.
@@ -673,7 +676,7 @@ static void _medomat_render(struct battle *battle) {
   for (i=0;i<PRIZE_LIMIT;i++,dstx+=12) {
     uint32_t color=0x202020ff;
     if (i<BATTLE->prizec) color=0xffffffff;
-    graf_fancy(&g.graf,dstx,dsty,0x4c,0,0,NS_sys_tilesize,0,color);
+    graf_fancy(g_graf,dstx,dsty,0x4c,0,0,NS_sys_tilesize,0,color);
   }
 }
 
@@ -694,7 +697,7 @@ static int _medomat_get_prizes(struct prize *v,int a,struct battle *battle) {
 const struct battle_type battle_type_medomat={
   .name="medomat",
   .objlen=sizeof(struct battle_medomat),
-  .id=NS_battle_medomat,
+  .id=65,
   .strix_name=235,
   .no_article=0,
   .no_contest=0,

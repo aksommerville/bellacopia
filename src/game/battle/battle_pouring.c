@@ -1,7 +1,7 @@
 /* battle_pouring.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define PLAYER_STATE_READY 0
 #define PLAYER_STATE_POUR 1
@@ -153,7 +153,7 @@ static void _pouring_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -203,11 +203,11 @@ static void player_render(struct battle *battle,struct player *player) {
     case PLAYER_STATE_DONE: tileid_arm+=2; break;
   }
   
-  graf_tile(&g.graf,xarm,yarm,tileid_arm,xform);
-  graf_tile(&g.graf,xback,ytop,player->tileid_body,xform);
-  graf_tile(&g.graf,xfront,ytop,player->tileid_body+1,xform);
-  graf_tile(&g.graf,xback,ybottom,player->tileid_body+0x10,xform);
-  graf_tile(&g.graf,xfront,ybottom,player->tileid_body+0x11,xform);
+  graf_tile(g_graf,xarm,yarm,tileid_arm,xform);
+  graf_tile(g_graf,xback,ytop,player->tileid_body,xform);
+  graf_tile(g_graf,xfront,ytop,player->tileid_body+1,xform);
+  graf_tile(g_graf,xback,ybottom,player->tileid_body+0x10,xform);
+  graf_tile(g_graf,xfront,ybottom,player->tileid_body+0x11,xform);
   
   // Flying teapot.
   if (player->state==PLAYER_STATE_DONE) {
@@ -219,7 +219,7 @@ static void player_render(struct battle *battle,struct player *player) {
       case 2: tileid+=0x20; break;
       case 3: tileid+=0x10; break;
     }
-    graf_tile(&g.graf,tpx,tpy,tileid,xform);
+    graf_tile(g_graf,tpx,tpy,tileid,xform);
   }
   
   // Teacup.
@@ -227,30 +227,30 @@ static void player_render(struct battle *battle,struct player *player) {
   int tcx;
   if (player->who) {
     tcx=xfront-NS_sys_tilesize*2-(NS_sys_tilesize>>1)-1;
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*1,tcy,0xbd,EGG_XFORM_XREV);
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*2,tcy,0xbe,EGG_XFORM_XREV);
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*3,tcy,0xbf,EGG_XFORM_XREV);
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*1,tcy+NS_sys_tilesize,0xcd,EGG_XFORM_XREV);
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*2,tcy+NS_sys_tilesize,0xce,EGG_XFORM_XREV);
-    graf_tile(&g.graf,xfront-NS_sys_tilesize*3,tcy+NS_sys_tilesize,0xcf,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*1,tcy,0xbd,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*2,tcy,0xbe,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*3,tcy,0xbf,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*1,tcy+NS_sys_tilesize,0xcd,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*2,tcy+NS_sys_tilesize,0xce,EGG_XFORM_XREV);
+    graf_tile(g_graf,xfront-NS_sys_tilesize*3,tcy+NS_sys_tilesize,0xcf,EGG_XFORM_XREV);
   } else {
     tcx=xfront+(NS_sys_tilesize>>1)+2;
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*1,tcy,0xbd,0);
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*2,tcy,0xbe,0);
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*3,tcy,0xbf,0);
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*1,tcy+NS_sys_tilesize,0xcd,0);
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*2,tcy+NS_sys_tilesize,0xce,0);
-    graf_tile(&g.graf,xfront+NS_sys_tilesize*3,tcy+NS_sys_tilesize,0xcf,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*1,tcy,0xbd,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*2,tcy,0xbe,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*3,tcy,0xbf,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*1,tcy+NS_sys_tilesize,0xcd,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*2,tcy+NS_sys_tilesize,0xce,0);
+    graf_tile(g_graf,xfront+NS_sys_tilesize*3,tcy+NS_sys_tilesize,0xcf,0);
   }
   int h=(int)player->fill;
   if (h>0) {
     if (h>30) h=30;
-    graf_decal(&g.graf,tcx,tcy-(NS_sys_tilesize>>1)+30-h,208,208+30-h,32,h);
+    graf_decal(g_graf,tcx,tcy-(NS_sys_tilesize>>1)+30-h,208,208+30-h,32,h);
     // And if it overflowed, an extra indicator:
     if (player->overflow) {
-      graf_set_tint(&g.graf,(player->animframe&2)?0xff0000ff:0xffff00ff);
-      graf_decal(&g.graf,tcx,tcy-24,224,0,32,16);
-      graf_set_tint(&g.graf,0);
+      graf_set_tint(g_graf,(player->animframe&2)?0xff0000ff:0xffff00ff);
+      graf_decal(g_graf,tcx,tcy-24,224,0,32,16);
+      graf_set_tint(g_graf,0);
     }
   }
 }
@@ -259,10 +259,10 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _pouring_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  graf_set_image(&g.graf,RID_image_battle_forest);
+  graf_set_image(g_graf,RID_image_battle_forest);
   player_render(battle,l);
   player_render(battle,r);
 }
@@ -273,7 +273,7 @@ static void _pouring_render(struct battle *battle) {
 const struct battle_type battle_type_pouring={
   .name="pouring",
   .objlen=sizeof(struct battle_pouring),
-  .id=NS_battle_pouring,
+  .id=100,
   .strix_name=328,
   .no_article=0,
   .no_contest=0,

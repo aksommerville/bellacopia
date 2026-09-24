@@ -1,7 +1,7 @@
 /* battle_cinematography.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define BAT_LIMIT 2
 #define SAMPLE_LIMIT 192
@@ -239,11 +239,11 @@ static void bat_print_film(struct battle *battle,double x,double y,double z,doub
   double scale=75.0/(double)xr;
   // oops. graf_decal_rotate() can't flop. So we have the flopped images next to the regular ones in the tilesheet.
   if (bxform) srcx+=NS_sys_tilesize<<1;
-  graf_decal_rotate(&g.graf,dstx,dsty,srcx,srcy,srcw,0.0,1.0,scale);
+  graf_decal_rotate(g_graf,dstx,dsty,srcx,srcy,srcw,0.0,1.0,scale);
 }
  
 static void player_print_film(struct battle *battle,struct player *player,struct sample *sample) {
-  graf_set_output(&g.graf,player->filmtexid);
+  graf_set_output(g_graf,player->filmtexid);
   egg_texture_clear(player->filmtexid);
   double x,y,z;
   if (player->who) {
@@ -255,12 +255,12 @@ static void player_print_film(struct battle *battle,struct player *player,struct
     y=sample->ly;
     z=sample->lz;
   }
-  graf_set_image(&g.graf,RID_image_battle_underground);
-  graf_set_filter(&g.graf,1);
+  graf_set_image(g_graf,RID_image_battle_underground);
+  graf_set_filter(g_graf,1);
   bat_print_film(battle,x,y,z,sample->lbx,sample->lby,sample->lbtile,sample->lbxform);
   bat_print_film(battle,x,y,z,sample->rbx,sample->rby,sample->rbtile,sample->rbxform);
-  graf_set_filter(&g.graf,0);
-  graf_set_output(&g.graf,1);
+  graf_set_filter(g_graf,0);
+  graf_set_output(g_graf,1);
   
   /* Update the score.
    * Add up to 1.0 at each frame.
@@ -328,7 +328,7 @@ static void _cinematography_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -375,16 +375,16 @@ static void player_render(struct battle *battle,struct player *player) {
   int dsty=lround(player->y);
   int xr=lround(18.0+(1.0-player->z)*18.0);
   int yr=lround(12.0+(1.0-player->z)*12.0);
-  graf_set_image(&g.graf,RID_image_battle_underground);
-  graf_fancy(&g.graf,dstx,dsty,0x0e,0,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx-xr,dsty-yr,0x0c,0,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx+xr,dsty-yr,0x0c,EGG_XFORM_XREV,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx-xr,dsty+yr,0x0c,EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx+xr,dsty+yr,0x0c,EGG_XFORM_XREV|EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx,dsty-yr,0x0d,0,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx,dsty+yr,0x0d,EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx-xr,dsty,0x0d,EGG_XFORM_SWAP,0,NS_sys_tilesize,0,player->color);
-  graf_fancy(&g.graf,dstx+xr,dsty,0x0d,EGG_XFORM_SWAP|EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
+  graf_set_image(g_graf,RID_image_battle_underground);
+  graf_fancy(g_graf,dstx,dsty,0x0e,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx-xr,dsty-yr,0x0c,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx+xr,dsty-yr,0x0c,EGG_XFORM_XREV,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx-xr,dsty+yr,0x0c,EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx+xr,dsty+yr,0x0c,EGG_XFORM_XREV|EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx,dsty-yr,0x0d,0,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx,dsty+yr,0x0d,EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx-xr,dsty,0x0d,EGG_XFORM_SWAP,0,NS_sys_tilesize,0,player->color);
+  graf_fancy(g_graf,dstx+xr,dsty,0x0d,EGG_XFORM_SWAP|EGG_XFORM_YREV,0,NS_sys_tilesize,0,player->color);
 }
 
 /* Render bat.
@@ -409,7 +409,7 @@ static void bat_render(struct battle *battle,struct bat *bat) {
   int srcy=NS_sys_tilesize+h*frame;
   int dstx=(int)bat->x-NS_sys_tilesize;
   int dsty=(int)bat->y-NS_sys_tilesize;
-  graf_decal_xform(&g.graf,dstx,dsty,srcx,srcy,w,h,bat->xform);
+  graf_decal_xform(g_graf,dstx,dsty,srcx,srcy,w,h,bat->xform);
 }
 
 /* Render player for replay.
@@ -418,19 +418,19 @@ static void bat_render(struct battle *battle,struct bat *bat) {
 static void replay_render(struct battle *battle,struct player *player) {
   int dsty=(FBH>>1)-(FILMH>>1);
   int dstx=player->who?((FBW>>1)+5):((FBW>>1)-5-FILMW);
-  graf_fill_rect(&g.graf,dstx,dsty,FILMW,FILMH,0x816d57ff);
-  graf_set_input(&g.graf,player->filmtexid);
-  graf_decal(&g.graf,dstx,dsty,0,0,FILMW,FILMH);
+  graf_fill_rect(g_graf,dstx,dsty,FILMW,FILMH,0x816d57ff);
+  graf_set_input(g_graf,player->filmtexid);
+  graf_decal(g_graf,dstx,dsty,0,0,FILMW,FILMH);
   /* Flicker. TODO Maybe don't? It doesn't look that great so far, and it's a potential epilepsy hazard.
   switch (BATTLE->replay_extrac) {
     case 1: break;
-    case 2: graf_fill_rect(&g.graf,dstx,dsty,FILMW,FILMH,0x00000008); break;
-    case 3: graf_fill_rect(&g.graf,dstx,dsty,FILMW,FILMH,0x0000000c); break;
-    default:graf_fill_rect(&g.graf,dstx,dsty,FILMW,FILMH,0x00000010); break;
+    case 2: graf_fill_rect(g_graf,dstx,dsty,FILMW,FILMH,0x00000008); break;
+    case 3: graf_fill_rect(g_graf,dstx,dsty,FILMW,FILMH,0x0000000c); break;
+    default:graf_fill_rect(g_graf,dstx,dsty,FILMW,FILMH,0x00000010); break;
   }
   /**/
   if (BATTLE->replay_samplep&1) {
-    graf_fill_rect(&g.graf,dstx,dsty,FILMW,FILMH,0x00000010);
+    graf_fill_rect(g_graf,dstx,dsty,FILMW,FILMH,0x00000010);
   }
 }
 
@@ -455,7 +455,7 @@ static void popmeter_render(struct battle *battle,int x,struct player *player) {
       tileid+=1;
       xform=(i+x)&7;
     }
-    graf_tile(&g.graf,x,y,tileid,xform);
+    graf_tile(g_graf,x,y,tileid,xform);
   }
 }
 
@@ -466,9 +466,9 @@ static void _cinematography_render(struct battle *battle) {
 
   // Background.
   const int groundy=150;
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,groundy,FBW,1,0x000000ff);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
   
@@ -476,17 +476,17 @@ static void _cinematography_render(struct battle *battle) {
   if (BATTLE->replay) {
     BATTLE->replay_extrac++;
     int bgalpha=(int)(BATTLE->bgdim*200.0);
-    if (bgalpha>0) graf_fill_rect(&g.graf,0,0,FBW,FBH,0x00000000|bgalpha);
+    if (bgalpha>0) graf_fill_rect(g_graf,0,0,FBW,FBH,0x00000000|bgalpha);
     replay_render(battle,l);
     replay_render(battle,r);
-    graf_set_image(&g.graf,RID_image_battle_underground);
+    graf_set_image(g_graf,RID_image_battle_underground);
     popmeter_render(battle,(FBW>>1)-6,l);
     popmeter_render(battle,(FBW>>1)+6,r);
     return;
   }
   
   // Bats.
-  graf_set_image(&g.graf,RID_image_battle_underground);
+  graf_set_image(g_graf,RID_image_battle_underground);
   struct bat *bat=BATTLE->batv;
   int i=BATTLE->batc;
   for (;i-->0;bat++) bat_render(battle,bat);
@@ -502,7 +502,7 @@ static void _cinematography_render(struct battle *battle) {
 const struct battle_type battle_type_cinematography={
   .name="cinematography",
   .objlen=sizeof(struct battle_cinematography),
-  .id=NS_battle_cinematography,
+  .id=91,
   .strix_name=310,
   .no_article=0,
   .no_contest=0,

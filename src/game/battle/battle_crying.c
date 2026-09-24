@@ -13,7 +13,7 @@
  *  - 90 ms target for alternating.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define END_COOLDOWN 1.0
 #define UPFORCE_EASY   0.150 /* Ended up not using force biases. The only variables are headstart time and tap interval. */
@@ -172,7 +172,7 @@ static void _crying_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
     if (battle->outcome>-2) return;
@@ -184,9 +184,9 @@ static void _crying_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
   int frame=(player->squallclock>0.0)?1:0;
-  graf_decal_xform(&g.graf,player->dstx-16,player->dsty-16,player->srcx+frame*32,player->srcy,32,32,player->xform);
+  graf_decal_xform(g_graf,player->dstx-16,player->dsty-16,player->srcx+frame*32,player->srcy,32,32,player->xform);
   if (frame) {
-    graf_tile(&g.graf,player->dstx,player->dsty-24,0x6d,0);
+    graf_tile(g_graf,player->dstx,player->dsty-24,0x6d,0);
   }
 }
 
@@ -200,12 +200,12 @@ static void meter_render(struct battle *battle,double misery,int x,int w,int vic
   int fullh=40;
   int barh=(int)(misery*fullh);
   if (barh>=fullh) {
-    graf_fill_rect(&g.graf,x,y,w,fullh,fgcolor);
+    graf_fill_rect(g_graf,x,y,w,fullh,fgcolor);
   } else if (barh<=0) {
-    graf_fill_rect(&g.graf,x,y,w,fullh,bgcolor);
+    graf_fill_rect(g_graf,x,y,w,fullh,bgcolor);
   } else {
-    graf_fill_rect(&g.graf,x,y,w,fullh-barh,bgcolor);
-    graf_fill_rect(&g.graf,x,y+fullh-barh,w,barh,fgcolor);
+    graf_fill_rect(g_graf,x,y,w,fullh-barh,bgcolor);
+    graf_fill_rect(g_graf,x,y+fullh-barh,w,barh,fgcolor);
   }
 }
 
@@ -218,11 +218,11 @@ static void _crying_render(struct battle *battle) {
   const uint32_t light=0x8090a0ff;
   const uint32_t dark= 0x406090ff;
   const int horizon=100;
-  graf_gradient_rect(&g.graf,0,0,FBW,horizon,dark,dark,light,light);
-  graf_gradient_rect(&g.graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
+  graf_gradient_rect(g_graf,0,0,FBW,horizon,dark,dark,light,light);
+  graf_gradient_rect(g_graf,0,horizon,FBW,FBH-horizon,light,light,dark,dark);
   
   // Sprites.
-  graf_set_image(&g.graf,RID_image_battle_goblins);
+  graf_set_image(g_graf,RID_image_battle_goblins);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
@@ -244,7 +244,7 @@ static const struct battle_input crying_input[]={
 const struct battle_type battle_type_crying={
   .name="crying",
   .objlen=sizeof(struct battle_crying),
-  .id=NS_battle_crying,
+  .id=18,
   .strix_name=56,
   .no_article=0,
   .no_contest=0,

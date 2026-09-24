@@ -2,7 +2,7 @@
  * Thirty Seconds Apothecary, played competitively in a fixed field like Super Sprint.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define RADIUS 9.0
 #define THING_LIMIT 5
@@ -286,7 +286,7 @@ static void _broomrace_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -347,43 +347,43 @@ static void _broomrace_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
   int srcx=player->animframe*64,srcy=player->srcy;
-  graf_set_filter(&g.graf,1);
-  graf_set_tint(&g.graf,0x000000ff);
-  graf_set_alpha(&g.graf,0x80);
-  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y+4,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
-  graf_set_tint(&g.graf,0);
-  graf_set_alpha(&g.graf,0xff);
-  graf_decal_rotate(&g.graf,(int)player->x,(int)player->y,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,1);
+  graf_set_tint(g_graf,0x000000ff);
+  graf_set_alpha(g_graf,0x80);
+  graf_decal_rotate(g_graf,(int)player->x,(int)player->y+4,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
+  graf_set_tint(g_graf,0);
+  graf_set_alpha(g_graf,0xff);
+  graf_decal_rotate(g_graf,(int)player->x,(int)player->y,srcx,srcy,64,sin(player->facet),cos(player->facet),0.333);
+  graf_set_filter(g_graf,0);
 }
 
 /* Render.
  */
  
 static void _broomrace_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(&g.graf,RID_image_battle_labyrinth);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(g_graf,RID_image_battle_labyrinth);
   
   if (BATTLE->thingtile) {
-    graf_tile(&g.graf,(int)BATTLE->thingx,(int)BATTLE->thingy,BATTLE->thingtile,0);
+    graf_tile(g_graf,(int)BATTLE->thingx,(int)BATTLE->thingy,BATTLE->thingtile,0);
   }
   
-  graf_set_image(&g.graf,RID_image_broomrace);
+  graf_set_image(g_graf,RID_image_broomrace);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
   
-  graf_set_input(&g.graf,0);
-  graf_fill_rect(&g.graf,0,0,FBW,FLDTOP,0x00000090);
+  graf_set_input(g_graf,0);
+  graf_fill_rect(g_graf,0,0,FBW,FLDTOP,0x00000090);
   
-  graf_set_image(&g.graf,RID_image_battle_labyrinth);
+  graf_set_image(g_graf,RID_image_battle_labyrinth);
   int y=10;
   int x=10;
   const int spacing=10;
   int i=BATTLE->playerv[0].thingc;
   const uint8_t *src=BATTLE->playerv[0].thingv;
-  for (;i-->0;src++,x+=spacing) graf_tile(&g.graf,x,y,*src,0);
+  for (;i-->0;src++,x+=spacing) graf_tile(g_graf,x,y,*src,0);
   x=FBW-10;
-  for (i=BATTLE->playerv[1].thingc,src=BATTLE->playerv[1].thingv;i-->0;src++,x-=spacing) graf_tile(&g.graf,x,y,*src,0);
+  for (i=BATTLE->playerv[1].thingc,src=BATTLE->playerv[1].thingv;i-->0;src++,x-=spacing) graf_tile(g_graf,x,y,*src,0);
 }
 
 /* Type definition.
@@ -392,7 +392,7 @@ static void _broomrace_render(struct battle *battle) {
 const struct battle_type battle_type_broomrace={
   .name="broomrace",
   .objlen=sizeof(struct battle_broomrace),
-  .id=NS_battle_broomrace,
+  .id=55,
   .strix_name=181,
   .no_article=0,
   .no_contest=1,

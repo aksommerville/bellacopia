@@ -2,7 +2,7 @@
  * L/R to walk and catch falling pancakes on your two plates. Fall if too lopsided.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define HEADY 108
 #define PLATEY 120
@@ -275,7 +275,7 @@ static int check_heads(struct battle *battle,struct cake *cake) {
     double dx=cake->x-player->x;
     if ((dx>=-8.0)&&(dx<8.0)) {
       player->cakec++;
-      bm_sound(RID_sound_collect);
+      bm_sound_pan(RID_sound_collect,0.0);
       return 1;
     }
   }
@@ -294,12 +294,12 @@ static int check_plates(struct battle *battle,struct cake *cake) {
     double dx=cake->x-player->x;
     if ((dx>=-28.0)&&(dx<=-16.0)) {
       player->armv[0].cakec++;
-      bm_sound(RID_sound_collect);
+      bm_sound_pan(RID_sound_collect,0.0);
       return 1;
     }
     if ((dx>=16.0)&&(dx<=28.0)) {
       player->armv[1].cakec++;
-      bm_sound(RID_sound_collect);
+      bm_sound_pan(RID_sound_collect,0.0);
       return 1;
     }
   }
@@ -316,7 +316,7 @@ static void _stacking_update(struct battle *battle,double elapsed) {
   int i=2;
   for (;i-->0;player++) {
     if (player->fall) continue;
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -383,49 +383,49 @@ static void player_render(struct battle *battle,struct player *player) {
   // Fallen is a different thing.
   if (player->fall<0) {
     y=GROUNDY-6;
-    graf_tile(&g.graf,x-ht,y,player->tileid,EGG_XFORM_SWAP|EGG_XFORM_XREV);
-    graf_tile(&g.graf,x+ht,y,player->tileid+0x10,EGG_XFORM_SWAP|EGG_XFORM_XREV);
+    graf_tile(g_graf,x-ht,y,player->tileid,EGG_XFORM_SWAP|EGG_XFORM_XREV);
+    graf_tile(g_graf,x+ht,y,player->tileid+0x10,EGG_XFORM_SWAP|EGG_XFORM_XREV);
     return;
   }
   if (player->fall>0) {
     y=GROUNDY-6;
-    graf_tile(&g.graf,x-ht,y,player->tileid+0x10,EGG_XFORM_SWAP|EGG_XFORM_YREV|EGG_XFORM_XREV);
-    graf_tile(&g.graf,x+ht,y,player->tileid,EGG_XFORM_SWAP|EGG_XFORM_YREV|EGG_XFORM_XREV);
+    graf_tile(g_graf,x-ht,y,player->tileid+0x10,EGG_XFORM_SWAP|EGG_XFORM_YREV|EGG_XFORM_XREV);
+    graf_tile(g_graf,x+ht,y,player->tileid,EGG_XFORM_SWAP|EGG_XFORM_YREV|EGG_XFORM_XREV);
     return;
   }
   
   // If one stack is 2 cakes deeper than the other, shout a warning.
   int lc=player->armv[0].cakec;
   int rc=player->armv[1].cakec;
-  if (lc>=rc+2) graf_tile(&g.graf,x-NS_sys_tilesize,y-ht,0xb8,EGG_XFORM_XREV);
-  else if (rc>=lc+2) graf_tile(&g.graf,x+NS_sys_tilesize,y-ht,0xb8,0);
+  if (lc>=rc+2) graf_tile(g_graf,x-NS_sys_tilesize,y-ht,0xb8,EGG_XFORM_XREV);
+  else if (rc>=lc+2) graf_tile(g_graf,x+NS_sys_tilesize,y-ht,0xb8,0);
   
   // Arms first.
   int ly=y+ht+lc;
   int ry=y+ht+rc;
-  graf_tile(&g.graf,x+ht,ry,player->tileid+1,0);
-  graf_tile(&g.graf,x+ht+NS_sys_tilesize,ry,player->tileid+2,0);
-  graf_tile(&g.graf,x-ht,ly,player->tileid+1,EGG_XFORM_XREV);
-  graf_tile(&g.graf,x-ht-NS_sys_tilesize,ly,player->tileid+2,EGG_XFORM_XREV);
+  graf_tile(g_graf,x+ht,ry,player->tileid+1,0);
+  graf_tile(g_graf,x+ht+NS_sys_tilesize,ry,player->tileid+2,0);
+  graf_tile(g_graf,x-ht,ly,player->tileid+1,EGG_XFORM_XREV);
+  graf_tile(g_graf,x-ht-NS_sys_tilesize,ly,player->tileid+2,EGG_XFORM_XREV);
   
   // Then trunk.
-  graf_tile(&g.graf,x,y,player->tileid,player->xform);
-  graf_tile(&g.graf,x,y+NS_sys_tilesize,player->tileid+0x10,player->xform);
+  graf_tile(g_graf,x,y,player->tileid,player->xform);
+  graf_tile(g_graf,x,y+NS_sys_tilesize,player->tileid+0x10,player->xform);
   
   // Then noggin-cakes.
   int i=player->cakec;
   while (i-->0) {
-    graf_tile(&g.graf,x,y,0xb7,player->xform);
+    graf_tile(g_graf,x,y,0xb7,player->xform);
     y-=2;
   }
   
   // Then plate-cakes.
   for (i=player->armv[0].cakec;i-->0;) {
-    graf_tile(&g.graf,x-ht-NS_sys_tilesize+2,ly,0xb6,0);
+    graf_tile(g_graf,x-ht-NS_sys_tilesize+2,ly,0xb6,0);
     ly-=2;
   }
   for (i=player->armv[1].cakec;i-->0;) {
-    graf_tile(&g.graf,x+ht+NS_sys_tilesize-2,ry,0xb6,0);
+    graf_tile(g_graf,x+ht+NS_sys_tilesize-2,ry,0xb6,0);
     ry-=2;
   }
 }
@@ -434,17 +434,17 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _stacking_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   struct cake *cake=BATTLE->cakev;
   int i=BATTLE->cakec;
   for (;i-->0;cake++) {
     uint8_t tileid=0xfd;
     if (cake->landed) tileid=0xb6;
-    graf_tile(&g.graf,(int)cake->x,(int)cake->y,tileid,0);
+    graf_tile(g_graf,(int)cake->x,(int)cake->y,tileid,0);
   }
   
   player_render(battle,BATTLE->playerv+0);
@@ -457,7 +457,7 @@ static void _stacking_render(struct battle *battle) {
 const struct battle_type battle_type_stacking={
   .name="stacking",
   .objlen=sizeof(struct battle_stacking),
-  .id=NS_battle_stacking,
+  .id=25,
   .strix_name=152,
   .no_article=0,
   .no_contest=0,

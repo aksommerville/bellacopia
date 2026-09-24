@@ -1,7 +1,7 @@
 /* battle_jousting.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 160
 
@@ -231,7 +231,7 @@ static void _jousting_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -270,7 +270,7 @@ static void _jousting_update(struct battle *battle,double elapsed) {
           rp->hurt=0.500;
           lp->hurtdx=-150.0;
           rp->hurtdx=150.0;
-          bm_sound(RID_sound_ouch);
+          bm_sound_pan(RID_sound_ouch,0.0);
         }
       } else {
         // Stab in the back: Stabber wins.
@@ -293,25 +293,25 @@ static void player_render(struct battle *battle,struct player *player) {
   } else {
     tileid+=3+player->animframe;
   }
-  if (player->hurt>0.0) graf_set_tint(&g.graf,0xff000080);
-  graf_tile(&g.graf,x,y,tileid,player->xform);
+  if (player->hurt>0.0) graf_set_tint(g_graf,0xff000080);
+  graf_tile(g_graf,x,y,tileid,player->xform);
   // Screen wraps around horizontally:
-  if (x<NS_sys_tilesize>>1) graf_tile(&g.graf,x+FBW,y,tileid,player->xform);
-  else if (x>FBW-(NS_sys_tilesize>>1)) graf_tile(&g.graf,x-FBW,y,tileid,player->xform);
-  graf_set_tint(&g.graf,0);
+  if (x<NS_sys_tilesize>>1) graf_tile(g_graf,x+FBW,y,tileid,player->xform);
+  else if (x>FBW-(NS_sys_tilesize>>1)) graf_tile(g_graf,x-FBW,y,tileid,player->xform);
+  graf_set_tint(g_graf,0);
 }
 
 /* Render.
  */
  
 static void _jousting_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,GROUNDY,0x000000ff);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_set_image(&g.graf,RID_image_battle_war);
+  graf_fill_rect(g_graf,0,0,FBW,GROUNDY,0x000000ff);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_set_image(g_graf,RID_image_battle_war);
   
   int x=NS_sys_tilesize>>1;
   int y=NS_sys_tilesize>>1;
-  for (;x<FBW;x+=NS_sys_tilesize) graf_tile(&g.graf,x,y,0x88,0);
+  for (;x<FBW;x+=NS_sys_tilesize) graf_tile(g_graf,x,y,0x88,0);
   
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -323,7 +323,7 @@ static void _jousting_render(struct battle *battle) {
 const struct battle_type battle_type_jousting={
   .name="jousting",
   .objlen=sizeof(struct battle_jousting),
-  .id=NS_battle_jousting,
+  .id=86,
   .strix_name=298,
   .no_article=0,
   .no_contest=0,

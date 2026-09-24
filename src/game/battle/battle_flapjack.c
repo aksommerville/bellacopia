@@ -2,7 +2,7 @@
  * Tap A to flip your pancake. Goal is to heat each side evenly, with minimal flip count.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define CAKE_LIMIT 6
 #define FLIP_RATE 2.500
@@ -261,7 +261,7 @@ static void _flapjack_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human],g.pvinput[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human],g_pvinput[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -351,12 +351,12 @@ static void player_render(struct battle *battle,struct player *player) {
     if (i==player->cakep) { // Spatula.
       uint8_t tileid=0xc0;
       if (player->flipclock>0.0) tileid+=1;
-      graf_fancy(&g.graf,cakex,cakey0+NS_sys_tilesize  ,tileid+0x00,0,0,NS_sys_tilesize,0,player->color);
-      graf_fancy(&g.graf,cakex,cakey0+NS_sys_tilesize*2,tileid+0x10,0,0,NS_sys_tilesize,0,player->color);
+      graf_fancy(g_graf,cakex,cakey0+NS_sys_tilesize  ,tileid+0x00,0,0,NS_sys_tilesize,0,player->color);
+      graf_fancy(g_graf,cakex,cakey0+NS_sys_tilesize*2,tileid+0x10,0,0,NS_sys_tilesize,0,player->color);
     }
     if (cake->indicator) { // Accept or reject indicator.
       uint8_t tileid=(cake->indicator<0)?0xfb:0xfc;
-      graf_fancy(&g.graf,cakex,cakey0,tileid,0,0,NS_sys_tilesize,0,0x808080ff); // Using fancy just to share the batch, could be plain tile.
+      graf_fancy(g_graf,cakex,cakey0,tileid,0,0,NS_sys_tilesize,0,0x808080ff); // Using fancy just to share the batch, could be plain tile.
     } else { // Cooking or flipping.
       uint32_t color=cake_color(cake->doneness[cake->side^1]);
       uint8_t tileid=0xc2;
@@ -364,16 +364,16 @@ static void player_render(struct battle *battle,struct player *player) {
       if (frame<0) frame=0; else if (frame>6) frame=6;
       tileid+=frame*2;
       int cakey=cakey0-cake->flip*10.0;
-      graf_fancy(&g.graf,cakex-ht,cakey-ht,tileid+0x00,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,cakex+ht,cakey-ht,tileid+0x01,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,cakex-ht,cakey+ht,tileid+0x10,0,0,NS_sys_tilesize,0,color);
-      graf_fancy(&g.graf,cakex+ht,cakey+ht,tileid+0x11,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,cakex-ht,cakey-ht,tileid+0x00,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,cakex+ht,cakey-ht,tileid+0x01,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,cakex-ht,cakey+ht,tileid+0x10,0,0,NS_sys_tilesize,0,color);
+      graf_fancy(g_graf,cakex+ht,cakey+ht,tileid+0x11,0,0,NS_sys_tilesize,0,color);
       if (player->hint&&(cake->flip<=0.0)) {
         int hintx=cakex;
         int hinty=cakey-NS_sys_tilesize-(NS_sys_tilesize>>1);
         double dn=cake->doneness[cake->side];
         uint32_t color=steam_color(cake->doneness[cake->side]);
-        graf_fancy(&g.graf,hintx,hinty,0xff,(g.framec&8)?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,color);
+        graf_fancy(g_graf,hintx,hinty,0xff,(g_framec&8)?EGG_XFORM_XREV:0,0,NS_sys_tilesize,0,color);
       }
     }
   }
@@ -386,7 +386,7 @@ static void player_render(struct battle *battle,struct player *player) {
     int scorex=fldx+(fldw>>1)-(scorew>>1)+(NS_sys_tilesize>>1);
     for (i=0;i<scorec;i++,scorex+=spacing) {
       uint8_t tileid=(i<player->validc)?0xfd:0xfe;
-      graf_fancy(&g.graf,scorex,scorey,tileid,0,0,NS_sys_tilesize,0,0);
+      graf_fancy(g_graf,scorex,scorey,tileid,0,0,NS_sys_tilesize,0,0);
     }
   }
 }
@@ -395,8 +395,8 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _flapjack_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x403c38ff);
-  graf_set_image(&g.graf,RID_image_battle_fractia);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x403c38ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -407,7 +407,7 @@ static void _flapjack_render(struct battle *battle) {
 const struct battle_type battle_type_flapjack={
   .name="flapjack",
   .objlen=sizeof(struct battle_flapjack),
-  .id=NS_battle_flapjack,
+  .id=23,
   .strix_name=150,
   .no_article=0,
   .no_contest=0,

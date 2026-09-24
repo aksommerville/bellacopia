@@ -2,7 +2,7 @@
  * Put the falling things in piles, like with like.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 #include "game/batsup/prng.h"
 
 #define THING_LIMIT 128
@@ -323,7 +323,7 @@ static void _sorting_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -345,19 +345,19 @@ static void _sorting_update(struct battle *battle,double elapsed) {
  */
  
 static void player_render_back(struct battle *battle,struct player *player) {
-  graf_fill_rect(&g.graf,player->fldx-2,player->fldy-2,player->fldw+4,player->fldh+4,0xffffffff);
-  graf_fill_rect(&g.graf,player->fldx-1,player->fldy-1,player->fldw+2,player->fldh+2,0x000000ff);
-  graf_fill_rect(&g.graf,player->fldx,player->fldy,player->fldw,player->fldh,player->bgcolor);
+  graf_fill_rect(g_graf,player->fldx-2,player->fldy-2,player->fldw+4,player->fldh+4,0xffffffff);
+  graf_fill_rect(g_graf,player->fldx-1,player->fldy-1,player->fldw+2,player->fldh+2,0x000000ff);
+  graf_fill_rect(g_graf,player->fldx,player->fldy,player->fldw,player->fldh,player->bgcolor);
 }
 
 static void player_render_front(struct battle *battle,struct player *player) {
   struct thing *thing=player->thingv;
   int i=player->thingc;
   for (;i-->0;thing++) {
-    graf_fancy(&g.graf,player->fldx+thing->x,player->fldy+thing->y,0x4f,0,0,NS_sys_tilesize,0,thing->color);
+    graf_fancy(g_graf,player->fldx+thing->x,player->fldy+thing->y,0x4f,0,0,NS_sys_tilesize,0,thing->color);
   }
   if (player->thingcolor) {
-    graf_fancy(&g.graf,player->fldx+(int)player->thingx,player->fldy+(int)player->thingy,0x4f,0,0,NS_sys_tilesize,0,player->thingcolor);
+    graf_fancy(g_graf,player->fldx+(int)player->thingx,player->fldy+(int)player->thingy,0x4f,0,0,NS_sys_tilesize,0,player->thingcolor);
   }
 }
 
@@ -366,9 +366,9 @@ static void sorting_render_score(struct battle *battle,struct player *player) {
   if (n<0) n=0; else if (n>999) n=999;
   int y=player->fldy-8;
   int x=player->fldx+(player->fldw>>1)+6;
-  graf_tile(&g.graf,x,y,'0'+n%10,0); if (!(n/=10)) return; x-=8;
-  graf_tile(&g.graf,x,y,'0'+n%10,0); if (!(n/=10)) return; x-=8;
-  graf_tile(&g.graf,x,y,'0'+n%10,0);
+  graf_tile(g_graf,x,y,'0'+n%10,0); if (!(n/=10)) return; x-=8;
+  graf_tile(g_graf,x,y,'0'+n%10,0); if (!(n/=10)) return; x-=8;
+  graf_tile(g_graf,x,y,'0'+n%10,0);
 }
 
 /* Render.
@@ -391,38 +391,38 @@ static void _sorting_render(struct battle *battle) {
       bgcolor=(r<<24)|0x008080ff;
     }
   }
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,bgcolor);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,bgcolor);
   player_render_back(battle,BATTLE->playerv+0);
   player_render_back(battle,BATTLE->playerv+1);
 
-  graf_set_image(&g.graf,RID_image_battle_fractia2);
+  graf_set_image(g_graf,RID_image_battle_fractia2);
   player_render_front(battle,BATTLE->playerv+0);
   player_render_front(battle,BATTLE->playerv+1);
-  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_set_image(g_graf,RID_image_fonttiles);
   sorting_render_score(battle,BATTLE->playerv+0);
   sorting_render_score(battle,BATTLE->playerv+1);
   if (sec>=10) {
-    graf_tile(&g.graf,(FBW>>1)-4,10,'0'+sec/10,0);
-    graf_tile(&g.graf,(FBW>>1)+4,10,'0'+sec%10,0);
+    graf_tile(g_graf,(FBW>>1)-4,10,'0'+sec/10,0);
+    graf_tile(g_graf,(FBW>>1)+4,10,'0'+sec%10,0);
   } else {
-    graf_tile(&g.graf,FBW>>1,10,'0'+sec,0);
+    graf_tile(g_graf,FBW>>1,10,'0'+sec,0);
   }
 
   if (BATTLE->toastc) {
-    graf_set_image(&g.graf,RID_image_pause);
-    graf_set_tint(&g.graf,0xffffffff);
+    graf_set_image(g_graf,RID_image_pause);
+    graf_set_tint(g_graf,0xffffffff);
     struct toast *toast=BATTLE->toastv;
     int i=BATTLE->toastc;
     for (;i-->0;toast++) {
       if (toast->ttl<=0.0) continue;
       if (toast->v<10) {
-        graf_tile(&g.graf,toast->x,toast->y,0x90+toast->v,0);
+        graf_tile(g_graf,toast->x,toast->y,0x90+toast->v,0);
       } else {
-        graf_tile(&g.graf,toast->x,toast->y,0x90+toast->v/10,0);
-        graf_tile(&g.graf,toast->x+4,toast->y,0x90+toast->v%10,0);
+        graf_tile(g_graf,toast->x,toast->y,0x90+toast->v/10,0);
+        graf_tile(g_graf,toast->x+4,toast->y,0x90+toast->v%10,0);
       }
     }
-    graf_set_tint(&g.graf,0);
+    graf_set_tint(g_graf,0);
   }
 }
 
@@ -437,7 +437,7 @@ static const struct battle_input sorting_input[]={
 const struct battle_type battle_type_sorting={
   .name="sorting",
   .objlen=sizeof(struct battle_sorting),
-  .id=NS_battle_sorting,
+  .id=39,
   .strix_name=165,
   .no_article=0,
   .no_contest=0,

@@ -2,7 +2,7 @@
  * Hold and release south at the right moments.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define SCOREC 4 /* How many judges. */
 
@@ -270,7 +270,7 @@ static void _skijump_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
@@ -302,22 +302,22 @@ static void _skijump_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player,int y0) {
   const int fldh=FBH>>1;
-  graf_set_image(&g.graf,RID_image_skijump);
-  graf_decal(&g.graf,0,y0,0,0,FBW,fldh);
-  graf_set_image(&g.graf,RID_image_icepalace_sprites);
+  graf_set_image(g_graf,RID_image_skijump);
+  graf_decal(g_graf,0,y0,0,0,FBW,fldh);
+  graf_set_image(g_graf,RID_image_icepalace_sprites);
   int px=(int)player->x;
   int py=y0+(int)player->y;
   uint8_t rotate=(int8_t)((player->t*128.0)/M_PI);
-  graf_set_filter(&g.graf,1);
-  graf_fancy(&g.graf,px,py,player->tileid,0,rotate,NS_sys_tilesize,0,0x808080ff);
-  graf_set_filter(&g.graf,0);
+  graf_set_filter(g_graf,1);
+  graf_fancy(g_graf,px,py,player->tileid,0,rotate,NS_sys_tilesize,0,0x808080ff);
+  graf_set_filter(g_graf,0);
   
   /* Highlight the hold range.
    */
   if (player->xon>0.0) {
-    graf_tile(&g.graf,(int)player->xon,y0+40,0x15,0);
+    graf_tile(g_graf,(int)player->xon,y0+40,0x15,0);
     if (player->xoff>0.0) {
-      graf_tile(&g.graf,(int)player->xoff,y0+40,0x16,0);
+      graf_tile(g_graf,(int)player->xoff,y0+40,0x16,0);
     }
   }
   
@@ -329,9 +329,9 @@ static void player_render(struct battle *battle,struct player *player,int y0) {
   if (player->score) tileid++; // arms raised
   int i=SCOREC;
   for (;i-->0;dstx-=20,tileid+=2) {
-    graf_tile(&g.graf,dstx,dsty,tileid,EGG_XFORM_XREV);
+    graf_tile(g_graf,dstx,dsty,tileid,EGG_XFORM_XREV);
     if (player->score) {
-      graf_tile(&g.graf,dstx,dsty-NS_sys_tilesize,0x20+player->scorev[i],0);
+      graf_tile(g_graf,dstx,dsty-NS_sys_tilesize,0x20+player->scorev[i],0);
     }
   }
 }
@@ -343,8 +343,8 @@ static void _skijump_render(struct battle *battle) {
   // Draw the bottom half first in case something breaches its top edge.
   player_render(battle,BATTLE->playerv+1,FBH>>1);
   player_render(battle,BATTLE->playerv+0,0);
-  graf_set_input(&g.graf,0);
-  graf_fill_rect(&g.graf,0,FBH>>1,FBW,1,0x000000ff);
+  graf_set_input(g_graf,0);
+  graf_fill_rect(g_graf,0,FBH>>1,FBW,1,0x000000ff);
 }
 
 /* Type definition.
@@ -353,7 +353,7 @@ static void _skijump_render(struct battle *battle) {
 const struct battle_type battle_type_skijump={
   .name="skijump",
   .objlen=sizeof(struct battle_skijump),
-  .id=NS_battle_skijump,
+  .id=59,
   .strix_name=227,
   .no_article=0,
   .no_contest=0,

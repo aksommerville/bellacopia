@@ -5,7 +5,7 @@
  * Intent is to raise the cost of guessing when you dig.
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 #define GROUNDY 150
 #define HOLEX 40 /* Horizontal center of the hole. */
@@ -103,7 +103,7 @@ static void _shovelthrowing_update(struct battle *battle,double elapsed) {
         /* Move Dot.
          */
         int dx=0;
-        switch (g.input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
+        switch (g_input[0]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
           case EGG_BTN_LEFT: dx=-1; BATTLE->dotxform=EGG_XFORM_XREV; break;
           case EGG_BTN_RIGHT: dx=1; BATTLE->dotxform=0; break;
         }
@@ -127,7 +127,7 @@ static void _shovelthrowing_update(struct battle *battle,double elapsed) {
           const double radius=15.0;
           double sdx=BATTLE->shovelx-BATTLE->dotx;
           if ((sdx>-radius)&&(sdx<radius)) {
-            bm_sound(RID_sound_collect);
+            bm_sound_pan(RID_sound_collect,0.0);
             battle->outcome=1;
             BATTLE->stage=STAGE_DONE;
             BATTLE->stageclock=999.999;
@@ -148,12 +148,12 @@ static void _shovelthrowing_update(struct battle *battle,double elapsed) {
 static void _shovelthrowing_render(struct battle *battle) {
 
   // Sky and horizon. Don't draw the green earth yet.
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
-  graf_fill_rect(&g.graf,0,GROUNDY,FBW,1,0x000000ff);
-  graf_set_image(&g.graf,RID_image_battle_skeleton);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,GROUNDY,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_skeleton);
   
   // Back of the hole.
-  graf_decal(&g.graf,HOLEX-24,GROUNDY-9,80,96,48,16);
+  graf_decal(g_graf,HOLEX-24,GROUNDY-9,80,96,48,16);
   
   // Dot.
   int dotdstx=(int)BATTLE->dotx-24;
@@ -167,7 +167,7 @@ static void _shovelthrowing_render(struct battle *battle) {
         else dotsrcx=2*48;
       } break;
   }
-  graf_decal_xform(&g.graf,dotdstx,GROUNDY-47,dotsrcx,0,48,48,BATTLE->dotxform);
+  graf_decal_xform(g_graf,dotdstx,GROUNDY-47,dotsrcx,0,48,48,BATTLE->dotxform);
   
   // Skeleton.
   int skeldstx=(int)BATTLE->skelx-24;
@@ -204,22 +204,22 @@ static void _shovelthrowing_render(struct battle *battle) {
       } break;
   }
   if (skelvisible) {
-    graf_decal_xform(&g.graf,skeldstx,skeldsty,skelsrcx,48,48,48,skelxform);
+    graf_decal_xform(g_graf,skeldstx,skeldsty,skelsrcx,48,48,48,skelxform);
   }
   
   // Now draw the green earth. It needs to occlude the skeleton.
-  graf_set_input(&g.graf,0);
-  graf_fill_rect(&g.graf,0,GROUNDY+1,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
-  graf_set_image(&g.graf,RID_image_battle_skeleton);
+  graf_set_input(g_graf,0);
+  graf_fill_rect(g_graf,0,GROUNDY+1,FBW,FBH-GROUNDY,battle->ctab[BATTLE_COLOR_GROUND]);
+  graf_set_image(g_graf,RID_image_battle_skeleton);
   
   // Front of the hole.
-  graf_decal(&g.graf,HOLEX-24,GROUNDY-9,32,96,48,16);
+  graf_decal(g_graf,HOLEX-24,GROUNDY-9,32,96,48,16);
   
   // Shovel if in flight. Don't draw after a victory; Dot is drawn holding it.
   if ((battle->outcome<=0)&&(BATTLE->stage>=STAGE_PLAY)) {
     int shdstx=(int)BATTLE->shovelx-16;
     int shdsty=(int)BATTLE->shovely-8;
-    graf_decal(&g.graf,shdstx,shdsty,0,96,32,16);
+    graf_decal(g_graf,shdstx,shdsty,0,96,32,16);
   }
 }
 
@@ -229,7 +229,7 @@ static void _shovelthrowing_render(struct battle *battle) {
 const struct battle_type battle_type_shovelthrowing={
   .name="shovelthrowing",
   .objlen=sizeof(struct battle_shovelthrowing),
-  .id=NS_battle_shovelthrowing,
+  .id=58,
   .strix_name=225,
   .no_article=0,
   .no_contest=0,

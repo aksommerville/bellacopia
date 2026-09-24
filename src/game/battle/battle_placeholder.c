@@ -1,7 +1,7 @@
 /* battle_placeholder.c
  */
 
-#include "game/bellacopia.h"
+#include "game/batsup/battle_internal.h"
 
 struct battle_placeholder {
   struct battle hdr;
@@ -87,13 +87,13 @@ static void _placeholder_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g.input[player->human]);
+    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
 
   //XXX
-  if (g.input[0]&EGG_BTN_AUX2) battle->outcome=1;
+  if (g_input[0]&EGG_BTN_AUX2) battle->outcome=1;
 }
 
 /* Render player.
@@ -106,7 +106,7 @@ static void player_render(struct battle *battle,struct player *player) {
  */
  
 static void _placeholder_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
+  graf_fill_rect(g_graf,0,0,FBW,FBH,battle->ctab[BATTLE_COLOR_SKY]);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
 }
@@ -117,7 +117,7 @@ static void _placeholder_render(struct battle *battle) {
 const struct battle_type battle_type_placeholder={
   .name="placeholder",
   .objlen=sizeof(struct battle_placeholder),
-  .id=NS_battle_placeholder,
+  .id=9,
   .strix_name=20,//TODO
   .no_article=0,
   .no_contest=0,
