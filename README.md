@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
-- [ ] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
+- [x] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
 - [ ] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...

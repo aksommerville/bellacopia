@@ -108,7 +108,7 @@ void egg_client_render() {
   g_framec=g.framec;
   graf_reset(&g.graf);
   modals_render();
-  XXX_render_play_time();
+  //XXX_render_play_time();
   graf_flush(&g.graf);
 }
 

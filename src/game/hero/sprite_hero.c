@@ -296,6 +296,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
     SPRITE->qnew=1;
     SPRITE->qx=qx;
     SPRITE->qy=qy;
+    SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
     hero_check_triggers(sprite);
   }
 
