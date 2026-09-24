@@ -285,6 +285,17 @@ static void battle_begin_play(struct modal *modal) {
   MODAL->timeout=BATTLE_UNIVERSAL_TIMEOUT;
 }
 
+/* Callback from pickside.
+ */
+ 
+static void cb_battle_pickside(void *userdata,int ok) {
+  return;//TODO
+  if (!ok) {
+    struct modal *modal=userdata;
+    modal->defunct=1;
+  }
+}
+
 /* Init.
  */
  
@@ -337,7 +348,7 @@ static int _battle_init(struct modal *modal,const void *arg,int argc) {
   
   // Prompt to pick sides if we need to.
   if (MODAL->args.lctl&&MODAL->args.rctl) {
-    modal_pickside_require();
+    modal_pickside_require(cb_battle_pickside,modal);
   }
   
   return 0;

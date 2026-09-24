@@ -37,7 +37,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - [x] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
 - [x] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
-- [ ] Cancel out of "where are you sitting" and the gated engagement should cancel too.
+- [x] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.

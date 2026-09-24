@@ -26,6 +26,8 @@ struct modal_pickside {
     int y;
     int confirmed;
   } playerv[2];
+  void (*cb)(void *userdata,int ok);
+  void *userdata;
 };
 
 #define MODAL ((struct modal_pickside*)modal)
@@ -34,6 +36,10 @@ struct modal_pickside {
  */
  
 static void _pickside_del(struct modal *modal) {
+  if (MODAL->cb) { // Maybe if we got defuncted by some other party. Call it "cancelled".
+    MODAL->cb(MODAL->userdata,0);
+    MODAL->cb=0;
+  }
   egg_texture_del(MODAL->prompttexid);
 }
 
@@ -57,6 +63,12 @@ static int _pickside_init(struct modal *modal,const void *arg,int arglen) {
   modal->stay_on_top=1;
   MODAL->blackout=0;
   
+  if (arg&&(arglen==sizeof(struct modal_args_pickside))) {
+    const struct modal_args_pickside *ARGS=arg;
+    MODAL->cb=ARGS->cb;
+    MODAL->userdata=ARGS->userdata;
+  }
+  
   MODAL->playerv[0].who=1;
   MODAL->playerv[0].side=0;
   MODAL->playerv[0].state=0;
@@ -69,6 +81,16 @@ static int _pickside_init(struct modal *modal,const void *arg,int arglen) {
   
   pickside_rebuild_prompt(modal);
   return 0;
+}
+
+/* Fire callback if set, and ensure it only fires once.
+ */
+ 
+static void pickside_callback(struct modal *modal,int ok) {
+  if (MODAL->cb) {
+    MODAL->cb(MODAL->userdata,ok);
+    MODAL->cb=0;
+  }
 }
 
 /* Move player.
@@ -113,6 +135,7 @@ static void pickside_cancel(struct modal *modal,struct player *player) {
     // This is important. It's the only way out, if you reach this modal by accident with no second player plugged in.
     bm_sound(RID_sound_uicancel);
     modal->defunct=1;
+    pickside_callback(modal,0);
     return;
   }
   if (!player->side) return;
@@ -146,9 +169,11 @@ static void _pickside_update(struct modal *modal,double elapsed) {
     if ((l->side==1)&&(r->side==2)) {
       pickside_state=PICKSIDE_STATE_NATURAL;
       modal->defunct=1;
+      pickside_callback(modal,1);
     } else if ((l->side==2)&&(r->side==1)) {
       pickside_state=PICKSIDE_STATE_SWAP;
       modal->defunct=1;
+      pickside_callback(modal,1);
     }
   }
 }
@@ -224,10 +249,14 @@ const struct modal_type modal_type_pickside={
 
 /* Global public functions.
  */
- 
-int modal_pickside_require() {
+
+int modal_pickside_require(void (*cb)(void *userdata,int ok),void *userdata) {
   if (pickside_state!=PICKSIDE_STATE_UNSET) return 0;
-  struct modal *modal=modal_spawn(&modal_type_pickside,0,0);
+  struct modal_args_pickside args={
+    .cb=cb,
+    .userdata=userdata,
+  };
+  struct modal *modal=modal_spawn(&modal_type_pickside,&args,sizeof(args));
   if (!modal) return 0;
   return 1;
 }

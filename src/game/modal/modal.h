@@ -213,6 +213,11 @@ struct modal_args_credits {
   void *userdata;
 };
 
+struct modal_args_pickside {
+  void (*cb)(void *userdata,int ok);
+  void *userdata;
+};
+
 /* Initiators of modal_battle should call this during their callback to have consequences reported to the user.
  * If you win a no-quantity item from battle (are we doing that?), use (d==0).
  * Use NS_itemid_text with (d) a strix in RID_strings_battle, for loose text.
@@ -253,7 +258,7 @@ void modal_broomrace_report_completion(struct modal *modal,const struct race_sta
  * And our battles have a strong sense of "left=one right=two".
  * Main will call modal_pickside_apply() immediately after reading input from the platform. We may swizzle [1] and [2].
  */
-int modal_pickside_require();
+int modal_pickside_require(void (*cb)(void *userdata,int ok),void *userdata);
 void modal_pickside_apply(int *inputv/*3*/);
 
 #endif
