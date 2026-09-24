@@ -9,7 +9,7 @@
 #define WHACK_TIME       0.500
 #define WHACK_SPEED_MAX 10.000
 #define WHACK_SPEED_MIN  1.000
-#define KIDNAPPER_POLL_TIME 2.000
+#define KIDNAPPER_POLL_TIME 5.000
 
 struct sprite_princess {
   struct sprite hdr;
@@ -24,6 +24,7 @@ struct sprite_princess {
   int finished; // If (fldid), nonzero after we reach the goal.
   int target_near; // Nonzero if we're pointing to the final destination.
   double kidnap_ttl; // Counts down to the next possible kidnapper spawn.
+  double kidnap_hero_x,kidnap_hero_y; // Track hero's position; only spawn kidnappers when she moves.
   
   // Forced motion, tapers down over time. For getting whacked by the stick.
   double whackdx,whackdy;
@@ -197,7 +198,7 @@ static struct sprite *princess_spawn_kidnapper(struct sprite *sprite,const struc
     if (other->y>yhi) continue;
     return 0;
   }
-  int candidatev[]={ // Monster sprites I haven't placed yet. TODO Decide who actually belongs here. Maybe a specific "kidnapper" monster?
+  int candidatev[]={ // Monster sprites I haven't placed yet. TODO Decide who actually belongs here. Maybe a specific "kidnapper" monster? Or adjust per map?
     RID_sprite_bull,
     RID_sprite_mouse,
     RID_sprite_owl,
@@ -210,6 +211,32 @@ static struct sprite *princess_spawn_kidnapper(struct sprite *sprite,const struc
   return sprite_spawn(x+0.5,y+0.5,rid,0,0,0,0,0);
 }
 
+/* Kidnap support.
+ */
+ 
+struct princess_kidnap_candidate {
+  int x,y; // Plane meters.
+  int weight;
+};
+
+static int princess_kidnap_candidate_cmp(const void *a,const void *b) {
+  const struct princess_kidnap_candidate *A=a,*B=b;
+  return B->weight-A->weight;
+}
+
+static int princess_valid_kidnapper_cell(const struct plane *plane,int x,int y) {
+  if ((x<0)||(y<0)) return 0;
+  if (x>=plane->w*NS_sys_mapw) return 0;
+  if (y>=plane->h*NS_sys_maph) return 0;
+  const struct map *map=plane->v+(y/NS_sys_maph)*plane->w+(x/NS_sys_mapw);
+  x-=map->lng*NS_sys_mapw;
+  y-=map->lat*NS_sys_maph;
+  if ((x<0)||(y<0)||(x>=NS_sys_mapw)||(y>=NS_sys_maph)) return 0;
+  uint8_t ph=map->physics[map->v[y*NS_sys_mapw+x]];
+  if (ph==NS_physics_vacant) return 1;
+  return 0;
+}
+
 /* Poll for possible creation of a kidnapper.
  * Only relevant to the post-rescue side quests, and only on the way out.
  */
@@ -219,6 +246,22 @@ static void princess_update_kidnappers(struct sprite *sprite,double elapsed) {
   // Long delay between spawn opportunities.
   if ((SPRITE->kidnap_ttl-=elapsed)>0.0) return;
   SPRITE->kidnap_ttl+=KIDNAPPER_POLL_TIME;
+  
+  /* Poll hero's position.
+   * If she hasn't moved far, skip this cycle.
+   * Should become safe when you stop moving.
+   */
+  if (GRP(hero)->sprc>0) {
+    struct sprite *hero=GRP(hero)->sprv[0];
+    double dx=hero->x-SPRITE->kidnap_hero_x;
+    double dy=hero->y-SPRITE->kidnap_hero_y;
+    double d2=dx*dx+dy*dy;
+    if (d2<2.0) {
+      return;
+    }
+    SPRITE->kidnap_hero_x=hero->x;
+    SPRITE->kidnap_hero_y=hero->y;
+  }
   
   /* Only spawn when we're in the outerworld.
    * We specifically do not want to spawn kidnappers in singletons or the Temple. Other places, meh?
@@ -231,6 +274,7 @@ static void princess_update_kidnappers(struct sprite *sprite,double elapsed) {
   
   /* If there's too many monsters already, don't make a new one.
    */
+  const int enough_monsters=5;
   int monsterc=0;
   struct sprite **otherp=GRP(solid)->sprv;
   int i=GRP(solid)->sprc;
@@ -238,57 +282,52 @@ static void princess_update_kidnappers(struct sprite *sprite,double elapsed) {
     struct sprite *other=*otherp;
     if (other->type!=&sprite_type_monster) continue;
     monsterc++;
-    if (monsterc>=5) {
+    if (monsterc>=enough_monsters) {
       return;
     }
   }
   
-  /* Candidate cells are those just offscreen, along the edge with the greatest distance from Dot to Princess.
-   * The idea is she's following you and they come up from behind.
+  /* Candidate cells are along the nearest fully-offscreen border.
+   * Only record safe in-bounds cells.
+   * Weight based on distance to the center, prefer to spawn in the middle of the edge.
+   * Weight is slightly randomized, so when there's two cells across from each other -- typical -- their order is random.
+   * Don't bother checking solid sprites yet; we'll get to that.
    */
-  if (GRP(hero)->sprc<1) return;
-  struct sprite *hero=GRP(hero)->sprv[0];
-  if (hero->z!=sprite->z) return; // I think not possible? Maybe? Well, if it happens, skip this cycle.
-  double dx=sprite->x-hero->x;
-  double dy=sprite->y-hero->y;
-  double adx=(dx<0.0)?-dx:dx;
-  double ady=(dy<0.0)?-dy:dy;
-  // Candidate box. Single column or row.
-  int cx=g.camera.rx/NS_sys_tilesize;
-  int cy=g.camera.ry/NS_sys_tilesize;
-  int cw=NS_sys_mapw;
-  int ch=NS_sys_maph;
-  if (adx>=ady) {
-    if (dx<0.0) { // Left.
-      cx--;
-      cw=1;
-    } else { // Right.
-      cx=(g.camera.rx+FBW+NS_sys_tilesize)/NS_sys_tilesize;
-      cw=1;
-    }
-  } else {
-    if (dy<0.0) { // Top.
-      cy--;
-      ch=1;
-    } else { // Bottom.
-      cy=(g.camera.ry+FBH+NS_sys_tilesize)/NS_sys_tilesize;
-      ch=1;
-    }
+  #define CANDIDATE_LIMIT 70
+  struct princess_kidnap_candidate candidatev[CANDIDATE_LIMIT];
+  int candidatec=0;
+  int xlo=g.camera.rx/NS_sys_tilesize-1;
+  int xhi=(g.camera.rx+FBW)/NS_sys_tilesize+1;
+  int ylo=g.camera.ry/NS_sys_tilesize-1;
+  int yhi=(g.camera.ry+FBH)/NS_sys_tilesize+1;
+  int xmid=(xlo+xhi)>>1,ymid=(ylo+yhi)>>1;
+  #define WEIGH(n) ({ \
+    int _weight=(n); \
+    if (_weight<0) _weight=-_weight; \
+    _weight=20-_weight; \
+    _weight<<=2; \
+    _weight+=rand()&3; \
+    (_weight); \
+  })
+  int x=xlo; for (;x<=xhi;x++) {
+    if (candidatec>CANDIDATE_LIMIT-2) break;
+    if (princess_valid_kidnapper_cell(plane,x,ylo)) candidatev[candidatec++]=(struct princess_kidnap_candidate){x,ylo,WEIGH(x-xmid)};
+    if (princess_valid_kidnapper_cell(plane,x,yhi)) candidatev[candidatec++]=(struct princess_kidnap_candidate){x,yhi,WEIGH(x-xmid)};
   }
-  
-  /* Test the whole candidate box, from middle outward.
-   */
-  int xmid=cx+(cw>>1);
-  int ymid=cy+(ch>>1);
-  int xi=cw; while (xi-->0) {
-    int qx=xmid+((xi&1)?(xi>>1):-(xi>>1));
-    int yi=ch; while (yi-->0) {
-      int qy=ymid+((yi&1)?(yi>>1):-(yi>>1));
-      struct sprite *kidnapper=princess_spawn_kidnapper(sprite,plane,qx,qy);
-      if (kidnapper) {
-        sprite_monster_extra_hungry_for_princess(kidnapper);
-        return;
-      }
+  int y=ylo; for (;y<=yhi;y++) {
+    if (candidatec>CANDIDATE_LIMIT-2) break;
+    if (princess_valid_kidnapper_cell(plane,xlo,y)) candidatev[candidatec++]=(struct princess_kidnap_candidate){xlo,y,WEIGH(y-ymid)};
+    if (princess_valid_kidnapper_cell(plane,xhi,y)) candidatev[candidatec++]=(struct princess_kidnap_candidate){xhi,y,WEIGH(y-ymid)};
+  }
+  #undef WEIGH
+  #undef CANDIDATE_LIMIT
+  qsort(candidatev,candidatec,sizeof(struct princess_kidnap_candidate),princess_kidnap_candidate_cmp);
+  const struct princess_kidnap_candidate *candidate=candidatev;
+  for (i=candidatec;i-->0;candidate++) {
+    struct sprite *kidnapper=princess_spawn_kidnapper(sprite,plane,candidate->x,candidate->y);
+    if (kidnapper) {
+      sprite_monster_extra_hungry_for_princess(kidnapper);
+      return;
     }
   }
 }

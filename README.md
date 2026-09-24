@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
-- [ ] Try spawning kidnappers on all four edges, not just the back edge.
+- [x] Try spawning kidnappers on all four edges, not just the back edge. ...big win
 - [ ] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
 - [ ] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -66,6 +66,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - More than half of our C files are battle or sprite.
 - - A clean build today takes 11.681 seconds.
 - - Sprites aren't going to happen, too many symbols to bring in. But with battles only, we're down to 5.296 s for a full build after touching `shared_symbols.h`. That's pretty good.
+- [ ] Add a crystal ball hint specific to the puzzle piece you have to win from the goat.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -145,6 +146,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] shuffling: Sound.
 - [ ] slapping: Sound.
 - [ ] topping: Too many numbers. Use sliding bars instead.
+- [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
