@@ -62,9 +62,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Also need a bit more limit on the spawning, say only spawn if there's below some count of monsters globally?
 - [ ] Cartographer hints for the Fractia Password House.
 - [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
-- [ ] Do sprites and battles really need `shared_symbols.h`? If we give them a narrower header, we'd get much faster builds. That's currently 159 files we could usually skip rebuilding.
+- [x] Do sprites and battles really need `shared_symbols.h`? If we give them a narrower header, we'd get much faster builds. That's currently 159 files we could usually skip rebuilding.
 - - More than half of our C files are battle or sprite.
 - - A clean build today takes 11.681 seconds.
+- - Sprites aren't going to happen, too many symbols to bring in. But with battles only, we're down to 5.296 s for a full build after touching `shared_symbols.h`. That's pretty good.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -376,6 +377,7 @@ Collecting lil dev things here, since it's such a large project. Write up a neat
 - Monthly goals and reports, my estimates were all way off, but this seems a healthy practice. Make a habit of it for large games.
 - Pick an orientation for sprites! I've settled on rightward as the default, but some early sprites (eg Dot) are leftward. Good to be consistent about that.
 - Adding things to `shared_symbols.h`, which one does a lot, forces a full rebuild. This needs a solution from the eggdev end, and I'm not sure what that will look like.
+- - Can be mitigated with discipline on the project end. I've refactored battle to not use `shared_symbols.h`. Future large projects, we should partition like that all around.
 - Some items should only interact from within the pause menu (eg Phonograph). Not worth changing Bellacopia, but keep that in mind next time around. Three kinds of item: Equippable, passive, modal.
 - Capturing `sprite->arg` by reference is a hazard, it keeps shooting me in the ass. Smarter to copy args, and have a separate dedicated "reference to rom" field.
 - (from younap, not bellacopia) Really need song tooling that a dev can share with a composer. Musicians can't run eggdev, and would be lost in its interface even if they could.
