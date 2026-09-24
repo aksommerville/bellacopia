@@ -371,7 +371,7 @@ void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int
           double dx=other->x-sprite->x;
           double dy=other->y-sprite->y;
           double d2=dx*dx+dy*dy;
-          double tolerance=6.0; // Wide. Ensure there aren't any doors near the jail.
+          double tolerance=12.0; // Wide. Ensure there aren't any doors near the jail.
           tolerance*=tolerance;
           if (d2<tolerance) {
             SPRITE->respawn_princess=1;

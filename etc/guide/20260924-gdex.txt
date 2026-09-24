@@ -1,0 +1,124 @@
+2026-09-24
+Bellacopia Maleficia Guides for GDEX
+A few scenarios we can walk players through, to highlight some fun bits, aiming for under 15 minutes each.
+Record my time to follow the instructions exactly. Bear in mind a real player will be much less efficient, expect double at least.
+
+Of course there's also Broom Race and Arcade modes from the main menu, also great options for a quickie.
+
+=== End the War ===
+
+1. Get six coins via battle or zoo, and pick up a stick.
+2. Buy Divining Rod.
+3. Follow the top left root past the Toll Troll into the Battlefield.
+4. Deliver the letters.
+5. Collect Hookshot.
+6. Collect Compass.
+7. Strangle Root Devil.
+
+2:28
+
+=== Bridge to Botire ===
+
+1. Get three coins via battle or zoo, and pick up a stick.
+2. Pay the Toll Troll, and walk west beyond him.
+3. Give the stick to Bridget, and repeat 5 times.
+
+2:29
+
+=== Barrel Hats (Skipping Ahead) ===
+
+1. Enter Cave of Cheating.
+2. Take Broom.
+3. Fly west and a little north to the knitter's house (southeast Botire), get the first Barrel Hat.
+4. Hat all 9 barrels: 2 in Botire, 1 just west, 1 by Magnetic North, 1 by the castle, 1 in Cheapside, 2 in Fractia, 1 in the far northeast corner.
+5. Talk to the knitter one last time to get the Bell.
+Fun follow-up: Use that Bell to fill all the zoos.
+
+3:18
+
+=== Let the Spirits Drive ===
+
+1. Enter the house by the Cheapside bus stop.
+2. Push the chair and go downstairs.
+3. Follow signs westward to the Mysterious Treasure. It's a Crystal Ball.
+4. Get the Crystal Ball and go back out the same way.
+5. Do what the Ball says.
+
+3:27 (to returning to the surface with my Crystal Ball)
+
+=== The Spooky Labyrinth ===
+
+1. Enter Cave of Cheating.
+2. Take Bus Stop, Fishpole, Snowglobe. Recommend Potion too, long as you're there.
+3. Bus to the Temple.
+4. Enter and go north to the monks' cells. Gather statue maze clues (clues and maze are generated randomly per campaign).
+5. Southwest thru the statue maze, into the Labyrinth.
+6. South and a little east to the inner fountain. Fish here, get swallowed, find the Power Glove.
+7. Find the southeast corner and exit.
+8. Outside to the pool area and strangle the Root Devil.
+9. Fish a Heart Container out of the pool.
+10. Return to the gift shop and buy a telescope. If <10 gold, go outside and zoo some animals.
+11. Telescope west from there to see the season blocks password.
+12. North and east to the season blocks, push with Power Glove, forget the password, go look at it again, etc.
+13. Follow halls around to the Sphinx. Solve her riddle with the Snowglobe.
+14. Collect purse upgrade from the monk.
+
+4:22
+
+=== Ice Palace (Skipping Ahead) ===
+
+1. Enter Cave of Cheating.
+2. Get Broom, Candy, and Gold. Plus Compass, if you want to complete the Ice Palace's map.
+3. Fly northwest to the Ice Palace. It's due north of Botire, or just west of Magnetic North.
+4. Beat the Ice Dragon at six different games.
+
+5:20
+
+=== Cheat To The End ===
+
+1. Enter Cave of Cheating.
+2. Take Broom, Stick, Compass, Candy. (Stick, Compass, and Candy are only required for the Toll Troll). +Stopwatch to make the Rhinoceros easier if you want.
+3. Strangle the meadow Root Devil.
+4. Straight West, give Stick to the Toll Troll and Broom past the Rhinoceros. Strangle Root Devil.
+5. North to the Temple. Fly up the escalator and strangle Root Devil.
+6. Northeast to Ice Palace. From the hub, go southwest, then north, then down the ladder.
+7. Fly east (don't bother with the minefield), past Moon Song go south, find the treadle and press it.
+8. Back out of Ice Palace the way you came.
+9. Northeast to Magnetic North, strangle Root Devil.
+10. Fly to the East edge, middle latitude, trigger the kidnap cutscene.
+11. Take Vanishing Cream from the Princess, then abandon her. Follow the tunnel to its door and leave.
+12. Strangle Root Devil.
+13. Just south of that Root Devil, enter the cave and press the treadle.
+14. Around the corner southwest of there, strangle another Root Devil.
+15. Enter the Cheapside house by the bus stop, push chair, downstairs go East.
+16. Follow this tunnel all the way around the East edge (don't go up the first ladder).
+17. Come out by the Fractia Root Devil; strangle him.
+
+6:38
+
+=== Run For Mayor ===
+
+1. Get six coins via battle or zoo, and pick up a stick.
+2. Buy Divining Rod.
+3. Follow the top right root past the Toll Troll into Fractia.
+4. Enter City Hall and run for Mayor.
+5. Get five endorsements. I usually start with the Hospital and work around clockwise, stopping before the Food Service Guild.
+6. Return to City Hall and hold the election.
+7. Follow root to the Root Devil and strangle him.
+
+7:40
+
+=== Rescue the Princess (Skipping Ahead) ===
+
+1. Enter Cave of Cheating.
+2. Take Hookshot from the left guy. OPTIONAL: Take Bell too, and clear out the mountain and desert monsters first. OR: Broom instead of Hookshot, goes a bit faster.
+3. From Cheapside, hook eastward and keep going east and a little north.
+4. Get kidnapped.
+5. Take Vanishing Cream from the Princess and use it.
+6. Circle around to Skull Lake and Hook the Jail Key.
+7. Go back to the Jail, open it (just touch), then escort the Princess out the front door.
+8. Proceed all the way south, then west, to the sand castle.
+9. Sell Princess to the King.
+
+10:03
+With Broom and Bell: 4:55

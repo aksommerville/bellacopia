@@ -83,6 +83,23 @@ void egg_client_update(double elapsed) {
   store_save_if_dirty("save",4,0);
 }
 
+/* XXX Show current play time in the corner, while I time a few things.
+ */
+ 
+static void XXX_render_play_time() {
+  if (!modal_get_topmost(&modal_type_story)) return;
+  int s=(int)(store_get_clock(NS_clock_playtime)+store_get_clock(NS_clock_battletime)+store_get_clock(NS_clock_pausetime));
+  int m=s/60; s%=60;
+  if (m>99) s=m=99;
+  int x=8,y=FBH-8;
+  graf_set_image(&g.graf,RID_image_fonttiles);
+  graf_tile(&g.graf,x,y,'0'+m/10,0); x+=8;
+  graf_tile(&g.graf,x,y,'0'+m%10,0); x+=8;
+  graf_tile(&g.graf,x,y,':',0); x+=8;
+  graf_tile(&g.graf,x,y,'0'+s/10,0); x+=8;
+  graf_tile(&g.graf,x,y,'0'+s%10,0); x+=8;
+}
+
 /* Render.
  */
  
@@ -91,6 +108,7 @@ void egg_client_render() {
   g_framec=g.framec;
   graf_reset(&g.graf);
   modals_render();
+  XXX_render_play_time();
   graf_flush(&g.graf);
 }
 

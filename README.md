@@ -35,8 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
-- [x] Try spawning kidnappers on all four edges, not just the back edge. ...big win
+- [x] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
 - [ ] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
 - [ ] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -56,17 +55,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
-- [x] Princess walks are kind of boring. Can we spice them up somehow?
-- - We could spawn monsters periodically that enter from behind you.
-- - [x] Basically working so far, but I think the monsters need to be made more aggressive.
-- - [x] Also need a bit more limit on the spawning, say only spawn if there's below some count of monsters globally?
 - [ ] Cartographer hints for the Fractia Password House.
 - [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
-- [x] Do sprites and battles really need `shared_symbols.h`? If we give them a narrower header, we'd get much faster builds. That's currently 159 files we could usually skip rebuilding.
-- - More than half of our C files are battle or sprite.
-- - A clean build today takes 11.681 seconds.
-- - Sprites aren't going to happen, too many symbols to bring in. But with battles only, we're down to 5.296 s for a full build after touching `shared_symbols.h`. That's pretty good.
 - [ ] Add a crystal ball hint specific to the puzzle piece you have to win from the goat.
+- [ ] monster engaged me after getting on the bus, substantially after. Shouldn't be possible.
+- [ ] Add a prize for walking the Princess. Picturing there's a treasure chest waiting when you return, full of some depletable.
+- [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
