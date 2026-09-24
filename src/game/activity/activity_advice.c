@@ -84,6 +84,11 @@ static void cartographer_find_entries_for_map(const struct map *map) {
             int fldid_start=(cmd.arg[6]<<8)|cmd.arg[7];
             int fldid_done=fldid_start+7; // Ensure that the "done" fields are +7 from their "start", I don't want to do this right.
             carto_add_entry(mapid,fldid_done);
+          } else if (spriteid==RID_sprite_treasure) {
+            int fldid=(cmd.arg[6]<<8)|cmd.arg[7];
+            if ((fldid==NS_fld_bt17)||(fldid==NS_fld_bt18)) { // The two treasures gated by letfloor, in Fractia.
+              carto_add_entry(mapid,fldid);
+            }
           }
         } break;
     }

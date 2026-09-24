@@ -172,6 +172,11 @@ static int game_get_advice_strix() {
    */
   if (!jigstore_is_complete()) return 66;
   
+  /* Taking the Princess for a walk is kind of a thankless chore.
+   * Save it for late in the game.
+   */
+  if (any_fld_unset(NS_fld_walk1,NS_fld_walk5)) return 75;
+  
   /* If the cartographer has further advice to give, recommend asking him.
    */
   if (cartographer_has_advice()) return 67;
@@ -183,6 +188,24 @@ int game_get_crystal_ball_advice(char *dst,int dsta) {
   if (!dst||(dsta<0)) dsta=0;
   int strix=game_get_advice_strix();
   return text_format_res(dst,dsta,RID_strings_advice,strix,0,0);
+}
+
+/* True if the Princess should tell you about that jigpiece that you have to win from a goat.
+ * This involves checking 4 jigpieces by mapid, but the canonical store_get_jigstore is a linear search.
+ * So we do the searching on our own, to keep it to just one pass instead of four.
+ */
+ 
+static int goat_jigpiece_missing_but_neighbors_present() {
+  int neighborc=0;
+  struct jigstore *jigstore=g.store.jigstorev;
+  int i=g.store.jigstorec;
+  for (;i-->0;jigstore++) {
+    if (jigstore->mapid==69) return 0; // Have the goat piece.
+    switch (jigstore->mapid) {
+      case 68: case 70: case 78: neighborc++; break;
+    }
+  }
+  return (neighborc==3);
 }
 
 /* Advice from the Princess.
@@ -210,6 +233,10 @@ static int game_get_gossip_strix() {
     return 122; // Reunite the rabbits.
   }
   if (!store_get_fld(NS_fld_purse1)) return 123; // There's more stuff in the temple. (implicitly covers seamonster, powerglove, seasonblocks, sphinx)
+  
+  /* Tell us about the jigpiece you have to win from a goat.
+   */
+  if (goat_jigpiece_missing_but_neighbors_present()) return 128;
   
   /* Any story trees outstanding?
    */
