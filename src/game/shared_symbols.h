@@ -965,6 +965,8 @@
 #define NS_fld_icepalace_visited 298
 #define NS_fld_princess_in_well 299
 #define NS_fld_princess_vengeful 300 /* Set when she enters the well; stays on until avenged. */
+#define NS_fld_minefield_sign_1 301
+#define NS_fld_minefield_sign_2 302
 
 /* "fld16" are 16 unsigned bits each.
  */

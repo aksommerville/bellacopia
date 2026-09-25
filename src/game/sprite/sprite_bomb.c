@@ -115,6 +115,20 @@ static void bomb_blow(struct sprite *sprite) {
     dy=(dy*velocity)/distance;
     bomb_record_pumpkin(sprite,other,dx,dy);
   }
+  
+  /* Landmines explode.
+   */
+  for (otherp=GRP(update)->sprv,otheri=GRP(update)->sprc;otheri-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->defunct) continue;
+    double dx=other->x-sprite->x;
+    double dy=other->y-sprite->y;
+    double d2=dx*dx+dy*dy;
+    if (d2>=2.0) continue;
+    if (other->type==&sprite_type_landmine) {
+      sprite_landmine_explode(other);
+    }
+  }
 }
 
 static void reduce_delta(struct pumpkin *pumpkin,double elapsed) {

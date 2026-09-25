@@ -140,6 +140,8 @@ void sprite_bonfire_set_ttl(struct sprite *sprite,double ttl);
 int sprite_treadlepass_hint(int *x,int *y,const struct sprite *sprite,int fld);
 int sprite_trickfloor_hint(int *x,int *y,const struct sprite *sprite,int fld);
 
+void sprite_landmine_explode(struct sprite *sprite);
+
 /* Sprite group.
  *******************************************************************/
  

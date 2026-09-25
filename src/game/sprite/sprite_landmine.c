@@ -65,7 +65,9 @@ static void landmine_record_pumpkin(struct sprite *sprite,struct sprite *pumpkin
 /* Explode.
  */
  
-static void landmine_explode(struct sprite *sprite) {
+void sprite_landmine_explode(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_landmine)) return;
+  
   bm_sound(RID_sound_bombblow);
   store_set_fld(SPRITE->fldid,1);
   SPRITE->exploded=1.000;
@@ -83,6 +85,7 @@ static void landmine_explode(struct sprite *sprite) {
     struct sprite *other=*otherp;
     if (other->defunct) continue;
     if (other==sprite) continue;
+    if (other->type==&sprite_type_bomb) continue; // Don't eject bombs, it looks weird.
     double dx=other->x-sprite->x;
     double dy=other->y-sprite->y;
     double d2=dx*dx+dy*dy;
@@ -156,11 +159,12 @@ static void _landmine_update(struct sprite *sprite,double elapsed) {
   for (;otheri-->0;otherp++) {
     struct sprite *other=*otherp;
     if (!sprite_hero_is_grounded(other)) continue;
+    if (other->type==&sprite_type_bomb) continue; // Placing a bomb on a landmine shouldn't blow either. Let the fuse burn down.
     double dx=other->x-sprite->x;
     double dy=other->y-sprite->y;
     double d2=dx*dx+dy*dy;
     if (d2>0.300) continue;
-    landmine_explode(sprite);
+    sprite_landmine_explode(sprite);
     return;
   }
 }

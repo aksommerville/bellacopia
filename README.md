@@ -49,7 +49,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
 - [x] Telescope doesn't work in maps with camera-override. Fine to pass over them, but you can't initiate telescope there.
-- [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()` ...yes, it should
+- [x] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()` ...yes, it should
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
 - [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
@@ -114,6 +114,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
+- - [ ] We made `flammable` cells but haven't used yet. Block some regions such that you have to bomb thru. Maybe the Wishing Well?
 
 - Battle repairs.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
