@@ -59,7 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
 - [x] Add a crystal ball hint specific to the puzzle piece you have to win from the goat. ...used Princess gossip, but same idea.
 - [x] monster engaged me after getting on the bus, substantially after. Shouldn't be possible.
-- [ ] Add a prize for walking the Princess. Picturing there's a treasure chest waiting when you return, full of some depletable.
+- [x] Add a prize for walking the Princess. Picturing there's a treasure chest waiting when you return, full of some depletable.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 

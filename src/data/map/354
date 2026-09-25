@@ -26,3 +26,4 @@ switchable @2,2 (u16:fld)walk1
 switchable @3,2 (u16:fld)walk2
 switchable @4,2 (u16:fld)walk3
 switchable @5,2 (u16:fld)walk4
+battlemark @3,7 (u16)1

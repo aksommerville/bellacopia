@@ -97,6 +97,43 @@ static void npc_prepare_mr_mrs_rabbit(struct sprite *sprite) {
   }
 }
 
+/* Spawn the reward for walking the Princess.
+ * These are highly transient. If you don't pick it up during this visit, you don't get it.
+ * There must be a battlemark command with id 1, we'll put the treasure there.
+ */
+ 
+static uint8_t npc_princess_reward_args[4]={0};
+ 
+static void npc_princess_spawn_reward(struct sprite *sprite,int fldid) {
+
+  switch (fldid) {
+    case NS_fld_walk1: npc_princess_reward_args[0]=NS_itemid_greenfish; npc_princess_reward_args[1]=10; break;
+    case NS_fld_walk2: npc_princess_reward_args[0]=NS_itemid_vanishing; npc_princess_reward_args[1]= 5; break;
+    case NS_fld_walk3: npc_princess_reward_args[0]=NS_itemid_bomb;      npc_princess_reward_args[1]= 5; break;
+    case NS_fld_walk4: npc_princess_reward_args[0]=NS_itemid_redfish;   npc_princess_reward_args[1]= 5; break;
+    case NS_fld_walk5: npc_princess_reward_args[0]=NS_itemid_gold;      npc_princess_reward_args[1]=40; break;
+    default: return;
+  }
+
+  const struct map *map=map_by_sprite_position(sprite->x,sprite->y,sprite->z);
+  if (!map) return;
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    switch (cmd.opcode) {
+      case CMD_map_battlemark: {
+          int bmid=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (bmid==1) {
+            double x=map->lng*NS_sys_mapw+cmd.arg[0]+0.5;
+            double y=map->lat*NS_sys_maph+cmd.arg[1]+0.5;
+            sprite_spawn(x,y,RID_sprite_treasure,npc_princess_reward_args,4,0,0,0);
+            return;
+          }
+        } break;
+    }
+  }
+}
+
 /* princess_home: Hide if not rescued yet.
  * Important that we hide, and not destroy, since she does get delivered while this sprite is present.
  */
@@ -130,6 +167,7 @@ static int npc_prepare_princess_home(struct sprite *sprite) {
         int fldid=sprite_princess_get_target_if_successful(other);
         if (fldid) {
           store_set_fld(fldid,1);
+          npc_princess_spawn_reward(sprite,fldid);
         }
         sprite_kill_soon(other);
         hero_dont_respawn_princess();
