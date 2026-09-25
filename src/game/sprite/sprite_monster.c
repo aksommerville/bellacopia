@@ -602,9 +602,10 @@ static void _monster_collide(struct sprite *sprite,struct sprite *other) {
 
   if (other->type==&sprite_type_hero) {
     // With vanishing cream, we will refuse to enter battle. Note that this is a further level of anti-battle than bugspray, which only prevents chasing.
-    if (g.vanishing>0.0) {
-      return;
-    }
+    if (g.vanishing>0.0) return;
+    // Likewise, if the hero just hopped on a bus, her sprite is still present but we certainly shouldn't engage.
+    if (sprite_hero_is_on_bus(other)) return;
+    // OK carry on.
     args.args.lctl=1;
     args.args.lface=NS_face_dot;
     args.args.bias=bm_battle_bias(SPRITE->battle);

@@ -240,6 +240,7 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
         sprite->y=g.camera.map->lat*NS_sys_maph+SPRITE->busstop_row+0.5;
         SPRITE->ignoreqx=(int)sprite->x-g.camera.map->lng*NS_sys_mapw;
         SPRITE->ignoreqy=(int)sprite->y-g.camera.map->lat*NS_sys_maph;
+        SPRITE->busstop_mapid=0;
       } else {
         if (!SPRITE->door_listener) {
           SPRITE->door_listener=camera_listen_map(hero_cb_map,sprite);
@@ -527,6 +528,11 @@ int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *spr
   *dstx=SPRITE->doorx;
   *dsty=SPRITE->doory;
   return 1;
+}
+
+int sprite_hero_is_on_bus(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return 0;
+  return SPRITE->busstop_clock>0.0;
 }
 
 /* Find the hero sprite and force respawn_princess false.

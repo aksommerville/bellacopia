@@ -106,6 +106,7 @@ int sprite_hero_is_using_door(double *dstx,double *dsty,const struct sprite *spr
 void sprite_hero_drop_compass(struct sprite *sprite);
 void sprite_hero_poke_quantized_position(struct sprite *sprite); // Force me to reexamine the quantized position, eg to poke the divining rod.
 void hero_dont_respawn_princess();
+int sprite_hero_is_on_bus(const struct sprite *sprite);
 
 int sprite_toast_set_text(struct sprite *sprite,const char *src,int srcc);
 struct sprite *sprite_toast_get_any();
