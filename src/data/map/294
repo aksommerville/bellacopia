@@ -13,7 +13,7 @@
 
 image image:caves
 position 7 7 2 *
-door @6,8 map:111 @15,4 0x0000
+door @6,8 map:111 @13,4 0x0000
 sprite @2,10 sprite:jigpiece (u32)0
 rspriteres rsprite:usoutheast
 ifitem @3,5 (u8:itemid)crystal 32

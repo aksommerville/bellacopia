@@ -76,7 +76,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - - Ensure the underground entrance is not obvious but doesn't need items to enter.
 - - [x] Blood Bank. Are we even keeping this?
 - - - Replace with Goody's house: She tells you about the wand and teaches spells.
-- - [ ] Underground entrance house
+- - [x] Underground entrance house
 - - - Same concerns as Dot's ladder, make it a little secret.
 - [ ] Battlefield
 - - [ ] Blue Captain's tent

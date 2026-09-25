@@ -317,11 +317,12 @@ static void _strangling_update(struct battle *battle,double elapsed) {
  */
  
 static void strangling_render_meter(struct battle *battle,int x,int y,int w,int h,double power) {
-  int ph=(int)(h*power);
+  const int margin=1;
+  int ph=(int)((h-margin*2)*power);
   if (ph<0) ph=0;
   else if (ph>h) ph=h;
-  if (ph<h) graf_fill_rect(g_graf,x,y,w,h,0x808080ff);
-  if (ph>0) graf_fill_rect(g_graf,x,y+h-ph,w,ph,0xff0000ff);
+  graf_fill_rect(g_graf,x,y,w,h,0x000000ff);
+  if (ph>0) graf_fill_rect(g_graf,x+margin,y+h-margin-ph,w-margin*2,ph,0xff0000ff);
 }
 
 /* Render.
