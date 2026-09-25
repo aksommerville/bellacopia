@@ -20,13 +20,18 @@ void begin_statuemaze_clue(struct sprite *initiator,int arg) {
 
 void begin_mr_mrs_rabbit(struct sprite *initiator,int arg) {
   
-  // Regardless of who we are, if the quest is complete we just say thanks.
+  /* When the quest is complete, we either say thanks or offer a clue to some other quest.
+   * Mr or Mrs, same behavior.
+   */
   if (store_get_fld(NS_fld_surveyor_complete)) {
     struct modal_args_dialogue args={
       .rid=RID_strings_dialogue,
-      .strix=172,
+      .strix=172, // Default "thanks!"
       .speaker=initiator,
     };
+    if (!store_get_fld(NS_fld_zoo17_3)) { // Haven't captured an Eight at the southeast zoo. Let's assume they haven't noticed the figure-eight trick.
+      args.strix=192;
+    }
     modal_spawn(&modal_type_dialogue,&args,sizeof(args));
     return;
   }

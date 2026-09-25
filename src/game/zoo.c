@@ -145,7 +145,7 @@ static const struct zoo_resident zoo17v[]={
   {NS_fld_zoo17_0,RID_sprite_spider},
   {NS_fld_zoo17_1,RID_sprite_bat},
   {NS_fld_zoo17_2,RID_sprite_zombie},
-  {NS_fld_zoo17_3,RID_sprite_walrus},//XXX
+  {NS_fld_zoo17_3,RID_sprite_eight},
 0};
  
 static const struct zoo_resident *zoov[]={
