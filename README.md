@@ -35,9 +35,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] Prepare a few quick-n-dirty guides for GDEX. Fun ways to spend 15 minutes from the start of story mode.
-- [x] Pass thru a door on the broom, then go back to it on foot, it doesn't engage except via the turnaround mitigation. I suspect hero's (qx,qy) is fixed at the entry point.
-- [x] Cancel out of "where are you sitting" and the gated engagement should cancel too.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -51,15 +48,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] If you strangle the temple's root devil last, we incorrectly play `smoke_and_mirrors` after the credit roll instead of `minotaur`. Rights itself when you go inside.
 - - Does it matter? This would be a little tricky to fix, because `g.song_override_outerworld` doesn't record the actual song doing the overriding, and we definitely do want `bloomful_rejoicement` temporarily.
-- [ ] Telescope doesn't work in maps with camera-override.
-- [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()`
+- [x] Telescope doesn't work in maps with camera-override. Fine to pass over them, but you can't initiate telescope there.
+- [ ] Should bomb blow landmines? Wouldn't take too much if we want it: `sprite_bomb.c:bomb_blow()` ...yes, it should
 - [ ] Changing language while `sprite_letfloor` in play doesn't change the clues. Should we poll for language? That's probly overkill. Think it over.
 - - If we are going to react to language changes, we have to zap the whole state. Otherwise they could make the puzzle way more interesting than it ought to be.
-- [x] Cartographer hints for the Fractia Password House.
 - [ ] Put more figure-eights, anywhere there's two similar things close to each other. And require one in a zoo somewhere downstairs.
-- [x] Add a crystal ball hint specific to the puzzle piece you have to win from the goat. ...used Princess gossip, but same idea.
-- [x] monster engaged me after getting on the bus, substantially after. Shouldn't be possible.
-- [x] Add a prize for walking the Princess. Picturing there's a treasure chest waiting when you return, full of some depletable.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 

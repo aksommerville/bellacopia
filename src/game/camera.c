@@ -418,6 +418,10 @@ void camera_update(double elapsed) {
   if (heromap&&heromap->cameralock&&((heromap->cameralock<0)||!store_get_fld(heromap->cameralock))) {
     idealx=heromap->lng*NS_sys_mapw+NS_sys_mapw*0.5;
     idealy=heromap->lat*NS_sys_maph+NS_sys_maph*0.5;
+    if (g.telescoping) {
+      idealx+=g.camera.teledx;
+      idealy+=g.camera.teledy;
+    }
   } else {
     idealx+=g.camera.teledx;
     idealy+=g.camera.teledy;
