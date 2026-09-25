@@ -244,6 +244,16 @@ static void hero_check_bumps(struct sprite *sprite) {
           SPRITE->matchclock=0.0;
           sprite_group_remove(GRP(light),sprite);
         } break;
+      case CMD_map_flammable2: { // flammable2 same as flammable, but a wider range.
+          if (SPRITE->matchclock<=0.0) break;
+          if ((cmd.arg[0]!=x)&&(cmd.arg[0]+1!=x)) break;
+          if (cmd.arg[1]!=y) break;
+          int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          store_set_fld(fldid,1);
+          g.camera.mapsdirty=1;
+          SPRITE->matchclock=0.0;
+          sprite_group_remove(GRP(light),sprite);
+        } break;
     }
   }
 }

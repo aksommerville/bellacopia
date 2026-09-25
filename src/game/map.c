@@ -27,6 +27,19 @@ void map_freshen_tiles(struct map *map,struct map_extras *extras) {
             }
           }
         } break;
+      case CMD_map_flammable2: {
+          int x=cmd.arg[0],y=cmd.arg[1];
+          if ((x<NS_sys_mapw-1)&&(y<NS_sys_maph)) {
+            int p=y*NS_sys_mapw+x;
+            if (store_get_fld((cmd.arg[2]<<8)|cmd.arg[3])) {
+              map->v[p]=map->rov[p]+0x10;
+              map->v[p+1]=map->rov[p+1]+0x10;
+            } else {
+              map->v[p]=map->rov[p];
+              map->v[p+1]=map->rov[p+1];
+            }
+          }
+        } break;
       case CMD_map_ifitem: {
           int x=cmd.arg[0],y=cmd.arg[1];
           if ((x<NS_sys_mapw)&&(y<NS_sys_maph)) {

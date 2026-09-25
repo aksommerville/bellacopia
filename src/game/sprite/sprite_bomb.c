@@ -82,6 +82,14 @@ static void bomb_blow(struct sprite *sprite) {
           int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
           store_set_fld(fldid,1);
           g.camera.mapsdirty=1;
+        } else if (cmd.opcode==CMD_map_flammable2) {
+          if (cmd.arg[0]+1<qx) continue;
+          if (cmd.arg[1]+1<qy) continue;
+          if (cmd.arg[0]>=qx+qw) continue;
+          if (cmd.arg[1]>=qy+qh) continue;
+          int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          store_set_fld(fldid,1);
+          g.camera.mapsdirty=1;
         }
       }
     }

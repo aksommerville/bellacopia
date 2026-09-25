@@ -93,6 +93,7 @@ void game_begin_activity(int activity,int arg,struct sprite *initiator) {
     case NS_activity_princess_home: begin_princess_home(initiator); break;
     case NS_activity_ignis: begin_ignis(); break;
     case NS_activity_walk: begin_walk(initiator,arg); break;
+    case NS_activity_goody: begin_goody(initiator); break;
     default: {
         fprintf(stderr,"Unknown activity %d.\n",activity);
       }

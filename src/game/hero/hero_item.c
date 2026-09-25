@@ -1135,6 +1135,14 @@ static int pepper_begin(struct sprite *sprite) {
             sprite_bonfire_set_ttl(bonfire,0.500);
             g.camera.mapsdirty=1;
             break;
+          } else if (cmd.opcode==CMD_map_flammable2) {
+            if ((cmd.arg[0]!=col)&&(cmd.arg[0]+1!=col)) continue;
+            if (cmd.arg[1]!=row) continue;
+            int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+            store_set_fld(fldid,1);
+            sprite_bonfire_set_ttl(bonfire,0.500);
+            g.camera.mapsdirty=1;
+            break;
           }
         }
       }
@@ -1523,4 +1531,15 @@ void hero_item_update(struct sprite *sprite,double elapsed) {
       cryptmsg_notify_item(g.store.invstorev[0].itemid);
     }
   }
+}
+
+/* Forcibly end current item: Simulate releasing SOUTH.
+ */
+ 
+void sprite_hero_stop_item(struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_hero)) return;
+  if (!(g.input[0]&EGG_BTN_SOUTH)) return;
+  g.input[0]&=~EGG_BTN_SOUTH;
+  hero_item_update(sprite,0.001);
+  g.input[0]|=EGG_BTN_SOUTH;
 }

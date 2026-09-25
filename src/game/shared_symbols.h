@@ -52,6 +52,7 @@
 #define CMD_map_track           0x4e /* u16:pos u8:raceid u8:seq ; Just like (race) but for CPU only, and finer-grained. */
 #define CMD_map_flammable       0x4f /* u16:pos u16:fld */
 #define CMD_map_ifitem          0x50 /* u16:pos u8:itemid s8:delta ; switchable, but keyed off an item, and arbitrary tileid delta. */
+#define CMD_map_flammable2      0x51 /* u16:pos u16:fld ; Affects me and (+1,0); on tiles are +0x10. */
 #define CMD_map_sprite          0x60 /* u16:pos u16:rid u32:arg */
 #define CMD_map_rsprite         0x61 /* u16:rid u8:weight u8:limit u32:arg ; Must remain identical to the "rsprite" command in rsprite resources. */
 #define CMD_map_door            0x62 /* u16:pos u16:rid u16:dstpos u16:activity */
@@ -344,6 +345,7 @@
 #define NS_activity_princess_home 74
 #define NS_activity_ignis 75
 #define NS_activity_walk 76 /* (u16:fldid)required */
+#define NS_activity_goody 77
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -967,6 +969,7 @@
 #define NS_fld_princess_vengeful 300 /* Set when she enters the well; stays on until avenged. */
 #define NS_fld_minefield_sign_1 301
 #define NS_fld_minefield_sign_2 302
+#define NS_fld_cave_flame_1 303 /* North edge of Cheapside, underground. */
 
 /* "fld16" are 16 unsigned bits each.
  */

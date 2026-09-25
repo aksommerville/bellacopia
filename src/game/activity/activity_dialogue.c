@@ -51,3 +51,19 @@ void begin_mr_mrs_rabbit(struct sprite *initiator,int arg) {
   if (arg==2) args.strix=171;
   modal_spawn(&modal_type_dialogue,&args,sizeof(args));
 }
+
+/* Goody Grief.
+ * General witch advice, available from the start.
+ */
+ 
+void begin_goody(struct sprite *sprite) {
+
+  // "Buy a wand."
+  if (!store_get_itemid(NS_itemid_wand)) {
+    begin_dialogue(193,sprite);
+    return;
+  }
+  
+  // "The two basic spells."
+  begin_dialogue(194,sprite);
+}

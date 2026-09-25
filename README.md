@@ -48,6 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
+- [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -73,7 +74,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Exteriors.
 - - [ ] Dot's house
 - - - Ensure the underground entrance is not obvious but doesn't need items to enter.
-- - [ ] Blood Bank. Are we even keeping this?
+- - [x] Blood Bank. Are we even keeping this?
 - - - Replace with Goody's house: She tells you about the wand and teaches spells.
 - - [ ] Underground entrance house
 - - - Same concerns as Dot's ladder, make it a little secret.
