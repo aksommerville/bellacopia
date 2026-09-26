@@ -117,11 +117,13 @@ For games that distinguish Full Clear from Any%.
 ## Development time
 
 SUMMARY: Likely to be first, tho I still hold out hope of finishing in 2026.
+We will break the record on 3 Jan 2027.
 
 Measure via git commits. Only count thru the release, don't count post-release repairs or currency.
 Nothing older than CTM has reliable version control logs; they were all gitted after the fact if at all.
 Bandit and Zen were both huge projects, probably in the neighborhood of 6 months.
 The little games are typically one or two weeks.
+`echo $(( ($(date +%s -d 2026-09-25) - $(date +%s -d 2026-01-01)) / 86400))`.
 
 - 380 2017-09-15..2018-09-30 Plunder Squad. First commit says "begin version control". Unclear how much work had been done before that; can't be much.
 - 265 2023-01-06..2023-09-29 Full Moon.

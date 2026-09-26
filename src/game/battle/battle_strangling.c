@@ -216,9 +216,11 @@ static void strangling_update_player_common(struct battle *battle,struct player 
     if (holdok&&(BATTLE->btnid_tap==EGG_BTN_WEST)) tapgood=1; else tapbad=1;
   }
   if (tapbad) {
+    bm_sound_pan(RID_sound_unstrangle,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->power=0.0;
   }
   if (tapgood) {
+    bm_sound_pan(RID_sound_strangle,player->who?PLAYER_PAN:-PLAYER_PAN);
     if ((player->power+=0.200)>=1.0) player->power=1.0;
   }
 }

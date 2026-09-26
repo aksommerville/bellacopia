@@ -102,7 +102,7 @@ static void npc_prepare_mr_mrs_rabbit(struct sprite *sprite) {
  * There must be a battlemark command with id 1, we'll put the treasure there.
  */
  
-static uint8_t npc_princess_reward_args[4]={0};
+static uint8_t npc_princess_reward_args[4]={0,0,NS_fld_alsozero>>8,NS_fld_alsozero};
  
 static void npc_princess_spawn_reward(struct sprite *sprite,int fldid) {
 
