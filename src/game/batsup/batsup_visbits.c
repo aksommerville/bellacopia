@@ -1,4 +1,6 @@
+#include "egg_res_toc.h"
 #include "game/bellacopia.h"
+#include "game/text.h"
 #include "batsup_visbits.h"
 
 /* Hourglass.
@@ -81,4 +83,67 @@ void batsup_render_decal(int dstx,int dsty,int srcl,int srct,int w,int h,uint8_t
   graf_triangle_strip_tex_more(&g.graf,
     dstx+lround(sex),dsty+lround(sey),srcr,srcb
   );
+}
+
+/* Monkish text.
+ */
+ 
+static const struct monkish_adjustments {
+  int8_t l,r; // Advance by (l), render the tile, then advance by (r).
+} monkish_adjustments[64]={
+  {2,2},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},
+  {8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{8,8},{0,0},{0,0},{0,0},{0,0},{0,0},
+  {0,0},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{1,2},{3,4},{3,4},{2,3},{3,4},{3,4},{3,4},
+  {3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{0,0},{0,0},{0,0},{0,0},{0,0},
+};
+ 
+int monkish_render(int dstx,int dsty,const char *src,int srcc) {
+  graf_set_image(&g.graf,RID_image_monkish);
+  if (!src) return 0;
+  if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+  dsty-=4;
+  int dstx0=dstx;
+  int srcp=0,pvch=0;
+  while (srcp<srcc) {
+    int ch=src[srcp++];
+    
+    // If it's a digit, evaluate, then turn into text.
+    // Also dash followed by a digit.
+    int isnumber=0,v=0;
+    if ((ch>='0')&&(ch<='9')) {
+      isnumber=1;
+      v=ch-'0';
+      while ((srcp<srcc)&&(src[srcp]>='0')&&(src[srcp]<='9')) {
+        v*=10;
+        v+=src[srcp++]-'0';
+      }
+    } else if ((ch=='-')&&(srcp<srcc)&&(src[srcp]>='0')&&(src[srcp]<='9')) {
+      isnumber=1;
+      while ((srcp<srcc)&&(src[srcp]>='0')&&(src[srcp]<='9')) {
+        v*=10;
+        v-=src[srcp++]-'0';
+      }
+    }
+    if (isnumber) {
+      char tmp[64];
+      int tmpc=int_as_words(tmp,sizeof(tmp),v);
+      if ((tmpc>0)&&(tmpc<=sizeof(tmp))) {
+        dstx+=monkish_render(dstx,dsty+4,tmp,tmpc); // +4 to undo the vertical correction we applied up top
+      }
+      continue;
+    }
+    
+    // Find the adjustments. Everything that isn't in the letters' rows measures like '@', which is how monks spell space.
+    const struct monkish_adjustments *adj;
+    if ((ch>=0x40)&&(ch<0x80)) adj=monkish_adjustments+ch-0x40;
+    else adj=monkish_adjustments;
+    
+    //TODO Special kerning case for lower J.
+    //...oh but now that i think about it, Latin doesn't use J so who cares. Revisit if we ever use this for English.
+    
+    dstx+=adj->l;
+    graf_tile(&g.graf,dstx,dsty,ch,0);
+    dstx+=adj->r;
+  }
+  return dstx-dstx0;
 }

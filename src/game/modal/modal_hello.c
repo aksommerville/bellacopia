@@ -318,8 +318,22 @@ static void _hello_update(struct modal *modal,double elapsed) {
 
 /* Render.
  */
+ #include "game/batsup/batsup_visbits.h"
  
 static void _hello_render(struct modal *modal) {
+
+  //XXX Hijacking to experiment with Monkish text.
+  graf_fill_rect(&g.graf,0,0,FBW,FBH,0xa3804bff);
+  graf_set_tint(&g.graf,0x2f1b0fff);
+  monkish_render(10,20,"the quick brown fox jumps over the lazy dog",-1);
+  monkish_render(10,40,"THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",-1);
+  monkish_render(10,60,"The Quick Brown Fox Jumps Over The Lazy Dog",-1);
+  monkish_render(10,80,"Yon scorre be 3214 poyntes",-1);
+  monkish_render(10,100,"Sed in lege Domini voluntas eius",-1);
+  monkish_render(10,120,"et in lege eius meditabitur die ac nocte",-1);
+  graf_set_tint(&g.graf,0);
+  return;
+
   graf_fill_rect(&g.graf,0,0,FBW,FBH,0x2a1755ff);
   graf_set_image(&g.graf,RID_image_title);
   graf_decal(&g.graf,(FBW>>1)-(MODAL->titlew>>1),0,0,0,MODAL->titlew,MODAL->titleh);
