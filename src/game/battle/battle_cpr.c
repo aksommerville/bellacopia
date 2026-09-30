@@ -7,18 +7,15 @@
 /* With these parameters, you can revive the patient in a bar or two less than the song's length.
  */
 #define THUMP_TIME     0.200 /* sec. How long do we stay compressed, visual indication and also input blackout. */
-#define THRESH_BEST    0.250 /* Very very tolerant, I bet even my dad could hit this. */
-#define THRESH_WORST   0.150 /* beat. CPU can hit this reliably. I can hit it most of the time (with pulse driver, may vary) */
-#define INCREASE_BEST  0.100
-#define INCREASE_WORST 0.100
-#define DECREASE_BEST  0.050
+#define INCREASE_BEST  0.170
+#define INCREASE_WORST 0.110
+#define DECREASE_BEST  0.040
 #define DECREASE_WORST 0.050
-#define PENALTY_BEST   0.150
-#define PENALTY_WORST  0.250
-#define CPU_PENALTY    0.900 /* Multiplied to (increase) when there's one CPU player. */
+#define CPU_PENALTY    0.700 /* Multiplied to (increase) when there's one CPU player. */
 
 #define METRONOME_W 40 /* Must agree with graphics. */
 #define METRONOME_SPEED 0.060 /* Sec/pixel, and may run under 1 frame. */
+#define THUMP_LIMIT 6 /* Circular buffer, and its length determines how much we compare against for scoring. */
 
 struct battle_cpr {
   struct battle hdr;
@@ -33,10 +30,10 @@ struct battle_cpr {
     double skill; // 0..1, reverse of each other.
     uint32_t color;
     uint8_t tileid;
+    uint8_t face;
     double thump;
-    double thresh; // 0..1, must be this close to the beat.
+    double goodrange; // ms, how close must we be to score at all. <secperbeat/2.
     double increase; // 0..1, earn so much for a good thump.
-    double penalty; // 0..1, lose so much for a bad thump.
     double decrease; // 0..1, lose so much continuously per beat.
     double score; // 0..1, when it reaches 1 you win.
     struct metronome {
@@ -47,10 +44,13 @@ struct battle_cpr {
     double metroclock;
     double metrobeat;
     int mprint;
+    double thumpv[THUMP_LIMIT];
+    int thumpc,thumpp;
     // Man:
     int pvinput;
     // CPU:
-    double pvbeat;
+    double errlo,errhi;
+    double cpuclock;
   } playerv[2];
 };
 
@@ -72,10 +72,22 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   } else { // Right.
     player->who=1;
   }
+  
+  player->metronomep=rand()%METRONOME_W; // It looks weird if they're in phase with each other.
+  player->increase=INCREASE_WORST*(1.0-player->skill)+INCREASE_BEST*player->skill;
+  player->decrease=DECREASE_WORST*(1.0-player->skill)+DECREASE_BEST*player->skill;
+  player->goodrange=BATTLE->secperbeat/2.0;
+  player->goodrange=player->skill*player->goodrange+(1.0-player->skill)*0.080;
+  
   if (player->human=human) { // Human.
   } else { // CPU.
+    // CPU increase penalty is applied by _cpr_init.
+    player->goodrange*=0.800;
+    player->errhi=0.040*player->skill+0.060*(1.0-player->skill);
+    player->errlo=player->errhi*0.5;
+    player->cpuclock=BATTLE->secperbeat*2.0; // Give the humans a wee head start.
   }
-  switch (face) {
+  switch (player->face=face) {
     case NS_face_monster: {
         player->color=0x1cb77cff;
         player->tileid=0x8a;
@@ -89,17 +101,27 @@ static void player_init(struct battle *battle,struct player *player,int human,in
         player->tileid=0x69;
       } break;
   }
-  player->metronomep=rand()%METRONOME_W; // It looks weird if they're in phase with each other.
-  player->thresh=THRESH_WORST*(1.0-player->skill)+THRESH_BEST*player->skill;
-  player->increase=INCREASE_WORST*(1.0-player->skill)+INCREASE_BEST*player->skill;
-  player->decrease=DECREASE_WORST*(1.0-player->skill)+DECREASE_BEST*player->skill;
-  player->penalty=PENALTY_WORST*(1.0-player->skill)+PENALTY_BEST*player->skill;
 }
 
 /* New.
  */
  
 static int _cpr_init(struct battle *battle) {
+  
+  // Read tempo off the song resource.
+  const uint8_t *src=0;
+  int srcc=res_get(&src,EGG_TID_song,RID_song_heart_thumpin);
+  if ((srcc<6)||memcmp(src,"\0EAU",4)) {
+    fprintf(stderr,"song:%d(heart_thumpin) not valid EAU\n",RID_song_heart_thumpin);
+    return -1;
+  }
+  int msperqnote=(src[4]<<8)|src[5];
+  if (msperqnote<1) {
+    fprintf(stderr,"song:%d invalid tempo %d\n",RID_song_heart_thumpin,msperqnote);
+    return -1;
+  }
+  // The song's tempo is rated for beats twice as fast as we want, hence *2. It works out to 688 ms.
+  BATTLE->secperbeat=(double)(msperqnote*2.0)/1000.0;
 
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
@@ -117,21 +139,6 @@ static int _cpr_init(struct battle *battle) {
   
   battle_song(RID_song_heart_thumpin);
   
-  // Read tempo off the song resource.
-  const uint8_t *src=0;
-  int srcc=res_get(&src,EGG_TID_song,RID_song_heart_thumpin);
-  if ((srcc<6)||memcmp(src,"\0EAU",4)) {
-    fprintf(stderr,"song:%d(heart_thumpin) not valid EAU\n",RID_song_heart_thumpin);
-    return -1;
-  }
-  int msperqnote=(src[4]<<8)|src[5];
-  if (msperqnote<1) {
-    fprintf(stderr,"song:%d invalid tempo %d\n",RID_song_heart_thumpin,msperqnote);
-    return -1;
-  }
-  // The song's tempo is rated for beats twice as fast as we want, hence *2:
-  BATTLE->secperbeat=(double)(msperqnote*2.0)/1000.0;
-  
   return 0;
 }
 
@@ -144,20 +151,36 @@ static void player_thump(struct battle *battle,struct player *player) {
   player->thump=THUMP_TIME;
   player->mprint=0;
   
-  /* CPU is perfect but will always strike in >=0.
-   * I haven't seen it land above 0.100 and it's almost always under 0.050.
-   * A quick test of my own, I consistently land under 0.150.
-   * All bets are off under about 0.033 due to quantization but actually drivers will introduce more uncertainty than that.
+  /* Record the thump time.
    */
-  double distance=BATTLE->beat;
-  if (distance<0.0) distance=-distance;
-  //if (!player->who) fprintf(stderr,"%.03f\n",distance);//XXX
-  if (distance<=player->thresh) {
-    player->score+=player->increase;
-  } else {
-    //XXX Don't penalize bad strokes, it's already hard enough.
-    //if ((player->score-=player->penalty)<=0.0) player->score=0.0;
+  player->thumpv[player->thumpp++]=BATTLE->playhead;
+  if (player->thumpp>=THUMP_LIMIT) player->thumpp=0;
+  if (player->thumpc<THUMP_LIMIT) player->thumpc++;
+  
+  /* Walk backward thru all recorded thumps.
+   * Expect each to be (secperbeat) earlier, on a scale anchored by the new beat.
+   * If we walk off the start, the song has looped, reset that scale.
+   * Experimentally, my RMS is usually in 10..20 ms and never hits 100 ms unless I'm trying to fail. Beats are 688 ms.
+   */
+  int i=player->thumpc;
+  int checkp=player->thumpp;
+  double expecttime=-1.0; // <0 to reset, call the next thump perfect
+  double offness2=0.0; // Sum of squared deltas.
+  while (i-->0) {
+    checkp--;
+    if (checkp<0) checkp=THUMP_LIMIT-1;
+    expecttime-=BATTLE->secperbeat;
+    if (expecttime<0.0) expecttime=player->thumpv[checkp];
+    double d=player->thumpv[checkp]-expecttime;
+    offness2+=d*d;
   }
+  double offness=sqrt(offness2/player->thumpc);
+  
+  /* Compare RMS of thump times to our goodrange.
+   */
+  double quality=1.0-offness/player->goodrange;
+  if (quality<=0.0) return;
+  player->score+=player->increase*quality;
 }
 
 /* Update human player.
@@ -176,10 +199,13 @@ static void player_update_man(struct battle *battle,struct player *player,double
  */
  
 static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
-  if ((BATTLE->beat>=0.0)&&(player->pvbeat<0.0)) {
+  if ((player->cpuclock-=elapsed)<=0.0) {
+    double err=(rand()&0xffff)/65535.0;
+    err=err*player->errlo+(1.0-err)*player->errhi;
+    if (rand()&1) err=-err;
+    player->cpuclock+=BATTLE->secperbeat+err;
     player_thump(battle,player);
   }
-  player->pvbeat=BATTLE->beat;
 }
 
 /* -1..1 metronome displacement for 0..THUMP_TIME.
@@ -257,8 +283,10 @@ static void _cpr_update(struct battle *battle,double elapsed) {
   struct player *player=BATTLE->playerv;
   int i=2;
   for (;i-->0;player++) {
-    if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
-    else player_update_cpu(battle,player,elapsed);
+    if (battle->outcome==-2) {
+      if (player->human) player_update_man(battle,player,elapsed,g_input[player->human]);
+      else player_update_cpu(battle,player,elapsed);
+    }
     player_update_common(battle,player,elapsed);
   }
   
@@ -266,7 +294,6 @@ static void _cpr_update(struct battle *battle,double elapsed) {
    */
   struct player *l=BATTLE->playerv;
   struct player *r=l+1;
-  //fprintf(stderr,"%.03f %.03f\n",l->score,r->score);
   if (l->score>=1.0) {
     if (r->score>=1.0) battle->outcome=0;
     else battle->outcome=1;
@@ -378,13 +405,41 @@ static void player_render_over(struct battle *battle,struct player *player) {
   while (notexc-->0) {
     graf_tile(g_graf,notexv[notexc],sy+10,0x5c,0);
   }
+  
+  // There's a separate set of tiles for the metronome's foreground, to clip out stray notes.
+  graf_tile(g_graf,x-NS_sys_tilesize,my-NS_sys_tilesize,0x2d,0);
+  graf_tile(g_graf,x                ,my-NS_sys_tilesize,0x2e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my-NS_sys_tilesize,0x2f,0);
+  graf_tile(g_graf,x-NS_sys_tilesize,my                ,0x3d,0);
+  graf_tile(g_graf,x                ,my                ,0x3e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my                ,0x3f,0);
+  graf_tile(g_graf,x-NS_sys_tilesize,my+NS_sys_tilesize,0x4d,0);
+  graf_tile(g_graf,x                ,my+NS_sys_tilesize,0x4e,0);
+  graf_tile(g_graf,x+NS_sys_tilesize,my+NS_sys_tilesize,0x4f,0);
+  
+  /* If I'm a nurse and the battle is over, render the PSA.
+   * I want to bill Bellacopia generally as "you can play lots of these minigames in real life!". (eg Throwing Contest, Home Run Derby...)
+   * But that is emphatically not the case for CPR, and it might not be obvious to a child.
+   */
+  if ((battle->outcome>-2)&&(player->face==NS_face_monster)) {
+    int srcx=NS_sys_tilesize*11;
+    int srcy=0;
+    int w=NS_sys_tilesize*3;
+    int h=NS_sys_tilesize*2;
+    graf_decal(g_graf,x-(w>>1),PLAYERY-h-13,srcx,srcy,w,h);
+  }
 }
 
 /* Render.
  */
  
 static void _cpr_render(struct battle *battle) {
-  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
+
+  const int groundy=PLAYERY+NS_sys_tilesize-1;
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x8c979bff);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-groundy,0x789a7bff);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
+
   graf_set_image(g_graf,RID_image_battle_fractia);
   player_render_tiles(battle,BATTLE->playerv+0);
   player_render_tiles(battle,BATTLE->playerv+1);

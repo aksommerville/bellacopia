@@ -35,7 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] !!! Definitely repair and nerf the CPR Contest before GDEX. It's very hard to play on the cabinet right now.
+- [x] !!! Definitely repair and nerf the CPR Contest before GDEX. It's very hard to play on the cabinet right now.
 - [x] !!! In the recent door-repair work, I fucked it up even worse for brooming. And when you leave the labyrinth and cutscene plays, you go back incorrectly.
 - [x] Two errant tiles in the ice palace.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -52,6 +52,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
+- [ ] Does maxxing inventory at the Cave of Cheating trigger the things story? Just curious.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -73,7 +74,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Underground entrance house
 - - [ ] Public Sector Employees' Union
 - - [ ] Food Service Guild
-- - [ ] Nurse should have a little boombox.
+- - [x] Nurse should have a little boombox.
 - [ ] Forest / Cheapside / Meadow
 - - [ ] Exteriors.
 - - [ ] Dot's house
@@ -121,7 +122,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
 - [ ] cheating: Make the background graphics more casiny.
-- [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
+- [x] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
