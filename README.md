@@ -43,6 +43,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
 - [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
+- - Changed the Root Devil. He doesn't need a story anymore.
+- - [ ] Find something new to do for this story. Maybe another expensive purchase like the fish book?
+- - - How about a lemonade stand in the underground backwater, that also for some reason sells a $250 book?
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
@@ -52,7 +55,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [ ] Does maxxing inventory at the Cave of Cheating trigger the things story? Just curious.
+- [x] Does maxxing inventory at the Cave of Cheating trigger the things story? Just curious. ...yes
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -61,7 +64,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
-- - [ ] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
+- - [x] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
 - [ ] Fractia
@@ -124,6 +127,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cheating: Make the background graphics more casiny.
 - [x] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
+- [ ] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.

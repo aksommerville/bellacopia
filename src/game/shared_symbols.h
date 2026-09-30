@@ -394,12 +394,13 @@
 #define NS_sprtype_figureeight      55 /* (u8:orient_hv)01 (u24)0 */
 #define NS_sprtype_eightspawn       56 /* (u32)0 */
 #define NS_sprtype_flagindicator    57 /* (u16:fld)0 (u8:delta)1 (u8)0 */
-#define NS_sprtype_numfloor         58 /* (32)0 ; Coordinates with all numfloor_ref on the same map. */
+#define NS_sprtype_numfloor         58 /* (u32)0 ; Coordinates with all numfloor_ref on the same map. */
 #define NS_sprtype_numfloor_ref     59 /* (u16:fld16)password (u16:fld)fldid ; Must exist for the puzzle to work, we're the only thing associating the two fields. */
 #define NS_sprtype_rhinoceros       60 /* (u32)0 */
 #define NS_sprtype_landmine         61 /* (u16:fld)0 (u16)0 */
 #define NS_sprtype_letfloor         62 /* (u32)0 */
 #define NS_sprtype_letfloor_ref     63 /* (u16)strix (u16:fld)fldid ; strings:item */
+#define NS_sprtype_motionsensor     64 /* (u16:fld)0 (u16)0 ; fld goes on when tripped */
 #define FOR_EACH_sprtype \
   _(dummy) \
   _(hero) \
@@ -453,7 +454,8 @@
   _(rhinoceros) \
   _(landmine) \
   _(letfloor) \
-  _(letfloor_ref)
+  _(letfloor_ref) \
+  _(motionsensor)
   
 #define NS_battle_fishing 1
 #define NS_battle_chopping 2
@@ -970,6 +972,7 @@
 #define NS_fld_minefield_sign_1 301
 #define NS_fld_minefield_sign_2 302
 #define NS_fld_cave_flame_1 303 /* North edge of Cheapside, underground. */
+#define NS_fld_semotionsensor 304
 
 /* "fld16" are 16 unsigned bits each.
  */

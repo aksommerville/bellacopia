@@ -1,0 +1,5 @@
+image image:cave_sprites
+tile 128 0
+type (u16:sprtype)motionsensor
+groups (b32:sprgrp)visible,update
+layer (u16)90
