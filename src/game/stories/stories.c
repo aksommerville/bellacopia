@@ -73,7 +73,7 @@ static struct story storyv[16]={
     .tileid_large=0x2a,
     .strix_title=6,
     .strix_desc=22,
-    .fld_present=NS_fld_root7,
+    .fld_present=NS_fld_secrets_book,
     .fld_told=NS_fld_story6,
   },
   {

@@ -3,7 +3,7 @@
 3 Kidnapped by Goblins!
 4 The Wayward Princess
 5 The Spooky Labyrinth
-6 The Toad and the Boulder
+6 The Book of Secrets
 7 On the Decorating of Barrels
 8 Too Many Things!
 9 Broom Races
@@ -20,7 +20,7 @@
 19 A story about a witch who gets kidnapped by goblins.
 20 A cautionary tale about a Princess who gets kidnapped by goblins.
 21 Being the adventures of a young witch whose principal interests are grapes, ultraviolin, and Beets.
-22 Story about a toad, and also there's a boulder.
+22 Very mysterious!
 23 Have you ever wanted to decorate barrels? With this helpful guide, now you can!
 24 A fable about things, the having of them, and the troubles that can ensue.
 25 Dot and Moon recount the thrills and travails of their time in the Broom Racing circuit.
@@ -39,7 +39,7 @@
 36 Will you tell me a story about the eastern mountains?
 37 I wish I could hear a story about a Princess.
 38 Will you tell me a story about the jungle temple?
-39 Do you know any stories that take place in the southeast desert?
+39 I heard there's a mysterious book for sale near the underground aquifer.
 40 I want to hear a story about barrel hats. Do you know one?
 41 Maybe if your backpack was full, there'd be a story to tell about it.
 42 Can you tell me a story about broom racing?
@@ -147,7 +147,9 @@
 129 A good potion is made of carrots, tomatoes, and a bunch of secret ingredients.
 130 One sip and you're ready to face the world again!
 
-131 Once upon a time there was a thing I haven't got to yet. !!!TODO!!!
-132 It goes like this... !!!TODO!!!
-133 It goes like that... !!!TODO!!!
-134 It goes here when it's ready. !!!TODO!!!
+# Book of Secrets. This was going to be an Aesop-style fable about a toad and a boulder, but I never did write that.
+# So don't be alarmed if you see "toad and boulder" in my notes; it's this story.
+131 In this world, there are many strange and mysterious things.
+132 There's a wishing well near the abandoned mine that connects to a sewer in Fractia.
+133 Under the Temple, there's a sea monster with lots of stuff in his belly.
+134 And above that sea monster there's a Sphinx!

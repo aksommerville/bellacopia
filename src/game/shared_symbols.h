@@ -219,6 +219,7 @@
 #define NS_itemid_cuppatutti 44
 #define NS_itemid_wishing_well 45 /* Placeholder meaning "whatever's in the well". */
 #define NS_itemid_buried_bridge 46 /* Fake item for use with fishodds. */
+#define NS_itemid_secrets_book 47
 #define FOR_EACH_itemid \
   _(stick) \
   _(broom) \
@@ -265,7 +266,8 @@
   _(cuppa3) \
   _(cuppatutti) \
   _(wishing_well) \
-  _(buried_bridge)
+  _(buried_bridge) \
+  _(secrets_book)
 
 /* NPC activities are hard-coded. Select one from this list.
  */
@@ -973,6 +975,7 @@
 #define NS_fld_minefield_sign_2 302
 #define NS_fld_cave_flame_1 303 /* North edge of Cheapside, underground. */
 #define NS_fld_semotionsensor 304
+#define NS_fld_secrets_book 305
 
 /* "fld16" are 16 unsigned bits each.
  */

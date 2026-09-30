@@ -425,6 +425,15 @@ static const struct item_detail item_detailv[]={
     .inventoriable=0,
     .fld16=0,
   },
+  [NS_itemid_secrets_book]={
+    .tileid=0x1f,
+    .hand_tileid=0,
+    .strix_name=116,
+    .strix_help=117,
+    .initial_limit=0,
+    .inventoriable=0,
+    .fld16=0,
+  },
 };
 
 /* Get item reporting.
@@ -577,6 +586,11 @@ int game_get_item(int itemid,int quantity) {
         hp+=quantity;
         if (hp>hpmax) hp=hpmax;
         store_set_fld16(NS_fld16_hp,hp);
+        bm_sound(RID_sound_collect);
+      } return 1;
+    case NS_itemid_secrets_book: {
+        store_set_fld(NS_fld_secrets_book,1);
+        g.camera.mapsdirty=1;
         bm_sound(RID_sound_collect);
       } return 1;
   }
@@ -782,6 +796,10 @@ int possessed_quantity_for_itemid(int itemid,int *limit) {
     case NS_itemid_cuppatutti: {
         if (limit) *limit=INT_MAX;
         return 0;
+      }
+    case NS_itemid_secrets_book: {
+        if (limit) *limit=1;
+        return store_get_fld(NS_fld_secrets_book)?1:0;
       }
   }
   

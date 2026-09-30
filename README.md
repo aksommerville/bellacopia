@@ -42,9 +42,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
-- [ ] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
+- [x] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
 - - Changed the Root Devil. He doesn't need a story anymore.
-- - [ ] Find something new to do for this story. Maybe another expensive purchase like the fish book?
+- - [x] Find something new to do for this story. Maybe another expensive purchase like the fish book?
 - - - How about a lemonade stand in the underground backwater, that also for some reason sells a $250 book?
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.

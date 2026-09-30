@@ -75,6 +75,7 @@ static int game_get_advice_strix() {
   if (!store_get_fld(NS_fld_bridge5done)) return 27; // Gold bridge.
   if (!store_get_fld(NS_fld_barrelhat9)) return 28; // Castle barrel.
   if (!store_get_fld(NS_fld_bridge2done)) return 29; // Match bridge.
+  if (!store_get_fld(NS_fld_secrets_book)) return 76; // Secrets book.
 
   /* Goblins' cave.
    */

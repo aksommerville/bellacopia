@@ -150,6 +150,7 @@ void begin_brewer_single(struct sprite *sprite,int exorbitance) {
   int hpmax=store_get_fld16(NS_fld16_hpmax);
   int strix;
   if (exorbitance==3) strix=152; // "Potions and matches!"
+  else if (exorbitance==4) strix=196; // "Why business so slow?"
   else if (hp>=hpmax) strix=126; // "You don't need it, but that's cool."
   else strix=125; // "Buy potion, will ya!"
   struct modal_args_shop args={
@@ -160,6 +161,12 @@ void begin_brewer_single(struct sprite *sprite,int exorbitance) {
   struct modal *modal=modal_spawn(&modal_type_shop,&args,sizeof(args));
   if (!modal) return;
   switch (exorbitance) {
+    case 4: { // The special hidden shop by the underground lake.
+        modal_shop_add_item(modal,NS_itemid_cuppa1,4,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa2,6,1);
+        modal_shop_add_item(modal,NS_itemid_cuppa3,8,1);
+        if (!store_get_fld(NS_fld_secrets_book)) modal_shop_add_item(modal,NS_itemid_secrets_book,250,0);
+      } break;
     case 3: { // Underground potion shops also sell matches at outrageous prices.
         modal_shop_add_item(modal,NS_itemid_match,5,0);
         modal_shop_add_item(modal,NS_itemid_cuppa1,10,1);

@@ -13,10 +13,11 @@
 
 image image:caves
 position 8 8 2 *
-sprite @13,7 sprite:jigpiece (u32)0
+sprite @17,10 sprite:jigpiece (u32)0
 rspriteres rsprite:usoutheast
 dark
 door @16,1 map:83 @16,1 0x0000
 sprite @16,3 sprite:motionsensor (u16:fld)semotionsensor (u16)0
 treadle @15,6 (u16:fld)semotionsensor
 switchable @15,2 (u16:fld)semotionsensor
+sprite @13,7 sprite:firepot (u8:radius_m)3 (u24)0
