@@ -110,8 +110,8 @@ static void hero_hazards_update(struct sprite *sprite,double elapsed) {
  */
  
 static void hero_cb_map(struct map *map,int focus,void *userdata) {
-  if (focus!=2) return; // Wait for "gained primary focus".
   struct sprite *sprite=userdata;
+  if (focus!=2) return; // Wait for "gained primary focus".
   camera_unlisten(SPRITE->door_listener);
   SPRITE->door_listener=0;
   sprite->x=SPRITE->doorx;
@@ -119,6 +119,8 @@ static void hero_cb_map(struct map *map,int focus,void *userdata) {
   sprite->z=map->z;
   SPRITE->ignoreqx=(int)sprite->x-map->lng*NS_sys_mapw;
   SPRITE->ignoreqy=(int)sprite->y-map->lat*NS_sys_maph;
+  SPRITE->qx=(int)sprite->x;
+  SPRITE->qy=(int)sprite->y;
   SPRITE->busstop_clock=0.0;
   
   if (SPRITE->respawn_princess) {
@@ -297,7 +299,9 @@ static void _hero_update(struct sprite *sprite,double elapsed) {
     SPRITE->qnew=1;
     SPRITE->qx=qx;
     SPRITE->qy=qy;
-    SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
+    if ((qx!=SPRITE->ignoreqx)||(qy!=SPRITE->ignoreqy)) {
+      SPRITE->ignoreqx=SPRITE->ignoreqy=-1;
+    }
     hero_check_triggers(sprite);
   }
 

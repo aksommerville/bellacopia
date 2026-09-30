@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] !!! Definitely repair and nerf the CPR Contest before GDEX. It's very hard to play on the cabinet right now.
-- [ ] !!! In the recent door-repair work, I fucked it up even worse for brooming. And when you leave the labyrinth and cutscene plays, you go back incorrectly.
+- [x] !!! In the recent door-repair work, I fucked it up even worse for brooming. And when you leave the labyrinth and cutscene plays, you go back incorrectly.
 - [x] Two errant tiles in the ice palace.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
