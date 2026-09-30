@@ -36,6 +36,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [ ] !!! Definitely repair and nerf the CPR Contest before GDEX. It's very hard to play on the cabinet right now.
+- [ ] !!! In the recent door-repair work, I fucked it up even worse for brooming. And when you leave the labyrinth and cutscene plays, you go back incorrectly.
+- [x] Two errant tiles in the ice palace.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -65,12 +67,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
 - - [ ] Thing Store
 - - [ ] Labor Union
-- - [ ] Vacant house next to Labor Union
+- - [x] Vacant house next to Labor Union
 - - [ ] Athletes' Guild
 - - [ ] Grandpa's Puzzle House
 - - [ ] Underground entrance house
 - - [ ] Public Sector Employees' Union
 - - [ ] Food Service Guild
+- - [ ] Nurse should have a little boombox.
 - [ ] Forest / Cheapside / Meadow
 - - [ ] Exteriors.
 - - [ ] Dot's house
@@ -102,6 +105,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Sea monster
 - - [ ] Parasites etc
 - - [ ] Path to the treasure should be dark.
+- - [ ] Right now, one could enter and still miss the treasure. Don't let that happen, make it obvious.
 - [ ] South jungle
 - [ ] East desert
 - - [ ] Castle
@@ -115,7 +119,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] bobsleigh: I crossed the finish line once and it just didn't register.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end.
+- [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
 - [ ] cheating: Make the background graphics more casiny.
 - [ ] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?

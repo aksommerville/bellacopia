@@ -200,13 +200,26 @@ Stats as of c17ee715f967b760da0d0debb63510dd20579ea1, 2026-08-31:
 Doing the GDEX game jam, also judging Uplifting and js13k. So like August, it will be a slow Bellacopia month.
 
 Goals:
-- [ ] 10 new battles.
-- [ ] A few more interiors.
+- [ ] 10 new battles. ...missed
+- [x] A few more interiors.
+
+Stats as of 53d35c0a223e9b7b6f3a7e939eb9fb69fc600cf4, 2026-09-29:
+ - Code: 94686
+ - `rom=2027747 code=1107563 image=5533548px*90 song=11:50.015*20 sound=0:27.943*84 map=85440m*356`
+ - Battles: 104
+ - 100%: 2:01:59
+ - Minm:   25:54
+ - Any%:   12:59
+ 
+Minm time has gotten shorter 2 months in a row. I guess the path hasn't changed much and my skill at it is improving?
+This month's performance was still far from ideal.
+I think I've got the Any% strategy down: Meadow, get Fishpole, Fractia, get Broom, North, then counterclockwise around.
 
 Added some interesting things this month:
 - 2-player broom races.
 - Reengage Princess.
 - numfloor and letfloor puzzles, and a few others.
+- Lengthened `pretty_pretty_pickle` and `death_rattle`
 - Credits.
 
 ## October 2026
@@ -215,15 +228,15 @@ GDEX mid-month, and I expect to spend most of the time before that in GDEX-speci
 But from the 19th onward, there's nothing planned, and we can really dig in and crank this thing out.
 
 Goals:
-- [ ] 20 new battles.
+- [ ] 10 new battles.
 - [ ] All decorative interiors complete: Cheapside, Botire, Fractia, Ice Palace, Sand Castle, Temple.
 
 ## November 2026
 
 Goals:
-- [ ] All battles complete. Should be about 20, if I meet the Aug, Sep, and Oct goals.
+- [ ] All battles complete. It's a long shot but that's the goal.
 - [ ] Underworld and outerworld fully decorated.
-- [ ] All quests finalish. (as of 31 July, still need Toad and Boulder, hc5, purse3, post-princess, and refined zoos)
+- [ ] All quests finalish. (as of 30 September, still need Toad and Boulder, hc5, purse3)
 
 ## December 2026
 

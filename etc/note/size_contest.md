@@ -3,7 +3,7 @@
 By any reasonable standard, it's the largest game I've ever written.
 It amuses me to quantify this.
 
-Stats for bellacopia are from c17ee715f967b760da0d0debb63510dd20579ea1, 31 August 2026. Still very incomplete.
+Stats for bellacopia are from 53d35c0a223e9b7b6f3a7e939eb9fb69fc600cf4, 29 September 2026. Still very incomplete.
 Currently the largest by 3/8 criteria.
 
 Would be cool to compare to others' games too, especially broadly-familiar ones like Zelda.
@@ -18,7 +18,7 @@ Using the same standard as my [journal](https://github.com/aksommerville/journal
 - 3563520 Bandit. Bloated due to uncompressed graphics, and surely lots of other poor design choices.
 - 3051520 Master Zen. ''
 - 2448768 Campaign Trail of the Mummy. Lots of high-resolution graphics. Not super wasteful tho.
-- 1943486 <<< Bellacopia Maleficia.
+- 2027747 <<< Bellacopia Maleficia.
 - 1767825 Just Below the Surface, Deluxe CD-ROM Edition.
 - 1494423 Secret of the Octopotamus. Pygame, so the bloated source is part of the distro.
 - 1243282 Full Moon.
@@ -34,7 +34,7 @@ Bear in mind that Bellacopia is an Egg game, so its source doesn't include drive
 Source for everything before Secret of the Octopotamus has been lost. I doubt there's anything above 10k from those days.
 
 -  96226 Plunder Squad. Includes drivers and tooling.
--  88272 <<< Bellacopia Maleficia.
+-  94686 <<< Bellacopia Maleficia.
 -  87747 Full Moon. Includes drivers and tooling.
 -  22247 Campaign Trail of the Mummy.
 -  21584 Sitter 2009.
@@ -48,7 +48,7 @@ Combined pixel count of all images shipped with the game.
 `egglist list -fsize DIRECTORY` if they're stored loose.
 Bandit and Master Zen are unknown; got to figure out how to decode their graphics. I bet they're both over a million.
 
-- 5402476 <<< Bellacopia Maleficia.
+- 5533548 <<< Bellacopia Maleficia.
 - 2412544 Campaign Trail of the Mummy.
 - 1787678 Spelling Bee.
 - 1594368 Full Moon.
@@ -64,7 +64,7 @@ Bandit, Sitter 2009, and Plunder Squad all have substantial music, but all in tr
 
 - 1:03:27 (19) Master Zen. Expect this record to stand for all time!
 - 0:17:40 (14) Full Moon.
-- 0:10:43 (17) <<< Bellacopia Maleficia. Includes a few dummy songs but I don't think that matters much.
+- 0:11:50 (20) <<< Bellacopia Maleficia. Includes a few dummy songs but I don't think that matters much.
 - 0:10:40 (14) Spelling Bee.
 
 ## World size in screenfuls
@@ -73,7 +73,7 @@ SUMMARY: Already first, by far.
 
 Bandit and Zen are not measured, would need some figuring out.
 
-- 354 (84960m) <<< Bellacopia Maleficia (map count).
+- 356 (85440m) <<< Bellacopia Maleficia (map count).
 - 240 (57600m) Campaign Trail of the Mummy. Doesn't have a fixed screensize, count is based on a made-up 20x12m screen.
 - 205          Plunder Squad (blueprint count).
 - 150          Full Moon (map count).
@@ -96,6 +96,8 @@ Got the temple's purse upgrade in 12:00. Ouch, longer than I expected. And would
 War, then Princess, got the Broom in 10:55.
 Let's put a purse upgrade in Fractia that's easy to get with late inventory eg broom, but possible to get early if you work for it.
 ...ha ha yes! Added Grandpa's Puzzle. Now 10:01, and I'm sure that can be improved.
+
+Not going to keep updating this or full clear time each month. Things are still pretty volatile, take the proper measure nearer release.
 
 - 0:36:46 Sitter 2009. Cooperative mode, just me. After a few years away, and some mistakes were made.
 - 0:22:29 Tag Team Adventure Quest. Playing solo, and it's been a while.
@@ -126,7 +128,7 @@ The little games are typically one or two weeks.
 `echo $(( ($(date +%s -d 2026-09-25) - $(date +%s -d 2026-01-01)) / 86400))`.
 
 - 380 2017-09-15..2018-09-30 Plunder Squad. First commit says "begin version control". Unclear how much work had been done before that; can't be much.
+- 284 2025-12-18..2026-09-29 <<< Bellacopia Maleficia.
 - 265 2023-01-06..2023-09-29 Full Moon.
-- 255 2025-12-18..2026-08-31 <<< Bellacopia Maleficia.
 -  77 2024-10-07..2024-12-23 Spelling Bee.
 -  53 2015-08-12..2015-10-04 Campaign Trail of the Mummy. Work had been done before version control.

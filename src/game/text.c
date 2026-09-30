@@ -1,5 +1,4 @@
-#include <limits.h>
-#include <string.h>
+#include <util/stdlib/egg-stdlib.h>
 #include "text.h"
 
 /* Integer as words, support.
