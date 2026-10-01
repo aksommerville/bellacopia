@@ -35,17 +35,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] !!! Definitely repair and nerf the CPR Contest before GDEX. It's very hard to play on the cabinet right now.
-- [x] !!! In the recent door-repair work, I fucked it up even worse for brooming. And when you leave the labyrinth and cutscene plays, you go back incorrectly.
-- [x] Two errant tiles in the ice palace.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
 - - - ...maybe not. I was thinking of this as a solution to Grandpa's puzzle, but fishing works better.
-- [x] The Toad and the Boulder. I kind of forgot about this and its Root Devil is just sitting there in the open.
-- - Changed the Root Devil. He doesn't need a story anymore.
-- - [x] Find something new to do for this story. Maybe another expensive purchase like the fish book?
-- - - How about a lemonade stand in the underground backwater, that also for some reason sells a $250 book?
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
@@ -55,7 +48,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [x] Does maxxing inventory at the Cave of Cheating trigger the things story? Just curious. ...yes
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -64,28 +56,21 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
 - - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
-- - [x] Motion sensor. Has a visible spook scale. You can cross its sight laboriously by starting and stopping, but realistically need to outrun it or block it or something.
 
 - Fill out maps.
 - [ ] Fractia
 - - [ ] Outer. BoE / City Hall signage, statue, litter...
 - - [ ] Thing Store
 - - [ ] Labor Union
-- - [x] Vacant house next to Labor Union
 - - [ ] Athletes' Guild
 - - [ ] Grandpa's Puzzle House
 - - [ ] Underground entrance house
 - - [ ] Public Sector Employees' Union
 - - [ ] Food Service Guild
-- - [x] Nurse should have a little boombox.
 - [ ] Forest / Cheapside / Meadow
 - - [ ] Exteriors.
 - - [ ] Dot's house
 - - - Ensure the underground entrance is not obvious but doesn't need items to enter.
-- - [x] Blood Bank. Are we even keeping this?
-- - - Replace with Goody's house: She tells you about the wand and teaches spells.
-- - [x] Underground entrance house
-- - - Same concerns as Dot's ladder, make it a little secret.
 - [ ] Battlefield
 - - [ ] Blue Captain's tent
 - - [ ] Red Captain's tent
@@ -125,7 +110,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
 - [ ] cheating: Make the background graphics more casiny.
-- [x] cpr: Score by counting strokes and comparing their timing to their own standard deviation -- should be completely immune to audio latency.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
@@ -259,7 +243,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Decipher the goblins' text => Phonograph
 - [x] Escape the labyrinth => no prize?
 - [x] Pay the toll trolls => no prize
-- [ ] The toad and the boulder => no prize?
+- [x] The toad and the boulder => eliminated
 - [x] Inventory critic => hc3
 - [ ] Expensive health care => Heart Container, plus incremental prizes. Can't be gold.
 - [x] Worldwide broom races => ?
@@ -329,6 +313,8 @@ Before the first release, validate and clean up this list. And if in-game credit
 - One of the Regex Contest clues is "Grumble, grumble", a reference to Zelda.
 - "Nyarlathotep" borrowed from Lovecraft, I think it was The Case of Charles Dexter Ward?
 - "Nosferatu" borrowed from the FW Murnau film, tho I think it's an ordinary word? ...a little googling suggests it's a corruption of the Romanian word for "plague", introduced by Bram Stoker.
+- Chanting contest text is all from Psalms, copied from here: https://www.sacredbible.org/studybible/OT-21_Psalms.htm
+- - Verses 24:2 71:3 72:3 72:22 74:3 75:5 81:6 86:3
 
 ## Morally Questionable
 

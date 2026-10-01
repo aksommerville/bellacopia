@@ -97,8 +97,8 @@ static const struct monkish_adjustments {
   {3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{3,4},{0,0},{0,0},{0,0},{0,0},{0,0},
 };
  
-int monkish_render(int dstx,int dsty,const char *src,int srcc) {
-  graf_set_image(&g.graf,RID_image_monkish);
+int monkish_render(int dstx,int dsty,const char *src,int srcc,int measure_only) {
+  if (!measure_only) graf_set_image(&g.graf,RID_image_monkish);
   if (!src) return 0;
   if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
   dsty-=4;
@@ -128,7 +128,7 @@ int monkish_render(int dstx,int dsty,const char *src,int srcc) {
       char tmp[64];
       int tmpc=int_as_words(tmp,sizeof(tmp),v);
       if ((tmpc>0)&&(tmpc<=sizeof(tmp))) {
-        dstx+=monkish_render(dstx,dsty+4,tmp,tmpc); // +4 to undo the vertical correction we applied up top
+        dstx+=monkish_render(dstx,dsty+4,tmp,tmpc,measure_only); // +4 to undo the vertical correction we applied up top
       }
       continue;
     }
@@ -142,7 +142,7 @@ int monkish_render(int dstx,int dsty,const char *src,int srcc) {
     //...oh but now that i think about it, Latin doesn't use J so who cares. Revisit if we ever use this for English.
     
     dstx+=adj->l;
-    graf_tile(&g.graf,dstx,dsty,ch,0);
+    if (!measure_only) graf_tile(&g.graf,dstx,dsty,ch,0);
     dstx+=adj->r;
   }
   return dstx-dstx0;

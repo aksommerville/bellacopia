@@ -348,6 +348,7 @@
 #define NS_activity_ignis 75
 #define NS_activity_walk 76 /* (u16:fldid)required */
 #define NS_activity_goody 77
+#define NS_activity_guardmonk 78
 
 #define NS_sprtype_dummy             0 /* (u32)0 */
 #define NS_sprtype_hero              1 /* (u32)0 */
@@ -563,6 +564,7 @@
 #define NS_battle_remembering 102
 #define NS_battle_whining 103
 #define NS_battle_wining 104
+#define NS_battle_chanting 105
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -667,7 +669,8 @@
   _(oateating) \
   _(remembering) \
   _(whining) \
-  _(wining)
+  _(wining) \
+  _(chanting)
 
 /* "fld" are single bits.
  */
@@ -976,6 +979,7 @@
 #define NS_fld_cave_flame_1 303 /* North edge of Cheapside, underground. */
 #define NS_fld_semotionsensor 304
 #define NS_fld_secrets_book 305
+#define NS_fld_temple_worthy 306
 
 /* "fld16" are 16 unsigned bits each.
  */

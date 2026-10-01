@@ -25,6 +25,6 @@ void batsup_render_decal(int dstx,int dsty,int srcx,int srcy,int w,int h,uint8_t
  * There's tricksy kerning involved. Don't try to use monkish except with this helper.
  * graf_set_tint() first, or the default is white.
  */
-int monkish_render(int dstx,int dsty,const char *src,int srcc);
+int monkish_render(int dstx,int dsty,const char *src,int srcc,int measure_only);
 
 #endif

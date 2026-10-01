@@ -154,6 +154,19 @@ static void cb_activity_battle(struct modal *modal,int outcome,void *userdata) {
 static void cb_activity_battle_final(struct modal *modal,int outcome,void *userdata) {
   if (outcome<0) {
     game_hurt_hero();
+  } else if (outcome>0) {
+    struct battle *battle=modal_battle_get_battle(modal);
+    if (battle&&(battle->type->id==NS_battle_chanting)) {
+      struct sprite *sprite=userdata;
+      if (sprite_is_alive(sprite)) {
+        if (sprite->type==&sprite_type_npc) {
+          int npcact=sprite_npc_get_activity(sprite);
+          if (npcact==NS_activity_guardmonk) {
+            store_set_fld(NS_fld_temple_worthy,1);
+          }
+        }
+      }
+    }
   }
 }
  

@@ -188,6 +188,26 @@ static int npc_prepare_princess_home(struct sprite *sprite) {
   return 0;
 }
 
+/* Guardmonk.
+ */
+ 
+static void npc_guardmonk_cb(char type,int id,int value,void *userdata) {
+  struct sprite *sprite=userdata;
+  if ((type=='f')&&(id==NS_fld_temple_worthy)&&value) {
+    store_unlisten(SPRITE->store_listener);
+    SPRITE->store_listener=0;
+    sprite->y-=3.0;
+  }
+}
+ 
+static void npc_prepare_guardmonk(struct sprite *sprite) {
+  if (store_get_fld(NS_fld_temple_worthy)) {
+    sprite->y-=3.0;
+  } else {
+    SPRITE->store_listener=store_listen('f',npc_guardmonk_cb,sprite);
+  }
+}
+
 /* Init.
  */
  
@@ -227,6 +247,7 @@ static int _npc_init(struct sprite *sprite) {
     case NS_activity_moonsong: npc_prepare_moonsong(sprite); break;
     case NS_activity_mr_mrs_rabbit: npc_prepare_mr_mrs_rabbit(sprite); break;
     case NS_activity_princess_home: if (npc_prepare_princess_home(sprite)<0) return -1; break;
+    case NS_activity_guardmonk: npc_prepare_guardmonk(sprite); break;
   }
   
   struct cmdlist_reader reader;

@@ -67,3 +67,28 @@ void begin_goody(struct sprite *sprite) {
   // "The two basic spells."
   begin_dialogue(194,sprite);
 }
+
+/* Guard monk.
+ */
+ 
+static int cb_guardmonk(int optionid,void *userdata) {
+  if (optionid==351) {
+    begin_battle(userdata,NS_battle_chanting);
+  }
+  return 0;
+}
+ 
+void begin_guardmonk(struct sprite *sprite,int arg) {
+  int worthy=store_get_fld(NS_fld_temple_worthy);
+  struct modal_args_dialogue args={
+    .rid=RID_strings_battle,
+    .strix=worthy?350:349,
+    .speaker=sprite,
+    .cb=cb_guardmonk,
+    .userdata=sprite,
+  };
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return;
+  modal_dialogue_add_option_string(modal,RID_strings_battle,351);
+  modal_dialogue_add_option_string(modal,RID_strings_battle,worthy?353:352);
+}

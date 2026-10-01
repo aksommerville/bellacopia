@@ -99,5 +99,6 @@ void begin_battle(struct sprite *sprite,int battleid);
 void begin_statuemaze_clue(struct sprite *initiator,int arg);
 void begin_mr_mrs_rabbit(struct sprite *initiator,int arg);
 void begin_goody(struct sprite *sprite);
+void begin_guardmonk(struct sprite *sprite,int arg);
 
 #endif
