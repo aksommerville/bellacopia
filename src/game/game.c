@@ -219,6 +219,16 @@ int game_welcome_map(struct map *map) {
             break;
           }
         } break;
+      // "buriedtreasure" is effectively "sprite", if collected. For showing the ones already dug up.
+      // #define CMD_map_buriedtreasure  0x64 /* u16:pos u16:fld u16:itemid u8:quantity u8:reserved */
+      case CMD_map_buriedtreasure: {
+          int fldid=(cmd.arg[2]<<8)|cmd.arg[3];
+          if (store_get_fld(fldid)) {
+            double x=map->lng*NS_sys_mapw+cmd.arg[0]+0.5;
+            double y=map->lat*NS_sys_maph+cmd.arg[1]+0.5;
+            struct sprite *sprite=sprite_spawn(x,y,RID_sprite_hole,0,0,0,0,0);
+          }
+        } break;
     }
   }
   return 0;

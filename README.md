@@ -140,12 +140,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
 - [ ] Review song and sound levels, right now they're pretty heterogenous.
-- [ ] Should there be a visible indication where a buried treasure has already been collected?
+- [x] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - - Do at least a machine-generated translation for Spanish and French. German? Portugese? Anything non-Latin is off the table alas.
-- [ ] Check ladders in the outerworld, they probably all need some safe buffer.
+- [x] Check ladders in the outerworld, they probably all need some safe buffer. ...wrote that months ago and haven't felt the need yet. Let's call it OK.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
