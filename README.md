@@ -53,6 +53,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
+- [ ] Try a more compact encoding for jigpiece that takes advantage of assembled pieces.
+- - Picturing, you have one 5-byte unit with mapid=0, and its 19 remaining bits say "plus so many sequential maps in the obvious places" and "plus so many 2-byte mapid in the obvious places".
+- - Those "obvious places" maps are jigpieces connected to the previous one.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -166,12 +169,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
 - - [x] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server. ...kioskcnc
 - - [ ] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
-- - [ ] Accept saved game from query param and prompt if there's conflict.
+- - [x] Accept saved game from query param and prompt if there's conflict.
 - - - Saved game with 3 jigpieces and nothing else: AYAFACADAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAADAADAAAABjAAD1vAACNzAC7JgALFLAAJFJgWIYBp
 - - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.
 - - [ ] We might be able to do this entirely within the game! An option at Hello like "Generate Saved Game Link" that displays a QR code for the player to scan.
 - - - Version 40 QR codes hold 1852 chars of text, and require 177x177 pixels -- just barely within our framebuffer height.
 - - - https://en.wikipedia.org/wiki/QR_code
+- - [x] What is the actual upper bound on saved game length? Jigpieces and invstore are final, and the rest we can assume maybe 20% growth.
+- - - `10 + ceil(fldc/6) + fld16c*3 + clockc*5 + jigstorec*5 + 26*4 + 5`
+- - - `10 + ceil(307/6) + 42*3 + 5*5 + 302*5 + 26*4 + 5 = 1832`
+- - - 1832: Cuts it really close. 1510 of that is jigstore. We need to compress these.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

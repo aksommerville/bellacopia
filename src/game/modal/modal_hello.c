@@ -16,6 +16,7 @@
 struct modal_hello {
   struct modal hdr;
   int titlew,titleh;
+  int prompt_fromuser; // Nonzero at init if we need to prompt. Alas we can't spawn modals from within a modal ctor.
   
   /* Options are laid out LRTB.
    * (optionp) is linear, mostly for historical reasons.
@@ -48,25 +49,54 @@ static void _hello_del(struct modal *modal) {
  
 struct option *hello_add_option(struct modal *modal,int optionid) {
   if (MODAL->optionc>=OPTION_COLC*OPTION_ROWC) return 0;
-  /*XXX
-  int y=150;
-  if (MODAL->optionc>0) {
-    struct option *prev=MODAL->optionv+MODAL->optionc-1;
-    y=prev->y+prev->h+1;
-  }
-  /**/
   struct option *option=MODAL->optionv+MODAL->optionc++;
   option->optionid=optionid;
   const char *text=0;
   int textc=text_get_string(&text,1,optionid);
   option->texid=font_render_to_texture(0,g.font,text,textc,FBW,font_get_line_height(g.font),0xffffffff);
   egg_texture_get_size(&option->w,&option->h,option->texid);
-  /*XXX layout must come after they're all initialized
-  option->x=(FBW>>1)-(option->w>>1);
-  option->y=y;
-  /**/
   option->enable=1;
   return option;
+}
+
+/* Spin up another modal to ask whether to overwrite saved game with incoming save.
+ */
+ 
+static int hello_cb_fromuser(int optionid,void *userdata) {
+  struct modal *modal=userdata;
+  // The "Continue" option would already be enabled, so we're good to go for that.
+  switch (optionid) {
+    case 21: {
+        fprintf(stderr,"Using %d-byte saved game from launch args.\n",g.store.fromuserc);
+        if (egg_store_set("save",4,g.store.fromuser,g.store.fromuserc)<0) return -1;
+        free(g.store.fromuser);
+        g.store.fromuser=0;
+        g.store.fromuserc=0;
+      } break;
+    case 22: {
+        fprintf(stderr,"Ignoring %d-byte saved game from launch args, in favor of existing save.\n",g.store.fromuserc);
+        // Drop (fromuser) so we don't prompt again.
+        free(g.store.fromuser);
+        g.store.fromuser=0;
+        g.store.fromuserc=0;
+      } break;
+  }
+  // If they press B and cancel, that's fine, it's almost the same as Ignore. But we'll ask again when they return to Hello.
+  return 0;
+}
+ 
+static int hello_prompt_for_fromuser(struct modal *modal) {
+  struct modal_args_dialogue args={
+    .rid=1,
+    .strix=20,
+    .cb=hello_cb_fromuser,
+    .userdata=modal,
+  };
+  struct modal *dialogue=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!dialogue) return -1;
+  modal_dialogue_add_option_string(dialogue,1,21); // use fromuser
+  modal_dialogue_add_option_string(dialogue,1,22); // use save
+  return 0;
 }
 
 /* Init.
@@ -75,6 +105,24 @@ struct option *hello_add_option(struct modal *modal,int optionid) {
 static int _hello_init(struct modal *modal,const void *arg,int argc) {
   modal->opaque=1;
   modal->interactive=1;
+  
+  /* If we got a saved game from the user, either copy it to the live slot or prompt for a decision.
+   */
+  int have_fromuser=(g.store.fromuser&&g.store.fromuserc)?1:0;
+  int have_save=(egg_store_get(0,0,"save",4)>0);
+  if (have_fromuser) {
+    if (have_save) {
+      // Need to ask. Defer it to the first update, since we can't spawn modals inside a modal ctor. (it would end up under us)
+      MODAL->prompt_fromuser=1;
+    } else {
+      fprintf(stderr,"Using %d-byte saved game from launch args.\n",g.store.fromuserc);
+      if (egg_store_set("save",4,g.store.fromuser,g.store.fromuserc)<0) return -1;
+      free(g.store.fromuser);
+      g.store.fromuser=0;
+      g.store.fromuserc=0;
+      have_save=1;
+    }
+  }
   
   int texid=graf_tex(&g.graf,RID_image_title);
   egg_texture_get_size(&MODAL->titlew,&MODAL->titleh,texid);
@@ -88,12 +136,7 @@ static int _hello_init(struct modal *modal,const void *arg,int argc) {
   struct option *option;
   if (!(option=hello_add_option(modal,OPTIONID_ARCADE))) return -1;
   if (!(option=hello_add_option(modal,OPTIONID_CONTINUE))) return -1;
-  char tmp[10];
-  if (egg_store_get(tmp,sizeof(tmp),"save",4)>0) {
-    option->enable=1;
-  } else {
-    option->enable=0;
-  }
+  option->enable=have_save?1:0;
   if (!(option=hello_add_option(modal,OPTIONID_SETTINGS))) return -1;
   if (!(option=hello_add_option(modal,OPTIONID_BROOM))) return -1;
   if (!(option=hello_add_option(modal,OPTIONID_NEWGAME))) return -1;
@@ -308,6 +351,12 @@ static void hello_move(struct modal *modal,int dx,int dy) {
  */
  
 static void _hello_update(struct modal *modal,double elapsed) {
+
+  if (MODAL->prompt_fromuser) {
+    MODAL->prompt_fromuser=0;
+    hello_prompt_for_fromuser(modal);
+  }
+
   if ((g.input[0]&EGG_BTN_LEFT)&&!(g.pvinput[0]&EGG_BTN_LEFT)) hello_move(modal,-1,0);
   if ((g.input[0]&EGG_BTN_RIGHT)&&!(g.pvinput[0]&EGG_BTN_RIGHT)) hello_move(modal,1,0);
   if ((g.input[0]&EGG_BTN_UP)&&!(g.pvinput[0]&EGG_BTN_UP)) hello_move(modal,0,-1);

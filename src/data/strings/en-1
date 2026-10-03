@@ -24,9 +24,11 @@
 17 Out of hearts!
 18 Continue
 19 Main Menu
-20 
-21 
-22 
+
+# Hello: saved game conflict
+20 Overwrite existing saved game?
+21 Use the URL, forget what's saved.
+22 Use saved game, ignore the URL.
 
 # System vellum.
 23 Main Menu

@@ -115,7 +115,6 @@ static void store_force_agreement_with_poi() {
  */
  
 int store_refresh_fromuser() {
-  fprintf(stderr,"%s...\n",__func__);
   if (g.store.fromuser) free(g.store.fromuser);
   g.store.fromuser=0;
   g.store.fromuserc=0;
@@ -123,10 +122,8 @@ int store_refresh_fromuser() {
   g.store.fromuserc=egg_store_get(0,0,"savedgame",9);
   if (g.store.fromuserc<1) {
     g.store.fromuserc=0;
-    fprintf(stderr,"...no savedgame as input, this is normal.\n");
     return 0;
   }
-  fprintf(stderr,"...savedgame input exists, %d bytes...\n",g.store.fromuserc);
   
   if (!(g.store.fromuser=malloc(g.store.fromuserc))) {
     g.store.fromuserc=0;
@@ -139,7 +136,6 @@ int store_refresh_fromuser() {
     return -1;
   }
   egg_store_set("savedgame",9,"",0); // Important to unset it after acquisition, otherwise it saves forever.
-  fprintf(stderr,"...got savedgame: %.*s\n",g.store.fromuserc,g.store.fromuser);
   
   return 0;
 }
