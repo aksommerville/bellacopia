@@ -17,4 +17,4 @@ players=1..2
 incfgMask=dswlr1
 incfgNames=3
 revdns=com.aksommerville.bellacopia
-params=cheat,restore
+params=savedgame

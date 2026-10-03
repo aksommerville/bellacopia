@@ -33,6 +33,8 @@ int egg_client_init() {
   g_font=g.font;
   if (font_add_image(g.font,RID_image_font9_0020,0x0020)) return -1;
   
+  if (store_refresh_fromuser()<0) return -1;
+  
   return 0;
 }
 

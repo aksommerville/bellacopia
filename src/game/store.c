@@ -2,7 +2,6 @@
 #include "game/modal/jigsaw.h"
 
 #define STORE_SAVE_DEBOUNCE 2.000
-#define STORE_MAX_ENCODED_SIZE 2048
 
 /* Sanitize a fresh store, after clear or load.
  * Sets a few defaults, forces valid HP, any other non-negotiable state.
@@ -52,174 +51,43 @@ int store_clear() {
  * Caller provides the desired count. (c) is ignored.
  */
  
-static int store_require_fldv(int totalc) {
-  if (totalc<=g.store.flda) return 0;
-  void *nv=realloc(g.store.fldv,totalc);
+int store_require_fldv(struct store *store,int totalc) {
+  if (totalc<=store->flda) return 0;
+  void *nv=realloc(store->fldv,totalc);
   if (!nv) return -1;
-  g.store.fldv=nv;
-  g.store.flda=totalc;
+  store->fldv=nv;
+  store->flda=totalc;
   return 0;
 }
 
-static int store_require_fld16v(int totalc) {
-  if (totalc<=g.store.fld16a) return 0;
+int store_require_fld16v(struct store *store,int totalc) {
+  if (totalc<=store->fld16a) return 0;
   if (totalc>INT_MAX/2) return -1;
-  void *nv=realloc(g.store.fld16v,totalc<<1);
+  void *nv=realloc(store->fld16v,totalc<<1);
   if (!nv) return -1;
-  g.store.fld16v=nv;
-  g.store.fld16a=totalc;
+  store->fld16v=nv;
+  store->fld16a=totalc;
   return 0;
 }
 
-static int store_require_clockv(int totalc) {
-  if (totalc<=g.store.clocka) return 0;
+int store_require_clockv(struct store *store,int totalc) {
+  if (totalc<=store->clocka) return 0;
   if (totalc>INT_MAX/sizeof(double)) return -1;
-  void *nv=realloc(g.store.clockv,sizeof(double)*totalc);
+  void *nv=realloc(store->clockv,sizeof(double)*totalc);
   if (!nv) return -1;
-  g.store.clockv=nv;
-  g.store.clocka=totalc;
+  store->clockv=nv;
+  store->clocka=totalc;
   return 0;
 }
 
-static int store_require_jigstorev(int totalc) {
-  if (totalc<=g.store.jigstorea) return 0;
+int store_require_jigstorev(struct store *store,int totalc) {
+  if (totalc<=store->jigstorea) return 0;
   if (totalc>INT_MAX/sizeof(struct jigstore)) return -1;
-  void *nv=realloc(g.store.jigstorev,sizeof(struct jigstore)*totalc);
+  void *nv=realloc(store->jigstorev,sizeof(struct jigstore)*totalc);
   if (!nv) return -1;
-  g.store.jigstorev=nv;
-  g.store.jigstorea=totalc;
+  store->jigstorev=nv;
+  store->jigstorea=totalc;
   return 0;
-}
-
-/* Decode Base64 digit.
- */
- 
-static int store_decode_base64_digit(char src) {
-  if ((src>='A')&&(src<='Z')) return src-'A';
-  if ((src>='a')&&(src<='z')) return src-'a'+26;
-  if ((src>='0')&&(src<='9')) return src-'0'+52;
-  if (src=='+') return 62;
-  if (src=='/') return 63;
-  return -1;
-}
-
-static const char store_base64_alphabet[64]=
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  "abcdefghijklmnopqrstuvwxyz"
-  "0123456789+/"
-;
-
-/* Decode two Base64 digits as a 12-bit integer, or three as 18-bit.
- */
- 
-static int store_decode_12bit(const uint8_t *src,int srcc) {
-  if (srcc<2) return -1;
-  int hi=store_decode_base64_digit(src[0]);
-  int lo=store_decode_base64_digit(src[1]);
-  if ((hi<0)||(lo<0)) return -1;
-  return (hi<<6)|lo;
-}
- 
-static int store_decode_18bit(const uint8_t *src,int srcc) {
-  if (srcc<3) return -1;
-  int a=store_decode_base64_digit(src[0]);
-  int b=store_decode_base64_digit(src[1]);
-  int c=store_decode_base64_digit(src[2]);
-  if ((a<0)||(b<0)||(c<0)) return -1;
-  return (a<<12)|(b<<6)|c;
-}
- 
-static int store_decode_30bit(const uint8_t *src,int srcc) {
-  if (srcc<5) return -1;
-  int a=store_decode_base64_digit(src[0]);
-  int b=store_decode_base64_digit(src[1]);
-  int c=store_decode_base64_digit(src[2]);
-  int d=store_decode_base64_digit(src[3]);
-  int e=store_decode_base64_digit(src[4]);
-  if ((a<0)||(b<0)||(c<0)||(d<0)||(e<0)) return -1;
-  return (a<<24)|(b<<18)|(c<<12)|(d<<6)|e;
-}
-
-static int store_encode_12bit(char *dst,int dsta,int src) {
-  if (dsta>=2) {
-    dst[0]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[1]=store_base64_alphabet[src&0x3f];
-  }
-  return 2;
-}
-
-static int store_encode_18bit(char *dst,int dsta,int src) {
-  if (dsta>=3) {
-    dst[0]=store_base64_alphabet[(src>>12)&0x3f];
-    dst[1]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[2]=store_base64_alphabet[src&0x3f];
-  }
-  return 3;
-}
-
-static int store_encode_30bit(char *dst,int dsta,int src) {
-  if (dsta>=5) {
-    dst[0]=store_base64_alphabet[(src>>24)&0x3f];
-    dst[1]=store_base64_alphabet[(src>>18)&0x3f];
-    dst[2]=store_base64_alphabet[(src>>12)&0x3f];
-    dst[3]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[4]=store_base64_alphabet[src&0x3f];
-  }
-  return 5;
-}
-
-/* Plain old base64 decode. Except it must end on a complete unit, ie a multiple of 4.
- */
- 
-static int store_decode_base64(uint8_t *dst,int dsta,const uint8_t *src,int srcc) {
-  if (srcc&3) return -1;
-  int dstc=0,srcp=0;
-  int fullc=srcc>>2;
-  while (fullc-->0) {
-    int a=store_decode_base64_digit(src[srcp]);
-    int b=store_decode_base64_digit(src[srcp+1]);
-    int c=store_decode_base64_digit(src[srcp+2]);
-    int d=store_decode_base64_digit(src[srcp+3]);
-    srcp+=4;
-    if ((a<0)||(b<0)||(c<0)||(d<0)) return -1;
-    if (dstc>dsta-3) {
-      dstc+=3;
-    } else {
-      dst[dstc++]=(a<<2)|(b>>4);
-      dst[dstc++]=(b<<4)|(c>>2);
-      dst[dstc++]=(c<<6)|d;
-    }
-  }
-  return dstc;
-}
-
-static int store_encode_base64(char *dst,int dsta,const uint8_t *src,int srcc) {
-  if (srcc%3) return -1;
-  int dstc=0;
-  for (;srcc>=3;src+=3,srcc-=3) {
-    if (dstc>dsta-4) {
-      dstc+=4;
-    } else {
-      dst[dstc++]=store_base64_alphabet[(src[0]>>2)&0x3f];
-      dst[dstc++]=store_base64_alphabet[((src[0]<<4)|(src[1]>>4))&0x3f];
-      dst[dstc++]=store_base64_alphabet[((src[1]<<2)|(src[2]>>6))&0x3f];
-      dst[dstc++]=store_base64_alphabet[(src[2])&0x3f];
-    }
-  }
-  return dstc;
-}
-
-/* Compute 30-bit checksum against a stream of base64.
- * Not that it actually needs to be base64 or anything, any data is fine.
- */
- 
-static int store_checksum(const char *src,int srcc) {
-  uint32_t sum=0;
-  for (;srcc-->0;src++) {
-    sum=(sum>>31)|(sum<<1);
-    sum^=*(uint8_t*)src;
-  }
-  return sum&0x3fffffff;
 }
 
 /* After a successful load, but before general sanitization, scan all maps for POI.
@@ -243,6 +111,39 @@ static void store_force_agreement_with_poi() {
   }
 }
 
+/* Check for a saved game arriving as process input.
+ */
+ 
+int store_refresh_fromuser() {
+  fprintf(stderr,"%s...\n",__func__);
+  if (g.store.fromuser) free(g.store.fromuser);
+  g.store.fromuser=0;
+  g.store.fromuserc=0;
+  
+  g.store.fromuserc=egg_store_get(0,0,"savedgame",9);
+  if (g.store.fromuserc<1) {
+    g.store.fromuserc=0;
+    fprintf(stderr,"...no savedgame as input, this is normal.\n");
+    return 0;
+  }
+  fprintf(stderr,"...savedgame input exists, %d bytes...\n",g.store.fromuserc);
+  
+  if (!(g.store.fromuser=malloc(g.store.fromuserc))) {
+    g.store.fromuserc=0;
+    return -1;
+  }
+  if (egg_store_get(g.store.fromuser,g.store.fromuserc,"savedgame",9)!=g.store.fromuserc) {
+    free(g.store.fromuser);
+    g.store.fromuser=0;
+    g.store.fromuserc=0;
+    return -1;
+  }
+  egg_store_set("savedgame",9,"",0); // Important to unset it after acquisition, otherwise it saves forever.
+  fprintf(stderr,"...got savedgame: %.*s\n",g.store.fromuserc,g.store.fromuser);
+  
+  return 0;
+}
+
 /* Load.
  */
  
@@ -258,182 +159,21 @@ int store_load(const char *k,int kc) {
   g.store.listenerc=0;
   g.store.listenerid_next=1;
   
-  // Acquire the Base64-ish encoded game.
-  int i;
-  uint8_t src[STORE_MAX_ENCODED_SIZE];
-  int srcc=egg_store_get((char*)src,sizeof(src),k,kc);
-  if ((srcc<10)||(srcc>sizeof(src))) {
-    fprintf(stderr,"Reject saved game '%.*s' due to length %d.\n",kc,k,srcc);
-    return store_clear();
+  int srcc=egg_store_get(0,0,k,kc);
+  if (srcc<1) return store_clear();
+  char *src=malloc(srcc);
+  if (!src) return store_load_fail();
+  if (egg_store_get(src,srcc,k,kc)!=srcc) {
+    free(src);
+    return store_load_fail();
   }
   
-  // The first 10 encoded bytes are lengths of the subsequent heaps.
-  int srcp=0,fldc,fld16c,clockc,jigstorec,invstorec;
-  if ((fldc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
-  if ((fld16c=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
-  if ((clockc=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
-  if ((jigstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
-  if ((invstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return store_load_fail(); srcp+=2;
+  int err=store_decode(&g.store,src,srcc);
+  free(src);
+  if (err<0) return store_load_fail();
   
-  // 1-bit fields. The length we've read is the encoded length in bytes.
-  int fldc_decoded=(fldc*6+7)>>3;
-  if (srcp>srcc-fldc) return store_load_fail();
-  if (store_require_fldv(fldc_decoded)<0) return store_load_fail();
-  g.store.fldc=0;
-  uint8_t *dst=0;
-  uint8_t dstmask=0x01;
-  for (i=fldc;i-->0;srcp++) {
-    int digit=store_decode_base64_digit(src[srcp]);
-    if (digit<0) return store_load_fail();
-    uint8_t srcmask=0x01;
-    for (;srcmask<0x40;srcmask<<=1) {
-      if (!dst) {
-        if (g.store.fldc>=g.store.flda) return store_load_fail();
-        dst=g.store.fldv+g.store.fldc++;
-        dstmask=0x01;
-        *dst=0;
-      }
-      if (digit&srcmask) (*dst)|=dstmask;
-      if (dstmask==0x80) dst=0; else dstmask<<=1;
-    }
-  }
-  
-  // 16-bit fields. Each encodes as three bytes of base64.
-  int srcexpect=fld16c*3;
-  if (srcp>srcc-srcexpect) return store_load_fail();
-  if (store_require_fld16v(fld16c)<0) return store_load_fail();
-  uint16_t *dst16=g.store.fld16v;
-  for (i=fld16c;i-->0;dst16++,srcp+=3) {
-    int v=store_decode_18bit(src+srcp,srcc-srcp);
-    if ((v<0)||(v&~0xffff)) return store_load_fail();
-    *dst16=v;
-  }
-  g.store.fld16c=fld16c;
-  
-  // Clocks. Each is 5 bytes encoded, ie 30 bits.
-  srcexpect=clockc*5;
-  if (srcp>srcc-srcexpect) return store_load_fail();
-  if (store_require_clockv(clockc)<0) return store_load_fail();
-  double *dstd=g.store.clockv;
-  for (i=clockc;i-->0;dstd++,srcp+=5) {
-    int v=store_decode_30bit(src+srcp,srcc-srcp);
-    if (v<0) return store_load_fail();
-    *dstd=(double)v/1000.0;
-  }
-  g.store.clockc=clockc;
-  
-  // Jigstore. Five bytes each, packed bitwise.
-  srcexpect=jigstorec*5;
-  if (srcp>srcc-srcexpect) return store_load_fail();
-  if (store_require_jigstorev(jigstorec)<0) return store_load_fail();
-  struct jigstore *jigstore=g.store.jigstorev;
-  for (i=jigstorec;i-->0;jigstore++,srcp+=5) {
-    int v=store_decode_30bit(src+srcp,srcc-srcp);
-    if (v<0) return store_load_fail();
-    jigstore->mapid=v>>19;
-    jigstore->x=v>>11;
-    jigstore->y=v>>3;
-    jigstore->xform=v&7;
-  }
-  g.store.jigstorec=jigstorec;
-  
-  // Invstore. Straight base64.
-  if (invstorec>INVSTORE_SIZE) return store_load_fail();
-  srcexpect=invstorec*4;
-  if (srcp>srcc-srcexpect) return store_load_fail();
-  if (store_decode_base64((uint8_t*)g.store.invstorev,sizeof(g.store.invstorev),src+srcp,srcexpect)!=invstorec*3) return store_load_fail();
-  memset(g.store.invstorev+invstorec,0,sizeof(struct invstore)*(INVSTORE_SIZE-invstorec));
-  srcp+=srcexpect;
-  
-  // Checksum.
-  if (srcp!=srcc-5) return store_load_fail();
-  int expect=store_decode_30bit(src+srcp,srcc-srcp);
-  int actual=store_checksum((char*)src,srcp);
-  srcp+=5;
-  if (expect!=actual) return store_load_fail();
-  
-  // Scan for treadles and such.
   store_force_agreement_with_poi();
-  
-  //fprintf(stderr,"%s: Decoded saved game, %d bytes.\n",__func__,srcc);
   return store_sanitize();
-}
-
-/* Encode store.
- */
- 
-static int store_encode(char *dst,int dsta) {
-  int dstc=0,err;
-  
-  int fldc_encoded=((g.store.fldc<<3)+5)/6;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fldc_encoded);
-  
-  int fld16c=g.store.fld16c;
-  while (fld16c&&!g.store.fld16v[fld16c-1]) fld16c--;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fld16c);
-  
-  int clockc=g.store.clockc;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,clockc);
-  
-  int jigstorec=g.store.jigstorec;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,jigstorec);
-  
-  int invstorec=INVSTORE_SIZE;
-  while (invstorec&&!g.store.invstorev[invstorec-1].itemid) invstorec--;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,invstorec);
-  
-  // fldv
-  const uint8_t *fldsrc=g.store.fldv;
-  int fldsrcc=g.store.fldc;
-  uint8_t fldsrcmask=0x01;
-  int i=fldc_encoded;
-  for (;i-->0;) {
-    int v=0,j=6,vmask=0x01;
-    for (;j-->0;vmask<<=1) {
-      if (fldsrcc<=0) break;
-      if ((*fldsrc)&fldsrcmask) v|=vmask;
-      if (fldsrcmask==0x80) {
-        fldsrc++;
-        fldsrcc--;
-        fldsrcmask=0x01;
-      } else {
-        fldsrcmask<<=1;
-      }
-    }
-    if (dstc<dsta) dst[dstc]=store_base64_alphabet[v];
-    dstc++;
-  }
-  
-  // fld16v
-  const uint16_t *src16=g.store.fld16v;
-  for (i=fld16c;i-->0;src16++) {
-    dstc+=store_encode_18bit(dst+dstc,dsta-dstc,*src16);
-  }
-  
-  // clockv
-  const double *srcd=g.store.clockv;
-  for (i=clockc;i-->0;srcd++) {
-    int v=(int)((*srcd)*1000.0);
-    if (v&~0x3fffffff) v=0x3fffffff; // Going over in a single session would take 37 days. If it happens, they get what they deserve.
-    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
-  }
-  
-  // jigstorev
-  const struct jigstore *jigstore=g.store.jigstorev;
-  for (i=jigstorec;i-->0;jigstore++) {
-    int v=(jigstore->mapid<<19)|(jigstore->x<<11)|(jigstore->y<<3)|jigstore->xform;
-    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
-  }
-  
-  // invstorev
-  dstc+=store_encode_base64(dst+dstc,dsta-dstc,(uint8_t*)g.store.invstorev,invstorec*3);
-  
-  // checksum
-  int sum=0;
-  if (dstc<=dsta) sum=store_checksum(dst,dstc);
-  dstc+=store_encode_30bit(dst+dstc,dsta-dstc,sum);
-  
-  return dstc;
 }
 
 /* Save.
@@ -442,14 +182,31 @@ static int store_encode(char *dst,int dsta) {
 static int store_save_now(const char *k,int kc) {
   g.store.dirty=0;
   g.store.savedebounce=0.0;
-  char serial[STORE_MAX_ENCODED_SIZE];
-  int serialc=store_encode(serial,sizeof(serial));
-  if ((serialc<0)||(serialc>sizeof(serial))) {
-    fprintf(stderr,"%s: Failed to encode store! c=%d\n",__func__,serialc);
-    return -1;
+  
+  int seriala=2048; // TODO What's a good upper bound for expected output size of encoded saved game?
+  char *serial=malloc(seriala);
+  if (!serial) return -1;
+  int serialc;
+  for (;;) {
+    serialc=store_encode(serial,seriala,&g.store);
+    if (serialc<0) {
+      free(serial);
+      return -1;
+    }
+    if (serialc<=seriala) break;
+    void *nv=realloc(serial,serialc);
+    if (!nv) {
+      free(serial);
+      return -1;
+    }
+    serial=nv;
+    seriala=serialc;
   }
+  
   if (!k) kc=0; else if (kc<0) { kc=0; while (k[kc]) kc++; }
-  if (egg_store_set(k,kc,serial,serialc)<0) {
+  int err=egg_store_set(k,kc,serial,serialc);
+  free(serial);
+  if (err<0) {
     fprintf(stderr,"%s: Failed to save store, encoded to %d bytes\n",__func__,serialc);
     return -1;
   } else {
@@ -535,7 +292,7 @@ int store_set_fld(int fld,int value) {
   int p=fld>>3;
   if (p>=g.store.fldc) {
     if (!value) return 0;
-    if (store_require_fldv(p+1)<0) return -1;
+    if (store_require_fldv(&g.store,p+1)<0) return -1;
     while (g.store.fldc<=p) g.store.fldv[g.store.fldc++]=0;
   }
   uint8_t mask=1<<(fld&7);
@@ -556,7 +313,7 @@ int store_set_fld16(int fld,int value) {
   value&=0xffff;
   if (fld>=g.store.fld16c) {
     if (!value) return 0;
-    if (store_require_fld16v(fld+1)<0) return -1;
+    if (store_require_fld16v(&g.store,fld+1)<0) return -1;
     while (g.store.fld16c<=fld) g.store.fld16v[g.store.fld16c++]=0;
   }
   if (g.store.fld16v[fld]==value) return 0;
@@ -648,7 +405,7 @@ struct jigstore *store_add_jigstore(int mapid) {
   for (;i-->0;jigstore++) {
     if (jigstore->mapid==mapid) return jigstore;
   }
-  if (store_require_jigstorev(g.store.jigstorec+1)<0) return 0;
+  if (store_require_jigstorev(&g.store,g.store.jigstorec+1)<0) return 0;
   jigstore=g.store.jigstorev+g.store.jigstorec;
   jigstore->mapid=mapid;
   store_choose_jigstore_position(jigstore);

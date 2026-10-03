@@ -167,7 +167,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server. ...kioskcnc
 - - [ ] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
 - - [ ] Accept saved game from query param and prompt if there's conflict.
+- - - Saved game with 3 jigpieces and nothing else: AYAFACADAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAADAADAAAABjAAD1vAACNzAC7JgALFLAAJFJgWIYBp
 - - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.
+- - [ ] We might be able to do this entirely within the game! An option at Hello like "Generate Saved Game Link" that displays a QR code for the player to scan.
+- - - Version 40 QR codes hold 1852 chars of text, and require 177x177 pixels -- just barely within our framebuffer height.
+- - - https://en.wikipedia.org/wiki/QR_code
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.

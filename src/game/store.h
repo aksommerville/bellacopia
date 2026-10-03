@@ -48,7 +48,15 @@ struct store {
   } *listenerv;
   int listenerc,listenera;
   int listenerid_next;
+  
+  /* Present if we got an encoded saved game from argv or query params.
+   * store_refresh_fromuser() to reacquire, but that only needs done once.
+   */
+  char *fromuser;
+  int fromuserc;
 };
+
+int store_refresh_fromuser();
 
 /* These are both fallible, but missing or invalid data is not an error.
  * The only real error is allocation failure, and should be treated as an emergency.
@@ -65,6 +73,16 @@ int store_load(const char *k,int kc);
  * Trivial things like moving a jigpiece can cause repetitive store changes, so we prefer to space them out a bit.
  */
 void store_save_if_dirty(const char *k,int kc,int now);
+
+/* Further details for encode and decode, probably only interesting to store itself.
+ */
+int store_validate_serial(const char *src,int srcc);
+int store_decode(struct store *store,const char *src,int srcc);
+int store_encode(char *dst,int dsta,const struct store *store);
+int store_require_fldv(struct store *store,int totalc_bytes);
+int store_require_fld16v(struct store *store,int totalc);
+int store_require_clockv(struct store *store,int totalc);
+int store_require_jigstorev(struct store *store,int totalc);
 
 /* Anyone can listen for changes to the store.
  * If you modify the store directly, broadcast it.
