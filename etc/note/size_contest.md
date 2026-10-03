@@ -11,6 +11,7 @@ Would be cool to compare to others' games too, especially broadly-familiar ones 
 ## Distributable size
 
 SUMMARY: Hopefully will not be first. I expect 3 MB or so in the end.
+If it's over 3376623, it will be larger than all previous Egg games combined (thru younap).
 
 Using the same standard as my [journal](https://github.com/aksommerville/journal/games/README.md) repo, ie the ROM size for Bellacopia.
 

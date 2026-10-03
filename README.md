@@ -35,6 +35,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] How long does it take to complete the outerworld puzzle from nothing if you cheat for inventory?
+- - 23:53 in a quick and very suboptimal experiment. Need Broom, Hookshot, Shovel, Power Glove, Fishpole, Candy, Compass, Stick, Telescope, 20 gold.
+- - A few problematic pieces account for most of the trouble: Desert Root Devil, Fractia Root Devil, Temple Roof, South Jungle, Mountains Root Devil.
+- - What if we eliminate the 8 most troublesome? ...12:56. The Goat piece is still tricky. Had all but that (and a couple trivial misses), unassembled, in about 5 minutes.
+- - Don't propose completing jigsaws as a GDEX activity.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -117,6 +122,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
+- [ ] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shaking: Sound when the cork bounces.
@@ -158,10 +164,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Remove Debug Mode, or have it require a launch parameter or something. (it's ok if players get into it, just i don't want to present it as a recommendation)
 
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
-- - [ ] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server.
+- - [x] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server. ...kioskcnc
 - - [ ] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
 - - [ ] Accept saved game from query param and prompt if there's conflict.
-- - [ ] Option to log to a file. (in Egg or Romassist)
+- - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
