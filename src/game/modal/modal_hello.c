@@ -1,4 +1,5 @@
 #include "game/bellacopia.h"
+#include "game/qr/qr.h"
 
 // (optionid) is an index in strings:1
 #define OPTIONID_CONTINUE 10
@@ -9,6 +10,7 @@
 #define OPTIONID_SETTINGS 46
 #define OPTIONID_CREDITS  47
 #define OPTIONID_QUIT     48
+#define OPTIONID_QRCODE   56
 
 #define OPTION_COLC 3
 #define OPTION_ROWC 3
@@ -29,6 +31,8 @@ struct modal_hello {
   } optionv[OPTION_COLC*OPTION_ROWC];
   int optionc;
   int optionp;
+  
+  int qrcode,qrw,qrh;
 };
 
 #define MODAL ((struct modal_hello*)modal)
@@ -42,6 +46,7 @@ static void _hello_del(struct modal *modal) {
   for (;i-->0;option++) {
     egg_texture_del(option->texid);
   }
+  egg_texture_del(MODAL->qrcode);
 }
 
 /* Add option.
@@ -142,8 +147,8 @@ static int _hello_init(struct modal *modal,const void *arg,int argc) {
   if (!(option=hello_add_option(modal,OPTIONID_NEWGAME))) return -1;
   if (!(option=hello_add_option(modal,OPTIONID_CREDITS))) return -1;
   if (!(option=hello_add_option(modal,OPTIONID_DEBUG))) return -1;
-  if (!(option=hello_add_option(modal,0))) return -1;
-  option->enable=0;
+  if (!(option=hello_add_option(modal,OPTIONID_QRCODE))) return -1;
+  option->enable=have_save?1:0;
   if (!(option=hello_add_option(modal,OPTIONID_QUIT))) return -1;
   if (0) option->enable=0; // TODO Option to disable Quit for kiosks and such?
   
@@ -162,6 +167,11 @@ static int _hello_init(struct modal *modal,const void *arg,int argc) {
    */
   if (MODAL->optionv[1].enable) MODAL->optionp=1;
   else MODAL->optionp=4;
+  
+  /* XXX very temporary -- play with qr codes.
+   * so far so good
+  MODAL->qrcode=qr_generate(&MODAL->qrw,&MODAL->qrh,"https://aksommerville.com/bellacopia",-1);
+  /**/
   
   return 0;
 }
@@ -311,10 +321,40 @@ static void hello_begin_credits(struct modal *modal) {
   if (!credits) return;
 }
 
+/* Generate a QR code from the saved game and start displaying it.
+ */
+ 
+static void hello_begin_qrcode(struct modal *modal) {
+
+  char url[2048];
+  int urlc=0;
+  const char *prefix="https://aksommerville.com/bellacopia?savedgame="; // TODO Use itch after the release.
+  for (;prefix[urlc];urlc++) url[urlc]=prefix[urlc];
+  int err=egg_store_get(url+urlc,sizeof(url)-urlc,"save",4);
+  if (err<=0) return;
+  if (urlc>=sizeof(url)-err) return;
+  urlc+=err;
+
+  bm_sound(RID_sound_uiactivate);
+  if (MODAL->qrcode) egg_texture_del(MODAL->qrcode);
+  MODAL->qrcode=qr_generate(&MODAL->qrw,&MODAL->qrh,url,urlc);
+  if (MODAL->qrcode<1) {
+    MODAL->qrcode=0;
+    return;
+  }
+  //fprintf(stderr,"%s: Generated QR code for: %.*s\n",__func__,urlc,url);
+}
+
 /* Activate selected option.
  */
  
 static void hello_activate(struct modal *modal) {
+  if (MODAL->qrcode) {
+    egg_texture_del(MODAL->qrcode);
+    MODAL->qrcode=0;
+    bm_sound(RID_sound_uicancel);
+    return;
+  }
   if ((MODAL->optionp<0)||(MODAL->optionp>=MODAL->optionc)) return;
   struct option *option=MODAL->optionv+MODAL->optionp;
   if (!option->enable) return;
@@ -327,6 +367,7 @@ static void hello_activate(struct modal *modal) {
     case OPTIONID_SETTINGS: hello_begin_settings(modal); break;
     case OPTIONID_CREDITS: hello_begin_credits(modal); break;
     case OPTIONID_QUIT: egg_terminate(0); break;
+    case OPTIONID_QRCODE: hello_begin_qrcode(modal); break;
   }
 }
 
@@ -385,6 +426,12 @@ static void _hello_render(struct modal *modal) {
     if (!option->enable) graf_set_alpha(&g.graf,0x80);
     graf_decal(&g.graf,option->x,option->y,0,0,option->w,option->h);
     graf_set_alpha(&g.graf,0xff);
+  }
+  
+  if (MODAL->qrcode) {
+    graf_fill_rect(&g.graf,0,0,FBW,FBH,0x000000c0);
+    graf_set_input(&g.graf,MODAL->qrcode);
+    graf_decal(&g.graf,(FBW>>1)-(MODAL->qrw>>1),(FBH>>1)-(MODAL->qrh>>1),0,0,MODAL->qrw,MODAL->qrh);
   }
 }
 

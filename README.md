@@ -178,7 +178,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Accept saved game from query param and prompt if there's conflict.
 - - - Saved game with 3 jigpieces and nothing else: AYAFACADAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAADAADAAAABjAAD1vAACNzAC7JgALFLAAJFJgWIYBp
 - - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.
-- - [ ] We might be able to do this entirely within the game! An option at Hello like "Generate Saved Game Link" that displays a QR code for the player to scan.
+- - [x] We might be able to do this entirely within the game! An option at Hello like "Generate Saved Game Link" that displays a QR code for the player to scan.
 - - - Version 40 QR codes hold 1852 chars of text, and require 177x177 pixels -- just barely within our framebuffer height.
 - - - https://en.wikipedia.org/wiki/QR_code
 - - [x] What is the actual upper bound on saved game length? Jigpieces and invstore are final, and the rest we can assume maybe 20% growth.
@@ -338,6 +338,7 @@ Before the first release, validate and clean up this list. And if in-game credit
 - "Nosferatu" borrowed from the FW Murnau film, tho I think it's an ordinary word? ...a little googling suggests it's a corruption of the Romanian word for "plague", introduced by Bram Stoker.
 - Chanting contest text is all from Psalms, copied from here: https://www.sacredbible.org/studybible/OT-21_Psalms.htm
 - - Verses 24:2 71:3 72:3 72:22 74:3 75:5 81:6 86:3
+- QR-code-generator by nayuki. https://github.com/nayuki/QR-Code-generator/
 
 ## Morally Questionable
 
