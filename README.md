@@ -53,9 +53,14 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [ ] Try a more compact encoding for jigpiece that takes advantage of assembled pieces.
+- [x] Try a more compact encoding for jigpiece that takes advantage of assembled pieces.
 - - Picturing, you have one 5-byte unit with mapid=0, and its 19 remaining bits say "plus so many sequential maps in the obvious places" and "plus so many 2-byte mapid in the obvious places".
 - - Those "obvious places" maps are jigpieces connected to the previous one.
+- [ ] New save encoding in game.
+- [ ] New save encoding in editor.
+- [ ] Eliminate random no-fish. Fishing should only fail when you've exhausted it.
+- [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
+- [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -126,6 +131,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.
+- [ ] rebounding: Don't use the crack sound. Make it as Atari as possible.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shaking: Sound when the cork bounces.

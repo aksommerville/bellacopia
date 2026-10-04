@@ -32,7 +32,7 @@ struct store {
   
   struct invstore {
     uint8_t itemid; // If zero, the slot is vacant. (limit,quantity) undefined.
-    uint8_t limit; // If zero, it's not a counted item, and (quantity) may be used for something else.
+    uint8_t limit; // If zero, it's not a counted item, and (quantity) isn't used.
     uint8_t quantity;
   } invstorev[INVSTORE_SIZE];
   
