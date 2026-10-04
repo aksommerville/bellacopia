@@ -2,6 +2,10 @@
 
 struct g g={0};
 
+/* Constructed artificially; a saved game with every heap empty.
+ */
+const const char *empty_save="AAAAAAAAAAAAPw/";
+
 /* A saved game with no progress and like 5 seconds on the clock.
  */
 static const char *old_format_fresh="AAAFACAAAAAAAAADAADAAAABjAAAiLAAAflALb4H";
@@ -811,10 +815,22 @@ int main(int argc,char **argv) {
   /* All three of these files get smaller under the new regime.
    * The biggest driver of savings is jigstore, and it works best when the pieces are connected.
    */
+  //const char *input=empty_save; // 16>15 -- new format is longer due to its signature byte
   //const char *input=old_format_fresh; // 32<40
   const char *input=old_format_100pct; // 269<1832
   //const char *input=worst_case_scenario; // 1719<1832
   int inputc=0; while (input[inputc]) inputc++;
+  
+  /*
+  int ck=store_checksum(input,inputc);
+  fprintf(stderr,"checksum: %c%c%c%c%c\n",
+    store_base64_alphabet[ck>>24],
+    store_base64_alphabet[(ck>>18)&0x3f],
+    store_base64_alphabet[(ck>>12)&0x3f],
+    store_base64_alphabet[(ck>>6)&0x3f],
+    store_base64_alphabet[ck&0x3f]
+  );
+  /**/
   
   struct store store={0};
   if (store_decode(&store,input,inputc)<0) {
@@ -838,6 +854,7 @@ int main(int argc,char **argv) {
     return 1;
   } else if (outputc>=inputc) {
     fprintf(stderr,"%s: Seems to have reencoded ok but no length improvement (%d>=%d)\n",g.exename,outputc,inputc);
+    //fprintf(stderr,"%.*s\n",outputc,output);
   } else {
     fprintf(stderr,"%s: Reencoded with improved length (%d<%d)\n",g.exename,outputc,inputc);
     //fprintf(stderr,"%.*s\n",outputc,output);

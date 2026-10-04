@@ -172,12 +172,27 @@ int store_load(const char *k,int kc) {
   return store_sanitize();
 }
 
+/* Sort jigstore by mapid.
+ * This is a considerable aid to the encoding, and shouldn't matter to users.
+ * (though it is expressed in their Z order).
+ */
+ 
+static int jigstore_cmp(const void *a,const void *b) {
+  const struct jigstore *A=a,*B=b;
+  return A->mapid-B->mapid;
+}
+ 
+static void store_sort_jigstorev(struct store *store) {
+  qsort(store->jigstorev,store->jigstorec,sizeof(struct jigstore),jigstore_cmp);
+}
+
 /* Save.
  */
 
 static int store_save_now(const char *k,int kc) {
   g.store.dirty=0;
   g.store.savedebounce=0.0;
+  store_sort_jigstorev(&g.store);
   
   int seriala=2048; // TODO What's a good upper bound for expected output size of encoded saved game?
   char *serial=malloc(seriala);

@@ -25,7 +25,7 @@ struct store {
   
   struct jigstore {
     uint16_t mapid;
-    uint8_t x,y,xform; // (y==0xff) means it isn't got yet.
+    uint8_t x,y,xform;
   } *jigstorev;
   int jigstorec,jigstorea;
   int jigstore_limit; // Total count of jigstores in the game; determined dynamically the first time we need it.
@@ -137,22 +137,50 @@ struct jigstore_progress {
 void jigstore_progress_tabulate(struct jigstore_progress *progress);
 int jigstore_is_complete();
 int jigstore_has_anything();
-
+ 
 /* Serial format, written out to "save" in the Egg store.
- * Starts with 10 bytes for the lengths of the individual stores.
- * Each length is 2 Base64 digits, big-endianly:
- *  - fldc (bytes encoded, ie ceil(flagc/6))
- *  - fld16c (fields)
- *  - clockc (fields)
- *  - jigstorec (records)
- *  - invstorec (records). Can't go above 26, but we use 2 bytes like the others, for consistency.
- * Followed by the heaps, Base64, in the same order:
- *  - fldv: Six flags per encoded byte, little-endianly.
- *  - fld16v: Three encoded bytes each, big-endian, the 2 high bits of each must be zero.
- *  - clockv: Five encoded bytes each, big-endian, ms. Holds about 298 hours each.
- *  - jigstorev: Five encoded bytes each, split big-endianly: 11 mapid, 8 x, 8 y, 3 xform.
- *  - invstorev: Four encoded bytes each: itemid,limit,quantity. ie straight base64 of the whole (invstorev).
- * Followed by a 30-bit checksum, performed on the encoded stream.
+ * Lexically, it's Base64 with no padding.
+ * But don't decode the whole thing Base64, it's designed to be accessed piecemeal on the encoded stream.
+ * There's a minimum length of 16: One signature byte, 10 bytes of framing, and a 5 byte checksum.
+ *
+ * Top level structure:
+ *  - 1: "/" signature.
+ *  - ...: fldv. 2 encoded bytes of length in bytes, followed by content.
+ *  - ...: fld16v. ''
+ *  - ...: clockv. ''
+ *  - ...: jigstorev. ''
+ *  - ...: invstorev. ''
+ *  - 5: Checksum. Computed on the encoded stream up to this point.
+ *
+ * fldv:
+ * Each encoded character is two run lengths 0..7, little-endianly.
+ * The first run has a value of zero (fld 0 must always be unset).
+ * Emit so many fields little-endianly.
+ * After reading a 7, do not swap the output value.
+ * Any other run length, swap the output value each time.
+ *
+ * fld16v:
+ * Each value is stored in 1, 2, or 3 bytes, similar to VLQ.
+ * First and second bytes have 5 payload bits at the low end, and if their high bit is set, read another byte.
+ * Third byte is 6 bits of payload.
+ * The three payload combine big-endianly.
+ *
+ * clockv:
+ * 5 bytes per value, big-endian milliseconds.
+ *
+ * jigstorev:
+ * Read 5 bytes at a time, and split that 30-bit integer big-endianly. One of:
+ *   11:mapid 8:x 8:y 3:xform
+ *   16:zero 7:sequentialc 7:namedc
+ * If (mapid) is zero, it's the second form, and there must have been a command of the first form immediately proceeding.
+ * Add (sequentialc) maps with mapid increasing from the reference map, in the inferrable locations.
+ * Then read 2-byte mapid (0..4095) for each (namedc) and place them in the inferrable locations.
+ * Encoding and decoding requires knowledge of the map set. Specifically, just the location of each mapid in its plane.
+ *
+ * invstorev:
+ * Read one leading byte.
+ * If <63, it's (itemid). (limit,quantity) are both zero.
+ * If 63 exactly, read another 4 bytes: 0xff0000=itemid 0x00ff00=limit 0x0000ff=quantity.
  */
 
 #endif

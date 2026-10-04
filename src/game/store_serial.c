@@ -5,7 +5,7 @@
  
 #include "game/bellacopia.h"
 
-/* Decode Base64 digit.
+/* Base64 primitives.
  */
  
 static int store_decode_base64_digit(char src) {
@@ -23,10 +23,11 @@ static const char store_base64_alphabet[64]=
   "0123456789+/"
 ;
 
-/* Decode two Base64 digits as a 12-bit integer, or three as 18-bit.
+/* Decode composite Base64 integers.
+ * Return value or <0. Caller has to know the encoded length.
  */
  
-static int store_decode_12bit(const char *src,int srcc) {
+static int store_decode_12bit(const char *src,int srcc) { // 2
   if (srcc<2) return -1;
   int hi=store_decode_base64_digit(src[0]);
   int lo=store_decode_base64_digit(src[1]);
@@ -34,7 +35,7 @@ static int store_decode_12bit(const char *src,int srcc) {
   return (hi<<6)|lo;
 }
  
-static int store_decode_18bit(const char *src,int srcc) {
+static int store_decode_18bit(const char *src,int srcc) { // 3
   if (srcc<3) return -1;
   int a=store_decode_base64_digit(src[0]);
   int b=store_decode_base64_digit(src[1]);
@@ -43,7 +44,17 @@ static int store_decode_18bit(const char *src,int srcc) {
   return (a<<12)|(b<<6)|c;
 }
  
-static int store_decode_30bit(const char *src,int srcc) {
+static int store_decode_24bit(const char *src,int srcc) { // 4
+  if (srcc<4) return -1;
+  int a=store_decode_base64_digit(src[0]);
+  int b=store_decode_base64_digit(src[1]);
+  int c=store_decode_base64_digit(src[2]);
+  int d=store_decode_base64_digit(src[3]);
+  if ((a<0)||(b<0)||(c<0)||(d<0)) return -1;
+  return (a<<18)|(b<<12)|(c<<6)|d;
+}
+ 
+static int store_decode_30bit(const char *src,int srcc) { // 5
   if (srcc<5) return -1;
   int a=store_decode_base64_digit(src[0]);
   int b=store_decode_base64_digit(src[1]);
@@ -54,73 +65,46 @@ static int store_decode_30bit(const char *src,int srcc) {
   return (a<<24)|(b<<18)|(c<<12)|(d<<6)|e;
 }
 
-static int store_encode_12bit(char *dst,int dsta,int src) {
+/* Encode composite Base64 integers.
+ * Returns encoded length, tho you should know them anyway.
+ */
+ 
+static int store_encode_12bit(char *dst,int dsta,int v) {
   if (dsta>=2) {
-    dst[0]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[1]=store_base64_alphabet[src&0x3f];
+    dst[0]=store_base64_alphabet[(v>>6)&0x3f];
+    dst[1]=store_base64_alphabet[v&0x3f];
   }
   return 2;
 }
-
-static int store_encode_18bit(char *dst,int dsta,int src) {
+ 
+static int store_encode_18bit(char *dst,int dsta,int v) {
   if (dsta>=3) {
-    dst[0]=store_base64_alphabet[(src>>12)&0x3f];
-    dst[1]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[2]=store_base64_alphabet[src&0x3f];
+    dst[0]=store_base64_alphabet[(v>>12)&0x3f];
+    dst[1]=store_base64_alphabet[(v>>6)&0x3f];
+    dst[2]=store_base64_alphabet[v&0x3f];
   }
   return 3;
 }
-
-static int store_encode_30bit(char *dst,int dsta,int src) {
+ 
+static int store_encode_24bit(char *dst,int dsta,int v) {
+  if (dsta>=4) {
+    dst[0]=store_base64_alphabet[(v>>18)&0x3f];
+    dst[1]=store_base64_alphabet[(v>>12)&0x3f];
+    dst[2]=store_base64_alphabet[(v>>6)&0x3f];
+    dst[3]=store_base64_alphabet[v&0x3f];
+  }
+  return 4;
+}
+ 
+static int store_encode_30bit(char *dst,int dsta,int v) {
   if (dsta>=5) {
-    dst[0]=store_base64_alphabet[(src>>24)&0x3f];
-    dst[1]=store_base64_alphabet[(src>>18)&0x3f];
-    dst[2]=store_base64_alphabet[(src>>12)&0x3f];
-    dst[3]=store_base64_alphabet[(src>>6)&0x3f];
-    dst[4]=store_base64_alphabet[src&0x3f];
+    dst[0]=store_base64_alphabet[(v>>24)&0x3f];
+    dst[1]=store_base64_alphabet[(v>>18)&0x3f];
+    dst[2]=store_base64_alphabet[(v>>12)&0x3f];
+    dst[3]=store_base64_alphabet[(v>>6)&0x3f];
+    dst[4]=store_base64_alphabet[v&0x3f];
   }
   return 5;
-}
-
-/* Plain old base64 decode. Except it must end on a complete unit, ie a multiple of 4.
- */
- 
-static int store_decode_base64(uint8_t *dst,int dsta,const char *src,int srcc) {
-  if (srcc&3) return -1;
-  int dstc=0,srcp=0;
-  int fullc=srcc>>2;
-  while (fullc-->0) {
-    int a=store_decode_base64_digit(src[srcp]);
-    int b=store_decode_base64_digit(src[srcp+1]);
-    int c=store_decode_base64_digit(src[srcp+2]);
-    int d=store_decode_base64_digit(src[srcp+3]);
-    srcp+=4;
-    if ((a<0)||(b<0)||(c<0)||(d<0)) return -1;
-    if (dstc>dsta-3) {
-      dstc+=3;
-    } else {
-      dst[dstc++]=(a<<2)|(b>>4);
-      dst[dstc++]=(b<<4)|(c>>2);
-      dst[dstc++]=(c<<6)|d;
-    }
-  }
-  return dstc;
-}
-
-static int store_encode_base64(char *dst,int dsta,const uint8_t *src,int srcc) {
-  if (srcc%3) return -1;
-  int dstc=0;
-  for (;srcc>=3;src+=3,srcc-=3) {
-    if (dstc>dsta-4) {
-      dstc+=4;
-    } else {
-      dst[dstc++]=store_base64_alphabet[(src[0]>>2)&0x3f];
-      dst[dstc++]=store_base64_alphabet[((src[0]<<4)|(src[1]>>4))&0x3f];
-      dst[dstc++]=store_base64_alphabet[((src[1]<<2)|(src[2]>>6))&0x3f];
-      dst[dstc++]=store_base64_alphabet[(src[2])&0x3f];
-    }
-  }
-  return dstc;
 }
 
 /* Compute 30-bit checksum against a stream of base64.
@@ -136,285 +120,530 @@ static int store_checksum(const char *src,int srcc) {
   return sum&0x3fffffff;
 }
 
-/* Private helper to unpack serial.
- * We don't validate content of the heaps, except confirming that they are base64 and a sensible length.
+/* Lil helpers for encoding.
  */
  
-struct store_toc {
-  const char *fldv,*fld16v,*clockv,*jigstorev,*invstorev;
-  int efldc,efld16c,eclockc,ejigstorec,einvstorec; // Length of encoded heaps in bytes.
-  int lfldc,lfld16c,lclockc,ljigstorec,linvstorec; // Logical length, ie count of fields.
-  int checksum_expect; // What's encoded in the serial for validation.
-  int checksum_actual; // We compute during decode but we don't fail on mismatches.
-};
+#define APPEND(_v) { \
+  int __v=(_v); \
+  if ((__v<0)||(__v>63)) return -1; \
+  if (dstc<dsta) dst[dstc]=store_base64_alphabet[__v]; \
+  dstc++; \
+}
 
-static int store_toc_decode(struct store_toc *toc,const char *src,int srcc) {
+/* Decode fldv.
+ */
+ 
+static int store_decode_fldv_run(struct store *store,int fldid,int v,int c) {
 
-  /* Serial must be at least 15 bytes: 10 for the lengths table and 5 for the checksum.
-   * Every byte of it must be base64 legal. And no '='.
-   */
-  if (!src||(srcc<15)) return -1;
-  const char *ck=src;
-  int i=srcc;
-  for (;i-->0;ck++) {
-    if ((*ck>='A')&&(*ck<='Z')) continue;
-    if ((*ck>='a')&&(*ck<='z')) continue;
-    if ((*ck>='0')&&(*ck<='9')) continue;
-    if (*ck=='+') continue;
-    if (*ck=='/') continue;
-    return -1;
+  // Grow buffer and count, and zero when we extend the count.
+  int reqc=(fldid+c+7)>>3;
+  if (reqc>store->flda) {
+    int na=(reqc+64)&~63;
+    void *nv=realloc(store->fldv,na);
+    if (!nv) return -1;
+    store->fldv=nv;
+    store->flda=na;
+  }
+  if (reqc>store->fldc) {
+    memset(store->fldv+store->fldc,0,reqc-store->fldc);
+    store->fldc=reqc;
   }
   
-  /* The first 10 encoded bytes are lengths of the subsequent heaps.
-   * Note that (fldc) is the encoded length and the others are the logical length.
-   */
-  int srcp=0;
-  if ((toc->efldc=store_decode_12bit(src+srcp,srcc-srcp))<0) return -1; srcp+=2;
-  if ((toc->lfld16c=store_decode_12bit(src+srcp,srcc-srcp))<0) return -1; srcp+=2;
-  if ((toc->lclockc=store_decode_12bit(src+srcp,srcc-srcp))<0) return -1; srcp+=2;
-  if ((toc->ljigstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return -1; srcp+=2;
-  if ((toc->linvstorec=store_decode_12bit(src+srcp,srcc-srcp))<0) return -1; srcp+=2;
+  // No need to touch zeroes, they're already zero.
+  if (!v) return 0;
   
-  /* Followed by the 5 heaps.
-   */
-  if (srcp>srcc-toc->efldc) return -1;
-  toc->fldv=src+srcp;
-  toc->lfldc=toc->efldc*6;
-  srcp+=toc->efldc;
-  
-  toc->efld16c=toc->lfld16c*3;
-  if (srcp>srcc-toc->efld16c) return -1;
-  toc->fld16v=src+srcp;
-  srcp+=toc->efld16c;
-  
-  toc->eclockc=toc->lclockc*5;
-  if (srcp>srcc-toc->eclockc) return -1;
-  toc->clockv=src+srcp;
-  srcp+=toc->eclockc;
-  
-  toc->ejigstorec=toc->ljigstorec*5;
-  if (srcp>srcc-toc->ejigstorec) return -1;
-  toc->jigstorev=src+srcp;
-  srcp+=toc->ejigstorec;
-  
-  toc->einvstorec=toc->linvstorec*4;
-  if (srcp>srcc-toc->einvstorec) return -1;
-  toc->invstorev=src+srcp;
-  srcp+=toc->einvstorec;
-  
-  /* Finally the checksum, and assert that we hit the end exactly.
-   * Don't fail if checksums mismatch; that's the caller's concern.
-   */
-  if (srcp!=srcc-5) return -1;
-  toc->checksum_expect=store_decode_30bit(src+srcp,srcc-srcp);
-  toc->checksum_actual=store_checksum(src,srcp);
+  // Touch every bit individually. This could be more efficient but meh.
+  for (;c-->0;fldid++) {
+    store->fldv[fldid>>3]|=1<<(fldid&7);
+  }
   
   return 0;
 }
-
-/* Stateless serial validation.
- */
  
-int store_validate_serial(const char *src,int srcc) {
-
-  /* Confirm the TOC decodes and checksums match.
-   */
-  if (!src) return -1;
-  if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
-  struct store_toc toc={0};
-  if (store_toc_decode(&toc,src,srcc)<0) return -1;
-  if (toc.checksum_expect!=toc.checksum_actual) return -1;
-  
-  /* There's not much to easily validate beyond that.
-   * Could check things like jigstore must name a real map, invstore a real item?
-   * That would get expensive.
-   * And anyway, random data would surely fail the length and base64 checks,
-   * and adulterated data would probably fail the checksum.
-   * Not sure we need any more than that.
-   */
-   
+static int store_decode_fldv(struct store *store,const char *src,int srcc) {
+  int fldid=0,srcp=0,v=0;
+  for (;srcp<srcc;srcp++) {
+    int intake=store_decode_base64_digit(src[srcp]);
+    if (intake<0) return -1;
+    if (store_decode_fldv_run(store,fldid,v,intake&7)<0) return -1;
+    fldid+=intake&7;
+    if ((intake&7)!=7) v^=1;
+    if (store_decode_fldv_run(store,fldid,v,intake>>3)<0) return -1;
+    fldid+=intake>>3;
+    if ((intake>>3)!=7) v^=1;
+  }
   return 0;
 }
 
-/* Decode individual heaps of a store, from TOC.
+/* Encode fldv.
  */
  
-static int store_decode_fldv(struct store *store,const struct store_toc *toc) {
-  int fldc_decoded=(toc->lfldc+7)>>3;
-  if (store_require_fldv(store,fldc_decoded)<0) return -1;
-  store->fldc=0;
-  uint8_t *dst=0;
-  uint8_t dstmask=0x01;
-  const char *src=toc->fldv;
-  int i=toc->efldc;
-  for (;i-->0;src++) {
-    int digit=store_decode_base64_digit(*src);
-    if (digit<0) return -1;
-    uint8_t srcmask=0x01;
-    for (;srcmask<0x40;srcmask<<=1) {
-      if (!dst) {
-        if (store->fldc>=store->flda) return -1;
-        dst=store->fldv+store->fldc++;
-        dstmask=0x01;
-        *dst=0;
+static int store_encode_fldv(char *dst,int dsta,const struct store *store) {
+  int dstc=0;
+  int dstbuf=0,dstshift=0;
+  int srcp=0,v=0,runlen=1;
+  uint8_t srcmask=0x02; // Start at the second bit and assume the first is zero -- the format requires it.
+  for (;;) {
+    // Measure the next run of bits.
+    while (srcp<store->fldc) {
+      int bit=(store->fldv[srcp]&srcmask)?1:0;
+      if (bit!=v) break;
+      runlen++;
+      if (srcmask==0x80) {
+        srcp++;
+        srcmask=0x01;
+      } else {
+        srcmask<<=1;
       }
-      if (digit&srcmask) (*dst)|=dstmask;
-      if (dstmask==0x80) dst=0; else dstmask<<=1;
+    }
+    if (!runlen) break;
+    v^=1;
+    // Emit as many 7s as we need, then whatever's left (even if zero).
+    int sevenc=runlen/7;
+    runlen%=7;
+    while (sevenc-->0) {
+      dstbuf|=dstshift?0x38:0x07;
+      if (dstshift) {
+        APPEND(dstbuf)
+        dstbuf=0;
+        dstshift=0;
+      } else {
+        dstshift=3;
+      }
+    }
+    dstbuf|=runlen<<dstshift;
+    if (dstshift) {
+      APPEND(dstbuf)
+      dstbuf=0;
+      dstshift=0;
+    } else {
+      dstshift=3;
+    }
+    runlen=0;
+  }
+  if (dstbuf) APPEND(dstbuf);
+  return dstc;
+}
+
+/* Decode fld16v.
+ */
+ 
+static int store_decode_fld16v(struct store *store,const char *src,int srcc) {
+  store->fld16c=0;
+  int srcp=0;
+  while (srcp<srcc) {
+    int v=store_decode_base64_digit(src[srcp++]);
+    if (v<0) return -1;
+    if (v&0x20) {
+      v=(v&0x1f)<<5;
+      if (srcp>=srcc) return -1;
+      int next=store_decode_base64_digit(src[srcp++]);
+      if (next<0) return -1;
+      v|=next&0x1f;
+      if (next&0x20) {
+        v<<=6;
+        if (srcp>=srcc) return -1;
+        next=store_decode_base64_digit(src[srcp++]);
+        if (next<0) return -1;
+        v|=next;
+      }
+    }
+    if (store->fld16c>=store->fld16a) {
+      int na=store->fld16a+32;
+      if (na>INT_MAX/sizeof(uint16_t)) return -1;
+      void *nv=realloc(store->fld16v,sizeof(uint16_t)*na);
+      if (!nv) return -1;
+      store->fld16v=nv;
+      store->fld16a=na;
+    }
+    store->fld16v[store->fld16c++]=v;
+  }
+  return 0;
+}
+
+/* Encode fld16v.
+ */
+ 
+static int store_encode_fld16v(char *dst,int dsta,const struct store *store) {
+  int dstc=0;
+  const uint16_t *src=store->fld16v;
+  int i=store->fld16c;
+  for (;i-->0;src++) {
+    int v=*src;
+    if (v<0x0020) {
+      APPEND(v)
+    } else if (v<0x0400) {
+      APPEND(0x20|(v>>5))
+      APPEND(v&0x1f)
+    } else {
+      APPEND(0x20|(v>>11))
+      APPEND(0x20|((v>>6)&0x1f))
+      APPEND(v&0x3f)
+    }
+  }
+  return dstc;
+}
+
+/* Decode clockv.
+ */
+ 
+static int store_decode_clockv(struct store *store,const char *src,int srcc) {
+  store->clockc=0;
+  int srcp=0;
+  while (srcp<srcc) {
+    int v=store_decode_30bit(src+srcp,srcc-srcp);
+    if (v<0) return -1;
+    srcp+=5;
+    if (store->clockc>=store->clocka) {
+      int na=store->clocka+32;
+      void *nv=realloc(store->clockv,sizeof(double)*na);
+      if (!nv) return -1;
+      store->clockv=nv;
+      store->clocka=na;
+    }
+    store->clockv[store->clockc++]=(double)v/1000.0;
+  }
+  return 0;
+}
+
+/* Encode clockv.
+ */
+ 
+static int store_encode_clockv(char *dst,int dsta,const struct store *store) {
+  int dstc=0;
+  const double *src=store->clockv;
+  int i=store->clockc;
+  for (;i-->0;src++) {
+    int v=(int)((*src)*1000.0);
+    if (v&~0x3fffffff) v=0x3fffffff;
+    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
+  }
+  return dstc;
+}
+
+/* Decode jigstorev.
+ */
+ 
+static int store_add_jigstorev(struct store *store,int mapid,int x,int y,int xform) {
+  if ((mapid<1)||(mapid>0x0fff)) return -1;
+  if ((x<0)||(x>0xff)) return -1;
+  if ((y<0)||(y>0xff)) return -1;
+  if (store->jigstorec>=store->jigstorea) {
+    int na=store->jigstorea+128;
+    if (na>INT_MAX/sizeof(struct jigstore)) return -1;
+    void *nv=realloc(store->jigstorev,sizeof(struct jigstore)*na);
+    if (!nv) return -1;
+    store->jigstorev=nv;
+    store->jigstorea=na;
+  }
+  struct jigstore *j=store->jigstorev+store->jigstorec++;
+  j->mapid=mapid;
+  j->x=x;
+  j->y=y;
+  j->xform=xform;
+  return 0;
+}
+ 
+static int store_decode_jigstorev(struct store *store,const char *src,int srcc) {
+  store->jigstorec=0;
+  int srcp=0;
+  while (srcp<srcc) {
+  
+    // Principal record.
+    int v=store_decode_30bit(src+srcp,srcc-srcp);
+    if (v<0) return -1;
+    srcp+=5;
+    int mapid=v>>19;
+    int x=(v>>11)&0xff;
+    int y=(v>>3)&0xff;
+    int xform=v&7;
+    if (store_add_jigstorev(store,mapid,x,y,xform)<0) return -1;
+    
+    // Peek for a secondary record.
+    v=store_decode_30bit(src+srcp,srcc-srcp);
+    if (v&0xffffc000) continue; // <0 or something in the high 16 set. No secondary record.
+    srcp+=5;
+    int sequentialc=(v>>7)&0x7f;
+    int namedc=v&0x7f;
+    if (!sequentialc&&!namedc) continue; // Why did they bother writing it?
+    
+    // Find the reference map.
+    const struct map *map=map_by_id(mapid);
+    if (!map) return -1;
+    
+    // Add sequentially-ID'd maps.
+    int i=sequentialc;
+    int nmapid=mapid+1;
+    for (;i-->0;nmapid++) {
+      const struct map *nmap=map_by_id(nmapid);
+      if (!nmap) return -1;
+      if (map->z!=nmap->z) return -1; // Must be on the same plane.
+      int dlng=nmap->lng-map->lng;
+      int dlat=nmap->lat-map->lat;
+      int nx,ny;
+      switch (xform) {
+        case                             0: nx=x+dlng*NS_sys_mapw; ny=y+dlat*NS_sys_maph; break;
+        case EGG_XFORM_SWAP|EGG_XFORM_YREV: nx=x-dlat*NS_sys_maph; ny=y+dlng*NS_sys_mapw; break;
+        case EGG_XFORM_XREV|EGG_XFORM_YREV: nx=x-dlng*NS_sys_mapw; ny=y-dlat*NS_sys_maph; break;
+        case EGG_XFORM_SWAP|EGG_XFORM_XREV: nx=x+dlat*NS_sys_maph; ny=y-dlng*NS_sys_mapw; break;
+        default: return -1;
+      }
+      if (store_add_jigstorev(store,nmapid,nx,ny,xform)<0) return -1;
+    }
+    
+    // Read and add named maps. We're not currently producing these, but that could change at any time. No changes will be needed here.
+    for (i=namedc;i-->0;) {
+      int nmapid=store_decode_12bit(src+srcp,srcc-srcp);
+      if (nmapid<0) return -1;
+      const struct map *nmap=map_by_id(nmapid);
+      if (!nmap) return -1;
+      if (map->z!=nmap->z) return -1; // Must be on the same plane.
+      int dlng=nmap->lng-map->lng;
+      int dlat=nmap->lat-map->lat;
+      int nx,ny;
+      switch (xform) {
+        case                             0: nx=x+dlng*NS_sys_mapw; ny=y+dlat*NS_sys_maph; break;
+        case EGG_XFORM_SWAP|EGG_XFORM_YREV: nx=x-dlat*NS_sys_maph; ny=y+dlng*NS_sys_mapw; break;
+        case EGG_XFORM_XREV|EGG_XFORM_YREV: nx=x-dlng*NS_sys_mapw; ny=y-dlat*NS_sys_maph; break;
+        case EGG_XFORM_SWAP|EGG_XFORM_XREV: nx=x+dlat*NS_sys_maph; ny=y-dlng*NS_sys_mapw; break;
+        default: return -1;
+      }
+      if (store_add_jigstorev(store,nmapid,nx,ny,xform)<0) return -1;
     }
   }
   return 0;
 }
+
+/* Encode jigstorev.
+ */
  
-static int store_decode_fld16v(struct store *store,const struct store_toc *toc) {
-  if (store_require_fld16v(store,toc->lfld16c)<0) return -1;
-  uint16_t *dst16=store->fld16v;
-  const char *src=toc->fld16v;
-  int i=toc->lfld16c;
-  for (;i-->0;dst16++,src+=3) {
-    int v=store_decode_18bit(src,3);
-    if ((v<0)||(v&~0xffff)) return -1;
-    *dst16=v;
-  }
-  store->fld16c=toc->lfld16c;
+static const struct jigstore *jigstore_find_mapid(const struct jigstore **v,int c,int mapid) {
+  for (;c-->0;v++) if ((*v)->mapid==mapid) return *v;
   return 0;
 }
  
-static int store_decode_clockv(struct store *store,const struct store_toc *toc) {
-  if (store_require_clockv(store,toc->lclockc)<0) return -1;
-  double *dstd=store->clockv;
-  const char *src=toc->clockv;
-  int i=toc->lclockc;
-  for (;i-->0;dstd++,src+=5) {
-    int v=store_decode_30bit(src,5);
+static int store_encode_jigstorev(char *dst,int dsta,const struct store *store) {
+  uint8_t visitv[128]={0}; // Little-endian bits corresponding to index in (store->jigstorev).
+  if (store->jigstorec>=sizeof(visitv)*8) return -1; // Update me if we exceed 1024 jiggable maps, which we won't.
+  int dstc=0;
+  int i=0;
+  for (;i<store->jigstorec;i++) {
+    if (visitv[i>>3]&(1<<(i&7))) continue; // Already got it from some earlier repeat command.
+    visitv[i>>3]|=1<<(i&7); // Probably not necessary, but mark this one visited.
+    
+    // Emit the 30-bit principal command.
+    const struct jigstore *j=store->jigstorev+i;
+    int v=(j->mapid<<19)|(j->x<<11)|(j->y<<3)|j->xform;
+    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
+    
+    // Find the map and plane for this principal piece.
+    const struct map *map=map_by_id(j->mapid);
+    if (!map) return -1;
+    const struct plane *plane=plane_by_position(map->z);
+    if (!plane) return -1;
+    int p_in_storage=map-plane->v;
+    if ((p_in_storage<0)||(p_in_storage>=plane->w*plane->h)) return -1;
+    int lng=p_in_storage%plane->w;
+    int lat=p_in_storage/plane->w;
+    
+    // Search all remaining pieces and collect those on the same plane, with the same xform, whose positions are in the expected place.
+    const struct jigstore *alsov[256];
+    int alsoc=0;
+    int otheri=i+1;
+    for (;otheri<store->jigstorec;otheri++) {
+      if (visitv[otheri>>3]&(1<<(otheri&7))) continue; // Skip, we already emitted this one.
+      const struct jigstore *other=store->jigstorev+otheri;
+      if (other->xform!=j->xform) continue; // Skip, xform must match.
+      const struct map *omap=map_by_id(other->mapid);
+      if (!omap||(omap->z!=plane->z)) continue; // Skip, invalid or different plane.
+      int opsto=omap-plane->v;
+      if ((opsto<0)||(opsto>=plane->w*plane->h)) continue; // Skip, invalid position in plane.
+      int olng=opsto%plane->w;
+      int olat=opsto/plane->w;
+      int dlng=olng-lng;
+      int dlat=olat-lat;
+      int expectx,expecty;
+      switch (j->xform) {
+        case                             0: expectx=j->x+dlng*NS_sys_mapw; expecty=j->y+dlat*NS_sys_maph; break;
+        case EGG_XFORM_YREV|EGG_XFORM_SWAP: expectx=j->x-dlat*NS_sys_maph; expecty=j->y+dlng*NS_sys_mapw; break;
+        case EGG_XFORM_XREV|EGG_XFORM_YREV: expectx=j->x-dlng*NS_sys_mapw; expecty=j->y-dlat*NS_sys_maph; break;
+        case EGG_XFORM_XREV|EGG_XFORM_SWAP: expectx=j->x+dlat*NS_sys_maph; expecty=j->y-dlng*NS_sys_mapw; break;
+        default: continue;
+      }
+      if ((other->x!=expectx)||(other->y!=expecty)) continue; // Skip, not aligned.
+      alsov[alsoc++]=other;
+      if (alsoc>=256) break;
+    }
+    
+    // Count sequential mapid from (j->mapid+1), how many do we have in (alsov)?
+    int nmapid=j->mapid+1;
+    int sequentialc=0;
+    while (sequentialc<128) {
+      const struct jigstore *q=jigstore_find_mapid(alsov,alsoc,nmapid);
+      if (!q) break;
+      nmapid++;
+      sequentialc++;
+      int qi=q-store->jigstorev;
+      if ((qi<0)||(qi>=store->jigstorec)) return -1;
+      visitv[qi>>3]|=1<<(qi&7);
+    }
+    
+    // However many remain in (alsov) should be emitted by name.
+    //XXX But I've found this tends to produce worse compression, so we're skipping it.
+    // I believe if we could force mapid contiguous within each plane, this would be beneficial.
+    // Needs further testing with intermediate states. I've only tried with best and worst case scenarios.
+    int namedc=0; // alsoc-sequentialc;
+    if (namedc>=128) namedc=127;
+    
+    // Emit a fake command with (sequentialc,namedc), and then the named mapids.
+    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,(sequentialc<<7)|namedc);
+    int alsop=0;
+    while (namedc-->0) {
+      while (alsop<alsoc) {
+        const struct jigstore *named=alsov[alsop];
+        if ((named->mapid>=j->mapid)&&(named->mapid<nmapid)) alsop++;
+        else break;
+      }
+      if (alsop>=alsoc) return -1;
+      const struct jigstore *named=alsov[alsop];
+      dstc+=store_encode_12bit(dst+dstc,dsta-dstc,named->mapid);
+      alsop++;
+      int qi=named-store->jigstorev;
+      if ((qi<0)||(qi>=store->jigstorec)) return -1;
+      visitv[qi>>3]|=1<<(qi&7);
+    }
+  }
+  return dstc;
+}
+
+/* Decode invstorev.
+ */
+ 
+static int store_decode_invstorev(struct store *store,const char *src,int srcc) {
+  memset(store->invstorev,0,sizeof(store->invstorev));
+  int srcp=0,dstp=0;
+  while (srcp<srcc) {
+    int v=store_decode_base64_digit(src[srcp++]);
     if (v<0) return -1;
-    *dstd=(double)v/1000.0;
+    if (v<63) {
+      store->invstorev[dstp].itemid=v;
+    } else {
+      v=store_decode_24bit(src+srcp,srcc-srcp);
+      if (v<0) return -1;
+      srcp+=4;
+      store->invstorev[dstp].itemid=v>>16;
+      store->invstorev[dstp].limit=v>>8;
+      store->invstorev[dstp].quantity=v;
+    }
+    if (++dstp>=INVSTORE_SIZE) break;
   }
-  store->clockc=toc->lclockc;
-  return 0;
-}
- 
-static int store_decode_jigstorev(struct store *store,const struct store_toc *toc) {
-  if (store_require_jigstorev(store,toc->ljigstorec)<0) return -1;
-  struct jigstore *jigstore=store->jigstorev;
-  const char *src=toc->jigstorev;
-  int i=toc->ljigstorec;
-  for (;i-->0;jigstore++,src+=5) {
-    int v=store_decode_30bit(src,5);
-    if (v<0) return -1;
-    jigstore->mapid=v>>19;
-    jigstore->x=v>>11;
-    jigstore->y=v>>3;
-    jigstore->xform=v&7;
-  }
-  store->jigstorec=toc->ljigstorec;
-  return 0;
-}
- 
-static int store_decode_invstorev(struct store *store,const struct store_toc *toc) {
-  if (toc->linvstorec>INVSTORE_SIZE) return -1;
-  if (store_decode_base64((uint8_t*)store->invstorev,sizeof(store->invstorev),toc->invstorev,toc->einvstorec)!=toc->linvstorec*3) return -1;
-  memset(store->invstorev+toc->linvstorec,0,sizeof(struct invstore)*(INVSTORE_SIZE-toc->linvstorec));
   return 0;
 }
 
-/* Decode serial to a store, no globals.
+/* Encode invstorev.
+ */
+ 
+static int store_encode_invstorev(char *dst,int dsta,const struct store *store) {
+  int dstc=0;
+  const struct invstore *invstore=store->invstorev;
+  int i=INVSTORE_SIZE;
+  for (;i-->0;invstore++) {
+    if ((invstore->itemid<63)&&!invstore->limit&&!invstore->quantity) {
+      APPEND(invstore->itemid);
+    } else {
+      APPEND(63)
+      dstc+=store_encode_24bit(dst+dstc,dsta-dstc,(invstore->itemid<<16)|(invstore->limit<<8)|invstore->quantity);
+    }
+  }
+  return dstc;
+}
+
+/* Decode a heap with leading length.
+ * Caller supplies a callback that receives only the payload.
+ */
+ 
+static int store_decode_heap(
+  struct store *store,
+  const char *src,int srcc,
+  int (*cb)(struct store *store,const char *src,int srcc)
+) {
+  if (srcc<2) return -1;
+  int len=store_decode_12bit(src,2);
+  if (len<0) return -1;
+  if (2+len>srcc) return -1;
+  if (cb(store,src+2,len)<0) return -1;
+  return 2+len;
+}
+
+/* Encode a heap with leading length.
+ * Caller supplies a callback to generate the actual content.
+ */
+ 
+static int store_encode_heap(
+  char *dst,int dsta,
+  const struct store *store,
+  int (*cb)(char *dst,int dsta,const struct store *store)
+) {
+  // Skip the two length bytes.
+  int len=cb(dst+2,dsta-2,store);
+  if (len<0) return len;
+  if (len>0xfff) return -1; // Limit 4095 per heap; they all need considerably less than that.
+  if (dsta>=2) {
+    dst[0]=store_base64_alphabet[len>>6];
+    dst[1]=store_base64_alphabet[len&0x3f];
+  }
+  return 2+len;
+}
+
+/* Public: Decode to store.
  */
  
 int store_decode(struct store *store,const char *src,int srcc) {
-
-  /* Start by decoding TOC and validating checksum.
-   */
-  if (!store||!src) return -1;
+  if (!store) return -1;
+  if (!src) return -1;
   if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
-  struct store_toc toc={0};
-  if (store_toc_decode(&toc,src,srcc)<0) return -1;
-  if (toc.checksum_actual!=toc.checksum_expect) return -1;
-
-  /* Decode the five bespoke heaps, from TOC.
-   * Splitting these out just for cleanliness's sake.
-   */
-  if (store_decode_fldv(store,&toc)<0) return -1;
-  if (store_decode_fld16v(store,&toc)<0) return -1;
-  if (store_decode_clockv(store,&toc)<0) return -1;
-  if (store_decode_jigstorev(store,&toc)<0) return -1;
-  if (store_decode_invstorev(store,&toc)<0) return -1;
+  if ((srcc<1)||(src[0]!='/')) return -1; // Signature.
+  int srcp=1,err;
+  
+  if ((err=store_decode_heap(store,src+srcp,srcc-srcp,store_decode_fldv))<0) return -1; srcp+=err;
+  if ((err=store_decode_heap(store,src+srcp,srcc-srcp,store_decode_fld16v))<0) return -1; srcp+=err;
+  if ((err=store_decode_heap(store,src+srcp,srcc-srcp,store_decode_clockv))<0) return -1; srcp+=err;
+  if ((err=store_decode_heap(store,src+srcp,srcc-srcp,store_decode_jigstorev))<0) return -1; srcp+=err;
+  if ((err=store_decode_heap(store,src+srcp,srcc-srcp,store_decode_invstorev))<0) return -1; srcp+=err;
+  
+  if (srcp!=srcc-5) return -1;
+  int expect=store_decode_30bit(src+srcp,srcc-srcp);
+  int actual=store_checksum(src,srcp);
+  if (expect!=actual) return -1;
   
   return 0;
 }
 
-/* Encode, no globals.
+/* Public: Encode store.
  */
- 
+
 int store_encode(char *dst,int dsta,const struct store *store) {
+  if (!dst||(dsta<0)) dsta=0;
+  if (!store) return -1;
   int dstc=0,err;
   
-  int fldc_encoded=((store->fldc<<3)+5)/6;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fldc_encoded);
+  if (dstc<dsta) dst[dstc]='/';
+  dstc++;
   
-  int fld16c=store->fld16c;
-  while (fld16c&&!store->fld16v[fld16c-1]) fld16c--;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,fld16c);
+  if ((err=store_encode_heap(dst+dstc,dsta-dstc,store,store_encode_fldv))<0) return -1; dstc+=err;
+  if ((err=store_encode_heap(dst+dstc,dsta-dstc,store,store_encode_fld16v))<0) return -1; dstc+=err;
+  if ((err=store_encode_heap(dst+dstc,dsta-dstc,store,store_encode_clockv))<0) return -1; dstc+=err;
+  if ((err=store_encode_heap(dst+dstc,dsta-dstc,store,store_encode_jigstorev))<0) return -1; dstc+=err;
+  if ((err=store_encode_heap(dst+dstc,dsta-dstc,store,store_encode_invstorev))<0) return -1; dstc+=err;
   
-  int clockc=store->clockc;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,clockc);
-  
-  int jigstorec=store->jigstorec;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,jigstorec);
-  
-  int invstorec=INVSTORE_SIZE;
-  while (invstorec&&!store->invstorev[invstorec-1].itemid) invstorec--;
-  dstc+=store_encode_12bit(dst+dstc,dsta-dstc,invstorec);
-  
-  // fldv
-  const uint8_t *fldsrc=store->fldv;
-  int fldsrcc=store->fldc;
-  uint8_t fldsrcmask=0x01;
-  int i=fldc_encoded;
-  for (;i-->0;) {
-    int v=0,j=6,vmask=0x01;
-    for (;j-->0;vmask<<=1) {
-      if (fldsrcc<=0) break;
-      if ((*fldsrc)&fldsrcmask) v|=vmask;
-      if (fldsrcmask==0x80) {
-        fldsrc++;
-        fldsrcc--;
-        fldsrcmask=0x01;
-      } else {
-        fldsrcmask<<=1;
-      }
-    }
-    if (dstc<dsta) dst[dstc]=store_base64_alphabet[v];
-    dstc++;
+  int checksum=0;
+  if (dstc<=dsta-5) {
+    checksum=store_checksum(dst,dstc);
+    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,checksum);
+  } else {
+    dstc+=5;
   }
   
-  // fld16v
-  const uint16_t *src16=store->fld16v;
-  for (i=fld16c;i-->0;src16++) {
-    dstc+=store_encode_18bit(dst+dstc,dsta-dstc,*src16);
-  }
-  
-  // clockv
-  const double *srcd=store->clockv;
-  for (i=clockc;i-->0;srcd++) {
-    int v=(int)((*srcd)*1000.0);
-    if (v&~0x3fffffff) v=0x3fffffff; // Going over in a single session would take 37 days. If it happens, they get what they deserve.
-    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
-  }
-  
-  // jigstorev
-  const struct jigstore *jigstore=store->jigstorev;
-  for (i=jigstorec;i-->0;jigstore++) {
-    int v=(jigstore->mapid<<19)|(jigstore->x<<11)|(jigstore->y<<3)|jigstore->xform;
-    dstc+=store_encode_30bit(dst+dstc,dsta-dstc,v);
-  }
-  
-  // invstorev
-  dstc+=store_encode_base64(dst+dstc,dsta-dstc,(uint8_t*)store->invstorev,invstorec*3);
-  
-  // checksum
-  int sum=0;
-  if (dstc<=dsta) sum=store_checksum(dst,dstc);
-  dstc+=store_encode_30bit(dst+dstc,dsta-dstc,sum);
-  
+  if (dstc<dsta) dst[dstc]=0;
   return dstc;
 }

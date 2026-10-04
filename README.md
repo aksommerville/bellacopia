@@ -56,7 +56,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Try a more compact encoding for jigpiece that takes advantage of assembled pieces.
 - - Picturing, you have one 5-byte unit with mapid=0, and its 19 remaining bits say "plus so many sequential maps in the obvious places" and "plus so many 2-byte mapid in the obvious places".
 - - Those "obvious places" maps are jigpieces connected to the previous one.
-- [ ] New save encoding in game.
+- [x] New save encoding in game.
 - [ ] New save encoding in editor.
 - [ ] Eliminate random no-fish. Fishing should only fail when you've exhausted it.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
