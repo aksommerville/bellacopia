@@ -4,7 +4,7 @@ struct g g={0};
 
 /* Constructed artificially; a saved game with every heap empty.
  */
-const const char *empty_save="AAAAAAAAAAAAPw/";
+static const char *empty_save="AAAAAAAAAAAAPw/";
 
 /* A saved game with no progress and like 5 seconds on the clock.
  */
