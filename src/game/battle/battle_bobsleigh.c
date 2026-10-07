@@ -410,6 +410,19 @@ static void bobsleigh_bounce_wall(struct battle *battle,struct player *player,do
   if (proj>=10.0) bm_sound_pan(RID_sound_bump,player->who?PLAYER_PAN:-PLAYER_PAN);
 }
 
+/* Am I inside this leg?
+ */
+ 
+static int player_within_leg(const struct battle *battle,const struct player *player,const struct leg *back,const struct leg *fore) {
+  #define CP(ax,ay,bx,by) ((player->x-ax)*(by-ay)-(player->y-ay)*(bx-ax))
+  if (CP(fore->lx,fore->ly,back->lx,back->ly)>0.0) return 0;
+  if (CP(back->lx,back->ly,back->rx,back->ry)>0.0) return 0;
+  if (CP(back->rx,back->ry,fore->rx,fore->ry)>0.0) return 0;
+  if (CP(fore->rx,fore->ry,fore->lx,fore->ly)>0.0) return 0;
+  #undef CP
+  return 1;
+}
+
 /* Update all players, after specific controller.
  */
  
@@ -440,30 +453,36 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     }
   }
   
+  /* Determine which leg is in play.
+   * We are inside some quadrilateral bounded by leg's (l,r); our (legp) should name the index of the forward leg.
+   * At first we were doing this incrementally and only checking one leg at a time, until our scalar projection overruns it.
+   * But that's inadequate, around tight corners.
+   * Instead burn some CPU and get a more definite answer.
+   */
+  int i=1,ok=0;
+  struct leg *leg=BATTLE->legv+i;
+  for (;i<BATTLE->legc;i++,leg++) {
+    if (player_within_leg(battle,player,leg-1,leg)) {
+      ok=1;
+      if (i!=player->legp) {
+        player->legp=i;
+      }
+      break;
+    }
+  }
+  
+  /* Did we cross the finish line?
+   */
+  if (!player->finished&&(player->legp>=BATTLE->legc-1)) {
+    player->finished=1;
+    bm_sound_pan(RID_sound_treasure,player->who?PLAYER_PAN:-PLAYER_PAN);
+    if (BATTLE->playclock>5.0) BATTLE->playclock=5.0;
+  }
+  
   /* Accelerate per focussed leg.
-   * When our projection on that leg exceeds 1, step to the next leg. But clamp at the end of the track.
    */
   if ((player->legp>=0)&&(player->legp<BATTLE->legc)) {
     const struct leg *leg=BATTLE->legv+player->legp;
-    if (player->legp>0) {
-      const struct leg *prev=leg-1;
-      double proj=((player->x-prev->guidex)*(leg->guidex-prev->guidex)+(player->y-prev->guidey)*(leg->guidey-prev->guidey))/leg->len;
-      if (proj>=leg->len) {
-        player->legp++;
-        if (player->legp>=BATTLE->legc-1) {
-          player->legp=BATTLE->legc-1;
-          if (!player->finished) {
-            player->finished=1;
-            bm_sound_pan(RID_sound_treasure,player->who?PLAYER_PAN:-PLAYER_PAN);
-            if (BATTLE->playclock>5.0) BATTLE->playclock=5.0;
-          }
-        }
-        leg=BATTLE->legv+player->legp;
-      } else if (proj<0.0) { // Totally possible to bounce backward to a previous leg.
-        if (player->legp>1) player->legp--;
-        leg=BATTLE->legv+player->legp;
-      }
-    }
     const double accel=10.0;
     player->dx+=leg->nx*elapsed*accel;
     player->dy+=leg->ny*elapsed*accel;

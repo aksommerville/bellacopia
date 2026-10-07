@@ -109,7 +109,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] We made `flammable` cells but haven't used yet. Block some regions such that you have to bomb thru. Maybe the Wishing Well?
 
 - Battle repairs.
-- [ ] bobsleigh: I crossed the finish line once and it just didn't register.
+- [x] bobsleigh: I crossed the finish line once and it just didn't register.
+- - [x] Repro. Log the random seed and full input reports, then play until it happens.
+- - - 0x4d18642c : Can't swear it's the same underlying problem, but on this one I bounced back and ended up stuck.
+- - - ...yep no need to script the input, and this is the same problem. Play it naturally, try to win, it gets some kind of screwed-up every time.
+- - - There's a sharp turn where you'll always hit the wall and I think bounce back into range of the previous segment.
+- - - Yes it seems pretty obvious that it's trying to pull me along the next line, but I'm backward enough that that just bonks me into a wall.
+- - [x] Play a hundred times for confirmation. ...40 but ok, i'm confident we're better off now.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
