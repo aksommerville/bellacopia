@@ -9,6 +9,7 @@ import { SharedSymbols } from "../js/SharedSymbols.js";
 import { MapService } from "../js/map/MapService.js";
 import { EditSaveInventoryModal } from "./EditSaveInventoryModal.js";
 import { EditSaveJigsawModal } from "./EditSaveJigsawModal.js";
+import { SavedGame } from "./SavedGame.js";
 
 export class EditSaveModal {
   static getDependencies() {
@@ -27,6 +28,7 @@ export class EditSaveModal {
     this.fileName = "bellacopia.save";
     this.rawTextDirty = false;
     this.contentDirty = false;
+    this.savedGame = null;
     
     this.sharedSymbols.whenLoaded().then(() => {
       this.buildUi();
@@ -43,7 +45,6 @@ export class EditSaveModal {
     this.dom.spawn(topRow, "INPUT", { type: "file", "on-change": e => this.onFile(e) });
     this.dom.spawn(topRow, "INPUT", { type: "button", value: "Save...", "on-click": () => this.onSave() });
     this.dom.spawn(topRow, "INPUT", { type: "button", value: "Clear", "on-click": () => this.onClear() });
-    this.dom.spawn(topRow, "INPUT", { type: "button", value: "Full", "on-click": () => this.onFull() });
     
     /* rawText and content dirty each other, not themselves.
      * "dirty" means that section is out of date and needs to be regenerated from the other section.
@@ -248,209 +249,9 @@ export class EditSaveModal {
     return src;
   }
   
-  /* Produce a live model, which we only use transiently, when populating the loose fields from the raw text.
-   * Format is defined in src/game/store.h, and I'll summarize here.
-   * The whole thing is Base64, but you have to decode it in little bits.
-   * Starts with 10 bytes of TOC. Each entry is 2 digits, ie 0..0xfff, and the meaning of each count is different per store.
-   *  - fldv: len=bytes decoded (multiple of 3). Straight Base64, and length must align to a block.
-   *  - fld16v: len=fields. Three encoded bytes each, big-endian, the 2 high bits of each must be zero.
-   *  - clockv: len=fields. Five encoded bytes each, big-endian, ms. Holds about 298 hours each.
-   *  - jigstorev: len=records. Five encoded bytes each, split big-endianly: 11 mapid, 8 x, 8 y, 3 xform.
-   *  - invstorev: len=records. Four encoded bytes each: itemid,limit,quantity. ie straight base64 of the whole (invstorev).
-   */
-  modelFromText(src) {
-    src = src.trim();
-    const model = {
-      fld: [], // Zero or one, index is id.
-      fld16: [], // 0..0xffff, index is id.
-      clock: [], // Integer ms, index is id.
-      jigstore: [], // {mapid,x,y,xform}. Indexed preserved but not really meaningful. (it's the display order at runtime)
-      invstore: [], // {itemid,limit,quantity}. Indexed by runtime invstore position 0..25. [0] is the equipped item.
-    };
-    if (src?.length >= 10) {
-      const b64 = (p, c) => {
-        let v = 0;
-        for (; c-->0; p++) {
-          let digit = src.charCodeAt(p);
-               if ((digit >= 0x41) && (digit <= 0x5a)) digit = digit - 0x41;
-          else if ((digit >= 0x61) && (digit <= 0x7a)) digit = digit - 0x61 + 26;
-          else if ((digit >= 0x30) && (digit <= 0x39)) digit = digit - 0x30 + 52;
-          else if (digit === 0x2b) digit = 62;
-          else if (digit === 0x2f) digit = 63;
-          else throw new Error(`Illegal byte ${digit} in Base64-encoded saved game.`);
-          v <<= 6;
-          v |= digit;
-        }
-        return v;
-      };
-      
-      // TOC
-      let fldc = b64(0, 2);
-      const fld16c = b64(2, 2);
-      const clockc = b64(4, 2);
-      const jigstorec = b64(6, 2);
-      const invstorec = b64(8, 2);
-      let srcp = 10;
-      
-      // fld
-      if (srcp > src.length - fldc) throw new Error(`fld overrun`);
-      for (let i=fldc; i-->0; ) {
-        const v = b64(srcp, 1);
-        srcp += 1;
-        for (let mask=1; mask<0x40; mask<<=1) {
-          model.fld.push((v & mask) ? 1 : 0);
-        }
-      }
-      
-      // fld16
-      if (srcp > src.length - fld16c * 3) throw new Error(`fld16 overrun`);
-      for (let i=fld16c; i-->0; ) {
-        const v = b64(srcp, 3);
-        srcp += 3;
-        if (v & ~0xffff) throw new Error(`invalid fld16: ${v}`);
-        model.fld16.push(v);
-      }
-      
-      // clock
-      if (srcp > src.length - clockc * 5) throw new Error(`clock overrun`);
-      for (let i=clockc; i-->0; ) {
-        const v = b64(srcp, 5);
-        srcp += 5;
-        model.clock.push(v);
-      }
-      
-      // jigstore
-      if (srcp > src.length - jigstorec * 5) throw new Error(`jigstore overrun`);
-      for (let i=jigstorec; i-->0; ) {
-        const v = b64(srcp, 5);
-        srcp += 5;
-        const mapid = v >> 19;
-        const x = (v >> 11) & 0xff;
-        const y = (v >> 3) & 0xff;
-        const xform = v & 0x7;
-        model.jigstore.push({ mapid, x, y, xform });
-      }
-      
-      // invstore
-      if (srcp > src.length - invstorec * 4) throw new Error(`invstore overrun`);
-      for (let i=invstorec; i-->0; ) {
-        const v = b64(srcp, 4);
-        srcp += 4;
-        const itemid = v >> 16;
-        const limit = (v >> 8) & 0xff;
-        const quantity = v & 0xff;
-        model.invstore.push({ itemid, limit, quantity });
-      }
-      
-      // checksum and length
-      if (srcp !== src.length - 5) {
-        console.warn(`Unexpected final position ${srcp} of ${src.length}. Skipping checksum.`);
-      } else {
-        const declared = b64(srcp, 5);
-        let actual = 0;
-        for (let i=0; i<srcp; i++) {
-          actual = (actual >>> 31) | (actual << 1);
-          actual ^= src.charCodeAt(i);
-        }
-        actual &= 0x3fffffff;
-        if (actual !== declared) {
-          console.warn(`Checksum mismatch. Actual = ${actual}, declared = ${declared}. Proceeding anyway.`);
-        }
-        srcp += 5;
-      }
-    }
-    return model;
-  }
-  
-  /* Produce text from a model pulled off the UI.
-   */
-  textFromModel(model) {
-  
-    /* Determine minimal TOC.
-     */
-    let fldc = model.fld.length;
-    while (fldc && !model.fld[fldc-1]) fldc--;
-    const fldc_encoded = Math.ceil(fldc / 6);
-    let fld16c = model.fld16.length;
-    while (fld16c && !model.fld16[fld16c-1]) fld16c--;
-    let clockc = model.clock.length;
-    while (clockc && !model.clock[clockc-1]) clockc--;
-    let jigc = model.jigstore.length;
-    while (jigc && !model.jigstore[jigc-1].mapid) jigc--;
-    let invc = model.invstore.length;
-    while (invc && !model.invstore[invc-1].itemid) invc--;
-    
-    /* Allocate output buffer and emit TOC.
-     */
-    const total = 10 + fldc_encoded + fld16c * 3 + clockc * 5 + jigc * 5 + invc * 4 + 5;
-    const dst = new Uint8Array(total);
-    let dstc = 0;
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split("").map(v => v.charCodeAt(0));
-    const b64 = (c, v) => { // c in 1..5
-      for (let i=c; i-->0; v>>=6) {
-        dst[dstc + i] = alphabet[v & 0x3f];
-      }
-      dstc += c;
-    };
-    b64(2, fldc_encoded);
-    b64(2, fld16c);
-    b64(2, clockc);
-    b64(2, jigc);
-    b64(2, invc);
-    
-    /* Encode the payloads.
-     */
-    for (let i=fldc_encoded, fldp=0; i-->0; ) {
-      let v = 0;
-      for (let shift=0; shift<6; shift++) {
-        v |= model.fld[fldp++] << shift;
-      }
-      dst[dstc++] = alphabet[v];
-    }
-    for (let i=0; i<fld16c; i++) {
-      b64(3, model.fld16[i]);
-    }
-    for (let i=0; i<clockc; i++) {
-      b64(5, model.clock[i]);
-    }
-    for (let i=0; i<jigc; i++) {
-      const j = model.jigstore[i];
-      const v = (j.mapid << 19) | (j.x << 11) | (j.y << 3) | j.xform;
-      b64(5, v);
-    }
-    for (let i=0; i<invc; i++) {
-      const inv = model.invstore[i];
-      const v = (inv.itemid << 16) | (inv.limit << 8) | inv.quantity;
-      b64(4, v);
-    }
-    
-    /* Checksum across the encoded content produced so far.
-     */
-    let sum = 0;
-    for (let i=0; i<dstc; i++) {
-      sum = (sum >>> 31) | (sum << 1);
-      sum ^= dst[i];
-    }
-    sum &= 0x3fffffff;
-    b64(5, sum);
-    
-    /* Assert length, then encode to a string.
-     */
-    if (dstc !== total) {
-      throw new Error(`Encoding failed. Expected ${total} bytes but produced ${dstc}`);
-    }
-    const decoder = new this.window.TextDecoder("utf8");
-    return decoder.decode(dst);
-  }
-  
   textFromContentUi() {
-    const model = {
-      fld: [], // Zero or one, index is id.
-      fld16: [], // 0..0xffff, index is id.
-      clock: [], // Integer ms, index is id.
-      jigstore: [], // {mapid,x,y,xform}. Indexed preserved but not really meaningful. (it's the display order at runtime)
-      invstore: [], // {itemid,limit,quantity}. Indexed by runtime invstore position 0..25. [0] is the equipped item.
-    };
+    this.mapService.requireLayout();
+    const model = new SavedGame(null);
     for (const input of this.element.querySelectorAll(`.content input`)) {
       switch (input.getAttribute("data-store")) {
         case "fld": if (input.checked) {
@@ -466,7 +267,7 @@ export class EditSaveModal {
         case "clock": if (+input.value) {
             const p = +input.getAttribute("data-index") || 0;
             while (model.clock.length <= p) model.clock.push(0);
-            model.clock[p] = +input.value; //TODO eval?
+            model.clock[p] = +input.value;
           } break;
         case "jigstore": {
             model.jigstore = JSON.parse(input.getAttribute("data-json"));
@@ -477,12 +278,13 @@ export class EditSaveModal {
         default: console.log(`unknown store for input`, input);
       }
     }
-    return this.textFromModel(model);
+    return model.sortJigstore().packJigstore(this.mapService).encode();
   }
   
   populateContentFromText() {
+    this.mapService.requireLayout();
     const text = this.element.querySelector("textarea[name='rawText']").value;
-    const model = this.modelFromText(text);
+    const model = new SavedGame(text).unpackJigstore(this.mapService);
     for (const input of this.element.querySelectorAll(`.content input`)) {
       switch (input.getAttribute("data-store")) {
         case "fld": {
@@ -496,7 +298,7 @@ export class EditSaveModal {
             input.value = model.fld16[+input.getAttribute("data-index")] || "";
           } break;
         case "clock": {
-            input.value = model.clock[+input.getAttribute("data-index")] || "";//TODO repr?
+            input.value = model.clock[+input.getAttribute("data-index")] || "";
           } break;
         // We probably shouldn't have bothered decoding jigstore and invstore. They're going to be managed by other widgets.
         case "jigstore": {
@@ -534,10 +336,6 @@ export class EditSaveModal {
     rawText.value = "";
     this.onContentDirty({ target: rawText });
     this.forceClean();
-  }
-  
-  onFull() {
-    console.log(`EditSaveModal.onFull`);//TODO pretty subjective. Get the rest working first. Actually... What do we need this for?
   }
   
   onContentDirty() {

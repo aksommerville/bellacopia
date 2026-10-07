@@ -35,11 +35,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] How long does it take to complete the outerworld puzzle from nothing if you cheat for inventory?
-- - 23:53 in a quick and very suboptimal experiment. Need Broom, Hookshot, Shovel, Power Glove, Fishpole, Candy, Compass, Stick, Telescope, 20 gold.
-- - A few problematic pieces account for most of the trouble: Desert Root Devil, Fractia Root Devil, Temple Roof, South Jungle, Mountains Root Devil.
-- - What if we eliminate the 8 most troublesome? ...12:56. The Goat piece is still tricky. Had all but that (and a couple trivial misses), unassembled, in about 5 minutes.
-- - Don't propose completing jigsaws as a GDEX activity.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -53,11 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [x] Try a more compact encoding for jigpiece that takes advantage of assembled pieces.
-- - Picturing, you have one 5-byte unit with mapid=0, and its 19 remaining bits say "plus so many sequential maps in the obvious places" and "plus so many 2-byte mapid in the obvious places".
-- - Those "obvious places" maps are jigpieces connected to the previous one.
-- [x] New save encoding in game.
-- [ ] New save encoding in editor.
+- [x] New save encoding in editor.
 - [ ] Eliminate random no-fish. Fishing should only fail when you've exhausted it.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
 - [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
@@ -143,6 +134,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
 
 - TODO Punted items, assess closer to release.
+- [ ] Final credits. See notes below.
 - [ ] Finalize zoo and rsprite assignment, once all battles are written.
 - [ ] ^ also the kidnappers at `sprite_princess.c:princess_spawn_kidnapper()`
 - [ ] It might be a problem that we use aggregate input state in the outer world but `[1]` in one-player battles. Maybe mitigate that somehow during a one-player battle?
@@ -174,7 +166,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
 - - [x] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server. ...kioskcnc
-- - [ ] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
+- - [x] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
+- - - ...no need. The C&C server isn't going to work due to network driver problems. But we have an even better QR code generator embedded in game now.
 - - [x] Accept saved game from query param and prompt if there's conflict.
 - - - Saved game with 3 jigpieces and nothing else: AYAFACADAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAADAADAAAABjAAD1vAACNzAC7JgALFLAAJFJgWIYBp
 - - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.

@@ -495,6 +495,9 @@ static int store_encode_jigstorev(char *dst,int dsta,const struct store *store) 
     int namedc=0; // alsoc-sequentialc;
     if (namedc>=128) namedc=127;
     
+    // Of course it is entirely possible to reach this point and not need a repeat record. Carry on.
+    if (!sequentialc&&!namedc) continue;
+    
     // Emit a fake command with (sequentialc,namedc), and then the named mapids.
     dstc+=store_encode_30bit(dst+dstc,dsta-dstc,(sequentialc<<7)|namedc);
     int alsop=0;
@@ -547,6 +550,7 @@ static int store_encode_invstorev(char *dst,int dsta,const struct store *store) 
   int dstc=0;
   const struct invstore *invstore=store->invstorev;
   int i=INVSTORE_SIZE;
+  while ((i>0)&&!store->invstorev[i-1].itemid) i--; // No need to encode trailing empties.
   for (;i-->0;invstore++) {
     if ((invstore->itemid<63)&&!invstore->limit&&!invstore->quantity) {
       APPEND(invstore->itemid);
