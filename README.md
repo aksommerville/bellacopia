@@ -128,8 +128,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - - ...added auto-swing and sound:whack when you hit it. This might be ok now. I'm too familiar with it already to make that call myself tho.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
-- [ ] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.
-- [ ] rebounding: Don't use the crack sound. Make it as Atari as possible.
+- [x] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.
+- [x] rebounding: Don't use the crack sound. Make it as Atari as possible.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] shaking: Sound when the cork bounces.

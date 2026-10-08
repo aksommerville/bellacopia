@@ -208,7 +208,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void rebounding_score(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_collect,player->who?PLAYER_PAN:-PLAYER_PAN);
+  bm_sound_pan(RID_sound_pongscore,player->who?PLAYER_PAN:-PLAYER_PAN);
   const int thresh=(SCORE_COUNT>>1)+1;
   player->score++;
   if (player->score>=thresh) {
@@ -227,7 +227,7 @@ static void rebounding_score(struct battle *battle,struct player *player) {
  */
  
 static void rebounding_rebound(struct battle *battle,struct player *player) {
-  bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
+  bm_sound_pan(RID_sound_pongstrike,player->who?PLAYER_PAN:-PLAYER_PAN);
   
   /* Choose two new vectors.
    * "wild" is the perfect elastic collision, kind of boring. Extremely boring if you play a whole game of it.
@@ -299,8 +299,10 @@ static void _rebounding_update(struct battle *battle,double elapsed) {
     ((BATTLE->bally<=FLDT)&&(BATTLE->balldy<0.0))||
     ((BATTLE->bally>=FLDB)&&(BATTLE->balldy>0.0))
   ) {
-    bm_sound_pan(RID_sound_bump,0.0);
+    bm_sound_pan(RID_sound_pongbump,0.0);
     BATTLE->balldy=-BATTLE->balldy;
+    if (BATTLE->bally<FLDT) BATTLE->bally=FLDT;
+    else if (BATTLE->bally>FLDB) BATTLE->bally=FLDB;
   }
   
   // Check paddles on the one frame when we cross them.
@@ -350,6 +352,8 @@ static void _rebounding_render(struct battle *battle) {
   if (battle->outcome==-2) {
     int bx=lround(BATTLE->ballx-BATTLE->ballr);
     int by=lround(BATTLE->bally-BATTLE->ballr);
+    if (bx<FLDL) bx=FLDL; else if (bx>FLDR-2) bx=FLDR-2;
+    if (by<FLDT) by=FLDT; else if (by>FLDB-2) by=FLDB-2;
     graf_fill_rect(g_graf,bx,by,2,2,0x40ff60ff);
   }
   
