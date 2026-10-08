@@ -20,6 +20,8 @@ struct battle_shuffling {
     int who; // My index in this list.
     int human; // 0 for CPU, or the input index.
     double skill; // 0..1, reverse of each other.
+    int chid; // If nonzero, a channel on song 2 for our finger-pips against the deck.
+    int pipp;
     uint8_t deck[DECK_SIZE]; // Values 0..DECK_SIZE-1, starts with index as value.
     int cutp; // <0 initially. Otherwise index in (deck) of the first card of the second half.
     double p; // Radians, -pi..pi. Zero and pi are centered, ie ideal.
@@ -46,6 +48,7 @@ struct battle_shuffling {
  */
  
 static void _shuffling_del(struct battle *battle) {
+  egg_play_song(2,0,0,0.0,0.0);
 }
 
 /* Init player.
@@ -60,8 +63,10 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   player->xhand=player->xinner-40;
   if (player==BATTLE->playerv) { // Left.
     player->who=0;
+    player->chid=2;
   } else { // Right.
     player->who=1;
+    player->chid=3;
     player->xinner=FBW-player->xinner;
     player->xouter=FBW-player->xouter;
     player->xhand=FBW-player->xhand;
@@ -105,6 +110,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
  */
  
 static int _shuffling_init(struct battle *battle) {
+  egg_play_song(2,RID_song_chanting,1,1.0,0.0);
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
@@ -227,6 +233,15 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
 static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
   player->p+=player->dp*elapsed;
   if (player->p>M_PI) player->p-=M_PI*2.0;
+  
+  if ((player->cutp<0)&&player->chid) {
+    int np=(int)((sin(player->p)-1.0)*0.25*DECK_SIZE)+(DECK_SIZE>>1);
+    int noteid=0x20+((DECK_SIZE-np)*0x40)/DECK_SIZE;
+    if (noteid!=player->pipp) {
+      player->pipp=noteid;
+      egg_song_event_note_once(2,player->chid,noteid,0x40,0);
+    }
+  }
 }
 
 /* Update.

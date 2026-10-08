@@ -203,7 +203,10 @@ static int _slapping_init(struct battle *battle) {
  */
  
 static void player_update_man(struct battle *battle,struct player *player,double elapsed,int input,int pvinput) {
-  if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) player->slap=1;
+  if ((input&EGG_BTN_SOUTH)&&!(pvinput&EGG_BTN_SOUTH)) {
+    bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
+    player->slap=1;
+  }
 }
 
 /* Update CPU player.
@@ -212,6 +215,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
 static void player_update_cpu(struct battle *battle,struct player *player,double elapsed) {
   if (player->ready>0.0) {
     if ((player->ready-=elapsed)<=0.0) {
+      bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->slap=1;
     }
   } else if (BATTLE->deckp==player->slapp+2) { // +2 rather than +1 because (deckp) advances at the draw, not the landing
@@ -265,6 +269,7 @@ static void slapping_update_inflight(struct battle *battle,double elapsed) {
   if ((BATTLE->inflight.dx>0.0)&&(BATTLE->inflight.x<dstx)) return;
   
   // Add to (cardv).
+  bm_sound_pan(RID_sound_collect,0.0);
   BATTLE->cardv[BATTLE->cardp].cardid=BATTLE->inflight.cardid;
   BATTLE->cardv[BATTLE->cardp].rx=BATTLE->inflight.rx;
   BATTLE->cardv[BATTLE->cardp].ry=BATTLE->inflight.ry;

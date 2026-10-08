@@ -83,12 +83,12 @@ static struct player *player_add(struct battle *battle,int human,int face,int pa
   if (player->party=party) { // Right.
     player->skill=(double)battle->args.bias/255.0;
     player->dstx=(FBW*2)/3;
-    player->dsty=100;
+    player->dsty=120;
     player->xform=EGG_XFORM_XREV;
   } else { // Left.
     player->skill=1.0-(double)battle->args.bias/255.0;
     player->dstx=FBW/3;
-    player->dsty=100;
+    player->dsty=120;
   }
   
   player->human=human;
@@ -403,6 +403,7 @@ static void ballot_render(struct battle *battle,struct ballot *ballot) {
     double subt=1.0-t*2.0;
     y=peaky+(subt*subt)*(midy-peaky);
   }
+  y+=20;
   
   graf_tile(&g.graf,(int)x,(int)y,ballot->party?0x29:0x28,0);
 }
@@ -411,7 +412,9 @@ static void ballot_render(struct battle *battle,struct ballot *ballot) {
  */
  
 static void _election_render(struct battle *battle) {
-  graf_fill_rect(&g.graf,0,0,FBW,FBH,0x808080ff);
+  graf_set_image(&g.graf,RID_image_election);
+  graf_decal(&g.graf,0,0,64,64,160,180);
+  graf_decal_xform(&g.graf,159,0,64,64,160,180,EGG_XFORM_XREV); // Pull right right half left by 1 pixel so the 2-pixel stipple works out.
   
   /* Scoreboard.
    */
@@ -423,10 +426,11 @@ static void _election_render(struct battle *battle) {
   int scorey=20;
   int lw=(BATTLE->scorev[0]*scorew)/scorescale;
   int rw=(BATTLE->scorev[1]*scorew)/scorescale;
+  graf_fill_rect(&g.graf,scorex-1,scorey-1,scorew+2,scoreh+2,0x000000ff);
   graf_fill_rect(&g.graf,scorex,scorey,scorew,scoreh,0x606060ff);
   graf_fill_rect(&g.graf,scorex,scorey,lw,scoreh,0x411775ff);
   graf_fill_rect(&g.graf,scorex+scorew-rw,scorey,rw,scoreh,0xc76f15ff);
-  graf_fill_rect(&g.graf,FBW>>1,scorey,1,scoreh,0x80808080);
+  graf_fill_rect(&g.graf,FBW>>1,scorey,1,scoreh,0xffffff80);
   
   // Players.
   graf_set_image(&g.graf,RID_image_election);
@@ -437,10 +441,11 @@ static void _election_render(struct battle *battle) {
   }
   
   // Ballot box.
-  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1)+8,0x08,0);
-  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)-(NS_sys_tilesize>>1)+8,0x09,0);
-  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1)+8,0x18,0);
-  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),(FBH>>1)+(NS_sys_tilesize>>1)+8,0x19,0);
+  int bby=(FBH>>1)+20;
+  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),bby,0x08,0);
+  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),bby,0x09,0);
+  graf_tile(&g.graf,(FBW>>1)-(NS_sys_tilesize>>1),bby+NS_sys_tilesize,0x18,0);
+  graf_tile(&g.graf,(FBW>>1)+(NS_sys_tilesize>>1),bby+NS_sys_tilesize,0x19,0);
   
   // Ballots.
   struct ballot *ballot=BATTLE->ballotv;

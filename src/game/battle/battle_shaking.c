@@ -141,6 +141,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     if (player->indy!=player->arm) {
       player->arm=player->indy;
       player->strokec++;
+      bm_sound_pan((player->arm>0)?RID_sound_shakedown:RID_sound_shakeup,player->who?PLAYER_PAN:-PLAYER_PAN);
     }
   } else if (player->arm) {
     player->arm=0;
@@ -157,6 +158,7 @@ static void player_update_post(struct battle *battle,struct player *player,doubl
   player->cy+=player->cdy*elapsed;
   if (player->cy<player->peak) player->peak=player->cy;
   if (player->cy>=GROUNDY) {
+    bm_sound_pan(RID_sound_weebump,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->cy=GROUNDY;
     player->cdy*=-0.500;
     if (player->cdy>-10.0) player->done=1;

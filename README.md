@@ -35,6 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -48,7 +49,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [x] New save encoding in editor.
 - [ ] Eliminate random no-fish. Fishing should only fail when you've exhausted it.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
 - [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
@@ -63,7 +63,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 - Fill out maps.
 - [ ] Fractia
-- - [ ] Outer. BoE / City Hall signage, statue, litter...
 - - [ ] Thing Store
 - - [ ] Labor Union
 - - [ ] Athletes' Guild
@@ -109,32 +108,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] We made `flammable` cells but haven't used yet. Block some regions such that you have to bomb thru. Maybe the Wishing Well?
 
 - Battle repairs.
-- [x] bobsleigh: I crossed the finish line once and it just didn't register.
-- - [x] Repro. Log the random seed and full input reports, then play until it happens.
-- - - 0x4d18642c : Can't swear it's the same underlying problem, but on this one I bounced back and ended up stuck.
-- - - ...yep no need to script the input, and this is the same problem. Play it naturally, try to win, it gets some kind of screwed-up every time.
-- - - There's a sharp turn where you'll always hit the wall and I think bounce back into range of the previous segment.
-- - - Yes it seems pretty obvious that it's trying to pull me along the next line, but I'm backward enough that that just bonks me into a wall.
-- - [x] Play a hundred times for confirmation. ...40 but ok, i'm confident we're better off now.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [x] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
-- [x] cheating: Make the background graphics more casiny.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
-- [x] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
-- [x] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
-- [x] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.
-- [x] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
-- - ...added auto-swing and sound:whack when you hit it. This might be ok now. I'm too familiar with it already to make that call myself tho.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
-- [x] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.
-- [x] rebounding: Don't use the crack sound. Make it as Atari as possible.
 - [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
-- [ ] shaking: Sound when the cork bounces.
-- [ ] shuffling: Sound.
-- [ ] slapping: Sound.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
@@ -154,12 +134,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] When a zookeeper is complete, what if the animals appear fixed on his carpet and you can challenge them any time?
 - [ ] Need a venue to report broom race times. Status vellum is the obvious place, but it's already pretty crowded. Think it over, no hurry.
 - [ ] Review song and sound levels, right now they're pretty heterogenous.
-- [x] Should there be a visible indication where a buried treasure has already been collected?
 - [ ] `camera_warp()` updates the hero's position immediately, so she blinks out during the transition.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - - Do at least a machine-generated translation for Spanish and French. German? Portugese? Anything non-Latin is off the table alas.
-- [x] Check ladders in the outerworld, they probably all need some safe buffer. ...wrote that months ago and haven't felt the need yet. Let's call it OK.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.
@@ -170,21 +148,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Or we could sidestep the issue by allowing multiple save files. Consider it.
 - [ ] Review accessibility once all battles are complete. Rhythm games should be possible without audio, color-based games should work for the colorblind, etc.
 - [ ] Remove Debug Mode, or have it require a launch parameter or something. (it's ok if players get into it, just i don't want to present it as a recommendation)
-
-- GDEX prep. If we don't get to the Beta Test stuff below, at least get this much done.
-- - [x] Separate process to run on consoles. Scan for saved games and deliver them to our local C&C server. ...kioskcnc
-- - [x] Web app on C&C server to compose emails with saved-game links. So I can hit that from my phone, then email to the player on demand.
-- - - ...no need. The C&C server isn't going to work due to network driver problems. But we have an even better QR code generator embedded in game now.
-- - [x] Accept saved game from query param and prompt if there's conflict.
-- - - Saved game with 3 jigpieces and nothing else: AYAFACADAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAADAADAAAABjAAD1vAACNzAC7JgALFLAAJFJgWIYBp
-- - [x] Option to log to a file. (in Egg or Romassist). Added `make run-log` to ra3. Dumps to a text file at the ra3 root.
-- - [x] We might be able to do this entirely within the game! An option at Hello like "Generate Saved Game Link" that displays a QR code for the player to scan.
-- - - Version 40 QR codes hold 1852 chars of text, and require 177x177 pixels -- just barely within our framebuffer height.
-- - - https://en.wikipedia.org/wiki/QR_code
-- - [x] What is the actual upper bound on saved game length? Jigpieces and invstore are final, and the rest we can assume maybe 20% growth.
-- - - `10 + ceil(fldc/6) + fld16c*3 + clockc*5 + jigstorec*5 + 26*4 + 5`
-- - - `10 + ceil(307/6) + 42*3 + 5*5 + 302*5 + 26*4 + 5 = 1832`
-- - - 1832: Cuts it really close. 1510 of that is jigstore. We need to compress these.
 
 - Beta test. Aim to have this underway before GDEX.
 - - [ ] Automated system in-app to gather a log.
@@ -217,10 +180,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Every battle plays sensibly in arcade mode.
 - [ ] Validate Ice Palace wall manually. It has lots of awkward cross-map edges, and I'm probably going to break them when adding details.
 
-- Promo merch. Plan to order all by early July, well in advance of Matsuricon and GDEX.
-- GDEX being in mid-October, let's set a drop-dead date of 6 September. Order things by then or don't order.
-- ^ Not written in stone. We're probably not going to be released by GDEX 2026, probably will be showing it again in 2027.
-- - [x] Pins, buttons, stickers.
+- Promo merch. No particular timeline for ordering, just make sure we have plenty of stuff before any cons.
 - - [ ] Homemade stuffed witches, if I can work that out.
 - - - There are mail-order companies that do this, eg customplushmaker.com. Long lead times (~90 days), and I don't know about pricing.
 - - - ^ prefer bearsforhumanity.com
@@ -246,14 +206,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Book of Cheating. Maybe a digital edition?
 - - [ ] Big banners, the kind that roll up into a case.
 - - - $130 at bannerbuzz.com.
-- - [x] Sticker sheet with mix-n-match heads and hats. Sticker Mule does these. ...ordered (these 4 things) 2026-06-27
-- - - `title_vines_padded-5923px.png`: 3x2" sticker
-- - - `mixnmatch-master.png`: 4x6" sticker sheet
-- - - `pin-tree-256px.png`: Acrylic pin
-- - - `button_fishing-444px.png`: Button
-- - [x] T-shirts with a silhouette of Dot reading to a tree and its roots spell out Bellacopia Maleficia. ...ordered 2026-06-27
-- - [x] In-person fishing contest. Make little fishpoles with a clothespin at the end and a big occluding sea.
-- - - [x] Made the fishpoles, they're hilarious, and I have a blue posterboard, just need to figure out how to stand it up.
 
 ## Quests and Prizes
 
