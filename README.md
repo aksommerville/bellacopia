@@ -123,8 +123,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [x] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
-- [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
-- [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.
+- [x] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
+- [x] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.
 - [ ] racketeering: Badly needs more juice when you hit the ball. Consider dropping or rewriting altogether; players are really struggling with the perspective thing.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] rebounding: Ball can slip thru at the corner. I've seen it happen multiple times.

@@ -21,7 +21,7 @@
 
 #define CHARGE_PENALTY      0.250 /* s. Added to charge clock for an out-of-sequence stroke. */
 #define CHARGE_INTERVAL_MAX 0.500 /* s. So long between strokes and we lose charge. More rhythm cadence than karate-chop cadence. */
-#define CHARGE_MAX          1.250 /* The extent above 1.0 is a buffer against momentary loss. */
+#define CHARGE_MAX          2.000 /* The extent above 1.0 is a buffer against momentary loss. */
 #define CPU_STROKE_INTERVAL 0.120 /* s */
 #define CAT_SPEED_MIN 3.0 /* m/s */
 #define CAT_SPEED_MAX 6.0 /* m/s */
@@ -42,6 +42,7 @@ struct sprite_man {
   struct batsup_sprite hdr;
   int human; // player id or zero for cpu control
   int btnid_next;
+  int blackout;
   double chargeclock; // Counts up and zeroes at each valid stroke.
   double charge; // >=1 if effective.
   double catspeed;
@@ -63,6 +64,7 @@ struct sprite_cat {
   int mindcontrolled;
   int has_apple;
   int walking;
+  double q; // Signal strength 0..1 (NB unlike man->charge, we have a hard ceiling of 1)
 };
 
 /* Receive keystroke for a man.
@@ -91,6 +93,7 @@ static void sprite_man_dpad(struct batsup_sprite *sprite,int dx,int dy,double el
   }
   if (!cat) return;
   struct sprite_cat *CAT=(struct sprite_cat*)cat;
+  CAT->q=SPRITE->charge/CHARGE_MAX;
   
   if (SPRITE->charge<1.0) {
     CAT->mindcontrolled=0;
@@ -129,8 +132,12 @@ static void sprite_update_man(struct batsup_sprite *sprite,double elapsed) {
   struct sprite_man *SPRITE=(struct sprite_man*)sprite;
   sprite_man_update_charge(sprite,elapsed);
   
-  if ((g_input[SPRITE->human]&EGG_BTN_SOUTH)&&!(g_pvinput[SPRITE->human]&EGG_BTN_SOUTH)) sprite_man_stroke(sprite,EGG_BTN_SOUTH);
-  if ((g_input[SPRITE->human]&EGG_BTN_WEST)&&!(g_pvinput[SPRITE->human]&EGG_BTN_WEST)) sprite_man_stroke(sprite,EGG_BTN_WEST);
+  if (SPRITE->blackout) {
+    if (!(g_input[SPRITE->human]&(EGG_BTN_SOUTH|EGG_BTN_WEST))) SPRITE->blackout=0;
+  } else {
+    if ((g_input[SPRITE->human]&EGG_BTN_SOUTH)&&!(g_pvinput[SPRITE->human]&EGG_BTN_SOUTH)) sprite_man_stroke(sprite,EGG_BTN_SOUTH);
+    if ((g_input[SPRITE->human]&EGG_BTN_WEST)&&!(g_pvinput[SPRITE->human]&EGG_BTN_WEST)) sprite_man_stroke(sprite,EGG_BTN_WEST);
+  }
   int dx=0,dy=0;
   switch (g_input[SPRITE->human]&(EGG_BTN_LEFT|EGG_BTN_RIGHT)) {
     case EGG_BTN_LEFT: dx=-1; break;
@@ -296,7 +303,6 @@ static void sprite_update_cat(struct batsup_sprite *sprite,double elapsed) {
     SPRITE->walking=0;
   } else {
     SPRITE->has_apple=0;
-    //TODO Drunk walk?
   }
   
   // Collect or deliver apple.
@@ -328,6 +334,7 @@ static void sprite_update_cat(struct batsup_sprite *sprite,double elapsed) {
 
 /* Render cat.
  * It's the generic render, plus one overlay tile if we have the apple.
+ * Plus a continuous charge meter.
  */
  
 static void sprite_render_cat(struct batsup_sprite *sprite,int dstx,int dsty) {
@@ -337,6 +344,16 @@ static void sprite_render_cat(struct batsup_sprite *sprite,int dstx,int dsty) {
   if (SPRITE->has_apple) {
     graf_tile(g_graf,dstx,dsty,0xb6,sprite->xform);
   }
+  
+  int bary=dsty-10;
+  int barh=1;
+  int barw=NS_sys_tilesize;
+  int fillw=(int)(SPRITE->q*barw);
+  if (fillw<0) fillw=0; else if (fillw>barw) fillw=barw;
+  uint32_t barcolor=SPRITE->mindcontrolled?0x00ff00ff:0xff8000ff;
+  int barx=dstx-(barw>>1);
+  graf_fill_rect(g_graf,barx,bary,barw,barh,0x000000ff);
+  graf_fill_rect(g_graf,barx,bary,fillw,barh,barcolor);
 }
 
 /* Delete.
@@ -543,6 +560,7 @@ static int _mindcontrol_init(struct battle *battle) {
                 sprite->render=sprite_render_man;
                 if (battle->args.lctl) sprite->update=sprite_update_man;
                 else sprite->update=sprite_update_cpu;
+                SPRITE->blackout=1;
                 SPRITE->human=battle->args.lctl;
                 sprite->x=cmd.arg[0]+0.5;
                 sprite->y=cmd.arg[1]+0.5;
@@ -553,6 +571,7 @@ static int _mindcontrol_init(struct battle *battle) {
                 SPRITE->restmin=(0xff-battle->args.bias)/255.0;
                 SPRITE->restmin=SPRITE->restmin*REST_TIME_MIN+(1.0-SPRITE->restmin)*REST_TIME_MAX;
                 SPRITE->restmax=SPRITE->restmin*1.500;
+                SPRITE->chargeclock=CHARGE_INTERVAL_MAX;
               } break;
 
             case SPRITEID_RMAN: {
@@ -573,6 +592,7 @@ static int _mindcontrol_init(struct battle *battle) {
                 SPRITE->restmin=battle->args.bias/255.0;
                 SPRITE->restmin=SPRITE->restmin*REST_TIME_MIN+(1.0-SPRITE->restmin)*REST_TIME_MAX;
                 SPRITE->restmax=SPRITE->restmin*1.500;
+                SPRITE->chargeclock=CHARGE_INTERVAL_MAX;
               } break;
 
             case SPRITEID_LCAT: {

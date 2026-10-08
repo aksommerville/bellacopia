@@ -24,6 +24,7 @@
 #define MESSAGE_LIMIT 32
 #define SIGNAL_LIMIT 256
 #define OUTPUT_LIMIT 64
+#define MISTAKE_LIMIT 16
 
 /* From the diagram of International Morse Code found at https://en.wikipedia.org/wiki/Morse_code
  */
@@ -84,11 +85,13 @@ struct battle_morsecode {
     int blackout;
     
     // For CPU:
-    double beatlen; // Const, established at init.
+    double beatlenlo,beatlenhi; // Const, established at init.
     double beatclock; // Counts down to the next state change.
     int holdc; // Retain current state for so many beats. Counts down.
     const char *glyph; // [.-]+, what we're encoding next. Head advances, NUL terminated.
     int messagep; // Next thing to glyph up.
+    int mistakev[MISTAKE_LIMIT]; // Positions in (message) that we will deliberately misencode, sorted ascending.
+    int mistakec,mistakep;
   } playerv[2];
 };
 
@@ -121,12 +124,17 @@ static int player_init(struct battle *battle,struct player *player,int human,int
   if (player->human=human) { // Human.
     player->blackout=1;
   } else { // CPU.
-    player->beatlen=0.200; // Painfully slow but for one like myself that doesn't even know Morse code, it's actually pretty hard to beat this.
+    double beatlen=0.200; // Painfully slow but for one like myself that doesn't even know Morse code*, it's actually pretty hard to beat this.
+    // [*] Update: Well actually, I'd say I do know it now. This was fun!
     double adjust=((rand()&0xffff)/65535.0);
     adjust=0.900*adjust+1.100*(1.0-adjust);
-    player->beatlen*=adjust; // +- 10% just to keep it spicy.
-    player->beatclock=1.000+player->beatlen; // Some initial delay.
+    beatlen*=adjust; // +- 10% just to keep it spicy.
+    adjust=1.250*(1.0-player->skill)+1.050*player->skill; // And then a per-beat randomization range based on skill. Again, mostly for aesthetic purposes.
+    player->beatlenlo=beatlen/adjust;
+    player->beatlenhi=beatlen*adjust;
+    player->beatclock=1.000+player->beatlenhi; // Some initial delay.
     player->glyph=""; // Must not be null, ever.
+    // Message is not established yet, so we leave (mistakec) at zero.
   }
   switch (face) {
     case NS_face_monster: {
@@ -155,6 +163,10 @@ static int player_init(struct battle *battle,struct player *player,int human,int
 /* Set message in player.
  */
  
+static int intcmp(const void *a,const void *b) {
+  return (*(int*)a)-(*(int*)b);
+}
+ 
 static int player_set_message(struct battle *battle,struct player *player,int strix) {
   const char *src;
   int srcc=text_get_string(&src,RID_strings_battle,strix);
@@ -174,6 +186,34 @@ static int player_set_message(struct battle *battle,struct player *player,int st
     fprintf(stderr,"morsecode invalid character '%c' 0x%02x in string %d\n",*src,(uint8_t)(*src),strix);
     return -1;
   }
+  
+  /* If we're a CPU player, rebuild (mistakev).
+   */
+  player->mistakec=0;
+  player->mistakep=0;
+  if (!player->human) {
+    double clo=1.0;
+    double chi=player->messagec*0.333;
+    int mistakec=(int)(player->skill*clo+(1.0-player->skill)*chi);
+    if (mistakec<1) mistakec=1;
+    else if (mistakec>MISTAKE_LIMIT) mistakec=MISTAKE_LIMIT;
+    if (mistakec>player->messagec) mistakec=player->messagec;
+    int candidatev[MESSAGE_LIMIT];
+    int candidatec=0;
+    while (candidatec<player->messagec) { candidatev[candidatec]=candidatec; candidatec++; }
+    int panic=100;
+    while ((player->mistakec<mistakec)&&(panic-->0)&&(candidatec>0)) {
+      int cp=rand()%candidatec;
+      int mp=candidatev[cp];
+      if ((unsigned char)player->message[mp]>0x20) {
+        player->mistakev[player->mistakec++]=mp;
+      }
+      candidatec--;
+      memmove(candidatev+cp,candidatev+cp+1,sizeof(int)*(candidatec-cp));
+    }
+    qsort(player->mistakev,player->mistakec,sizeof(int),intcmp);
+  }
+  
   return 0;
 }
 
@@ -245,7 +285,9 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
    * The remainder only runs at state changes.
    */
   if ((player->beatclock-=elapsed)>0.0) return;
-  player->beatclock+=player->beatlen;
+  double beatlen=(rand()&0xffff)/65535.0;
+  beatlen=player->beatlenlo*(1.0-beatlen)+player->beatlenhi*beatlen;
+  player->beatclock+=beatlen;
   if ((player->holdc)-->0) return;
   
   /* If our state was ON, we now go OFF for 1, 3, or 7 beats.
@@ -272,6 +314,10 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       return;
     }
     char ch=player->message[player->messagep++];
+    if ((player->mistakep<player->mistakec)&&(player->mistakev[player->mistakep]<player->messagep)) {
+      player->mistakep++;
+      ch='A'+rand()%26;
+    }
     if ((ch<'A')||(ch>'Z')) {
       // Spaces should have been consumed by the ON=>OFF block. We must have double spaces. I dunno, just skip a beat.
       // Same for anything that isn't a letter.
@@ -499,80 +545,94 @@ static int morsecode_decode(char *dst,int dsta,const double *src,int srcc) {
   return dstc;
 }
 
-/* Compare reference text (ref) to user input (q) and return a score.
- * Higher is better and both positive and negative are possible.
+/* Find the shortest distance to matching characters in (a) and (b).
+ * If nothing matches, we advance both strings to their end.
  */
  
-static int morsecode_score(const char *ref,int refc,const char *q,int qc) {
-  int score=0,refp=0,qp=0;
-  for (;;) {
-  
-    /* If both strings exhausted, we're done.
-     * Otherwise, penalize based on the count remaining on the longer string.
-     */
-    if (refp>=refc) {
-      score-=5*(qc-qp); // Collapses to zero if matched.
-      break;
-    } else if (qp>=qc) {
-      score-=5*(refc-refp);
-      break;
-    }
-    
-    /* If the next characters match, give a bonus and consume both.
-     */
-    if (ref[refp]==q[qp]) {
-      score+=5;
-      refp++;
-      qp++;
-      continue;
-    }
-    
-    /* Discard an errant space in (q), and penalize only gently for it.
-     * This happens when you wait 7 beats instead of 3 between letters, I'm doing it a lot (first time morse-coder here).
-     */
-    if ((q[qp]==' ')&&(qp<=qc-2)&&(q[qp+1]==ref[refp])) {
-      score+=4;
-      refp++;
-      qp+=2;
-      continue;
-    }
-    
-    /* Here's where it gets tricky, we have a real mismatch.
-     * If there's a match in the near future, say within 5 spaces in both strings, skip up to that match.
-     * Seems the likelier mode of mismatch is excess space in (q), so let's weight (q) skips a bit lower than (ref) skips.
-     * Better to skip more of (q) and less of (ref).
-     */
-    const int maxdiscard=5;
-    int disrefc=99,disqc=99,disscore=99;
-    int ri=0; for (;ri<maxdiscard;ri++) {
-      if (refp+ri>=refc) break;
-      int qi=0; for (;qi<maxdiscard;qi++) {
-        if (qp+qi>=qc) break;
-        if (ref[refp+ri]==q[qp+qi]) { // Got a match here.
-          int ckscore=ri*2+qi;
-          if (ckscore<disscore) {
-            disrefc=ri;
-            disqc=qi;
-            disscore=ckscore;
-            break;
-          }
+static void minimum_match_distance(int *da,int *db,const char *a,int ac,const char *b,int bc) {
+  // There's probably a smart way to do this, but I'm too dumb, so just examine every possibility.
+  int abest=ac,bbest=bc;
+  int ap=0; for (;ap<ac;ap++) {
+    if (ap>=abest+bbest) break; // No better answer is possible, stop here.
+    int bp=0; for (;bp<bc;bp++) {
+      if (a[ap]==b[bp]) { // Match! Is it better?
+        if (ap+bp<abest+bbest) {
+          abest=ap;
+          bbest=bp;
+        } else { // If this match wasn't better, nothing further down (b) will be either.
+          break;
         }
       }
     }
-    if (disscore<99) {
-      refp+=disrefc;
-      qp+=disqc;
-      if (disrefc>disqc) score-=5*disrefc;
-      else score-=5*disqc;
+  }
+  *da=abest;
+  *db=bbest;
+}
+
+/* Compare reference text (ref) to user input (q) and return a score.
+ * Higher is better and both positive and negative are possible.
+ * There's an absolute upper bound of (refc*5), only achievable by perfect reproduction.
+ */
+ 
+static int morsecode_score(const char *ref,int refc,const char *q,int qc) {
+  //fprintf(stderr,"%s ref='%.*s' q='%.*s'\n",__func__,refc,ref,qc,q);
+  
+  /* First, if you hit it perfectly, it's five points per letter, *spaces included*.
+   * Including the spaces here amounts to a perfection bonus.
+   */
+  if ((refc==qc)&&!memcmp(ref,q,refc)) {
+    //fprintf(stderr,"...perfect! score=%d\n",refc*5);
+    return refc*5;
+  }
+  
+  /* Drop all spaces and error markers from both strings.
+   * Whitespace errors and noise prevent you from getting the perfection bonus, but otherwise we gloss over them.
+   */
+  char nrv[MESSAGE_LIMIT],nqv[MESSAGE_LIMIT];
+  int nrc=0,nqc=0,i;
+  for (i=0;i<refc;i++) if ((ref[i]>='A')&&(ref[i]<='Z')) {
+    nrv[nrc++]=ref[i];
+    if (nrc>=MESSAGE_LIMIT) break;
+  }
+  for (i=0;i<qc;i++) if ((q[i]>='A')&&(q[i]<='Z')) {
+    nqv[nqc++]=q[i];
+    if (nqc>=MESSAGE_LIMIT) break;
+  }
+  
+  /* Walk the strings together.
+   * Lose one point for each letter we skip, from either side.
+   * Gain five points for each matching pair.
+   */
+  int nrp=0,nqp=0,score=0;
+  for (;;) {
+  
+    // Check termination, which includes exhaustion of just one side.
+    if (nrp>=nrc) {
+      score-=nqc-nqp;
+      break;
+    }
+    if (nqp>=nqc) {
+      score-=nrc-nrp;
+      break;
+    }
+    
+    // Match?
+    if (nrv[nrp]==nqv[nqp]) {
+      nrp++;
+      nqp++;
+      score+=5;
       continue;
     }
     
-    /* Couldn't find a future match. Discard one from both strings and penalize.
-     */
-    refp++;
-    qp++;
-    score-=5;
+    // What is the minimum count of steps we can take to land on a matching pair?
+    // Do that and subtract it from the score.
+    int dr=0,dq=0;
+    minimum_match_distance(&dr,&dq,nrv+nrp,nrc-nrp,nqv+nqp,nqc-nqp);
+    nrp+=dr;
+    nqp+=dq;
+    score-=dr+dq;
   }
+  //fprintf(stderr,"...score=%d\n",score);
   return score;
 }
 
