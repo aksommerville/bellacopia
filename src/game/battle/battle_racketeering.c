@@ -195,13 +195,15 @@ static void ball_bias_and_increase(struct battle *battle,struct ball *ball,doubl
 
 /* Begin swing.
  * Don't call if (player->swing>0).
+ * With (fallback_only), the swing only happens if it will hit the ball, and we return >0 if so.
  */
  
-static void racketeering_swing(struct battle *battle,struct player *player) {
+static int racketeering_swing(struct battle *battle,struct player *player,int fallback_only) {
   player->swing=SWING_TIME;
   player->blackout=1;
   
   if (player==BATTLE->serving) {
+    if (fallback_only) return 0;
     bm_sound_pan(RID_sound_tennis_serve,0.0);
     ball_align_to_player(battle,&BATTLE->ball,player);
     ball_random_serve(battle,&BATTLE->ball);
@@ -209,28 +211,38 @@ static void racketeering_swing(struct battle *battle,struct player *player) {
     BATTLE->serving=0;
     racketeering_reset_anys(battle);
     racketeering_reset_throws(battle);
-    
-  } else if (BATTLE->serving) {
+    return 1;
+  }
+  
+  if (BATTLE->serving) {
     bm_sound_pan(RID_sound_swing_racket,0.0);
-    
-  } else {
-    bm_sound_pan(RID_sound_swing_racket,0.0);
-    if (BATTLE->ball.dz>0.0) {
+    return 1;
+  }
+  
+  if (BATTLE->ball.dz>0.0) {
+    if (!fallback_only) bm_sound_pan(RID_sound_swing_racket,0.0);
+    return 0;
+  }
+  double dx=BATTLE->ball.x-player->x;
+  double dy=BATTLE->ball.y-player->y;
+  double dz=BATTLE->ball.z;
+  dz*=ANTI_WHIFF_Z_SCALE; // Scale down the Z difference because it's very hard to judge.
+  double d2=dx*dx+dy*dy+dz*dz;
+  if (d2>STRIKE_ZONE*STRIKE_ZONE) {
+    if (fallback_only) {
+      player->swing=0.0;
+      player->blackout=0;
     } else {
-      double dx=BATTLE->ball.x-player->x;
-      double dy=BATTLE->ball.y-player->y;
-      double dz=BATTLE->ball.z;
-      dz*=ANTI_WHIFF_Z_SCALE; // Scale down the Z difference because it's very hard to judge.
-      double d2=dx*dx+dy*dy+dz*dz;
-      if (d2>STRIKE_ZONE*STRIKE_ZONE) {
-        // Whiff!
-      } else {
-        double distance=sqrt(d2);
-        ball_bias_and_increase(battle,&BATTLE->ball,dx,dy);
-        BATTLE->volley=other_player(battle,BATTLE->volley);
-        racketeering_reset_anys(battle);
-      }
+      bm_sound_pan(RID_sound_swing_racket,0.0);
     }
+    return 0; // Whiff!
+  } else {
+    bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
+    double distance=sqrt(d2);
+    ball_bias_and_increase(battle,&BATTLE->ball,dx,dy);
+    BATTLE->volley=other_player(battle,BATTLE->volley);
+    racketeering_reset_anys(battle);
+    return 1;
   }
 }
 
@@ -262,7 +274,7 @@ static void player_update_man(struct battle *battle,struct player *player,double
     if (player->x<0.0) player->x=0.0; else if (player->x>FBW) player->x=FBW;
     if (player->y<0.0) player->y=0.0; else if (player->y>FBH) player->y=FBH;
     if ((input&EGG_BTN_SOUTH)&&(player->delay<=0.0)) {
-      racketeering_swing(battle,player);
+      racketeering_swing(battle,player,0);
     }
   }
 }
@@ -281,7 +293,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
   // My serve?
   if (BATTLE->serving==player) {
     if ((player->delay-=elapsed)<=0.0) {
-      racketeering_swing(battle,player);
+      racketeering_swing(battle,player,0);
     }
     return;
   }
@@ -358,7 +370,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       if ((dx>-inner_strike_zone)&&(dy<inner_strike_zone)) {
         double dz=BATTLE->ball.z*ANTI_WHIFF_Z_SCALE;
         if (dz<inner_strike_zone) {
-          racketeering_swing(battle,player);
+          racketeering_swing(battle,player,0);
           player->throw--;
         }
       }
@@ -377,6 +389,17 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void racketeering_breach(struct battle *battle) {
+
+  // If the relevant player is human and aligned to the ball, swing automatically.
+  // At the limit, players only need the button to serve. Though swinging early is definitely also a thing.
+  if (BATTLE->volley) {
+    if (BATTLE->volley->human&&(BATTLE->volley->swing<=0.0)) {
+      if (racketeering_swing(battle,BATTLE->volley,1)) {
+        return;
+      }
+    }
+  }
+
   struct player *winner=other_player(battle,BATTLE->volley);
   winner->score++;
   if (winner->score>=2) {
@@ -464,7 +487,7 @@ static void _racketeering_update(struct battle *battle,double elapsed) {
   // Enforce serve timeout.
   if (BATTLE->serving) {
     if ((BATTLE->serveto+=elapsed)>=SERVE_TIMEOUT) {
-      racketeering_swing(battle,BATTLE->serving);
+      racketeering_swing(battle,BATTLE->serving,0);
     }
   }
 }
