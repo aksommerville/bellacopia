@@ -35,6 +35,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [ ] Fish odds are still broken somehow. Immediately after buying the fishpole, I fished twice in the same spot and the second time rejected. You should get at least 3.
+- [ ] Guild sprites: Timeout the reentry protection.
+- [ ] Move hookshot into blue captain's tent, that's where the quest ends.
+- [ ] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
+- [ ] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
+- [ ] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
+- [ ] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
+- [ ] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
+- [ ] 10-key modal, at the surveyor puzzle, failed to wrap position downward.
+- [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [x] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...

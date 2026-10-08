@@ -227,6 +227,8 @@ Added some interesting things this month:
 GDEX mid-month, and I expect to spend most of the time before that in GDEX-specific prep.
 But from the 19th onward, there's nothing planned, and we can really dig in and crank this thing out.
 
+2026-10-08: Tried a 100% run with no odd tricks, just doing what a user might. 3:03
+
 Goals:
 - [ ] 10 new battles.
 - [ ] All decorative interiors complete: Cheapside, Botire, Fractia, Ice Palace, Sand Castle, Temple.
