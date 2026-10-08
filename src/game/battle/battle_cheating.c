@@ -10,6 +10,7 @@
 #define STAGE_QUERY   3
 #define STAGE_REVEAL  4
 #define STAGE_SLAP    5
+#define STAGE_DENOUEMENT 6
 
 struct battle_cheating {
   struct battle hdr;
@@ -135,11 +136,13 @@ static int _cheating_init(struct battle *battle) {
 static void cheating_slappable(struct battle *battle) {
   if (battle->args.lctl) {
     if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) {
+      if (BATTLE->stage>STAGE_WELCOME) BATTLE->acornp=-1;
       BATTLE->stage=STAGE_SLAP;
       BATTLE->stageclock=0.0;
     }
   } else {
     if (BATTLE->stageclock>BATTLE->cpuslaptime) {
+      if (BATTLE->stage>STAGE_WELCOME) BATTLE->acornp=-1;
       BATTLE->stage=STAGE_SLAP;
       BATTLE->stageclock=0.0;
     }
@@ -260,6 +263,7 @@ static void cheating_update_QUERY_man(struct battle *battle,double elapsed) {
     BATTLE->cursorp++;
   } else if ((g_input[0]&EGG_BTN_SOUTH)&&!(g_pvinput[0]&EGG_BTN_SOUTH)) {
     if (BATTLE->cursorp==3) {
+      BATTLE->acornp=-1;
       BATTLE->stage=STAGE_SLAP;
       BATTLE->stageclock=0.0;
     } else {
@@ -291,6 +295,8 @@ static void cheating_update_REVEAL(struct battle *battle,double elapsed) {
   } else {
     // Game over, you lose.
     battle->outcome=-1;
+    BATTLE->stage=STAGE_DENOUEMENT;
+    BATTLE->stageclock=0.0;
   }
 }
 
@@ -303,6 +309,8 @@ static void cheating_update_SLAP(struct battle *battle,double elapsed) {
   if (BATTLE->slapclock>0.0) {
     if ((BATTLE->slapclock-=elapsed)<=0.0) {
       battle->outcome=1;
+      BATTLE->stage=STAGE_DENOUEMENT;
+      BATTLE->stageclock=0.0;
     }
     return;
   }
@@ -323,8 +331,6 @@ static void cheating_update_SLAP(struct battle *battle,double elapsed) {
  */
  
 static void _cheating_update(struct battle *battle,double elapsed) {
-  if (battle->outcome>-2) return;
-  
   BATTLE->stageclock+=elapsed;
   switch (BATTLE->stage) {
     case STAGE_WELCOME: {
@@ -381,18 +387,24 @@ static uint32_t slap_starbust_color(double n) {
  */
  
 static void _cheating_render(struct battle *battle) {
-  graf_fill_rect(g_graf,0,0,FBW,FBH,0x808080ff);
-  graf_set_image(g_graf,RID_image_battle_fractia);
   
   /* Start with some measurements.
    * Table goes in the middle, player on the left, and hustler on the right.
    */
   int tbx=FBW>>1;
-  int tby=FBH>>1;
+  int tby=120;
   int px=tbx-NS_sys_tilesize-(NS_sys_tilesize>>1);
   int hx=tbx+NS_sys_tilesize+(NS_sys_tilesize>>1);
   double cupxmax=NS_sys_tilesize*0.750;
   double cupymax=NS_sys_tilesize*0.500;
+  
+  /* Fill in the background, then everything else comes off image:battle_fractia.
+   */
+  int groundy=tby+7;
+  graf_fill_rect(g_graf,0,0,FBW,FBH,0x0b4c1eff);
+  graf_fill_rect(g_graf,0,groundy,FBW,FBH-tby,0x6c2640ff);
+  graf_fill_rect(g_graf,0,groundy,FBW,1,0x000000ff);
+  graf_set_image(g_graf,RID_image_battle_fractia);
   
   /* Fancy starbust behind the hustler when he's slapped.
    */
@@ -410,7 +422,7 @@ static void _cheating_render(struct battle *battle) {
   uint8_t ptileid=BATTLE->ptileid;
   if (BATTLE->stage==STAGE_REVEAL) {
     ptileid+=1; // oh no
-  } else if (BATTLE->stage==STAGE_SLAP) {
+  } else if ((BATTLE->stage==STAGE_SLAP)||((BATTLE->stage==STAGE_DENOUEMENT)&&(battle->outcome>0))) {
     px+=(int)(BATTLE->slapx*26.0);
     if (BATTLE->slapclock>0.200) {
       ptileid+=2;
@@ -464,6 +476,22 @@ static void _cheating_render(struct battle *battle) {
     if (BATTLE->cursorp==3) y-=12;
     graf_tile(g_graf,x,y,BATTLE->ptileid-1,0);
   }
+  
+  /* Acorn falls out of the hustler's pocket after you lose.
+   * Or if you win too. Just as long as it's not visible on the table.
+   */
+  if ((BATTLE->stage==STAGE_DENOUEMENT)&&(BATTLE->acornp<0)) {
+    double t=BATTLE->stageclock/2.500;
+    if (t<0.0) t=0.0; else if (t>1.0) t=1.0;
+    /* (x) will move monotonically.
+     * (y) is more interesting. Make an attenuated sine wave and flip the negatives.
+     */
+    double dy=cos(t*M_PI*5.0)*(1.0-t)*(tby-groundy);
+    if (dy>0.0) dy=-dy;
+    int x=hx+4+(int)(12.0*t);
+    int y=(int)(groundy+dy);
+    graf_tile(g_graf,x,y,0x48,0);
+  }
 }
 
 /* Type definition.
@@ -478,6 +506,7 @@ const struct battle_type battle_type_cheating={
   .no_contest=0,
   .support_pvp=0,
   .support_cvc=1,
+  .update_during_report=1,
   .input=battle_input_horz_a,
   .del=_cheating_del,
   .init=_cheating_init,

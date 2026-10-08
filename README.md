@@ -118,8 +118,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [x] Play a hundred times for confirmation. ...40 but ok, i'm confident we're better off now.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [ ] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
-- [ ] cheating: Make the background graphics more casiny.
+- [x] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
+- [x] cheating: Make the background graphics more casiny.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [ ] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
