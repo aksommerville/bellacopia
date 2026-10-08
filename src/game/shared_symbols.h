@@ -495,7 +495,7 @@
 #define NS_battle_fencing 33
 #define NS_battle_jeter 34
 #define NS_battle_homerunderby 35
-#define NS_battle_dissection 36
+#define NS_battle_surgery 36
 #define NS_battle_cpr 37
 #define NS_battle_stenography 38
 #define NS_battle_sorting 39
@@ -601,7 +601,7 @@
   _(fencing) \
   _(jeter) \
   _(homerunderby) \
-  _(dissection) \
+  _(surgery) \
   _(cpr) \
   _(stenography) \
   _(sorting) \

@@ -121,7 +121,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] cheating: Have the acorn fall out of the hustler's sleeve at the end, and show that all the cups are empty.
 - [x] cheating: Make the background graphics more casiny.
 - [ ] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
-- [ ] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
+- [x] dissection: I think "surgery" would be a better name. (strictly speaking, it's not "dissection" if the subject is alive, they call that "vivisection").
 - [ ] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] mindcontrol: Make a more continuous connection state, like sometimes the connection is better than others.
 - [ ] morsecode: At normal difficulty, getting every letter right should be a win, regardless of extra spaces. Have the walrus make mistakes randomly.

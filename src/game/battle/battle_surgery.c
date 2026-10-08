@@ -1,4 +1,4 @@
-/* battle_dissection.c
+/* battle_surgery.c
  * Place your scalpel, tap A to commit position, then it rotates and you hold A to slice along that direction.
  * Sever the blood vessels but don't touch the organs.
  */
@@ -30,7 +30,7 @@
 #define DT_HI 4.000
 #define DT_CPU_PENALTY 0.800
 
-struct battle_dissection {
+struct battle_surgery {
   struct battle hdr;
   int choice;
   
@@ -78,12 +78,12 @@ struct battle_dissection {
   } playerv[2];
 };
 
-#define BATTLE ((struct battle_dissection*)battle)
+#define BATTLE ((struct battle_surgery*)battle)
 
 /* Delete.
  */
  
-static void _dissection_del(struct battle *battle) {
+static void _surgery_del(struct battle *battle) {
 }
 
 /* Init player.
@@ -139,7 +139,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
 /* New.
  */
  
-static int _dissection_init(struct battle *battle) {
+static int _surgery_init(struct battle *battle) {
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
   player_init(battle,BATTLE->playerv+1,battle->args.rctl,battle->args.rface);
@@ -221,7 +221,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
  * We don't check crossings, it's all just proximity.
  */
  
-static void dissection_check_cuts(struct battle *battle,struct player *player) {
+static void surgery_check_cuts(struct battle *battle,struct player *player) {
 
   /* First check the organs.
    * They're all circular. Within a certain distance, slice.
@@ -351,7 +351,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
     player->y-=cos(player->t)*player->speed*elapsed;
     if (player->x<0.0) player->x=0.0; else if (player->x>FLDW) player->x=FLDW;
     if (player->y<0.0) player->y=0.0; else if (player->y>FLDH) player->y=FLDH;
-    dissection_check_cuts(battle,player);
+    surgery_check_cuts(battle,player);
     if (player->cutted&CUTTED_BAD) {
       bm_sound_pan(RID_sound_fart,player->who?PLAYER_PAN:-PLAYER_PAN);
     }
@@ -368,7 +368,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
 /* Update.
  */
  
-static void _dissection_update(struct battle *battle,double elapsed) {
+static void _surgery_update(struct battle *battle,double elapsed) {
   
   struct player *player=BATTLE->playerv;
   int i=2;
@@ -532,7 +532,7 @@ static void player_render(struct battle *battle,struct player *player) {
 /* Render.
  */
  
-static void _dissection_render(struct battle *battle) {
+static void _surgery_render(struct battle *battle) {
   graf_fill_rect(g_graf,0,0,FBW,FBH,0x404040ff);
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);
@@ -541,9 +541,9 @@ static void _dissection_render(struct battle *battle) {
 /* Type definition.
  */
  
-const struct battle_type battle_type_dissection={
-  .name="dissection",
-  .objlen=sizeof(struct battle_dissection),
+const struct battle_type battle_type_surgery={
+  .name="surgery",
+  .objlen=sizeof(struct battle_surgery),
   .id=36,
   .strix_name=162,
   .no_article=0,
@@ -552,8 +552,8 @@ const struct battle_type battle_type_dissection={
   .support_cvc=1,
   .update_during_report=1,
   .input=battle_input_horz_a,
-  .del=_dissection_del,
-  .init=_dissection_init,
-  .update=_dissection_update,
-  .render=_dissection_render,
+  .del=_surgery_del,
+  .init=_surgery_init,
+  .update=_surgery_update,
+  .render=_surgery_render,
 };
