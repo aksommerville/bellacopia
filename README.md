@@ -35,7 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [ ] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
+- [x] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -49,9 +49,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [ ] Eliminate random no-fish. Fishing should only fail when you've exhausted it.
+- [x] Eliminate random no-fish. Fishing should only fail when you've exhausted it. ...it's already eliminated. The clock can be deceptive maybe? But I think behavior is correct.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
 - [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
+- [ ] Fairy Gobmother, in one of the new goblin-cave rooms. General advice.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -59,7 +60,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
-- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull"
+- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull". Factoring contest! "Factor this 64-bit integer"
 
 - Fill out maps.
 - [ ] Fractia

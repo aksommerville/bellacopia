@@ -371,7 +371,9 @@ static int game_apply_fishodds(int fishodds) {
       } break;
   }
   // NS_fishodds_default or unknown. Also "parent", if it ends up here.
-  if (game_touch_fishclock()) return 0;
+  if (game_touch_fishclock()) {
+    return 0;
+  }
   switch (rand()%10) {
     case 0: case 1: case 2: case 3: case 4: case 5: return NS_itemid_greenfish;
     case 6: case 7: case 8: return NS_itemid_bluefish;
