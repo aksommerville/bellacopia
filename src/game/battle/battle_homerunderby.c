@@ -291,7 +291,7 @@ static void _homerunderby_update(struct battle *battle,double elapsed) {
         homerunderby_foul(battle);
       }
     } else { // Moving homeward, strike if we leave the screen. Foul if horizontal. Beware that (balldy) might be extremely small.
-      if (BATTLE->bally>FBH+MARGIN) {
+      if (BATTLE->bally>FBH+25.0) { // Wider margin before calling a strike, than other edges.
         homerunderby_strike(battle);
       } else if ((BATTLE->ballx<-XMARGIN)||(BATTLE->ballx>FBW+XMARGIN)) {
         homerunderby_foul(battle);

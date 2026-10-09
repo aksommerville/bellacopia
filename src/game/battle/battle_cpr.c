@@ -23,6 +23,7 @@ struct battle_cpr {
   double secperbeat; // Constant, computed from song at init.
   double playhead; // Sampled at the start of each update.
   double beat; // -1..0..1 = early..perfect..late
+  double doneclock; // Starts counting up after outcome established.
   
   struct player {
     int who; // My index in this list.
@@ -292,12 +293,16 @@ static void _cpr_update(struct battle *battle,double elapsed) {
   
   /* Did anybody win?
    */
-  struct player *l=BATTLE->playerv;
-  struct player *r=l+1;
-  if (l->score>=1.0) {
-    if (r->score>=1.0) battle->outcome=0;
-    else battle->outcome=1;
-  } else if (r->score>=1.0) battle->outcome=-1;
+  if (battle->outcome==-2) {
+    struct player *l=BATTLE->playerv;
+    struct player *r=l+1;
+    if (l->score>=1.0) {
+      if (r->score>=1.0) battle->outcome=0;
+      else battle->outcome=1;
+    } else if (r->score>=1.0) battle->outcome=-1;
+  } else {
+    BATTLE->doneclock+=elapsed;
+  }
 }
 
 /* Render player.
@@ -322,7 +327,9 @@ static void player_render_tiles(struct battle *battle,struct player *player) {
   graf_tile(g_graf,x+ht,y+ht,tileid+0x11,0);
   
   // The patient.
-  tileid=(player->score>=1.0)?0x94:(player->thump>0.0)?0x92:0x90;
+  tileid=0x90;
+  if ((player->score>=1.0)&&(BATTLE->doneclock>=0.500)) tileid=0x94;
+  else if (player->thump>0.0) tileid=0x92;
   graf_tile(g_graf,x-ht-3,y+ht,tileid,0);
   graf_tile(g_graf,x+ht-3,y+ht,tileid+1,0);
   
