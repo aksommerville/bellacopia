@@ -62,6 +62,7 @@ void begin_crystal();
 void begin_cartographer(struct sprite *initiator);
 
 // activity_princess.c
+struct sprite *find_princess(struct sprite *king,int *near); // begin_cartographer() borrows this too
 void begin_king(struct sprite *initiator);
 void begin_jaildoor();
 void begin_kidnap(struct sprite *initiator);

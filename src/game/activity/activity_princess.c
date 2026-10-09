@@ -43,7 +43,7 @@ static void king_return_princess(struct sprite *king) {
 }
 
 // null and (*near) nonzero if the princess exists but out of range.
-static struct sprite *find_princess(struct sprite *king,int *near) {
+struct sprite *find_princess(struct sprite *king,int *near) {
   struct sprite **spritep=GRP(monsterlike)->sprv;
   int i=GRP(monsterlike)->sprc;
   for (;i-->0;spritep++) {

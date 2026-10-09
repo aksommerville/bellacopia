@@ -64,3 +64,4 @@ Defending. Space Invaders, play as usual. These would make a great pair in the b
 Shooting. Wolfenstein with a basketball.
 Rapping. Hiphoppotamus.
 Analogy. "A is to B as C is to ???", against Thesaurus Rex.
+Factoring. 10-key, enter the prime factors of some 64-bit integer. Intentionally impossible. (but technically possible, that's what makes it hilarious)

@@ -151,9 +151,16 @@ static void fishwife_commit(struct modal *modal) {
       if (row->q<0) { // Will acquiring it exceed my limit?
         int have,limit;
         have=possessed_quantity_for_itemid(row->itemid,&limit);
-        if (have>limit+row->q) { // Can't carry this many. (this means you can't overflow your purse either, when selling)
-          bm_sound(RID_sound_reject);
-          return;
+        if (row->itemid==NS_itemid_gold) {
+          if (have>=limit) { // You're allowed to get more gold than you can carry, but do reject if you're already completely full.
+            bm_sound(RID_sound_reject);
+            return;
+          }
+        } else { // If acquiring fish, reject any overflow. You can always just ask for one less.
+          if (have>limit+row->q) {
+            bm_sound(RID_sound_reject);
+            return;
+          }
         }
       } else if (row->q>0) { // Do I actually have this many? Should have been enforced previously, but let's be sure.
         int have=possessed_quantity_for_itemid(row->itemid,0);

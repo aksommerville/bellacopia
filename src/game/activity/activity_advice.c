@@ -243,6 +243,19 @@ void begin_cartographer(struct sprite *initiator) {
     return;
   }
   
+  /* Similarly, if she hasn't been rescued yet for the first time, tell Dot about that for free.
+   */
+  if (!store_get_fld(NS_fld_rescued_princess)) {
+    int near=0;
+    struct sprite *princess=find_princess(initiator,&near);
+    if (princess) {
+      begin_dialogue(199,initiator);
+    } else {
+      begin_dialogue(198,initiator);
+    }
+    return;
+  }
+  
   /* If any secret is currently marked, you can have no more.
    * Must clear all three before we give you a new one.
    */

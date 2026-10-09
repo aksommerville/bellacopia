@@ -40,14 +40,18 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Because `g.fishclock` was treated as a bound for a random choice. Nixed that, now it's just a clock, and you can usually catch 3 fish in a row.
 - [x] Guild sprites: Timeout the reentry protection.
 - [x] Move hookshot into blue captain's tent, that's where the quest ends.
-- [ ] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
-- [ ] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
+- [x] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
+- [x] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
 - [ ] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
 - [ ] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
 - [ ] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
 - [ ] 10-key modal, at the surveyor puzzle, failed to wrap position downward.
 - [ ] Look for incomplete edges in the outerworld. I know at least the jungle/isthmus junction is still unfinished.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
+- [x] What happens if you straight up abandon the Princess on the way back from a walk, but do enter the castle? Needs to be some distance threshold where the walk doesn't count.
+- - ...and now that I think about it, this applies to the rescue quest too.
+- - We should require that she be visible when you enter a door.
+- - We're good already. She fails to walk thru the door right around the visibility limit.
 
 - [x] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -67,6 +71,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
 - [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
 - [ ] Fairy Gobmother, in one of the new goblin-cave rooms. General advice.
+- [ ] Walking the Princess feels excessive. Reduce the mandatory walks to 2 or 3. Maybe also make a few battles mandatory?
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
