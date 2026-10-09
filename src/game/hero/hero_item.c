@@ -264,8 +264,8 @@ static void hero_generate_unfished_princess(struct sprite *sprite) {
 /* Fishpole.
  */
  
-#define FISH_TIME_MIN 1.000
-#define FISH_TIME_MAX 6.000
+#define FISH_TIME_MIN 2.000
+#define FISH_TIME_MAX 3.000
  
 static int fishpole_begin(struct sprite *sprite) {
   double qx=sprite->x+SPRITE->facedx*0.75;

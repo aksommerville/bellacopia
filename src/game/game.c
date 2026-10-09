@@ -312,16 +312,14 @@ int game_warp(int mapid,int transition) {
  */
  
 #define FISHCLOCK_LIMIT      20.000
-#define FISHCLOCK_INCREMENT   8.000 /* Bear in mind, the fishing itself takes 1..10 seconds. */
+#define FISHCLOCK_INCREMENT  11.000 /* Bear in mind, the fishing itself takes 2..3 seconds. */
 #define FISHCLOCK_SPATIAL_RESET  30 /* Move so far from the last attempt and the clock resets. Or change planes. */
  
 static int game_touch_fishclock() {
   // If we're already over the time limit, return exhausted but don't penalize any further.
   if (g.fishclock>=FISHCLOCK_LIMIT) return 1;
-  int threshold=(int)((g.fishclock*65535.0)/FISHCLOCK_LIMIT);
-  int choice=rand()&0xffff;
   g.fishclock+=FISHCLOCK_INCREMENT;
-  return (choice<threshold)?1:0;
+  return 0;
 }
 
 static void game_touch_fish_position(int x,int y,int z) {
@@ -386,7 +384,6 @@ static int game_apply_fishodds(int fishodds) {
  */
  
 int game_choose_fish(int x,int y,int z) {
-  //fprintf(stderr,"%s %d,%d,%d\n",__func__,x,y,z);
   
   /* Fishing in the wishing sewer is a special case.
    * But if the well is empty, it behaves just like water (ie we fall thru here).
