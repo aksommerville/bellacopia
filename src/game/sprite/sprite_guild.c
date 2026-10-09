@@ -8,7 +8,6 @@ struct sprite_guild {
   int fld;
   double cooldown;
   uint8_t pvhero;
-  int await_hero_orientation_change;
 };
 
 #define SPRITE ((struct sprite_guild*)sprite)
@@ -52,9 +51,11 @@ static void _guild_update(struct sprite *sprite,double elapsed) {
     else if (dx<-margin) sprite->xform=EGG_XFORM_XREV;
     horient=sprite_hero_get_facedir(hero);
   }
+  // A change to the hero's orientation nixes our cooldown.
+  // So the player can reengage immediately by turning then turning back, but we'll suppress some accidental retriggers.
   if (horient!=SPRITE->pvhero) {
     SPRITE->pvhero=horient;
-    SPRITE->await_hero_orientation_change=0;
+    SPRITE->cooldown=0.0;
   }
   if (SPRITE->cooldown>0.0) {
     SPRITE->cooldown-=elapsed;
@@ -165,13 +166,7 @@ static void guild_cb_final(struct modal *modal,int outcome,void *userdata) {
  */
  
 static void _guild_collide(struct sprite *sprite,struct sprite *other) {
-
-  /* It's easy to reenter a guild contest by accident, and that can be a real bummer if you just spent some effort to win it.
-   * So we do an extra-strength cooldown: Dot's orientation has to change before we can trigger again.
-   */
   if (SPRITE->cooldown>0.0) return;
-  if (SPRITE->await_hero_orientation_change) return;
-  
   struct modal_args_battle args={
     .battle=SPRITE->battle,
     .args={
@@ -196,8 +191,7 @@ static void _guild_collide(struct sprite *sprite,struct sprite *other) {
 
   struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
   if (!modal) return;
-  SPRITE->cooldown=0.500;
-  SPRITE->await_hero_orientation_change=1;
+  SPRITE->cooldown=1.000; // Kind of a long cooldown but it's cancellable by changing orientation.
 }
 
 /* Type definition.

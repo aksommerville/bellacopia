@@ -38,7 +38,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Low-hanging fruit to address this last week before GDEX:
 - [x] Fish odds are still broken somehow. Immediately after buying the fishpole, I fished twice in the same spot and the second time rejected. You should get at least 3.
 - - Because `g.fishclock` was treated as a bound for a random choice. Nixed that, now it's just a clock, and you can usually catch 3 fish in a row.
-- [ ] Guild sprites: Timeout the reentry protection.
+- [x] Guild sprites: Timeout the reentry protection.
 - [ ] Move hookshot into blue captain's tent, that's where the quest ends.
 - [ ] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
 - [ ] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
