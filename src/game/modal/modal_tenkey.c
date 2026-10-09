@@ -125,7 +125,7 @@ static void tenkey_move(struct modal *modal,int dx,int dy) {
   MODAL->selx+=dx;
   MODAL->sely+=dy;
   if (MODAL->selx<0) MODAL->selx=2; else if (MODAL->selx>2) MODAL->selx=0;
-  if (MODAL->sely<0) MODAL->sely=3; else if (MODAL->sely>3) MODAL->sely=3;
+  if (MODAL->sely<0) MODAL->sely=3; else if (MODAL->sely>3) MODAL->sely=0;
 }
 
 /* Update.
@@ -165,7 +165,6 @@ static void _tenkey_update(struct modal *modal,double elapsed) {
  */
  
 static void _tenkey_render(struct modal *modal) {
-  //TODO enter and exit transitions
   
   const int outer_margin=3;
   const int inner_margin=5; // Vertical, between display and keys. Includes one row of padding inside the display.

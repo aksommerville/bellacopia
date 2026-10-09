@@ -195,12 +195,15 @@ static void _pause_update(struct modal *modal,double elapsed) {
   }
 
   // Rising?
+  int transition_in_progress=0;
   if (MODAL->drise<0.0) {
+    transition_in_progress=1;
     if ((MODAL->rise-=RISE_DOWN_SPEED*elapsed)<=0.0) {
       modal->defunct=1;
       return;
     }
   } else if (MODAL->drise>0.0) {
+    transition_in_progress=1;
     if ((MODAL->rise+=RISE_UP_SPEED*elapsed)>=1.0) {
       MODAL->drise=0.0;
       MODAL->rise=1.0;
@@ -220,7 +223,9 @@ static void _pause_update(struct modal *modal,double elapsed) {
       pause_focus_vellum(modal,0);
       bm_sound(RID_sound_uicancel);
     }
+    return;
   }
+  if (transition_in_progress) return; // No regular updating during the transition.
   
   // L1 and R1 to change pages.
   if ((g.input[1]&EGG_BTN_L1)&&!(g.pvinput[1]&EGG_BTN_L1)) pause_change_page(modal,-1);

@@ -44,9 +44,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
 - [x] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
 - - ...added `etc/tool/validate_regex.js` to check these faster in the future. The one called out above does fail it.
-- [ ] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
-- [ ] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
-- [ ] 10-key modal, at the surveyor puzzle, failed to wrap position downward.
+- [x] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
+- [x] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
+- [x] 10-key modal, at the surveyor puzzle, failed to wrap position downward.
 - [ ] Look for incomplete edges in the outerworld. I know at least the jungle/isthmus junction is still unfinished.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [x] What happens if you straight up abandon the Princess on the way back from a walk, but do enter the castle? Needs to be some distance threshold where the walk doesn't count.

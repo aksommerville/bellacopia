@@ -327,6 +327,22 @@ static void _hero_collide(struct sprite *sprite,struct sprite *other) {
   }
 }
 
+/* If there's a burieddoor command at this location (in map meters), force its flag set.
+ * Call when passing thru any non-buried door.
+ */
+ 
+static void force_buried_door_open(const struct map *map,int x,int y) {
+  struct cmdlist_reader reader={.v=map->cmd,.c=map->cmdc};
+  struct cmdlist_entry cmd;
+  while (cmdlist_reader_next(&cmd,&reader)>0) {
+    if ((cmd.opcode==CMD_map_burieddoor)&&(cmd.arg[0]==x)&&(cmd.arg[1]==y)) {
+      int fldid=(cmd.arg[6]<<8)|cmd.arg[7];
+      store_set_fld(fldid,1);
+      return; // Surely won't be more than one burieddoor on a given cell.
+    }
+  }
+}
+
 /* POI.
  * Treadles and such work generically. Others can actuate them, not just Dot, and that's 1000% by design.
  * Doors are only for Dot, and there will probably be others like it in the future.
@@ -365,6 +381,10 @@ void _hero_tread_poi(struct sprite *sprite,uint8_t opcode,const uint8_t *arg,int
         }
         SPRITE->doorx=map->lng*NS_sys_mapw+dstx+0.5;
         SPRITE->doory=map->lat*NS_sys_maph+dsty+0.5;
+        
+        // If we're going thru a plain non-buried door, check whether the other end is buried and force it open if so.
+        // A little heavy-handed to do this on every door use, for a situation that will probably never arise, but on the other hand, meh.
+        if (!fld) force_buried_door_open(map,dstx,dsty);
         
         // If there's a Princess and she's close to us, arrange to respawn her on the other side.
         SPRITE->respawn_princess=0;
