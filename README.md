@@ -134,7 +134,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
 - [x] homerunderby: I don't like how foul tips count immediately as a Strike.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
-- [ ] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
+- [x] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?
@@ -326,7 +326,6 @@ Record everything that someone might object to on moral grounds, so we can decla
 - Wining Contest (wine).
 - Casino.
 - Strangling Contest.
-- Dead babies splattered on the sidewalk: Rescuing Contest.
 
 ## Gameplay that changes between campaigns
 

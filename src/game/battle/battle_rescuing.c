@@ -66,6 +66,7 @@ struct battle_rescuing {
     double animclock;
     int animframe;
     int bounced;
+    double birdieclock;
   } babyv[BABY_LIMIT];
   int babyc;
 };
@@ -342,7 +343,10 @@ static void baby_update(struct battle *battle,struct baby *baby,double elapsed) 
   
   /* Not started, or outcome already established?
    */
-  if (baby->outcome||(BATTLE->battleclock<baby->jumptime)) return;
+  if (baby->outcome||(BATTLE->battleclock<baby->jumptime)) {
+    baby->birdieclock+=elapsed;
+    return;
+  }
   
   /* Beginning the jump?
    */
@@ -393,7 +397,7 @@ static void baby_update(struct battle *battle,struct baby *baby,double elapsed) 
     } else {
       bm_sound_pan(RID_sound_splat,baby->who?PLAYER_PAN:-PLAYER_PAN);
       baby->outcome=-1;
-      baby->y=BATTLE->bgvtxv[BGCOLC*(BGROWC-2)].y+(NS_sys_tilesize>>1);
+      baby->y=BATTLE->bgvtxv[BGCOLC*(BGROWC-2)].y;
     }
     return;
   }
@@ -439,8 +443,6 @@ static void _rescuing_update(struct battle *battle,double elapsed) {
     else player_update_cpu(battle,player,elapsed);
     player_update_common(battle,player,elapsed);
   }
-
-  if (battle->outcome>-2) return;
   
   // Update babies, and if at least one has outcome unestablished, proceed.
   int finished=1;
@@ -450,7 +452,7 @@ static void _rescuing_update(struct battle *battle,double elapsed) {
     if (!baby->outcome) finished=0;
   }
   
-  if (finished) {
+  if (finished&&(battle->outcome==-2)) {
     int l=BATTLE->playerv[0].score;
     int r=BATTLE->playerv[1].score;
     if (l>r) battle->outcome=1;
@@ -519,6 +521,30 @@ static void window_render(struct battle *battle,struct window *window) {
   }
 }
 
+/* Render a dazed animation above a baby's head.
+ */
+ 
+static void birdies_render(struct battle *battle,struct baby *baby,int midx) {
+  const int pointc=5;
+  const double rate=2.000; // rad/sec, to cover a full trip around for one point. Effectively it repeats at 1/pointc of this.
+  const double dt=(M_PI*2.0)/(double)pointc;
+  double t=baby->birdieclock*rate;
+  int midy=baby->y-12;
+  if (baby->adult) midy+=4;
+  int i=pointc;
+  for (;i-->0;t+=dt) {
+    double sint=sin(t);
+    double cost=cos(t);
+    int x=midx+lround(sint*7.000);
+    int y=midy+lround(cost*2.000);
+    uint8_t luma=(uint8_t)(100.0+(cost+1.0)*50.0);
+    uint32_t color=(luma<<24)|(luma<<16)|0xff;
+    uint8_t tileid=0x5c;
+    if (((int)(t*3.0))&1) tileid++;
+    graf_fancy(g_graf,x,y,tileid,0,0,NS_sys_tilesize,0,color);
+  }
+}
+
 /* Render one baby or mom.
  * Note that the distressed mom during our intro, and the arm flinging a baby out the window,
  * those are part of the window, not us.
@@ -537,9 +563,11 @@ static void baby_render(struct battle *battle,struct baby *baby) {
       if (xform) {
         graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,0x0c,xform);
         graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,0x0b,xform);
+        birdies_render(battle,baby,x-(NS_sys_tilesize>>1)-4);
       } else {
         graf_tile(g_graf,x-(NS_sys_tilesize>>1),y,0x0b,0);
         graf_tile(g_graf,x+(NS_sys_tilesize>>1),y,0x0c,0);
+        birdies_render(battle,baby,x+(NS_sys_tilesize>>1)+4);
       }
     } else { // Mom, falling.
       uint8_t tileid=0x07;
@@ -557,6 +585,7 @@ static void baby_render(struct battle *battle,struct baby *baby) {
       graf_tile(g_graf,x,y,0x1b,0);
     } else if (baby->outcome<0) { // Baby, kersplatted.
       graf_tile(g_graf,x,y,0x1c,0);
+      birdies_render(battle,baby,x);
     } else { // Baby, falling.
       graf_tile(g_graf,x,y,0x19+baby->animframe,0);
     }
