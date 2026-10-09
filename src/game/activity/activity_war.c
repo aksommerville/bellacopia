@@ -47,15 +47,42 @@ void begin_capnred(struct sprite *sprite) {
 
 /* Blue Captain.
  */
+ 
+// After inviting Dot to take the Hookshot, find my sprite and shuffle it aside.
+static int cb_capnblue_move(int optionid,void *userdata) {
+  // Find the NPC and Dot. NPC can move left or right, need to be mindful if Dot approached horizontally.
+  struct sprite *dot=0,*capn=0;
+  struct sprite **spritep=GRP(solid)->sprv;
+  int spritei=GRP(solid)->sprc;
+  for (;spritei-->0;spritep++) {
+    struct sprite *sprite=*spritep;
+    switch (sprite->rid) {
+      case RID_sprite_hero: dot=sprite; break;
+      case RID_sprite_capnblue: capn=sprite; break;
+    }
+  }
+  if (!dot||!capn) {
+    fprintf(stderr,"%s: Missing a sprite! dot=%p capn=%p\n",__func__,dot,capn);
+    return 0;
+  }
+  // The map is designed such that we can safely move 1.5 m left or right. Go whichever direction Dot isn't.
+  if (capn->x>=dot->x) {
+    capn->x+=1.5;
+  } else {
+    capn->x-=1.5;
+  }
+  return 0;
+}
 
-// After the final dialogue box, launch the cutscene. All the store stuff happens below in cb_capnblue_rcv.
+// After the "yay war is over" dialogue box, launch the cutscene. All the store stuff happens below in cb_capnblue_rcv.
 static int cb_capnblue_wrapped_up(int optionid,void *userdata) {
-  struct modal_args_cutscene args={
-    .strix_title=2,
-    .context=CUTSCENE_CONTEXT_EXPECTEDISH,
+  struct modal_args_dialogue args={
+    .rid=RID_strings_dialogue,
+    .strix=197, // Take the Hookshot please.
+    .cb=cb_capnblue_move,
   };
-  struct modal *cutscene=modal_spawn(&modal_type_cutscene,&args,sizeof(args));
-  if (!cutscene) return 1;
+  struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+  if (!modal) return 1;
   return 1;
 }
  

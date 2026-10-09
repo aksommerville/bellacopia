@@ -39,7 +39,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Fish odds are still broken somehow. Immediately after buying the fishpole, I fished twice in the same spot and the second time rejected. You should get at least 3.
 - - Because `g.fishclock` was treated as a bound for a random choice. Nixed that, now it's just a clock, and you can usually catch 3 fish in a row.
 - [x] Guild sprites: Timeout the reentry protection.
-- [ ] Move hookshot into blue captain's tent, that's where the quest ends.
+- [x] Move hookshot into blue captain's tent, that's where the quest ends.
 - [ ] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
 - [ ] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
 - [ ] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
@@ -89,9 +89,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Exteriors.
 - - [ ] Dot's house
 - - - Ensure the underground entrance is not obvious but doesn't need items to enter.
-- [ ] Battlefield
-- - [ ] Blue Captain's tent
-- - [ ] Red Captain's tent
+- [x] Battlefield
+- - [x] Blue Captain's tent
+- - [x] Red Captain's tent
 - [ ] Tundra
 - - [ ] "tuns" of exterior space to fill.
 - - [ ] Magnetic North interior.
