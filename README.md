@@ -42,7 +42,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [x] Move hookshot into blue captain's tent, that's where the quest ends.
 - [x] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
 - [x] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
-- [ ] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
+- [x] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
+- - ...added `etc/tool/validate_regex.js` to check these faster in the future. The one called out above does fail it.
 - [ ] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
 - [ ] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
 - [ ] 10-key modal, at the surveyor puzzle, failed to wrap position downward.

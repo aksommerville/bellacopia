@@ -80,7 +80,7 @@
 74 "The lurking terror awaits."
 75 "/^The ([d-z]+) ([c-z]+) ([@b-z]+)\\.$/"
 76 "Grumble, grumble."
-77 "/^[a-zA-@z]+, [a-z]+\\.$/"
+77 "/^[a-@ZA-Z]+, [a-z]+\\.$/"
 78 "The 7 unspeakable curses."
 79 "/^\\w+ \\@n+ \\w+ \\w+\\.$/"
 
