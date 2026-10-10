@@ -43,7 +43,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Some little fanfare on reaching 100%.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
-- [ ] Poker at the casino. UI in place and activity ready to write.
+- [x] Poker at the casino. UI in place and activity ready to write.
 - [x] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.

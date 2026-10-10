@@ -399,3 +399,16 @@
 360 Cash out %0 G, or try for %1 G?
 361 Cash out
 362 Play again
+
+363 High card
+364 Pair
+365 Two pair
+366 Three of a kind
+367 Straight
+368 Flush
+369 Full House
+370 Four of a kind
+371 Straight flush
+372 Royal flush
+373 Pair of %0
+374 %0 of %1

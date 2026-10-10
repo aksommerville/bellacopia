@@ -7,6 +7,7 @@
   2____D Apples            Boblin             Goblins
   2____D ArmWrestling      Minotaur           Labyrinth
  R2____D Balacing          Orangutan          Jungle
+  1____D Blackjack         House              Casino
   1____D Bluefish          Bluefish           All
   2____D Bobsleigh         IceDragon          IcePalace
   2____D BodySlam          Yak                Tundra
@@ -97,6 +98,7 @@
   2      Pilfering         Rabbit             Cave
   1      Pitching          Baboon             Jungle
   2____D Plumbing          Plumber            Fractia
+  1____D Poker             House              Casino
   2      Popping           Farmer             Farm
   2____D Pouring           Beaver             Mountains
   2      Protecting        Goose              Farm
