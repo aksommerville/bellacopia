@@ -812,18 +812,130 @@ void begin_grandkid(struct sprite *sprite) {
   begin_dialogue(162,sprite);
 }
 
-/* Poker: Invite to play a hand.
+/* Poker and blackjack. Simple minigames.
+ * You play the game, and if you win, you're offered a chance to double stakes and play again.
+ * That replaying is orchestrated here; the battles are just a single run each.
+ * This involves a tiny bit of global state.
  */
  
-void begin_poker() {
-  fprintf(stderr,"%s:%d:TODO: %s\n",__FILE__,__LINE__,__func__);
+#define CASINO_INITIAL_STAKES 10
+ 
+static int casino_stakes=0;
+static int casino_battleid=0;
+static int casino_coward_prize=0; // What you can claim now, rather than trying again.
+
+static void casino_replay(); // forward
+ 
+static void cb_casino(struct modal *modal,int outcome,void *userdata) {
+  /* If Dot lost, the run is over.
+   * Lose a bunch of gold.
+   */
+  if (outcome<=0) {
+    if (store_get_fld16(NS_fld16_gold)) { // Had at least 1 gold, lose whatever we can.
+      modal_battle_add_consequence(modal,NS_itemid_gold,-casino_stakes);
+    } else { // No gold? Break the deadbeat's kneecaps!
+      modal_battle_add_consequence(modal,NS_itemid_heart,-1);
+    }
+    
+  /* If Dot won, double the stakes and check whether she can afford that.
+   * If so, offer to play again.
+   * Otherwise, cash her out.
+   * Set (casino_stakes) to the next value -- zero if we finalized.
+   */
+  } else {
+    int next_stakes=casino_stakes<<1;
+    int gold=store_get_fld16(NS_fld16_gold);
+    if (gold>=next_stakes) {
+      casino_coward_prize=casino_stakes;
+      casino_stakes=next_stakes;
+    } else {
+      modal_battle_add_consequence(modal,NS_itemid_gold,casino_stakes);
+      game_get_item(NS_itemid_gold,casino_stakes);
+      casino_stakes=0;
+    }
+  }
 }
 
-/* Blackjack: Invite to play a hand.
- */
+static int cb_casino_raise(int optionid,void *userdata) {
+  if (optionid==362) { // Try again at higher stakes.
+    casino_replay();
+  } else {
+    game_get_item(NS_itemid_gold,casino_coward_prize);
+  }
+  return 1;
+}
  
+static void cb_casino_final(struct modal *modal,int outcome,void *userdata) {
+  if (outcome<=0) {
+    int gold=store_get_fld16(NS_fld16_gold);
+    if (gold>0) {
+      if ((gold-=casino_stakes)<0) gold=0;
+      store_set_fld16(NS_fld16_gold,gold);
+    } else {
+      game_hurt_hero();
+    }
+  } else if (casino_stakes) {
+    struct text_insertion insv[]={
+      {.mode='i',.i=casino_coward_prize},
+      {.mode='i',.i=casino_stakes},
+    };
+    struct modal_args_dialogue args={
+      .rid=RID_strings_battle,
+      .strix=360,
+      .insv=insv,
+      .insc=sizeof(insv)/sizeof(insv[0]),
+      .cb=cb_casino_raise,
+    };
+    struct modal *dialogue=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    if (!dialogue) return;
+    modal_dialogue_add_option_string(dialogue,RID_strings_battle,362); // Play Again, the default option.
+    modal_dialogue_add_option_string(dialogue,RID_strings_battle,361);
+  }
+}
+
+static void casino_replay() {
+  struct modal_args_battle args={
+    .battle=casino_battleid,
+    .args={
+      .difficulty=0x80,
+      .bias=bm_battle_bias(casino_battleid),
+      .lctl=1,
+      .rctl=0,
+      .lface=NS_face_dot,
+      .rface=NS_face_monster,
+    },
+    .cb=cb_casino,
+    .cb_final=cb_casino_final,
+    .right_name=354, // House
+  };
+  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
+  if (!modal) return;
+}
+
+static void begin_casino(int battleid) {
+  if (store_get_fld16(NS_fld16_gold)<CASINO_INITIAL_STAKES) {
+    struct text_insertion ins={.mode='i',.i=CASINO_INITIAL_STAKES};
+    struct modal_args_dialogue args={
+      .rid=RID_strings_battle,
+      .strix=359,
+      .insv=&ins,
+      .insc=1,
+    };
+    modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    return;
+  }
+  casino_stakes=CASINO_INITIAL_STAKES;
+  casino_battleid=battleid;
+  casino_replay();
+}
+
+/* The public entry points are trivial.
+ */
+void begin_poker() {
+  begin_casino(NS_battle_poker);
+}
 void begin_blackjack() {
-  fprintf(stderr,"%s:%d:TODO: %s\n",__FILE__,__LINE__,__func__);
+  begin_casino(NS_battle_blackjack);
 }
 
 /* Battle Bet: Select a wager and difficulty, then play a random battle.

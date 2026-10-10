@@ -3,19 +3,12 @@
  */
 
 #include "game/batsup/battle_internal.h"
+#include "game/batsup/cards.h"
 
 /* The pile will appear to be infinite, but they're lying on each other.
  * Only so many will actually be recorded, including the currently in-flight card if there is one.
  */
 #define CARD_LIMIT 8
-
-/* Rank in 0..12 and suit in 0..3.
- * Suits 0,1 are red and 2,3 black.
- * The tiles are arranged so.
- */
-#define RANK_FROM_CARDID(cardid) ((cardid)>>2)
-#define SUIT_FROM_CARDID(cardid) ((cardid)&3)
-#define COLOR_FROM_CARDID(cardid) (((cardid)&2)?0x000000ff:0xc00010ff)
 
 struct battle_slapping {
   struct battle hdr;
@@ -67,8 +60,7 @@ struct battle_slapping {
    * Each time (deckp) reaches 52, we reset and make up a new order.
    * That's fantastically unlikely. Maybe impossible.
    */
-  uint8_t deck[52];
-  int deckp;
+  struct deck deck;
 };
 
 #define BATTLE ((struct battle_slapping*)battle)
@@ -95,7 +87,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     // Where is the target card?
     int tix=0;
     int i=0; for (;i<52;i++) {
-      if (BATTLE->deck[i]==BATTLE->target) {
+      if (BATTLE->deck.cardidv[i]==BATTLE->target) {
         tix=i;
         break;
       }
@@ -136,30 +128,12 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
 }
 
-/* Shuffle the deck from scratch.
- */
- 
-static void slapping_shuffle(struct battle *battle) {
-  uint8_t initial[52];
-  int i=52;
-  while (i-->0) initial[i]=i;
-  for (i=52;i;) {
-    int p=rand()%i;
-    i--;
-    BATTLE->deck[i]=initial[p];
-    memmove(initial+p,initial+p+1,51-p);
-  }
-  BATTLE->deckp=0;
-  // There's a chance that the start of the deck contains cards visible in the pile.
-  // Since reshuffling shouldn't happen at all, and there wouldn't be any real consequences to it, I'll just let it happen.
-}
-
 /* Pick the target card.
  */
  
 static void slapping_pick_target(struct battle *battle) {
   int p=3+rand()%10;
-  BATTLE->target=BATTLE->deck[p];
+  BATTLE->target=BATTLE->deck.cardidv[p];
 }
 
 /* Generate message.
@@ -191,7 +165,7 @@ static int slapping_generate_message(struct battle *battle) {
 static int _slapping_init(struct battle *battle) {
   battle_normalize_bias(&BATTLE->playerv[0].skill,&BATTLE->playerv[1].skill,battle);
   BATTLE->inflight.cardid=-1;
-  slapping_shuffle(battle);
+  deck_shuffle(&BATTLE->deck);
   slapping_pick_target(battle);
   slapping_generate_message(battle);
   player_init(battle,BATTLE->playerv+0,battle->args.lctl,battle->args.lface);
@@ -218,7 +192,7 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
       bm_sound_pan(RID_sound_whack,player->who?PLAYER_PAN:-PLAYER_PAN);
       player->slap=1;
     }
-  } else if (BATTLE->deckp==player->slapp+2) { // +2 rather than +1 because (deckp) advances at the draw, not the landing
+  } else if (BATTLE->deck.cardidp==player->slapp+2) { // +2 rather than +1 because (deckp) advances at the draw, not the landing
     const double best=0.200;
     const double worst=0.800;
     player->ready=best+(1.0-player->skill)*(worst-best);
@@ -235,8 +209,8 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void slapping_deal(struct battle *battle) {
-  if (BATTLE->deckp>=52) slapping_shuffle(battle);
-  BATTLE->inflight.cardid=BATTLE->deck[BATTLE->deckp++];
+  if (deck_remaining(&BATTLE->deck)<1) deck_shuffle(&BATTLE->deck);
+  BATTLE->inflight.cardid=deck_draw(&BATTLE->deck);
   BATTLE->inflight.rx=(rand()%11)-5;
   BATTLE->inflight.ry=(rand()%11)-5;
   BATTLE->inflight.y=NS_sys_tilesize*-2.0;
@@ -345,48 +319,6 @@ static void player_render(struct battle *battle,struct player *player) {
   }
 }
 
-/* Render a card face-up.
- */
- 
-static void slapping_render_card(struct battle *battle,int x,int y,uint8_t cardid) {
-  int rank=RANK_FROM_CARDID(cardid);
-  int suit=SUIT_FROM_CARDID(cardid);
-  uint32_t color=COLOR_FROM_CARDID(cardid);
-  graf_decal(g_graf,x,y,NS_sys_tilesize*13,0,NS_sys_tilesize*3,NS_sys_tilesize*4);
-  int x1=x+6;
-  int y1=y+7;
-  graf_fancy(g_graf,x1,y1,0x00+rank,0,0,NS_sys_tilesize,color,0x808080ff);
-  x1+=7;
-  graf_fancy(g_graf,x1,y1,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff);
-  switch (rank) {
-    /* Common ranks show the suit in a fixed pattern.
-     * There are three columns always in the same places.
-     * Seven rows -- the odd rows are spaced halfway. Don't mix odd and even rows.
-     * Aside from Ace, this arrangement matches a very normal-looking Bicycle deck I had laying around.
-     */
-    #define _(col,row) { \
-      int X=x+11+col*12; \
-      int Y=y+20+row*5; \
-      graf_fancy(g_graf,X,Y,0x10+suit,0,0,NS_sys_tilesize,color,0x808080ff); \
-    }
-    case 0: _(1,3) break;
-    case 1: _(1,0) _(1,6) break;
-    case 2: _(1,0) _(1,3) _(1,6) break;
-    case 3: _(0,0) _(2,0) _(0,6) _(2,6) break;
-    case 4: _(0,0) _(2,0) _(0,6) _(2,6) _(1,3) break;
-    case 5: _(0,0) _(2,0) _(0,6) _(2,6) _(0,3) _(2,3) break;
-    case 6: _(0,0) _(2,0) _(0,6) _(2,6) _(0,3) _(2,3) _(1,1) break;
-    case 7: _(0,0) _(2,0) _(0,6) _(2,6) _(0,3) _(2,3) _(1,1) _(1,5) break;
-    case 8: _(0,0) _(0,2) _(0,4) _(0,6) _(2,0) _(2,2) _(2,4) _(2,6) _(1,3) break;
-    case 9: _(0,0) _(0,2) _(0,4) _(0,6) _(2,0) _(2,2) _(2,4) _(2,6) _(1,1) _(1,5) break;
-    #undef _
-    // Face cards are a 3x3 decal, and don't have variations or color:
-    case 10: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*4,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
-    case 11: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*7,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
-    case 12: graf_decal(g_graf,x,y+NS_sys_tilesize,NS_sys_tilesize*10,NS_sys_tilesize,NS_sys_tilesize*3,NS_sys_tilesize*3); break;
-  }
-}
-
 /* Render the stationary cards midscreen.
  */
  
@@ -406,7 +338,7 @@ static void slapping_render_pile(struct battle *battle) {
       p=0;
       card=BATTLE->cardv;
     }
-    slapping_render_card(battle,midx-t15+card->rx,midy-2*ts+card->ry,card->cardid);
+    card_render(midx-t15+card->rx,midy-2*ts+card->ry,card->cardid);
   }
 }
 
@@ -422,7 +354,7 @@ static void _slapping_render(struct battle *battle) {
   if (BATTLE->inflight.cardid>=0) {
     int x=(int)BATTLE->inflight.x-NS_sys_tilesize-(NS_sys_tilesize>>1);
     int y=(int)BATTLE->inflight.y-(NS_sys_tilesize<<1);
-    graf_decal(g_graf,x,y,NS_sys_tilesize*13,NS_sys_tilesize*4,NS_sys_tilesize*3,NS_sys_tilesize*4);
+    card_render(x,y,0xff);
   }
   player_render(battle,BATTLE->playerv+0);
   player_render(battle,BATTLE->playerv+1);

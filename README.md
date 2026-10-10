@@ -35,26 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- Low-hanging fruit to address this last week before GDEX:
-- [x] Fish odds are still broken somehow. Immediately after buying the fishpole, I fished twice in the same spot and the second time rejected. You should get at least 3.
-- - Because `g.fishclock` was treated as a bound for a random choice. Nixed that, now it's just a clock, and you can usually catch 3 fish in a row.
-- [x] Guild sprites: Timeout the reentry protection.
-- [x] Move hookshot into blue captain's tent, that's where the quest ends.
-- [x] Fishwife seems to reject a sale if it would saturate your gold. Fine to reject if you're already maxed, but do it if partial.
-- [x] Cartographer should not sell hints before the Princess is rescued. Before that, he should direct you to the mountains.
-- [x] Regex contest has `/[a-zA-z]/` as a typo, but I think that's actually technically valid. Rephrase. ...confirmed, it is valid in JS.
-- - ...added `etc/tool/validate_regex.js` to check these faster in the future. The one called out above does fail it.
-- [x] Passing thru an unopened buried door backward should open it. eg you can reach the south jungle heart container with snowglobe instead of shovel.
-- [x] Ignore dpad as the pause modal closes. Sometimes I register an extra stroke after dismissing.
-- [x] 10-key modal, at the surveyor puzzle, failed to wrap position downward.
-- [x] Look for incomplete edges in the outerworld. I know at least the jungle/isthmus junction is still unfinished.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
-- [x] What happens if you straight up abandon the Princess on the way back from a walk, but do enter the castle? Needs to be some distance threshold where the walk doesn't count.
-- - ...and now that I think about it, this applies to the rescue quest too.
-- - We should require that she be visible when you enter a door.
-- - We're good already. She fails to walk thru the door right around the visibility limit.
-
-- [x] Does the Princess quest need nerfed a little? It might be too much walking, and not enough dodging space.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
 - - [ ] Spell of Bridging: Generate a temporary walkable spot, over adjacent water cells. Lasts long enough that you can step there and re-cast the spell.
@@ -63,12 +44,11 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] `sprite:130-buck` is available for reuse; orphaned because i didn't know what "steer" means, oops.
 - [ ] Things, hearts, and purse stories: Maybe not necessary to run it the first time. It's a source of conflict, maybe we just drop the trigger.
 - [ ] Poker at the casino. UI in place and activity ready to write.
-- [ ] Blackjack at the casino. UI in place and activity ready to write.
+- [x] Blackjack at the casino. UI in place and activity ready to write.
 - [ ] Some fireworks when an animal gets captured. "+5 Gold" does the trick, but when your purse is maxed, it feels dead.
 - [ ] Have the knitter give a purse upgrade instead of Bell. Make Wrapping Contest the only way to get Bell.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
-- [x] Eliminate random no-fish. Fishing should only fail when you've exhausted it. ...it's already eliminated. The clock can be deceptive maybe? But I think behavior is correct.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
 - [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
 - [ ] Fairy Gobmother, in one of the new goblin-cave rooms. General advice.
@@ -95,9 +75,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Exteriors.
 - - [ ] Dot's house
 - - - Ensure the underground entrance is not obvious but doesn't need items to enter.
-- [x] Battlefield
-- - [x] Blue Captain's tent
-- - [x] Red Captain's tent
 - [ ] Tundra
 - - [ ] "tuns" of exterior space to fill.
 - - [ ] Magnetic North interior.
@@ -126,15 +103,12 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Inconvenience Store
 - [ ] Underground.
 - - [ ] Lots of monsters everywhere, and we can put really hard ones down here.
-- - [ ] We made `flammable` cells but haven't used yet. Block some regions such that you have to bomb thru. Maybe the Wishing Well?
 
 - Battle repairs.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
-- [x] cpr: It's weird how your winning stroke is Down but the patient pops Up. Can we delay his reaction or something, make it feel bouncier?
-- [x] homerunderby: I don't like how foul tips count immediately as a Strike.
+- [ ] cheesecutting: Winner should fart at the end.
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
-- [x] rescuing: Eliminate the blood and make it more cartoony somehow. Blood might put us in a harsher ratings category.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?

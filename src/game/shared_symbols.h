@@ -565,6 +565,8 @@
 #define NS_battle_whining 103
 #define NS_battle_wining 104
 #define NS_battle_chanting 105
+#define NS_battle_poker 106
+#define NS_battle_blackjack 107
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -670,7 +672,9 @@
   _(remembering) \
   _(whining) \
   _(wining) \
-  _(chanting)
+  _(chanting) \
+  _(poker) \
+  _(blackjack)
 
 /* "fld" are single bits.
  */
