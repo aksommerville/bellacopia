@@ -60,7 +60,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   
   player->walkspeed=45.0*(1.0-player->skill)+55.0*player->skill; // 40 is really hard (with friction 0.5 and gravity 40).
   player->friction=0.250*(1.0-player->skill)+0.600*player->skill; // High friction makes it really hard; you just can't get under the tomato. Low friction forces you to play jitterier and feels more correct.
-  player->gravity=40.0;
+  player->gravity=50.0*(1.0-player->skill)+20.0*player->skill;
   
   if (player->human=human) { // Human.
   } else { // CPU.
@@ -164,14 +164,18 @@ static void player_update_common(struct battle *battle,struct player *player,dou
    * Here we'll apply gravity and escape the head.
    * Alternately: After winning, the tomato slides back to the top of your head.
    */
+  double headx=player->x;
+  double heady=GROUNDY-24.0;
   if (player->win) {
     if (player->tomx>player->x+1.0) player->tomx-=10.0*elapsed;
     else if (player->tomx<player->x-1.0) player->tomx+=10.0*elapsed;
+    // Don't let her grow a tomato beard! If it's below our center, teleport up.
+    if (player->tomy>heady) {
+      player->tomy=heady-(player->tomy-heady);
+    }
   } else {
     player->tomy+=player->gravity*elapsed;
   }
-  double headx=player->x;
-  double heady=GROUNDY-24.0;
   double headr=8.0;
   double tomr=8.5;
   double dx=player->tomx-headx;
@@ -196,6 +200,7 @@ static void player_update_common(struct battle *battle,struct player *player,dou
    * Modify (xform) if necessary so the hero looks at what she's done.
    */
   if (player->tomy>GROUNDY) {
+    bm_sound_pan(RID_sound_splat,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->splat=1;
     if (player->tomx<player->x) player->xform=EGG_XFORM_XREV;
     else player->xform=0;
