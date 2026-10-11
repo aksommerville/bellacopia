@@ -230,10 +230,14 @@ static struct batsup_sprite *player_init(struct battle *battle,int id,int ctl,in
   SPRITE->qy=NS_sys_maph>>1;
   if (id==SPRITEID_LEFT) {
     SPRITE->qx=NS_sys_mapw>>2;
-    SPRITE->facedx=1;
   } else {
     SPRITE->qx=(NS_sys_mapw*3)>>2;
-    SPRITE->facedx=-1;
+  }
+  switch (rand()&3) {
+    case 0: SPRITE->facedx=-1; break;
+    case 1: SPRITE->facedx=1; break;
+    case 2: SPRITE->facedy=-1; break;
+    case 3: SPRITE->facedy=1; break;
   }
   sprite->x=SPRITE->qx+0.5;
   sprite->y=SPRITE->qy+0.5;
