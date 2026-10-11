@@ -275,3 +275,11 @@ const struct sprite_type sprite_type_icedragon={
   .collide=_icedragon_collide,
   .render=_icedragon_render,
 };
+
+/* Public accessors.
+ */
+ 
+int sprite_icedragon_is_occupied(const struct sprite *sprite) {
+  if (!sprite||(sprite->type!=&sprite_type_icedragon)) return 0;
+  return (SPRITE->state==STATE_OCCUPIED);
+}

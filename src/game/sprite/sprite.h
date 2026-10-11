@@ -143,6 +143,8 @@ int sprite_trickfloor_hint(int *x,int *y,const struct sprite *sprite,int fld);
 
 void sprite_landmine_explode(struct sprite *sprite);
 
+int sprite_icedragon_is_occupied(const struct sprite *sprite);
+
 /* Sprite group.
  *******************************************************************/
  

@@ -85,6 +85,32 @@ static void _icedragon_inter_update(struct sprite *sprite,double elapsed) {
   SPRITE->dy+=SPRITE->ndy*accel*elapsed;
   sprite->x+=SPRITE->dx*elapsed;
   sprite->y+=SPRITE->dy*elapsed;
+  
+  /* If there's a visible and occupied icedragon sprite, defunct me.
+   * Their states are reduced before we get created, so it can only be the upcoming one (ie the same dragon that I am).
+   */
+  struct sprite **otherp=GRP(visible)->sprv;
+  int otheri=GRP(visible)->sprc;
+  for (;otheri-->0;otherp++) {
+    struct sprite *other=*otherp;
+    if (other->type!=&sprite_type_icedragon) continue;
+    if (!sprite_icedragon_is_occupied(other)) continue;
+    int visible=0;
+    if (other->z==g.camera.z) {
+      int otherx=(int)(other->x*NS_sys_tilesize);
+      int othery=(int)(other->y*NS_sys_tilesize);
+      if (
+        (otherx>=g.camera.rx-NS_sys_tilesize)&&
+        (othery>=g.camera.ry-NS_sys_tilesize)&&
+        (otherx<=g.camera.rx+FBW+NS_sys_tilesize)&&
+        (othery<=g.camera.ry+FBH+NS_sys_tilesize)
+      ) visible=1;
+    }
+    if (visible) {
+      sprite_kill_soon(sprite);
+      return;
+    }
+  }
 }
 
 static void _icedragon_inter_render(struct sprite *sprite,int x,int y) {

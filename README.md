@@ -48,7 +48,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
-- [ ] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
+- [x] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
 - [ ] Fairy Gobmother, in one of the new goblin-cave rooms. General advice.
 - [ ] Walking the Princess feels excessive. Reduce the mandatory walks to 2 or 3. Maybe also make a few battles mandatory?
 
