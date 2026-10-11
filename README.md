@@ -36,7 +36,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 ## TODO
 
 - [x] nerf the balancing contest
-- [ ] Once a few stories have been told, the satisfied trees should point you to an unsatisfied one. Like how the unsatisfied trees point you to a story.
+- [x] Once a few stories have been told, the satisfied trees should point you to an unsatisfied one. Like how the unsatisfied trees point you to a story.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
