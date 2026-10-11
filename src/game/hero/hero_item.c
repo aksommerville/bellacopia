@@ -472,7 +472,7 @@ static int hookshot_set_pumpkin(struct sprite *sprite,struct sprite *pumpkin) {
     }
     if (sprite_group_add(SPRITE->pumpkin,pumpkin)<0) return -1;
     SPRITE->pumpkin_physics=pumpkin->physics;
-    pumpkin->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole));
+    pumpkin->physics&=~((1<<NS_physics_water)|(1<<NS_physics_hole)|(1<<NS_physics_safe));
     if (sprite_group_has(GRP(update),pumpkin)) {
       SPRITE->pumpkin_update=1;
       sprite_group_remove(GRP(update),pumpkin);
