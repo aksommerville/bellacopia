@@ -35,8 +35,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
-- [x] nerf the balancing contest
-- [x] Once a few stories have been told, the satisfied trees should point you to an unsatisfied one. Like how the unsatisfied trees point you to a story.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...
@@ -50,10 +48,10 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make a fish that can only be caught in the dark.
 - [ ] `sprite:nurse` and `activity:bloodbank` have been removed. We can delete the sprite and activity if that's final.
 - [ ] Earn the labyrinth story travelling either direction. If you skip the escalator -- can do without cheating -- you get the story.
-- [x] Can we make the decorative flying Ice Dragon disappear when a stationary one becomes visible? It's possible, with a Broom.
 - [ ] Fairy Gobmother, in one of the new goblin-cave rooms. General advice.
 - [ ] Walking the Princess feels excessive. Reduce the mandatory walks to 2 or 3. Maybe also make a few battles mandatory?
-- [x] Should be able to Hookshot monsters onto the zoo carpet. Right now you can't, I guess because it's `NS_physics_safe`?
+- [ ] Add a fortune teller at Goody's house, sells readings from a Crystal Ball for two bucks or so.
+- - [ ] But if you have a Crystal Ball too, she challenges you to a Crystal Bowling contest.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
