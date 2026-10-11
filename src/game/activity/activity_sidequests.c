@@ -303,6 +303,176 @@ static int compare_item_names(const char *a,int ac,const char *b,int bc) {
     if (cha>chb) return 1;
   }
 }
+
+static const struct invcritic_advice {
+  int itemid,strix;
+} invcritic_advicev[]={
+  {NS_itemid_stick,130},
+  {NS_itemid_broom,131},
+  {NS_itemid_divining,131},
+  {NS_itemid_match,131},
+  {NS_itemid_wand,131},
+  {NS_itemid_fishpole,131},
+  {NS_itemid_bugspray,132},
+  {NS_itemid_potion,133},
+  {NS_itemid_hookshot,134},
+  {NS_itemid_candy,132},
+  {NS_itemid_magnifier,135},
+  {NS_itemid_vanishing,136},
+  {NS_itemid_compass,137},
+  {NS_itemid_bell,138},
+  {NS_itemid_barrelhat,138},
+  {NS_itemid_telescope,135},
+  {NS_itemid_shovel,139},
+  {NS_itemid_pepper,136},
+  {NS_itemid_bomb,140},
+  {NS_itemid_stopwatch,141},
+  {NS_itemid_busstop,140},
+  {NS_itemid_snowglobe,142},
+  {NS_itemid_tapemeasure,143},
+  {NS_itemid_phonograph,144},
+  {NS_itemid_crystal,145},
+  {NS_itemid_glove,146},
+  {NS_itemid_marionette,147},
+};
+
+// Zero or strix in strings:advice, for some outstanding item.
+static int invcritic_get_extra_advice() {
+  
+  /* First, record and count all the items we currently have.
+   */
+  int itemc=0;
+  uint8_t have[16]={0}; // Bits by itemid, little-endianly.
+  const struct invstore *invstore=g.store.invstorev;
+  int i=INVSTORE_SIZE;
+  for (;i-->0;invstore++) {
+    if (!invstore->itemid) continue;
+    itemc++;
+    int major=invstore->itemid>>3;
+    if ((major<0)||(major>=sizeof(have))) continue;
+    have[major]|=1<<(invstore->itemid&7);
+  }
+  //if (itemc<13) return 0; // Initially I thought we'd give advice only when some progress has been made. But now I think it's better to advise always.
+  
+  /* A parallel bitmap for items eligible to be advised about.
+   * It's fine to leave stray bits set; only those mentioned in (invcritic_advicev) will actually come into play.
+   * So initially it's just the complement of (have).
+   */
+  uint8_t recommend[sizeof(have)];
+  for (i=sizeof(have);i-->0;) recommend[i]=~have[i];
+  
+  /* Then a bunch of sensitive narrative decisions.
+   * Try not to recommend things that aren't currently reachable.
+   */
+  #define HAVE(tag) (have[NS_itemid_##tag>>3]&(1<<(NS_itemid_##tag&7)))
+  #define NOPE(tag) { recommend[NS_itemid_##tag>>3]&=~(1<<(NS_itemid_##tag&7)); }
+  if (!HAVE(broom)) {
+    // Lot of things are "Broom or Hookshot", but Marionette also specifically requires a Broom.
+    NOPE(marionette)
+    // Don't recommend buying the broom unless her purse is large enough. There should be more actionable advice we can give.
+    if (store_get_fld16(NS_fld16_goldmax)<100) NOPE(broom)
+  }
+  if (!HAVE(hookshot)&&!HAVE(broom)&&!HAVE(busstop)) {
+    // Without these items, one is severely limited in travel.
+    // Of course, you and I know that most of these actually can be got, using the underground carefully.
+    // But the teacher wants to give *sensible* advice, not just *theoretically valid* advice. :)
+    NOPE(magnifier)
+    NOPE(compass)
+    NOPE(bell)
+    NOPE(telescope)
+    NOPE(shovel)
+    NOPE(pepper)
+    NOPE(vanishing) // We recommend buying it from the castle shop.
+    NOPE(bomb)
+    NOPE(busstop)
+    NOPE(snowglobe)
+    NOPE(tapemeasure)
+    NOPE(phonograph)
+    NOPE(glove)
+    NOPE(marionette)
+  }
+  if (!HAVE(fishpole)) NOPE(glove) // Can't summon the sea monster without a fishpole, and the glove is in his belly.
+  if (HAVE(bell)) NOPE(barrelhat) // Barrel hats are done if you have the Bell; don't recommend them.
+  if (!HAVE(stick)) {
+    // Not a big deal, but don't recommend wood products when she doesn't have a stick.
+    NOPE(broom)
+    NOPE(divining)
+    NOPE(wand)
+    NOPE(fishpole)
+  }
+  if (!HAVE(hookshot)&&!HAVE(snowglobe)) {
+    // Need a Hookshot or Snowglobe to get into the Inconvenience Store.
+    NOPE(bomb) // There are other ways to get Bomb, but we only discuss the Inconvenience Store.
+    NOPE(busstop)
+  }
+  if (!HAVE(candy)) {
+    // There's more than one way thru the Ice Palace's flamethrowers but Candy is the obvious one.
+    NOPE(snowglobe)
+  }
+  
+  /* Now collect a list of candidate strix for items we don't have.
+   * There are duplicates in the reference data and I think that's ok.
+   * Might be possible to end up empty here, definitely worth a check.
+   */
+  int candidatev[26];
+  int candidatec=0;
+  const struct invcritic_advice *advice=invcritic_advicev;
+  i=sizeof(invcritic_advicev)/sizeof(invcritic_advicev[0]);
+  for (;i-->0;advice++) {
+    if (!(recommend[advice->itemid>>3]&(1<<(advice->itemid&7)))) continue;
+    candidatev[candidatec++]=advice->strix;
+    if (candidatec>=26) break;
+  }
+  if (candidatec<1) return 0;
+  
+  /* The choice is not random!
+   * You can't just talk to me over and over and get all the outstanding advice.
+   * Take the sum of all present itemid, and that's the candidate index.
+   * Gaining or losing an item changes our advice.
+   * It's possible there are advices that are not mathematically reachable. Not going to worry about it.
+   */
+  int candidatep=0;
+  for (invstore=g.store.invstorev,i=INVSTORE_SIZE;i-->0;invstore++) {
+    candidatep+=invstore->itemid; // zeroes don't affect it
+  }
+  candidatep%=candidatec;
+  int strix=candidatev[candidatep];
+  
+  return strix;
+  #undef HAVE
+  #undef NOPE
+}
+
+static void invcritic_not_ready(struct sprite *sprite) {
+  /* Always begin with "You need 26 things".
+   * If we have additional advice (we should always), append a newline and then that.
+   */
+  char text[256];
+  int textc=0;
+  const char *src=0;
+  int srcc=text_get_string(&src,RID_strings_dialogue,101);
+  if ((srcc<0)||(srcc>=sizeof(text))) { // oops
+    begin_dialogue(101,sprite);
+    return;
+  }
+  memcpy(text,src,textc=srcc);
+  int extra_strix=invcritic_get_extra_advice();
+  if (extra_strix) {
+    text[textc++]=0x0a;
+    srcc=text_get_string(&src,RID_strings_advice,extra_strix);
+    if (textc<=sizeof(text)-srcc) {
+      memcpy(text+textc,src,srcc);
+      textc+=srcc;
+    }
+  }
+  struct modal_args_dialogue args={
+    .text=text,
+    .textc=textc,
+    .speaker=sprite,
+    .userdata=sprite,
+  };
+  modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+}
  
 void begin_invcritic(struct sprite *initiator) {
   if (store_get_fld(NS_fld_hc3)) {
@@ -323,7 +493,7 @@ void begin_invcritic(struct sprite *initiator) {
   int i=INVSTORE_SIZE-1;
   for (;i-->0;invstore++) {
     if (!invstore->itemid) {
-      begin_dialogue(101,initiator);
+      invcritic_not_ready(initiator);
       return;
     }
     const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
@@ -334,7 +504,7 @@ void begin_invcritic(struct sprite *initiator) {
   //...and then the equipped item...
   invstore=g.store.invstorev;
   if (!invstore->itemid) {
-    begin_dialogue(101,initiator);
+    invcritic_not_ready(initiator);
     return;
   }
   const struct item_detail *detail=item_detail_for_itemid(invstore->itemid);
