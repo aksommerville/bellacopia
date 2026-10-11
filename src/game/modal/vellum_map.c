@@ -74,6 +74,7 @@ static void map_change_puzzle(struct vellum *vellum,int p) {
   if (p<0) return;
   int c=sizeof(puzzlev)/sizeof(puzzlev[0]);
   if (p>=c) return;
+  bm_sound(RID_sound_uiactivate);
   VELLUM->puzzlep=p;
   jigsaw_cleanup(&VELLUM->jigsaw);
   jigsaw_require(&VELLUM->jigsaw,puzzlev[VELLUM->puzzlep].z);
