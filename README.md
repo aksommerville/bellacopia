@@ -35,6 +35,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] Progress bar on stats vellum appears to be using unweighted progress, but the percentage shown on top of it is weighted. Get all the Root Devils first, you'll see the bar is way shorter than the pct.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...

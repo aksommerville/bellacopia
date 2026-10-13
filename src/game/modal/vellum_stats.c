@@ -169,7 +169,10 @@ static void stats_render_completable(uint32_t *dst,int y,struct vellum *vellum,c
     case 31: {
         int boxh=font_get_line_height(g.font);
         int boxw=VELLUM->texw-sepx-5;
-        int barw=comp->denom?((comp->numer*boxw)/comp->denom):0;
+        // Using (pct) instead of the original weights loses a little resolution -- filling a 120 px space with 100 px of content.
+        // But the weighted values are not available from here, and relax, it's close enough.
+        // The unweighted (numer,denom) are available but those are blatantly wrong.
+        int barw=(VELLUM->pct*boxw)/100;
         stats_fill_rect(dst,VELLUM->texw,VELLUM->texh,sepx+5,y-1,boxw,boxh,0xa08060ff);
         stats_fill_rect(dst,VELLUM->texw,VELLUM->texh,sepx+5,y-1,barw,boxh,0x000000ff);
         char pcttext[8];
