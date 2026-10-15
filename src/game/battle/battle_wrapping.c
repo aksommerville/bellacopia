@@ -115,7 +115,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
   }
   switch (face) {
     case NS_face_monster: {
-        player->color=0x808080ff;//TODO
+        player->color=0x808080ff;
       } break;
     case NS_face_dot: {
         player->color=0x411775ff;
@@ -157,6 +157,27 @@ static void player_queue_next(struct battle *battle,struct player *player) {
   player->queueoffset=1.0;
 }
 
+/* Get bounds for the active zone of current paper.
+ */
+ 
+static void wrapping_get_active_bounds(int *l,int *r,int *t,int *b,const struct battle *battle,const struct player *player) {
+  const int margin=10;
+  const int minimum=10;
+  *l=player->px+margin;
+  *r=player->px+player->pw-margin;
+  *t=player->py+margin;
+  *b=player->py+player->ph-margin;
+  // Safety net, force to a minimum size:
+  if (*r-*l<minimum) {
+    *l=((*r+*l)>>1)-(minimum>>1);
+    *r=(*l)+minimum;
+  }
+  if (*b-*t<minimum) {
+    *t=((*t+*b)>>1)-(minimum>>1);
+    *b=(*t)+minimum;
+  }
+}
+
 /* Commit active gift at the current location.
  */
  
@@ -168,12 +189,9 @@ static void player_commit(struct battle *battle,struct player *player) {
   const int margin=10; // Minimum width is 40, so this is never more than half of the visible paper. Must be at least 8, otherwise the toy's edge might be off the paper.
   int x=(int)player->x;
   int y=(int)player->y;
-  if (
-    (x<player->px+margin)||
-    (y<player->py+margin)||
-    (x>=player->px+player->pw-margin)||
-    (y>=player->py+player->ph-margin)
-  ) {
+  int bl,br,bt,bb;
+  wrapping_get_active_bounds(&bl,&br,&bt,&bb,battle,player);
+  if ((x<bl)||(x>br)||(y<bt)||(y>bb)) {
     bm_sound_pan(RID_sound_reject,player->who?PLAYER_PAN:-PLAYER_PAN);
     player->reject=0.500;
     return;
@@ -268,6 +286,13 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
     double t=((rand()&0xffff)*M_PI*2.0)/65535.0;
     targetx=player->cpudstx=player->px+player->pw*0.5+sin(t)*error;
     targety=player->cpudsty=player->py+player->ph*0.5+cos(t)*error;
+    // Force in bounds. I've seen it fail at the edges.
+    int bl,br,bt,bb;
+    wrapping_get_active_bounds(&bl,&br,&bt,&bb,battle,player);
+    if ((int)player->cpudstx<=bl+3) targetx=player->cpudstx=bl+4.0;
+    if ((int)player->cpudstx>=br-3) targetx=player->cpudstx=br-4.0;
+    if ((int)player->cpudsty<=bt+3) targety=player->cpudsty=bt+4.0;
+    if ((int)player->cpudsty>=bb-3) targety=player->cpudsty=bb-4.0;
   }
   
   /* Steer toward the targets if we're some small interval away.

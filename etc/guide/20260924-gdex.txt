@@ -39,7 +39,7 @@ Fun follow-up: Use that Bell to fill all the zoos.
 === Let the Spirits Drive ===
 
 1. Enter the house by the Cheapside bus stop.
-2. Push the chair and go downstairs.
+2. Push the top-right chair and go downstairs.
 3. Follow signs westward to the Mysterious Treasure. It's a Crystal Ball.
 4. Get the Crystal Ball and go back out the same way.
 5. Do what the Ball says.
@@ -89,9 +89,9 @@ Fun follow-up: Use that Bell to fill all the zoos.
 11. Take Vanishing Cream from the Princess, then abandon her. Follow the tunnel to its door and leave.
 12. Strangle Root Devil.
 13. Just south of that Root Devil, enter the cave and press the treadle.
-14. Around the corner southwest of there, strangle another Root Devil.
-15. Enter the Cheapside house by the bus stop, push chair, downstairs go East.
-16. Follow this tunnel all the way around the East edge (don't go up the first ladder).
+14. Enter the Cheapside house by the bus stop, push chair, go downstairs.
+15. South then East, through the motion sensor to another Root Devil.
+16. Back to where you came downstairs, follow this tunnel all the way around the East edge (don't go up the first ladder).
 17. Come out by the Fractia Root Devil; strangle him.
 
 6:38

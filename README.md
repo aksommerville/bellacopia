@@ -35,6 +35,9 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 
 ## TODO
 
+- [x] CPU repeatedly tried to mis-place a gift in Wrapping Contest, when goodluck in play (ie bias 0x10).
+- - A dozen test runs didn't repro so it must be right on an edge somewhere.
+- - Force minimum size at `player_random_paper` and it happens more reliably.
 - [x] Progress bar on stats vellum appears to be using unweighted progress, but the percentage shown on top of it is weighted. Get all the Root Devils first, you'll see the bar is way shorter than the pct.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -85,6 +88,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Botire
 - - [ ] Exterior. Make houses slightly less ugly.
 - - [ ] Inventory Critic
+- - - [ ] Add some desks and pupils. "Teacher makes us put everything in order!" etc.
 - - [ ] Knitter
 - - [ ] Underground entrance house
 - [ ] Jungle
@@ -94,7 +98,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Roof access room
 - [ ] Sea monster
 - - [ ] Parasites etc
-- - [ ] Path to the treasure should be dark.
+- - [ ] Path to the treasure should be dark. Can we make glowing fish that if you defeat them, no more glowing fish?
 - - [ ] Right now, one could enter and still miss the treasure. Don't let that happen, make it obvious.
 - [ ] South jungle
 - [ ] East desert

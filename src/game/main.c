@@ -54,6 +54,8 @@ void egg_client_notify(int k,int v) {
 /* Update.
  */
  
+static const int hispeed=1; // When no buttons held, update so many times faster.
+ 
 void egg_client_update(double elapsed) {
 
   /* Record the prior input state and capture next.
@@ -70,6 +72,11 @@ void egg_client_update(double elapsed) {
     if ((*v)&(EGG_BTN_R1|EGG_BTN_R2)) (*v)|=(EGG_BTN_R1|EGG_BTN_R2);
     // Also alias EAST to WEST -- we're not going to use EAST.
     if ((*v)&EGG_BTN_EAST) (*v)|=EGG_BTN_WEST;
+  }
+  
+  if ((hispeed>1)&&!(g.input[0]&0x7fff)) {
+    int i=hispeed-1;
+    while (i-->0) modals_update(elapsed);
   }
   
   modals_update(elapsed);
