@@ -32,13 +32,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Players were not at all drawn toward Root Devils. Maybe that will change when there's more narrative setup?
 - 2026-08-12: June and July were very productive. August and September won't be, due to jams and GDEX, but I feel like we're over the hump.
 - 2026-09-12: js13k and Uplifting 9 close tomorrow, and GDEX jam starts in a week. Sept probably done for dev, but it was a great 12 days, feeling really good about GDEX readiness.
+- 2026-10-19: GDEX 2026. See notes and logs in my `gdex2026` repo. Very positive, people really enjoyed it.
 
 ## TODO
 
-- [x] CPU repeatedly tried to mis-place a gift in Wrapping Contest, when goodluck in play (ie bias 0x10).
-- - A dozen test runs didn't repro so it must be right on an edge somewhere.
-- - Force minimum size at `player_random_paper` and it happens more reliably.
-- [x] Progress bar on stats vellum appears to be using unweighted progress, but the percentage shown on top of it is weighted. Get all the Root Devils first, you'll see the bar is way shorter than the pct.
+- [ ] Consider options for making battles more progressive. Increasing difficulty, increasing payouts...
+- [ ] Definitely need better guidance at the very start. Make sure they understand root devils are the goal. And push the Divining Rod somehow.
+- [x] Lock guilds before the election starts. And have the registrar lead you with some dialogue "Go rustle up your supporters now", something like that.
+- [x] If you re-touch a guild member already won, they should ask first, "want to play again?"
+- [ ] weaving: If the first stroke is inconclusive, try others. Or maybe skip that first-stroke logic altogether, and give them whichever direction is more favorable.
+- [ ] Don't require alignment for bump triggers; they should trigger instantly.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
 - [ ] More spells. Not sure what...

@@ -162,36 +162,61 @@ static void guild_cb_final(struct modal *modal,int outcome,void *userdata) {
   }
 }
 
-/* Collide.
+/* Begin battle.
  */
  
-static void _guild_collide(struct sprite *sprite,struct sprite *other) {
-  if (SPRITE->cooldown>0.0) return;
+static void guild_begin_battle(struct sprite *sprite) {
   struct modal_args_battle args={
     .battle=SPRITE->battle,
     .args={
       .difficulty=0x80,
       .bias=bm_battle_bias(SPRITE->battle),
+      .lctl=1,
+      .lface=NS_face_dot,
       .rctl=0,
       .rface=NS_face_monster,
     },
     .userdata=sprite,
     .right_name=SPRITE->name_strix,
+    .cb=guild_cb_battle,
+    .cb_final=guild_cb_final,
   };
+  modal_spawn(&modal_type_battle,&args,sizeof(args));
+}
 
-  if (other->type==&sprite_type_hero) {
-    args.args.lctl=1;
-    args.args.lface=NS_face_dot;
-    args.args.bias=bm_battle_bias(SPRITE->battle);
-    args.cb=guild_cb_battle;
-    args.cb_final=guild_cb_final;
-  } else {
+/* Play again?
+ */
+ 
+static int guild_cb_again(int optionid,void *userdata) {
+  struct sprite *sprite=userdata;
+  if (optionid!=4) return 0;
+  guild_begin_battle(sprite);
+  return 0;
+}
+
+/* Collide.
+ */
+ 
+static void _guild_collide(struct sprite *sprite,struct sprite *other) {
+  if (!other||(other->type!=&sprite_type_hero)) return;
+  if (SPRITE->cooldown>0.0) return;
+  SPRITE->cooldown=0.500;
+  if (sprite->tileid==SPRITE->tileid0+1) {
+    struct modal_args_dialogue args={
+      .rid=RID_strings_dialogue,
+      .strix=201,
+      .speaker=sprite,
+      .cb=guild_cb_again,
+      .userdata=sprite,
+    };
+    struct modal *modal=modal_spawn(&modal_type_dialogue,&args,sizeof(args));
+    if (!modal) return;
+    modal_dialogue_add_option_string(modal,RID_strings_dialogue,4);
+    modal_dialogue_add_option_string(modal,RID_strings_dialogue,5);
+    modal_dialogue_set_default(modal,5);
     return;
   }
-
-  struct modal *modal=modal_spawn(&modal_type_battle,&args,sizeof(args));
-  if (!modal) return;
-  SPRITE->cooldown=1.000; // Kind of a long cooldown but it's cancellable by changing orientation.
+  guild_begin_battle(sprite);
 }
 
 /* Type definition.

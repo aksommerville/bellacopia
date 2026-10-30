@@ -46,6 +46,7 @@ static int cb_board_of_elections_register(int optionid,void *userdata) {
   if (optionid==4) { // "yes"
     bm_sound(RID_sound_uiactivate);
     store_set_fld(NS_fld_election_start,1);
+    begin_dialogue(200,0);
     return 1;
   }
   return 0;

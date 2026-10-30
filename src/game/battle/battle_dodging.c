@@ -13,9 +13,9 @@
 #define GUN_ANGLE_RANGE (M_PI*0.200) /* How far off cardinal can the guns aim? Either direction. <pi/2 */
 #define GUN_MARGIN 8 /* How far we rest, from edge of screen. */
 #define GUN_OFF_MARGIN 16 /* Minimum distance from bounding edges. */
-#define GUN_PERIOD_INITIAL 0.300
+#define GUN_PERIOD_INITIAL 0.500
 #define GUN_PERIOD_FINAL 0.100
-#define GUN_PERIOD_DELTA 0.020
+#define GUN_PERIOD_DELTA 0.010
 
 #define GUN_STAGE_ENTER 1
 #define GUN_STAGE_MENACE 2
