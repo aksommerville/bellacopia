@@ -279,6 +279,11 @@ const struct battle_input battle_input_vert_a[]={
   {0},
 };
 
+const struct battle_input battle_input_vert_ab[]={
+  {1,EGG_BTN_UP|EGG_BTN_DOWN|EGG_BTN_SOUTH|EGG_BTN_WEST},
+  {0},
+};
+
 const struct battle_input battle_input_a_mash[]={
   {1,EGG_BTN_SOUTH},
   {1,0},

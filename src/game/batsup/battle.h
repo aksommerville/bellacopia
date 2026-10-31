@@ -81,6 +81,7 @@ extern const struct battle_input battle_input_vert[];
 extern const struct battle_input battle_input_horz_a[];
 extern const struct battle_input battle_input_horz_ab[];
 extern const struct battle_input battle_input_vert_a[];
+extern const struct battle_input battle_input_vert_ab[];
 extern const struct battle_input battle_input_a_mash[];
 extern const struct battle_input battle_input_a_hold[];
 extern const struct battle_input battle_input_ab_alternate[];

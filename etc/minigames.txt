@@ -111,7 +111,7 @@
   2____D Regex             Globlin            Goblins
   2____D Remembering       Crow               Desert
   2____D Rescuing          Firefighter        Fractia
-  2      Robohorse         Groom              Battlefield
+  2____D Robohorse         Groom              Battlefield
   2      Rodeo             Cowpoke            Desert
  R2      Rollerskates      Rabbit             Woodland
   2      Rowing            Viking             Sea

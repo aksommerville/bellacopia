@@ -56,7 +56,6 @@ Bombing. Mini Super Bomberman?
 Dance Off. Tiny rhythm game on the dpad.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
 Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
-Robohorse. L/R control the horse's two legs. QWOP-ish.
 
 ## More ideas that occurred late. (not in minigames.txt)
 Invading. Space Invaders, play as the horde.

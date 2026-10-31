@@ -567,6 +567,7 @@
 #define NS_battle_chanting 105
 #define NS_battle_poker 106
 #define NS_battle_blackjack 107
+#define NS_battle_robohorse 108
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -674,7 +675,8 @@
   _(wining) \
   _(chanting) \
   _(poker) \
-  _(blackjack)
+  _(blackjack) \
+  _(robohorse)
 
 /* "fld" are single bits.
  */
