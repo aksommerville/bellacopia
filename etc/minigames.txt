@@ -75,7 +75,7 @@
   2____D Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle
  R2____D Jumprope          Joey               Desert
- R2      KarateChop        Sensei             Battlefield
+ R2____D KarateChop        Skeleton           Underground
   2____D Latin             Teacher            Fractia
   2____D Lawnmowing        Gardener           Fractia
   2____D Laziness          Sloblin            Goblins

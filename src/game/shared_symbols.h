@@ -571,6 +571,7 @@
 #define NS_battle_popping 109
 #define NS_battle_hopscotch 110
 #define NS_battle_jumprope 111
+#define NS_battle_karatechop 112
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -682,7 +683,8 @@
   _(robohorse) \
   _(popping) \
   _(hopscotch) \
-  _(jumprope)
+  _(jumprope) \
+  _(karatechop)
 
 /* "fld" are single bits.
  */

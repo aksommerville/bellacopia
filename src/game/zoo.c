@@ -129,14 +129,14 @@ static const struct zoo_resident zoo15v[]={
   {NS_fld_zoo15_0,RID_sprite_spider},
   {NS_fld_zoo15_1,RID_sprite_bat},
   {NS_fld_zoo15_2,RID_sprite_vandal},//XXX
-  {NS_fld_zoo15_3,RID_sprite_walrus},//XXX
+  {NS_fld_zoo15_3,RID_sprite_skeleton},
 0};
 
 // Under Southwest
 static const struct zoo_resident zoo16v[]={
   {NS_fld_zoo16_0,RID_sprite_spider},
   {NS_fld_zoo16_1,RID_sprite_bat},
-  {NS_fld_zoo16_2,RID_sprite_koala},//XXX
+  {NS_fld_zoo16_2,RID_sprite_skeleton},
   {NS_fld_zoo16_3,RID_sprite_witch},//XXX
 0};
 
