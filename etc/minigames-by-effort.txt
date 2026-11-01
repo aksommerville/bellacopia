@@ -1,64 +1,55 @@
-2025-12-28
-Minigames, sorted roughly by estimated effort to implement.
-Remove finished games as you go.
-
-## Easy
-Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
-Burrowing. Right to move, A to dig. Dig thru the dirt.
-Clam Baking. Hold A to engage flamethrower, only when the clam is open.
-Climbing. L/R and A/B, maintaining one "point of contact" at all times.
-Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
-Crossing. Frogger.
-Diving. R/L to move, hold A to jump. Easier to move before releasing A.
-Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
-Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
-Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
-Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
-Hurdles. Track and Field. Tap A to run, and Up to jump.
-Imitation. Simon Says. (like Sumo Horse but no timing, full dpad, and you're both following an NPC Simon).
-Jewelry. Rings and necklaces fall from the sky. L/R to walk, then B/A to hold up a hand for rings, or neither to collect a necklace. And dodge the bird with a magnet.
-Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
 Jumprope.
 Karate Chop. Tap A until time expires.
-Levitation. Keep an indicator balanced.
-Licking. Hold A when the giant moving ice cream cone is in range.
-Lighting. Walk and jump to reach the candles, as an acolyte.
-Newspaper. Throw newspapers across the street into mailboxes.
-Pairing. Pick the matching sock. First to pick it gets a point.
+Climbing. L/R and A/B, maintaining one "point of contact" at all times.
+Swearing. Press the button for a word bubble like "$#@!", last word wins.
+Crossing. Frogger.
 Parachute. Deploy as late as you dare, last to land alive wins.
-Parkour. Tap A at the right moment to wall-jump.
-Photography. Tap once, as a bat flies past the moon.
 Piano Throwing. Tap A to charge, then B to release.
+Bouncing. Squirrels throw acorns from their trees, stand under to bounce it. Horizontally symmetric, both players bounce acorns from both sides.
+Rollerskates. Jump and brake. Gets too fast if you don't brake.
+Pairing. Pick the matching sock. First to pick it gets a point.
+Fanning. Fan the princess as she walks by, but you can't fan and walk at the same time.
+Surrounding. Snake.
+Burrowing. Right to move, A to dig. Dig thru the dirt.
+Drawing. Steal from https://fkglr.itch.io/ikkoky , if he approves. Hold A until the other gunslinger twitches, then you have a very narrow window to release.
+Sharing. Dpad around the crowd, touch somebody to give them a berry.
+Licking. Hold A when the giant moving ice cream cone is in range.
 Pilfering. Dig Dug style, dig up to steal carrots, fail if you break the surface.
+Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
+Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
+Photography. Tap once, as a bat flies past the moon.
+Jewelry. Rings and necklaces fall from the sky. L/R to walk, then B/A to hold up a hand for rings, or neither to collect a necklace. And dodge the bird with a magnet.
+Juggling. Standing on a broom, Left and Right to balance, and tap A at the right moments to continue juggling.
+Harvesting. Walk Left and Right, A to pick a sprout a la Mario 2.
+Hurdles. Track and Field. Tap A to run, and Up to jump.
+Invading. [NEW] Space Invaders, play as the horde.
+Defending. [NEW] Space Invaders, play as usual. These would make a great pair in the battlefield!
+Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
+Imitation. Simon Says. (like Sumo Horse but no timing, full dpad, and you're both following an NPC Simon).
+Clam Baking. Hold A to engage flamethrower, only when the clam is open.
+Conducting. U/D to control train's throttle. Cross a bridge as a pair of fish builds it.
+Diving. R/L to move, hold A to jump. Easier to move before releasing A.
+Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
+Levitation. Keep an indicator balanced.
+Lighting. Walk and jump to reach the candles, as an acolyte.
+Analogy. [NEW] "A is to B as C is to ???", against Thesaurus Rex.
+Factoring. [NEW] 10-key, enter the prime factors of some 64-bit integer. Intentionally impossible. (but technically possible, that's what makes it hilarious)
+Slicing. Tap to stop the blade and cut the pie, aiming for half.
+Newspaper. Throw newspapers across the street into mailboxes.
+Parkour. Tap A at the right moment to wall-jump.
 Pitching. Circle the dpad then tap A, judged on consistency of timing.
 Protecting. U/D to deflect incoming bombs, keep them away from the gaggle of chicks.
+Watermelon. Hold A to charge and release to spit a seed, going for distance.
 Ramming. Take turns with the Orca, bashing your head against a boat, whoever sinks it wins.
 Rodeo. L/R to balance on the bull or hold A to brace.
-Rollerskates. Jump and brake. Gets too fast if you don't brake.
 Rowing. Circle the dpad with lopsided speed, slower in the water.
-Scaring. A once to jump out of the bushes as the man walks by. Find the optimal position.
-Sharing. Dpad around the crowd, touch somebody to give them a berry.
-Shovelling. Hold A to scoop dirt, then drop it in moving mine carts below.
-Skipping. Tap A to skip a stone, tap at each hop and they get shorter with lower tolerance as it goes.
-Slicing. Tap to stop the blade and cut the pie, aiming for half.
 Sliding. Tap R to run, then A to jump onto the ice, L to backpedal. Track and Field ish.
 Snorkel. Hold A to blow thru your snorkel at a ping-pong ball, try to maintain a middling elevation.
 Snowball Fight. Once around the dpad, then A to throw it, then repeat.
 Staring. Dpad to keep your eyes on the foe's.
-Surrounding. Snake.
-Swearing. Press the button for a word bubble like "$#@!", last word wins.
 Swinging. Hold L/R in phase, riding a swing.
 Umbrella. Hold A while raining, release while not.
-Watermelon. Hold A to charge and release to spit a seed, going for distance.
-
-## Hard
 Bombing. Mini Super Bomberman?
 Dance Off. Tiny rhythm game on the dpad.
-
-## More ideas that occurred late. (not in minigames.txt)
-Invading. Space Invaders, play as the horde.
-Defending. Space Invaders, play as usual. These would make a great pair in the battlefield!
-Shooting. Wolfenstein with a basketball.
-Rapping. Hiphoppotamus.
-Analogy. "A is to B as C is to ???", against Thesaurus Rex.
-Factoring. 10-key, enter the prime factors of some 64-bit integer. Intentionally impossible. (but technically possible, that's what makes it hilarious)
+Rapping. [NEW] Hiphoppotamus.
+Shooting. [NEW] Wolfenstein with a basketball.
