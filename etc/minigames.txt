@@ -74,7 +74,7 @@
   2      Jewelry           Princess           City
   2____D Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle
- R2      Jumprope          Joey               Desert
+ R2____D Jumprope          Joey               Desert
  R2      KarateChop        Sensei             Battlefield
   2____D Latin             Teacher            Fractia
   2____D Lawnmowing        Gardener           Fractia
