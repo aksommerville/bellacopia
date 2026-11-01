@@ -114,9 +114,13 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - Battle repairs.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
+- [ ] calligraphy: Reduce time limit. No more than 30s, and what would 20 or 25 feel like?
 - [ ] cheesecutting: Winner should fart at the end.
+- [ ] flapjack: Color the score counters like their flapjack.
+- [ ] mixing: CPU guesses way off, it's ridiculous. And can we add a "drain" button, to make darker?
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] seamonster: Butt ugly, and not in a good way.
+- [ ] snowboard: Scrape sound and flying snowflakes when you turn.
 - [ ] topping: Too many numbers. Use sliding bars instead.
 - [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.

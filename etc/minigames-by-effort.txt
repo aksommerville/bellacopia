@@ -55,7 +55,6 @@ Watermelon. Hold A to charge and release to spit a seed, going for distance.
 Bombing. Mini Super Bomberman?
 Dance Off. Tiny rhythm game on the dpad.
 Hopscotch. Tap the indicated button as Dot lands on them. Maybe sync to the music?
-Popping. Giant robot thing with a laser, shoot the cornfield to pop kernels.
 
 ## More ideas that occurred late. (not in minigames.txt)
 Invading. Space Invaders, play as the horde.

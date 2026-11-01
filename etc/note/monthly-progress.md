@@ -229,20 +229,26 @@ But from the 19th onward, there's nothing planned, and we can really dig in and 
 
 2026-10-08: Tried a 100% run with no odd tricks, just doing what a user might. 3:03
 
+Ended up spending a lot of post-GDEX time on ra4 instead. No regrets, but I didn't make much progress. Counting on a good November...
+I don't think finishing this year is realistic. Actually, for months now I've been saying "probably early 2027", and that still sounds right.
+
 Goals:
 - [ ] 10 new battles.
 - [ ] All decorative interiors complete: Cheapside, Botire, Fractia, Ice Palace, Sand Castle, Temple.
 
 ## November 2026
 
+Aim to complete at least one battle every day. It's possible. That will knock out about half of them.
+
 Goals:
-- [ ] All battles complete. It's a long shot but that's the goal.
+- [ ] 30 battles
 - [ ] Underworld and outerworld fully decorated.
 - [ ] All quests finalish. (as of 30 September, still need Toad and Boulder, hc5, purse3)
 
 ## December 2026
 
 I'd like to enter December with only Arcade Mode, credits, and touch-up outstanding.
+...well we don't always get what we want.
 
 Goals:
-- [ ] Bend every effort toward finishing before end of year, if we haven't yet.
+- [ ] All battle complete.
