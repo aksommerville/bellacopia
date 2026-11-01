@@ -59,6 +59,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Walking the Princess feels excessive. Reduce the mandatory walks to 2 or 3. Maybe also make a few battles mandatory?
 - [ ] Add a fortune teller at Goody's house, sells readings from a Crystal Ball for two bucks or so.
 - - [ ] But if you have a Crystal Ball too, she challenges you to a Crystal Bowling contest.
+- [ ] Do a brief cutscene after each Root Devil that shows your house, and the flower popping into bloom.
+- [ ] Make Crystal Ball a little easier to get.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.

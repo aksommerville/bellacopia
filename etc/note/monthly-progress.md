@@ -233,8 +233,18 @@ Ended up spending a lot of post-GDEX time on ra4 instead. No regrets, but I didn
 I don't think finishing this year is realistic. Actually, for months now I've been saying "probably early 2027", and that still sounds right.
 
 Goals:
-- [ ] 10 new battles.
+- [ ] 10 new battles. ...5
 - [ ] All decorative interiors complete: Cheapside, Botire, Fractia, Ice Palace, Sand Castle, Temple.
+
+Stats as of 03b790abc6dcaf8678f2ab0339f9bd5d8b696b09, 2026-10-31:
+ - Code: 102118
+ - `rom=2090782 code=1169058 image=5664620px*92 song=11:56.015*22 sound=0:29.542*91 map=85440m*356`
+ - Battles: 109
+ - 100%: 2:00:32
+ - Minm:   25:20
+ - Any%:   12:35
+ 
+100k lines of source -- first project I've ever written to cross that line!
 
 ## November 2026
 
@@ -242,8 +252,6 @@ Aim to complete at least one battle every day. It's possible. That will knock ou
 
 Goals:
 - [ ] 30 battles
-- [ ] Underworld and outerworld fully decorated.
-- [ ] All quests finalish. (as of 30 September, still need Toad and Boulder, hc5, purse3)
 
 ## December 2026
 
@@ -251,4 +259,21 @@ I'd like to enter December with only Arcade Mode, credits, and touch-up outstand
 ...well we don't always get what we want.
 
 Goals:
-- [ ] All battle complete.
+- [ ] Underworld and outerworld fully decorated.
+- [ ] All quests finalish. (as of 30 September, still need Toad and Boulder, hc5, purse3)
+
+## January 2027
+
+I've set a hard deadline: 25 Jan, all battles must be complete. Anything we haven't written by that point, we're not writing.
+
+Goals:
+ - [ ] All battles complete.
+ - [ ] Entire game functionally complete.
+
+## February 2027
+
+Some time this month, early as possible, get a beta build up on Itch and invite people to play.
+
+## March 2027
+
+Aim to release this month. Reassess as we go (writing this 2026-10-31).
