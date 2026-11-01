@@ -61,6 +61,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] But if you have a Crystal Ball too, she challenges you to a Crystal Bowling contest.
 - [ ] Do a brief cutscene after each Root Devil that shows your house, and the flower popping into bloom.
 - [ ] Make Crystal Ball a little easier to get.
+- [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -117,6 +118,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] broomrace: Get real prizes. Also don't call it "Broom Race", since that's a thing now.
 - - If there's real prizes, they need to be in addition to the score-bearing ones, like have two things available at once, otherwise Minimalists can't avoid them.
 - [ ] calligraphy: Reduce time limit. No more than 30s, and what would 20 or 25 feel like?
+- [ ] chanting: I don't like how it stops mid-verse. Can we just hold at zero until the end of the current verse?
 - [ ] cheesecutting: Winner should fart at the end.
 - [ ] flapjack: Color the score counters like their flapjack.
 - [ ] mixing: CPU guesses way off, it's ridiculous. And can we add a "drain" button, to make darker?

@@ -249,6 +249,7 @@ Stats as of 03b790abc6dcaf8678f2ab0339f9bd5d8b696b09, 2026-10-31:
 ## November 2026
 
 Aim to complete at least one battle every day. It's possible. That will knock out about half of them.
+We got 19 work days and 11 off days this month. If I really nail it and do 3 every off day, that's 52 games of the 56 currently planned.
 
 Goals:
 - [ ] 30 battles
