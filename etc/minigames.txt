@@ -29,7 +29,7 @@
   2E___D Chopping          Goat               Farm
   2____D Cinematography    Nosferatu          Cave
   2      ClamBaking        Dragon             Sea
-  2      Climbing          Spider             Desert
+  2____D Climbing          Tarantula          Desert
   2____D Cobbling          Coblin             Goblins
   2      Conducting        Conductor          Desert
   2____D Counting          Vampire            Labyrinth
