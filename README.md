@@ -170,6 +170,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] I want to see 2-player mode too. By March or so, we should engage at game night and COGG meetings.
 
 - Validation.
+- [ ] Check for collisions of `battle_type.id`.
 - [ ] Within each plane, if one map has a parent, they all must.
 - [ ] No grandparent maps.
 - [ ] Singleton items can't appear more than once.

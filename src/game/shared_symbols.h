@@ -574,6 +574,7 @@
 #define NS_battle_karatechop 112
 #define NS_battle_climbing 113
 #define NS_battle_swearing 114
+#define NS_battle_crossing 115
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -688,7 +689,8 @@
   _(jumprope) \
   _(karatechop) \
   _(climbing) \
-  _(swearing)
+  _(swearing) \
+  _(crossing)
 
 /* "fld" are single bits.
  */

@@ -34,7 +34,7 @@
   2      Conducting        Conductor          Desert
   2____D Counting          Vampire            Labyrinth
   2____D CPR               Nurse              Fractia
-  2      Crossing          Frog               Farm
+  2____D Crossing          Frog               Farm
   2____D Crying            Soblin             Goblins
   2____D Curling           IceDragon          IcePalace
   2____D Cutting           Crab               Desert
