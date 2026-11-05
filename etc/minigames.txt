@@ -90,7 +90,7 @@
   2      Newspaper         Boy                City
   2____D OatEating         Eight              Any
   2      Pairing           Snake              Jungle
- R2      Parachute         Chicken            Desert
+ R2____D Parachute         Chicken            Desert
   2      Parkour           Lizard             Cave
   2____D Petrifying        Medusa             Labyrinth
   2      Photography       Photographer       Woodland
