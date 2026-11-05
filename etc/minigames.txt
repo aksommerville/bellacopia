@@ -145,7 +145,7 @@
  R2____D Stirring          Mouse              Woodland
   2____D Strangling        RootDevil          All
   2      Surrounding       Snake              Jungle
- R2      Swearing          Sailor             Sea
+ R2____D Swearing          Sailor             SeaMonster
   2      Swinging          Kid                City
   2____D Telekinesis       Psychic            Labyrinth
   2____D Tempting          Siren              Sea
