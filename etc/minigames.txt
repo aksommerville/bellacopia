@@ -1,10 +1,11 @@
 # R = Reference implementation exists. (bcpoc or cherteau; or maybe embedded in some other project)
 # C = Player count. 1 or 2.
 # E = Extra prizes.
+# H = Hearts always (eating contests).
 # D = Done.
 # Opponent and Zone aren't set in stone, just throwing some ideas out there.
-#RC____D NAME              OPPONENT           ZONE
-  2____D Apples            Boblin             Goblins
+#RCEH__D NAME              OPPONENT           ZONE
+  2_H__D Apples            Boblin             Goblins
   2____D ArmWrestling      Minotaur           Labyrinth
  R2____D Balacing          Orangutan          Jungle
   1____D Blackjack         House              Casino
@@ -13,7 +14,7 @@
   2____D BodySlam          Yak                Tundra
   2      Bombing           Grenadier          Battlefield
   2____D Boomerang         Koala              Desert
-  2      Bouncing          Squirrel           Woodland
+  2____D Bouncing          Squirrel           Woodland
   2____D Breaching         Whale              Sea
  R2____D BroomRace         Witch              Labyrinth
   2____D Building          Contractor         Fractia
@@ -59,8 +60,8 @@
   2____D Flipping          Ostrich            Desert
   2____D FloeChart         PolarBear          Tundra
   2____D Flying            Sparrow            Farm
-  2____D FrogEating        Heron              Woodland
-  2____D Gobbling          Goblin             Goblins
+  2_H__D FrogEating        Heron              Woodland
+  2_H__D Gobbling          Goblin             Goblins
   2____D Golf              Unicorn            Labyrinth
   1____D Greenfish         GreenFish          All
   2      Harvesting        Picker             Farm
@@ -88,7 +89,7 @@
   2____D Mixing            ZombieBrewer       Underground
   2____D MorseCode         Walrus             Tundra
   2      Newspaper         Boy                City
-  2____D OatEating         Eight              Any
+  2_H__D OatEating         Eight              Any
   2      Pairing           Snake              Jungle
  R2____D Parachute         Chicken            Desert
   2      Parkour           Lizard             Cave
