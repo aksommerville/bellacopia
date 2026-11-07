@@ -114,7 +114,7 @@
   2____D Rescuing          Firefighter        Fractia
   2____D Robohorse         Groom              Battlefield
   2      Rodeo             Cowpoke            Desert
- R2      Rollerskates      Rabbit             Woodland
+ R2____D Rollerskates      Rabbit             Woodland
   2      Rowing            Viking             Sea
   2____D Sawing            Carpenter          Fractia
   2      Scaring           Ghost              City
