@@ -1,5 +1,5 @@
 image image:meadow_sprites
-tile 0xb6 0
+tile 0xb8 0
 type (u16:sprtype)monster
 groups (b32:sprgrp)visible,update,solid,grabbable,moveable
 physics (b32:physics)solid,water,hole,grabbable,safe,vanishable
