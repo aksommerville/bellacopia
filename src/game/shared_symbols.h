@@ -582,6 +582,7 @@
 #define NS_battle_pairing 120
 #define NS_battle_fanning 121
 #define NS_battle_surrounding 122
+#define NS_battle_burrowing 123
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -704,7 +705,8 @@
   _(rollerskates) \
   _(pairing) \
   _(fanning) \
-  _(surrounding)
+  _(surrounding) \
+  _(burrowing)
 
 /* "fld" are single bits.
  */
