@@ -579,6 +579,8 @@
 #define NS_battle_pianothrowing 117
 #define NS_battle_bouncing 118
 #define NS_battle_rollerskates 119
+#define NS_battle_pairing 120
+#define NS_battle_fanning 121
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -698,7 +700,9 @@
   _(parachute) \
   _(pianothrowing) \
   _(bouncing) \
-  _(rollerskates)
+  _(rollerskates) \
+  _(pairing) \
+  _(fanning)
 
 /* "fld" are single bits.
  */

@@ -62,6 +62,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Do a brief cutscene after each Root Devil that shows your house, and the flower popping into bloom.
 - [ ] Make Crystal Ball a little easier to get.
 - [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
+- [ ] `sprite:courtier` is implemented as monster, but it should be a new type. Stands next to the Princess, fans her, and fights you on demand.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
