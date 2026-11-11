@@ -63,6 +63,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make Crystal Ball a little easier to get.
 - [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
 - [ ] `sprite:courtier` is implemented as monster, but it should be a new type. Stands next to the Princess, fans her, and fights you on demand.
+- [ ] parachute: I think I forgot to render the hats.
+- [ ] Gate lots of regions with an NPC that you have to defeat in battle, like we did at the Temple. Maybe a policy that human monsters can't be rsprite, but can do this?
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
