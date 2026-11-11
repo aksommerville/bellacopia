@@ -63,6 +63,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Make Crystal Ball a little easier to get.
 - [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
 - [ ] `sprite:courtier` is implemented as monster, but it should be a new type. Stands next to the Princess, fans her, and fights you on demand.
+- - Also, rename her to "Handmaiden". "Courtier" is something a little different.
 - [ ] parachute: I think I forgot to render the hats.
 - [ ] Gate lots of regions with an NPC that you have to defeat in battle, like we did at the Temple. Maybe a policy that human monsters can't be rsprite, but can do this?
 

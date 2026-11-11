@@ -120,7 +120,7 @@
   2      Scaring           Ghost              City
   2____D ScubaTuba         Tuna               SeaMonster
   2____D Shaking           Bartender          Fractia
-  2      Sharing           Bear               Woodland
+  2____D Sharing           Bear               Woodland
   2      Shovelling        Miner              Cave
   1____D ShovelThrowing    Skeleton           All
   2____D Shuffling         Dealer             Fractia

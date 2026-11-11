@@ -250,6 +250,7 @@ Stats as of 03b790abc6dcaf8678f2ab0339f9bd5d8b696b09, 2026-10-31:
 
 Aim to complete at least one battle every day. It's possible. That will knock out about half of them.
 We got 19 work days and 11 off days this month. If I really nail it and do 3 every off day, that's 52 games of the 56 currently planned.
+But also the Ocarina of Time remake just came out, so yknow...
 
 Goals:
 - [ ] 30 battles
@@ -261,14 +262,16 @@ I'd like to enter December with only Arcade Mode, credits, and touch-up outstand
 
 Goals:
 - [ ] Underworld and outerworld fully decorated.
-- [ ] All quests finalish. (as of 30 September, still need Toad and Boulder, hc5, purse3)
+- [ ] More buried treasure, the final set.
+- [ ] All items in the right place. At a minimum, phonograph needs to move.
+- [ ] All quests finalish. (hc5, purse3, zoos)
 
 ## January 2027
 
 I've set a hard deadline: 25 Jan, all battles must be complete. Anything we haven't written by that point, we're not writing.
 
 Goals:
- - [ ] All battles complete.
+ - [ ] All battles complete and placed.
  - [ ] Entire game functionally complete.
 
 ## February 2027
