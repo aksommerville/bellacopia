@@ -81,7 +81,7 @@
   2____D Lawnmowing        Gardener           Fractia
   2____D Laziness          Sloblin            Goblins
  R2      Levitation        Monk               Desert
-  2      Licking           Puppy              Farm
+  2____D Licking           Puppy              Farm
   2      Lighting          Acolyte            City
   2____D Math              Owl                Woodland
   1____D Medomat           Medomat            Fractia

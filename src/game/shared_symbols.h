@@ -585,6 +585,7 @@
 #define NS_battle_burrowing 123
 #define NS_battle_drawing 124
 #define NS_battle_sharing 125
+#define NS_battle_licking 126
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -710,7 +711,8 @@
   _(surrounding) \
   _(burrowing) \
   _(drawing) \
-  _(sharing)
+  _(sharing) \
+  _(licking)
 
 /* "fld" are single bits.
  */
