@@ -96,7 +96,7 @@
   2____D Petrifying        Medusa             Labyrinth
   2      Photography       Photographer       Woodland
   2____D PianoThrowing     Gorilla            Jungle
-  2      Pilfering         Rabbit             Cave
+  2____D Pilfering         Rabbit             Cave
   1      Pitching          Baboon             Jungle
   2____D Plumbing          Plumber            Fractia
   1____D Poker             House              Casino

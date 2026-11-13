@@ -40,7 +40,6 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Definitely need better guidance at the very start. Make sure they understand root devils are the goal. And push the Divining Rod somehow.
 - [x] Lock guilds before the election starts. And have the registrar lead you with some dialogue "Go rustle up your supporters now", something like that.
 - [x] If you re-touch a guild member already won, they should ask first, "want to play again?"
-- [ ] weaving: If the first stroke is inconclusive, try others. Or maybe skip that first-stroke logic altogether, and give them whichever direction is more favorable.
 - [ ] Don't require alignment for bump triggers; they should trigger instantly.
 - [ ] Lengthen `break_soil`. It's going to be playing over and over on the cab at GDEX, we're going to get very sick of it.
 - [ ] Make something happen if you beat a guild outside the election.
@@ -64,8 +63,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
 - [ ] `sprite:courtier` is implemented as monster, but it should be a new type. Stands next to the Princess, fans her, and fights you on demand.
 - - Also, rename her to "Handmaiden". "Courtier" is something a little different.
-- [ ] parachute: I think I forgot to render the hats.
 - [ ] Gate lots of regions with an NPC that you have to defeat in battle, like we did at the Temple. Maybe a policy that human monsters can't be rsprite, but can do this?
+- [ ] Gladiator Challenge. Use the ladder house in Botire. Get locked in a cage and you have win like 30 battles in a row.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -124,12 +123,16 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] calligraphy: Reduce time limit. No more than 30s, and what would 20 or 25 feel like?
 - [ ] chanting: I don't like how it stops mid-verse. Can we just hold at zero until the end of the current verse?
 - [ ] cheesecutting: Winner should fart at the end.
+- [ ] climbing: Show the expected next key on each side, for human players.
+- [ ] fanning: Sound effects.
 - [ ] flapjack: Color the score counters like their flapjack.
 - [ ] mixing: CPU guesses way off, it's ridiculous. And can we add a "drain" button, to make darker?
+- [ ] parachute: I think I forgot to render the hats. And after adding drawing contest, an errant sprite appears at the end. huh?
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] snowboard: Scrape sound and flying snowflakes when you turn.
 - [ ] topping: Too many numbers. Use sliding bars instead.
+- [ ] weaving: If the first stroke is inconclusive, try others. Or maybe skip that first-stroke logic altogether, and give them whichever direction is more favorable.
 - [ ] wrapping: For certain gifts, allow delivering to my pocket instead of wrapping. Add candy, bomb, etc. Allow to get the Marionette and Bell this way?
 - [ ] Find more opportunities for special battle prizes like Stealing and Fishing.
 - - Ensure that if real goods are awarded, the player is able to avoid them, to keep Minimalist Completion possible.
