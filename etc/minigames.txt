@@ -117,7 +117,7 @@
  R2____D Rollerskates      Rabbit             Woodland
   2      Rowing            Viking             Sea
   2____D Sawing            Carpenter          Fractia
-  2      Scaring           Ghost              City
+  2____D Scaring           Ghost              Cave
   2____D ScubaTuba         Tuna               SeaMonster
   2____D Shaking           Bartender          Fractia
   2____D Sharing           Bear               Woodland
