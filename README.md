@@ -125,6 +125,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] cheesecutting: Winner should fart at the end.
 - [ ] climbing: Show the expected next key on each side, for human players.
 - [ ] fanning: Sound effects.
+- [ ] fire: Sound effects.
 - [ ] flapjack: Color the score counters like their flapjack.
 - [ ] mixing: CPU guesses way off, it's ridiculous. And can we add a "drain" button, to make darker?
 - [ ] parachute: I think I forgot to render the hats. And after adding drawing contest, an errant sprite appears at the end. huh?

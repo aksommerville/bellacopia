@@ -589,6 +589,7 @@
 #define NS_battle_pilfering 127
 #define NS_battle_skipping 128
 #define NS_battle_scaring 129
+#define NS_battle_photography 130
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -718,7 +719,8 @@
   _(licking) \
   _(pilfering) \
   _(skipping) \
-  _(scaring)
+  _(scaring) \
+  _(photography)
 
 /* "fld" are single bits.
  */

@@ -79,7 +79,7 @@ static const struct zoo_resident zoo8v[]={
 // Under Fractia
 static const struct zoo_resident zoo9v[]={
   {NS_fld_zoo9_0,RID_sprite_spider},
-  {NS_fld_zoo9_1,RID_sprite_leopard},//XXX
+  {NS_fld_zoo9_1,RID_sprite_shutterbug},
   {NS_fld_zoo9_2,RID_sprite_bat},
   {NS_fld_zoo9_3,RID_sprite_rat},
 0};

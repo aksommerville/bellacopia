@@ -94,7 +94,7 @@
  R2____D Parachute         Chicken            Desert
   2      Parkour           Lizard             Cave
   2____D Petrifying        Medusa             Labyrinth
-  2      Photography       Photographer       Woodland
+  2      Photography       Shutterbug         Cave
   2____D PianoThrowing     Gorilla            Jungle
   2____D Pilfering         Rabbit             Cave
   1      Pitching          Baboon             Jungle
