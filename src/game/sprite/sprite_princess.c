@@ -216,6 +216,7 @@ static struct sprite *princess_spawn_kidnapper(struct sprite *sprite,const struc
     RID_sprite_bear,
     RID_sprite_puppy,
     RID_sprite_duck,
+    RID_sprite_duchess,
   };
   int candidatec=sizeof(candidatev)/sizeof(int);
   int rid=candidatev[rand()%candidatec];

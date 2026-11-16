@@ -72,7 +72,7 @@
   2      Hurdles           Herald             Battlefield
   2      Imitation         Monkey             Jungle
   2____D Jeter             Dancer             Fractia
-  2      Jewelry           Princess           City
+  2____D Jewelry           Duchess            Botire
   2____D Joust             Cavalier           Battlefield
   2      Juggling          Octopus            Jungle
  R2____D Jumprope          Joey               Desert
