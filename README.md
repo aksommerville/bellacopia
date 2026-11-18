@@ -65,6 +65,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - Also, rename her to "Handmaiden". "Courtier" is something a little different.
 - [ ] Gate lots of regions with an NPC that you have to defeat in battle, like we did at the Temple. Maybe a policy that human monsters can't be rsprite, but can do this?
 - [ ] Gladiator Challenge. Use the ladder house in Botire. Get locked in a cage and you have win like 30 battles in a row.
+- [ ] `song:shifting_sand` should be in the main line. Pick one of the existing main line songs to use for Arcade mode.
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
