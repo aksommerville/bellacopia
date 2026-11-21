@@ -593,6 +593,7 @@
 #define NS_battle_jewelry 131
 #define NS_battle_juggling 132
 #define NS_battle_harvesting 133
+#define NS_battle_hurdles 134
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -726,7 +727,8 @@
   _(photography) \
   _(jewelry) \
   _(juggling) \
-  _(harvesting)
+  _(harvesting) \
+  _(hurdles)
 
 /* "fld" are single bits.
  */
