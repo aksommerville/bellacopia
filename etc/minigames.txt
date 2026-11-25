@@ -122,7 +122,7 @@
   2____D ScubaTuba         Tuna               SeaMonster
   2____D Shaking           Bartender          Fractia
   2____D Sharing           Bear               Woodland
-  2      Shovelling        Miner              Cave
+  2____D Shovelling        Gopher             Cave
   1____D ShovelThrowing    Skeleton           All
   2____D Shuffling         Dealer             Fractia
   2____D Skiing            Reindeer           Tundra

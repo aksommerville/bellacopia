@@ -87,7 +87,7 @@ static const struct zoo_resident zoo9v[]={
 // Under North
 static const struct zoo_resident zoo10v[]={
   {NS_fld_zoo10_0,RID_sprite_spider},
-  {NS_fld_zoo10_1,RID_sprite_leopard},//XXX
+  {NS_fld_zoo10_1,RID_sprite_gopher},
   {NS_fld_zoo10_2,RID_sprite_bat},
   {NS_fld_zoo10_3,RID_sprite_walrus},//XXX
 0};
