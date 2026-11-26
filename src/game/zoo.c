@@ -97,7 +97,7 @@ static const struct zoo_resident zoo11v[]={
   {NS_fld_zoo11_0,RID_sprite_spider},
   {NS_fld_zoo11_1,RID_sprite_bat},
   {NS_fld_zoo11_2,RID_sprite_ogre},//XXX
-  {NS_fld_zoo11_3,RID_sprite_witch},//XXX
+  {NS_fld_zoo11_3,RID_sprite_invincibull},
 0};
 
 // Under Botire

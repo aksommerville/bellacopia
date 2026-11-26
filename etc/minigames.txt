@@ -49,6 +49,7 @@
   2____D Erudition         Snoblin            Goblins
   2____D Exterminating     Soldier            Battlefield
   2      Extinguishing     Rhinoceros         Jungle
+  1____D Factoring         Invincibull        Caves
   2____D Fanning           Courtier           Castle
   2____D Fencing           Samurai            Fractia
   2____D FigureSkating     IceDragon          IcePalace

@@ -596,6 +596,7 @@
 #define NS_battle_hurdles 134
 #define NS_battle_invading 135
 #define NS_battle_shovelling 136
+#define NS_battle_factoring 137
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -732,7 +733,8 @@
   _(harvesting) \
   _(hurdles) \
   _(invading) \
-  _(shovelling)
+  _(shovelling) \
+  _(factoring)
 
 /* "fld" are single bits.
  */

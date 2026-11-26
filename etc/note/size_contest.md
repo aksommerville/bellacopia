@@ -4,7 +4,7 @@ By any reasonable standard, it's the largest game I've ever written.
 It amuses me to quantify this.
 
 Stats for bellacopia are from 03b790abc6dcaf8678f2ab0339f9bd5d8b696b09, 31 October 2026. Still very incomplete.
-Currently the largest by 3/8 criteria.
+Currently the largest by 4/8 criteria.
 
 Would be cool to compare to others' games too, especially broadly-familiar ones like Zelda.
 
