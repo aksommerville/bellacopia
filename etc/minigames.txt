@@ -71,7 +71,7 @@
   2____D HomeRunDerby      Ballplayer         Fractia
   2____D Hopscotch         Frog               Woodland
   2____D Hurdles           Herald             Battlefield
-  2      Imitation         Monkey             Jungle
+  2____D Imitation         Monkey             Jungle
   2____D Invading          Viking             Battlefield
   2____D Jeter             Dancer             Fractia
   2____D Jewelry           Duchess            Botire
