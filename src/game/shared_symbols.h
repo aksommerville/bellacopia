@@ -598,6 +598,7 @@
 #define NS_battle_shovelling 136
 #define NS_battle_factoring 137
 #define NS_battle_imitation 138
+#define NS_battle_clambaking 139
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -736,7 +737,8 @@
   _(invading) \
   _(shovelling) \
   _(factoring) \
-  _(imitation)
+  _(imitation) \
+  _(clambaking)
 
 /* "fld" are single bits.
  */
