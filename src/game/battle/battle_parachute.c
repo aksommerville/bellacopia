@@ -27,6 +27,8 @@ struct battle_parachute {
     int landed;
     double openy;
     double cpuchutey;
+    double haty;
+    int hatlanded;
   } playerv[2];
 };
 
@@ -51,6 +53,7 @@ static void player_init(struct battle *battle,struct player *player,int human,in
     player->xform=EGG_XFORM_XREV;
     player->x=FBW-player->x;
   }
+  player->haty=-40.0;
   
   player->gravity_rate=140.0*(1.0-player->skill)+80.0*player->skill;
   player->gravity_limit=120.0*(1.0-player->skill)+90.0*player->skill;
@@ -126,6 +129,17 @@ static void player_update_cpu(struct battle *battle,struct player *player,double
  */
  
 static void player_update_common(struct battle *battle,struct player *player,double elapsed) {
+  
+  if (!player->hatlanded) {
+    player->haty+=50.0*elapsed;
+    double termy=GROUNDY-2.0;
+    if (player->landed&&player->chuted) termy=GROUNDY-15.0;
+    if (player->haty>termy) {
+      player->haty=termy;
+      player->hatlanded=1;
+    }
+  }
+  
   if (player->landed) return;
   
   player->y+=player->gravity*elapsed;
@@ -153,7 +167,6 @@ static void player_update_common(struct battle *battle,struct player *player,dou
  */
  
 static void _parachute_update(struct battle *battle,double elapsed) {
-  if (battle->outcome>-2) return;
   
   struct player *player=BATTLE->playerv;
   int i=2;
@@ -165,16 +178,18 @@ static void _parachute_update(struct battle *battle,double elapsed) {
   
   /* Game is over when they've both landed.
    */
-  struct player *l=BATTLE->playerv;
-  struct player *r=l+1;
-  if (l->landed&&r->landed) {
-    if (l->chuted&&r->chuted) { // Both landed safely. Whoever got there first wins.
-      if (l->openy>r->openy) battle->outcome=1;
-      else if (l->openy<r->openy) battle->outcome=-1;
-      else battle->outcome=0;
-    } else if (l->chuted) battle->outcome=1;
-    else if (r->chuted) battle->outcome=-1;
-    else battle->outcome=0; // double splat
+  if (battle->outcome==-2) {
+    struct player *l=BATTLE->playerv;
+    struct player *r=l+1;
+    if (l->landed&&r->landed) {
+      if (l->chuted&&r->chuted) { // Both landed safely. Whoever got there first wins.
+        if (l->openy>r->openy) battle->outcome=1;
+        else if (l->openy<r->openy) battle->outcome=-1;
+        else battle->outcome=0;
+      } else if (l->chuted) battle->outcome=1;
+      else if (r->chuted) battle->outcome=-1;
+      else battle->outcome=0; // double splat
+    }
   }
 }
 
@@ -183,20 +198,12 @@ static void _parachute_update(struct battle *battle,double elapsed) {
  
 static void player_render(struct battle *battle,struct player *player) {
 
-  // Line in the middle showing where I opened.
+  // Flag in the middle showing where I opened.
   if (player->chuted) {
-    graf_set_input(g_graf,0);
-    int ax,bx;
-    if (player->who) {
-      ax=FBW>>1;
-      bx=ax+8;
-    } else {
-      bx=FBW>>1;
-      ax=bx-8;
-    }
+    int x=FBW>>1;
+    if (player->who) x+=2; else x-=2;
     int y=(int)player->openy;
-    graf_line(g_graf,ax,y,player->color,bx,y,player->color);
-    graf_set_image(g_graf,RID_image_battle_desert);
+    graf_fancy(g_graf,x,y,0x57,player->xform,0,NS_sys_tilesize,0,player->color);
   }
 
   int x=(int)player->x;
@@ -205,8 +212,15 @@ static void player_render(struct battle *battle,struct player *player) {
   if (player->chuted) {
     int csx=NS_sys_tilesize*3;
     int csy=NS_sys_tilesize*5;
-    if (player->landed) csx+=NS_sys_tilesize*3;
-    graf_decal(g_graf,x-NS_sys_tilesize-(NS_sys_tilesize>>1),y-NS_sys_tilesize-(NS_sys_tilesize>>1),csx,csy,NS_sys_tilesize*3,NS_sys_tilesize*2);
+    int csh=NS_sys_tilesize*2;
+    int cdy=y-NS_sys_tilesize-(NS_sys_tilesize>>1);
+    if (player->landed) { // Landed chute is one row instead of two.
+      csx+=NS_sys_tilesize*3;
+      csy+=NS_sys_tilesize;
+      csh=NS_sys_tilesize;
+      cdy+=NS_sys_tilesize;
+    }
+    graf_decal(g_graf,x-NS_sys_tilesize-(NS_sys_tilesize>>1),cdy,csx,csy,NS_sys_tilesize*3,csh);
     tileid+=2; // Whether landed or not.
   } else if (player->landed) {
     tileid+=5;
@@ -214,6 +228,14 @@ static void player_render(struct battle *battle,struct player *player) {
     tileid+=player->animframe;
   }
   graf_tile(g_graf,x,y,tileid,player->xform);
+  
+  int hatx=x;
+  int hatdx=(player->landed&&player->chuted&&player->hatlanded)?1:3;
+  if (player->who) hatdx=-hatdx;
+  hatx+=hatdx;
+  int haty=(int)player->haty;
+  uint8_t hattile=player->tileid+(player->hatlanded?4:3);
+  graf_tile(g_graf,hatx,haty,hattile,player->xform);
 }
 
 /* Render.
@@ -241,7 +263,7 @@ const struct battle_type battle_type_parachute={
   .no_timeout=0,
   .support_pvp=1,
   .support_cvc=1,
-  .update_during_report=0,
+  .update_during_report=1,
   .input=battle_input_a,
   .imageid_default=RID_image_desert,
   .del=_parachute_del,

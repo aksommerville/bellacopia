@@ -129,7 +129,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] fire: Sound effects.
 - [ ] flapjack: Color the score counters like their flapjack.
 - [ ] mixing: CPU guesses way off, it's ridiculous. And can we add a "drain" button, to make darker?
-- [ ] parachute: I think I forgot to render the hats. And after adding drawing contest, an errant sprite appears at the end. huh?
+- [x] parachute: I think I forgot to render the hats. And after adding drawing contest, an errant sprite appears at the end. huh?
 - [ ] racketeering: Try an option for red-and-blue 3d glasses. Maybe AUX2 to toggle? That's how Rad Racer did it.
 - [ ] seamonster: Butt ugly, and not in a good way.
 - [ ] snowboard: Scrape sound and flying snowflakes when you turn.
