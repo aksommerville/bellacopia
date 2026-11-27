@@ -32,7 +32,7 @@
   2____D ClamBaking        Dragon             Sea
   2____D Climbing          Tarantula          Desert
   2____D Cobbling          Coblin             Goblins
-  2      Conducting        Conductor          Desert
+  2____D Conducting        Conductor          Desert
   2____D Counting          Vampire            Labyrinth
   2____D CPR               Nurse              Fractia
   2____D Crossing          Frog               Farm
