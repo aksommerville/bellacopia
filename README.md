@@ -59,7 +59,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Add a fortune teller at Goody's house, sells readings from a Crystal Ball for two bucks or so.
 - - [ ] But if you have a Crystal Ball too, she challenges you to a Crystal Bowling contest.
 - [ ] Do a brief cutscene after each Root Devil that shows your house, and the flower popping into bloom.
-- [ ] Make Crystal Ball a little easier to get.
+- [ ] Make Crystal Ball a little easier to get. What if the new fortuneteller sells it to you?
 - [ ] Shops modal: Should be able to hold left/right to increase quantity fast.
 - [ ] `sprite:courtier` is implemented as monster, but it should be a new type. Stands next to the Princess, fans her, and fights you on demand.
 - - Also, rename her to "Handmaiden". "Courtier" is something a little different.
@@ -67,6 +67,8 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - [ ] Gladiator Challenge. Use the ladder house in Botire. Get locked in a cage and you have win like 30 battles in a row.
 - [ ] `song:shifting_sand` should be in the main line. Pick one of the existing main line songs to use for Arcade mode.
 - [ ] Gate the last heart container with an immobile invincibull. You have to buy goodluck to get past him.
+- [ ] Consider a replacement story if you skip the kidnap bit by entering goblins' cave via the back door. "Once upon a time there was a programmer who made a clever puzzle, but the player outsmarted him..."
+- [ ] Heart container, purse upgrade, and election stories, what would it take to show the events in the order they actually happened?
 
 - Challenges for Ice Palace and other bonus zones. Underworld. Back of the temple? Goblins' cave?
 - - We can really cut loose with these and make them ridiculously hard, since they'll never be mandatory.
@@ -74,7 +76,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - [ ] Timed flamethrowers and projectiles. Can do really fast ones to require a Stopwatch.
 - - [ ] Conveyor belts.
 - - [ ] Somewhere a Spell Bee style side quest where you complete a dungeon, then have to go back in and clean up after yourself.
-- - [ ] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull". Factoring contest! "Factor this 64-bit integer"
+- - [x] An aggressive monster that wins every time so you have to use Bug Spray or Vanishing Cream. "Invincibull". Factoring contest! "Factor this 64-bit integer"
 
 - Fill out maps.
 - [ ] Fractia
@@ -158,6 +160,7 @@ Requires [Egg](https://github.com/aksommerville/egg2) to build.
 - - We're only using it for wand, and the effect is agreeable. But might need mitigation if we use for other things.
 - [ ] Remove the fake French text, or even better, get it translated correctly.
 - - Do at least a machine-generated translation for Spanish and French. German? Portugese? Anything non-Latin is off the table alas.
+- - Actually, there's just too much text here to trust machine translation. I'm thinking English only. But no rush, we can reassess closer to release.
 - [ ] Inside the temple, compass points you to the front door for the root devil and the heart container.
 - - I don't think we need to solve this generally, but can we make it point to the pool door instead? (that would be wrong if it's pointing to anything else, but I think that's less bad than current).
 - - UPDATE: Also impacts hc4, and expect more. I think we do need a general solution.

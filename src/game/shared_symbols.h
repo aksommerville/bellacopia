@@ -600,6 +600,7 @@
 #define NS_battle_imitation 138
 #define NS_battle_clambaking 139
 #define NS_battle_conducting 140
+#define NS_battle_cannonball 141
 #define FOR_EACH_battle \
   _(fishing) \
   _(chopping) \
@@ -740,7 +741,8 @@
   _(factoring) \
   _(imitation) \
   _(clambaking) \
-  _(conducting)
+  _(conducting) \
+  _(cannonball)
 
 /* "fld" are single bits.
  */

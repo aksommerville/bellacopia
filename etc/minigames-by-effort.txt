@@ -1,4 +1,3 @@
-Diving. R/L to move, hold A to jump. Easier to move before releasing A.
 Extinguishing. Walk around and A to put out fires. Extinguisher takes a sec to charge up, and inhibits movement slightly when engaged.
 Levitation. Keep an indicator balanced.
 Lighting. Walk and jump to reach the candles, as an acolyte.
